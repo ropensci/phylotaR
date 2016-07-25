@@ -1,4 +1,5 @@
 require('CHNOSZ')
+require('rentrez')
 require('data.table')
 
 ###  DEPRECATED, fiels will be discontinued after Sep 2016
@@ -57,7 +58,7 @@ acc.genbank.seqids.for.taxid <- function( taxids, local=FALSE, dir=NULL ) {
     path <- file.path(dir, subdir, file.name)
 
     for ( ti in taxids ) {
-        cat("Collecting Genbank accessions for ti", ti, "... ")
+        cat("Collecting Genbank accessions for ti ", ti, "from local data ... ")
         ## cannot read file at once, need to filter for taxid            
         cmd <- paste0("awk '$3 == ", ti, "' ", path)
         tab <- fread(cmd)
@@ -74,7 +75,8 @@ acc.genbank.seqids.for.taxid <- function( taxids, local=FALSE, dir=NULL ) {
 .remote.acc.genbank.seqids.for.taxid <- function( taxids ) {
     ret <- list()
 
-    for ( ti in taxids ) {
+    for ( ti in taxids ) {        
+        cat("Collecting Genbank accessions for ti ", ti, "from ncbi server ... ")
         search <- entrez_search(db='nucleotide', term=paste0('txid', ti, '[Organism:exp]'), retmax=999999999)
         gis <- search$ids
         l <- list()
