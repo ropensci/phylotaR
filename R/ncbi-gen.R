@@ -1,10 +1,8 @@
-## require('rentrez')
-require('RCurl')
+
 
 ## get sequences for given GIs
 ## returns a list named by GIs containing the sequences
 seqs.for.gis <- function( gis, local=FALSE, dir=NULL, omit.defline=TRUE ) {
-
     seqs <- list()
     if ( local ) {
         if ( is.null(dir) ) {
@@ -21,25 +19,25 @@ seqs.for.gis <- function( gis, local=FALSE, dir=NULL, omit.defline=TRUE ) {
     if ( omit.defline ) {
         seqs <- gsub("^>.*?\\n|\\n", "", seqs)        
     }
-
+    names(seqs) <- gis
     return(seqs)
 }
 
 ## retrieve seqs for GIs from ncbi server
 .remote.seqs.for.gis <- function( gis, omit.defline=TRUE ) {
     ## get FASTA records
-    ncbi.url <- "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nuccore&id=%d&rettype=fasta&retmode=text"
-    counter <- 0
-    num.gis <- length(gis)
-    seqs <- lapply ( gis, function(gi) {                        
-        counter <<- counter + 1        
-        msg <- "Retrieving sequence for gi %d ( # %d of %d, %.2f %% finished )"
-        cat(sprintf(msg, gi, counter, num.gis, counter*100/length(gis)), "\n")
-        url <- sprintf(ncbi.url, gi)
-        getURL(url)       
-    } )
-    names(seqs) <- gis
+    #ncbi.url <- "http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=nuccore&id=%d&rettype=fasta&retmode=text"
+    #counter <- 0
+    #num.gis <- length(gis)
+    #seqs <- lapply ( gis, function(gi) {                        
+    #    counter <<- counter + 1        
+    #    msg <- "Retrieving sequence for gi %d ( # %d of %d, %.2f %% finished )"
+    #    cat(sprintf(msg, gi, counter, num.gis, counter*100/length(gis)), "\n")
+    #    url <- sprintf(ncbi.url, gi)
+    #    getURL(url)       
+    #} )
 
+    seqs <- lapply(gis, function(gi)entrez_fetch(db="nuccore",id=gi, rettype='fasta'))    
     return (seqs)
 }
 

@@ -2,6 +2,12 @@ require('CHNOSZ')
 require('rentrez')
 require('data.table')
 
+ncbi.taxonomic.ranks <<- c('superkingdom', 'kingdom', 'subkingdom', 'superphylum', 'phylum',
+					   'subphylum', 'superclass', 'class', 'subclass', 'infraclass', 'superorder',
+					   'order', 'suborder', 'infraorder', 'parvorder', 'superfamily', 'family',
+					   'subfamily', 'tribe', 'subtribe', 'genus', 'subgenus', 'species group',
+					   'species subgroup', 'species', 'subspecies','varietas', 'forma')
+
 ###  DEPRECATED, fiels will be discontinued after Sep 2016
 ## Will get all GIss for a (vector of) taxon ID('s) from
 ## the NCBI file gi_taxid_nucl.dmp, the dir it is located
@@ -24,9 +30,6 @@ gis.all.for.taxid <- function( taxid, dir='.' ) {
     }    
     return( gis )
 }
-
-
-
 
 ## For given taxon id(s), returns a list with accessions and GIs for
 ## each taxon id. Will only deliver accessions and GIs that are in GenBank
@@ -56,29 +59,44 @@ acc.genbank.seqids.for.taxid <- function( taxids, local=FALSE, dir=NULL ) {
     file.name <- 'nucl_gb.accession2taxid'
     subdir <- 'accession2taxid'
     path <- file.path(dir, subdir, file.name)
-
+    
     for ( ti in taxids ) {
-        cat("Collecting Genbank accessions for ti ", ti, "from local data ... ")
-        ## cannot read file at once, need to filter for taxid            
-        cmd <- paste0("awk '$3 == ", ti, "' ", path)
-        tab <- fread(cmd)
-        cat("found", nrow(tab), "accessions\n")
-        colnames(tab) = c('accession', 'accession.version', 'taxid', 'gi') 
-        l <- list()
-        l[['accession.version']] <- tab$accession.version
-        l[['gi']] <- tab$gi
-        ret[[as.character(ti)]] <- l        
+        cat("Collecting Genbank accessions for ti", ti, "from local data\n")
+
+        ## need to expand taxids to all lower levels in order to find
+        ## seq Ids in the file
+        taxa.table <- get.all.child.taxa(taxids)
+        ## keep only ids for species and lower
+        taxranks <- ncbi.taxonomic.ranks[which(ncbi.taxonomic.ranks=='species'):length(ncbi.taxonomic.ranks)]
+        expanded.ids <- taxa.table[which(taxa.table[,'childtaxa_rank'] %in% taxranks),'childtaxa_id']
+                
+        ## cannot read file at once, need to filter for taxid,
+        ## get all rows from, file which contain the taxid in the third column
+        cmd <- paste0("awk '$3 ~ /", paste0('^', expanded.ids, '$', collapse='|'), "/' ", path)
+        tab <- try(fread(cmd))
+        if (class(tab) == 'try-error') {
+            cat("Could not retrieve sequence IDs for taxon", ti, ", probably there aren't any. Skipping.\n")
+        }
+        else {
+            cat("found", nrow(tab), "accessions\n")
+            colnames(tab) <- c('accession', 'accession.version', 'taxid', 'gi') 
+            l <- list()
+            l[['accession.version']] <- tab$accession.version
+            l[['gi']] <- tab$gi
+            ret[[as.character(ti)]] <- l
+        }
     }
-    return ( ret )    
+    return (ret)    
 }
 
 .remote.acc.genbank.seqids.for.taxid <- function( taxids ) {
     ret <- list()
 
     for ( ti in taxids ) {        
-        cat("Collecting Genbank accessions for ti ", ti, "from ncbi server ... ")
+        cat("Collecting Genbank accessions for ti", ti, "from ncbi server\n")
         search <- entrez_search(db='nucleotide', term=paste0('txid', ti, '[Organism:exp]'), retmax=999999999)
         gis <- search$ids
+        cat("found", length(gis), "accessions\n")
         l <- list()
         l[['gi']] <- gis        
         ## query for accessions
@@ -89,5 +107,26 @@ acc.genbank.seqids.for.taxid <- function( taxids, local=FALSE, dir=NULL ) {
         l[['accession.version']] <- accessions
         ret[[as.character(ti)]] <- l        
     }
-    return( ret )    
+    return(ret)    
+}
+
+get.all.child.taxa <- function(taxa, rank='species') {
+    db <- 'ncbi'
+
+    queue <- taxa
+    result <- data.frame(ncbi.id=integer(0), name=character(0), rank=character(0))
+    while ( length(queue) > 0 ) {
+        taxon <- queue[1]
+        ##cat("Taxon : ", taxon, "\n")
+        
+        ## remove first element from queue
+        queue <- tail(queue, length(queue)-1)        
+
+        ch <- children(taxon, db=db)
+        table <- ch[[1]]       
+        ##        result <- rbind(result, subset(table, childtaxa_rank==rank))
+        result <- rbind(result, table)
+        queue <- c(queue, table$childtaxa_name)        
+    }
+    return (result)
 }
