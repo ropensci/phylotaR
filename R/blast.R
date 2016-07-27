@@ -1,0 +1,61 @@
+
+make.blast.db <- function(seqs, dbfile='blastdb.fa', dir='.') {
+    
+    if (length(seqs) < 3) stop('Need more than 2 sequences')
+
+    file <- file.path(dir, dbfile)
+    file.create(file)
+    
+    ## Write user-supplied gis to file
+    for (gi in names(seqs)) {
+        write(paste0("> ", gi, "\n", seqs[[as.character(gi)]],"\n"), file=file, append=T)
+    }
+    cmd <- paste('makeblastdb -in', file, '-dbtype nucl')
+    system(cmd)
+
+    ## Check if files produced by makeblastdb command are present
+    extensions <- c('nhr', 'nin', 'nsq')
+    fnames <- sapply(extensions, function(e)paste0(file, '.', e))
+    if ( ! all (sapply(fnames, file.exists))) {
+        stop('Command ', cmd, ' did not produce output files ', paste(fnames)) 
+    }
+    return (file)
+}
+
+blast.all.vs.all <- function(dbname='blastdb.fa', evalue.cutoff=1.0e-10, outfile='blastout.txt', dir='.') {
+
+    outfile <- file.path(dir, outfile)
+    ## DUST filtering is enabled by default in blastn, disable
+    ## Also only allow same-strand matches
+    cmd <- paste('blastn -query', dbname, '-db', dbname, '-outfmt 6 -dust no -strand plus -evalue', evalue.cutoff, '-out', outfile)
+    system(cmd)
+    if (! file.exists(outfile)) {
+        stop('Command ', cmd, 'did not produce output file ', outfile) 
+    }
+    blast.results <- read.table('blastout.txt')
+    
+    colnames(blast.results) <- c('query.id', 'subject.id', 'identity', 'alignment.length',
+                                 'mismatches', 'gap.opens', 'q.start', 'q.end', 's.start',
+                                 's.end', 'evalue', 'bit.score')
+    return (blast.results)    
+}
+
+filter.blast.results <- function(results, min.coverage=0.51) {
+
+    ## collapse HSPs such that we end up with unique query-subject pairs
+    result.subset <- ddply(blast.results, c("query.id", "subject.id"), function(x)colSums(x['alignment.length']))
+
+    ## adjust query and subject lengths for collapsed rows
+    result.subset['query.length'] <- sapply(result.subset$query.id, function(id){nchar(seqs[[as.character(id)]])})
+    result.subset['subject.length'] <- sapply(result.subset$subject.id, function(id){nchar(seqs[[as.character(id)]])})
+
+    ## calculate how much overlap there is between hits
+    coverages <- apply(result.subset, 1, function(x)x['alignment.length'] / max(x['query.length'], x['subject.length']))
+    num.discarded.hits <- sum(coverages < MIN.COVERAGE)
+    cat("Discarding ", num.discarded.hits, " BLAST hits due to insufficient coverage\n")
+    
+    ## keep only the gis for which there is enough overlapping hits
+    result.subset <- result.subset[which(coverages >= MIN.COVERAGE),]
+
+    return (result.subset)
+}
