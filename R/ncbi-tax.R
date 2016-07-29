@@ -226,11 +226,11 @@ allchildren <- function(id, taxdir = NULL, nodes = NULL) {
     queue <- id
     result <- numeric()
     while (length(queue)>0) {
-        cat(paste(queue), sep=',', "\n")
         currentid <- head(queue, 1)
-        result <- c(result, currentid)
         queue <- tail(queue, length(queue)-1)
-        queue <- c(queue, children(currentid, taxdir, nodes))      
+        currentchildren <- children(currentid, taxdir, nodes)
+        result <- c(result, currentchildren)
+        queue <- c(queue, currentchildren)      
     }
     return(result)
 }
