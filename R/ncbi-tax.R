@@ -1,4 +1,8 @@
 
+taxdir <- '~/ncbi-taxonomy/ftp.ncbi.nih.gov/pub/taxonomy'
+nodes <- getnodes()
+names <- getnames()
+
 ncbi.taxonomic.ranks <<- c('superkingdom', 'kingdom', 'subkingdom', 'superphylum', 'phylum',
 					   'subphylum', 'superclass', 'class', 'subclass', 'infraclass', 'superorder',
 					   'order', 'suborder', 'infraorder', 'parvorder', 'superfamily', 'family',
@@ -28,6 +32,11 @@ gis.all.for.taxid <- function( taxid, dir='.' ) {
     return( gis )
 }
 
+num.seqs.for.taxid <- function(taxid) {
+    search <- entrez_search(db='nucleotide', term=paste0('txid', taxid, '[Organism:exp]'), retmax=999999999)
+    return (search$count)
+}
+
 ## For given taxon id(s), returns a list with accessions and GIs for
 ## each taxon id. Will only deliver accessions and GIs that are in GenBank
 ## Returns list of lists for each taxid, list containing accessions and
@@ -36,7 +45,7 @@ gis.all.for.taxid <- function( taxid, dir='.' ) {
 ## If the 'local' flag is set and a directory containing the NCBI taxonomy flatfiles
 ## (available at) is given
 ## as argument 'dir', the data is parsed locally
-acc.genbank.seqids.for.taxid <- function( taxids, local=FALSE, dir=NULL ) {    
+acc.genbank.seqids.for.taxid <- function( taxids, dir=NULL, local=FALSE ) {    
     if ( local ) {
         if ( is.null(dir) ) {
             stop( "Need 'dir' argument if 'local==TRUE'" )
@@ -62,11 +71,12 @@ acc.genbank.seqids.for.taxid <- function( taxids, local=FALSE, dir=NULL ) {
 
         ## need to expand taxids to all lower levels in order to find
         ## seq Ids in the file
-        taxa.table <- get.all.child.taxa(taxids)
+        taxa.table <- get.children(ti, depth=1e6, dir)
+        
         ## keep only ids for species and lower
         taxranks <- ncbi.taxonomic.ranks[which(ncbi.taxonomic.ranks=='species'):length(ncbi.taxonomic.ranks)]
-        expanded.ids <- taxa.table[which(taxa.table[,'childtaxa_rank'] %in% taxranks),'childtaxa_id']
-                
+        expanded.ids <- taxa.table[which(taxa.table[,'rank'] %in% taxranks),'id']
+        
         ## cannot read file at once, need to filter for taxid,
         ## get all rows from, file which contain the taxid in the third column
         cmd <- paste0("awk '$3 ~ /", paste0('^', expanded.ids, '$', collapse='|'), "/' ", path)
@@ -108,7 +118,7 @@ acc.genbank.seqids.for.taxid <- function( taxids, local=FALSE, dir=NULL ) {
 }
 
 
-get.children <- function(taxa, depth=-1, dir=NULL, local=FALSE) {
+get.children <- function(taxa, depth=1e6, dir=NULL, local=FALSE) {
     if (local && is.null(dir)) {
         stop( "Need 'dir' argument if 'local==TRUE'" )
     }
@@ -123,7 +133,8 @@ get.children <- function(taxa, depth=-1, dir=NULL, local=FALSE) {
     queue <- c(taxon)
     result <- data.frame(id=integer(0), rank=character(0))
     while ( length(queue) > 0  & depth > 0) {
-        depth <- depth -1
+#        cat("Depth : ", depth, "\n")
+        depth <- depth - 1
         curr.taxon <- queue[1]
         
         ## remove first element from queue
@@ -169,9 +180,57 @@ get.children <- function(taxa, depth=-1, dir=NULL, local=FALSE) {
 }
 
 
-    
-get.managable.nodes <- function(root.taxon, max.seqs=20000) {
+
+
 
     
-    
+nodes.max.seq <- function(root.taxon, max.seqs=20000, dir) {
+    ## get descendants of root.taxon which have < max.seq sequences
+    ## if a node has > max.seqs sequences, further traverse down the tree
+    result <- data.frame(id=numeric(), name=character(), rank=character(), numseq=numeric())
+
+    queue <- c(root.taxon)    
+    while( length(queue) > 0 ) {
+        cat("Queue : ", paste(queue, sep=','), "\n")
+        curr.taxon <- queue[1]        
+        cat("Current taxon : ", curr.taxon, "\n")
+        queue <- tail(queue, length(queue)-1)                      
+        curr.nof.seqs <- num.seqs.for.taxid(curr.taxon)
+        cat("Number of seqs : ", curr.nof.seqs, "\n")
+        if (curr.nof.seqs > max.seqs) {
+            cat("Number of seqs larger than max.seqs, getting children\n")
+            taxa.table <- get.children(curr.taxon, depth=1, dir)
+            cat("Number of children : ", nrow(taxa.table), "\n")
+            queue <- c(queue, taxa.table$id)
+        }
+        else {
+            rank <- getrank(curr.taxon, dir)
+            name <- sciname(curr.taxon, dir)
+            cat("Found manageable node for taxon ", name, "\n")
+            result <- rbind(result, c(curr.taxon, name, rank, curr.nof.seqs ))
+            
+        }        
+    }
+    return (result)        
+}
+
+children <- function(id, taxdir = NULL, nodes = NULL) {
+    if (is.null(nodes)) 
+            nodes <- getnodes(taxdir)
+    return(nodes$id[which(nodes$parent==id)])
+}
+
+allchildren <- function(id, taxdir = NULL, nodes = NULL) {
+    if (is.null(nodes)) 
+        nodes <- getnodes(taxdir)
+    queue <- id
+    result <- numeric()
+    while (length(queue)>0) {
+        cat(paste(queue), sep=',', "\n")
+        currentid <- head(queue, 1)
+        result <- c(result, currentid)
+        queue <- tail(queue, length(queue)-1)
+        queue <- c(queue, children(currentid, taxdir, nodes))      
+    }
+    return(result)
 }
