@@ -1,7 +1,7 @@
 
 taxdir <- '~/ncbi-taxonomy/ftp.ncbi.nih.gov/pub/taxonomy'
-nodes <- getnodes()
-names <- getnames()
+nodes <- getnodes(taxdir)
+names <- getnames(taxdir)
 
 ncbi.taxonomic.ranks <<- c('superkingdom', 'kingdom', 'subkingdom', 'superphylum', 'phylum',
 					   'subphylum', 'superclass', 'class', 'subclass', 'infraclass', 'superorder',
@@ -204,8 +204,8 @@ nodes.max.seq <- function(root.taxon, max.seqs=20000, dir) {
             queue <- c(queue, taxa.table$id)
         }
         else {
-            rank <- getrank(curr.taxon, dir)
-            name <- sciname(curr.taxon, dir)
+            rank <- getrank(curr.taxon, dir, nodes)
+            name <- sciname(curr.taxon, dir, names)
             cat("Found manageable node for taxon ", name, "\n")
             result <- rbind(result, c(curr.taxon, name, rank, curr.nof.seqs ))
             
@@ -214,9 +214,32 @@ nodes.max.seq <- function(root.taxon, max.seqs=20000, dir) {
     return (result)        
 }
 
+gis.for.taxid <- function(id, taxdir = NULL, nodes = NULL) {
+    children <- allchildren(id, taxdir, nodes)
+    ##ranks <- sapply(children, getrank, taxdir, nodes)
+    ## filter for 
+    ##valid.ranks <- ncbi.taxonomic.ranks[which(ncbi.taxonomic.ranks=='species'):length(ncbi.taxonomic.ranks)]
+    file.name <- 'nucl_gb.accession2taxid'
+    subdir <- 'accession2taxid'
+    path <- file.path(dir, subdir, file.name)
+    
+
+    cmd <- paste0("awk '$3 ~ /", paste0('^', children, '$', collapse='|'), "/' ", path)
+    tab <- try(fread(cmd))
+    if (class(tab) == 'try-error') {
+        cat("Could not retrieve sequence IDs for taxon", ti, ", probably there aren't any. Skipping.\n")
+    }
+    else {
+            cat("found", nrow(tab), "accessions\n")
+#            colnames(tab) <- c('accession', 'accession.version', 'taxid', 'gi')             
+    }
+    return (tab$gi)
+}
+    
+
 children <- function(id, taxdir = NULL, nodes = NULL) {
     if (is.null(nodes)) 
-            nodes <- getnodes(taxdir)
+        nodes <- getnodes(taxdir)
     return(nodes$id[which(nodes$parent==id)])
 }
 
