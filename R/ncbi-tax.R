@@ -1,7 +1,19 @@
+library("RSQLite")
+require('CHNOSZ')
+require('rentrez')
+require('data.table')
 
-taxdir <- '~/ncbi-taxonomy/ftp.ncbi.nih.gov/pub/taxonomy'
-nodes <- getnodes(taxdir)
-names <- getnames(taxdir)
+taxdir <<- '~/ncbi-taxonomy/ftp.ncbi.nih.gov/pub/taxonomy'
+nodes <<- getnodes(taxdir)
+names <<- getnames(taxdir)
+
+##SQLITE3commands
+##.mode tabs
+##.import nucl_gb.accession2taxid accession2taxid
+##create index taxid on accession2taxid(taxid);
+
+con <<- dbConnect(RSQLite::SQLite(),'~/ncbi-taxonomy/ftp.ncbi.nih.gov/pub/taxonomy/accession2taxid/mytest')
+
 
 ncbi.taxonomic.ranks <<- c('superkingdom', 'kingdom', 'subkingdom', 'superphylum', 'phylum',
 					   'subphylum', 'superclass', 'class', 'subclass', 'infraclass', 'superorder',
@@ -30,11 +42,6 @@ gis.all.for.taxid <- function( taxid, dir='.' ) {
         gis[ti] <- curr.gis
     }    
     return( gis )
-}
-
-num.seqs.for.taxid <- function(taxid) {
-    search <- entrez_search(db='nucleotide', term=paste0('txid', taxid, '[Organism:exp]'), retmax=999999999)
-    return (search$count)
 }
 
 ## For given taxon id(s), returns a list with accessions and GIs for
@@ -179,11 +186,6 @@ get.children <- function(taxa, depth=1e6, dir=NULL, local=FALSE) {
     return(ch[,c('id', 'rank')])
 }
 
-
-
-
-
-    
 nodes.max.seq <- function(root.taxon, max.seqs=20000, dir) {
     ## get descendants of root.taxon which have < max.seq sequences
     ## if a node has > max.seqs sequences, further traverse down the tree
@@ -214,20 +216,36 @@ nodes.max.seq <- function(root.taxon, max.seqs=20000, dir) {
     return (result)        
 }
 
+num.seqs.for.taxid <- function(taxid) {
+    search <- entrez_search(db='nucleotide', term=paste0('txid', taxid, '[Organism:exp]'), retmax=999999999)
+    return (search$count)
+}
+
+num.seqs.for.taxid2 <- function(taxid, taxdir = NULL, nodes = NULL) {
+    length(gis.for.taxid(taxid, taxdir, nodes))
+}
+
+num.seqs.for.taxid3 <- function(taxid) {
+    ids <- c(taxid, allchildren(taxid, taxdir, nodes))
+    idstr <- paste0(ids, collapse=',')
+    str <- paste('select count(*) from accession2taxid where taxid in (', idstr, ')')
+    l <- dbGetQuery(con, str)
+    return(l[[1]])
+}
+
 gis.for.taxid <- function(id, taxdir = NULL, nodes = NULL) {
-    children <- allchildren(id, taxdir, nodes)
+    ch <- c(id, allchildren(id, taxdir, nodes))
     ##ranks <- sapply(children, getrank, taxdir, nodes)
     ## filter for 
     ##valid.ranks <- ncbi.taxonomic.ranks[which(ncbi.taxonomic.ranks=='species'):length(ncbi.taxonomic.ranks)]
     file.name <- 'nucl_gb.accession2taxid'
     subdir <- 'accession2taxid'
-    path <- file.path(dir, subdir, file.name)
-    
+    path <- file.path(taxdir, subdir, file.name)
 
-    cmd <- paste0("awk '$3 ~ /", paste0('^', children, '$', collapse='|'), "/' ", path)
+    cmd <- paste0("awk '$3 ~ /", paste0('^', ch, '$', collapse='|'), "/' ", path)
     tab <- try(fread(cmd))
     if (class(tab) == 'try-error') {
-        cat("Could not retrieve sequence IDs for taxon", ti, ", probably there aren't any. Skipping.\n")
+        cat("Could not retrieve sequence IDs for taxon", id, ", probably there aren't any. Skipping.\n")
     }
     else {
             cat("found", nrow(tab), "accessions\n")
@@ -236,6 +254,7 @@ gis.for.taxid <- function(id, taxdir = NULL, nodes = NULL) {
     return (tab$gi)
 }
     
+
 
 children <- function(id, taxdir = NULL, nodes = NULL) {
     if (is.null(nodes)) 
@@ -257,3 +276,4 @@ allchildren <- function(id, taxdir = NULL, nodes = NULL) {
     }
     return(result)
 }
+

@@ -1,5 +1,4 @@
 require('taxize')
-require('rentrez')
 require('ape')
 require('plyr')
 require('CHNOSZ')
