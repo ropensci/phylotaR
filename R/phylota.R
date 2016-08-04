@@ -12,15 +12,15 @@ source('cluster.R')
 ROOT.TAXON <- 8461
 
 ## Phylota parameters
-LENGTH.CUTOFF <- 25000
+LENGTH.CUTOFF <<- 25000
 
 ## Query and retreive sequences
 cat("Querying GIs for taxon ID ", ROOT.TAXON, "\n")
-ids <- acc.genbank.seqids.for.taxid(ROOT.TAXON, local=T, dir='~/ncbi-taxonomy/ftp.ncbi.nih.gov/pub/taxonomy/')
-gis <- as.vector(sapply(ids, '[[', "gi"))
+gis <- gis.for.taxid(ROOT.TAXON)
 cat("Found ", length(gis), " hits for query\n")
 
 cat("Retrieving sequences\n")
+
 seqs <- seqs.for.gis( gis )
 lengths <- sapply(seqs, nchar)
 

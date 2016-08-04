@@ -51,11 +51,11 @@ filter.blast.results <- function(results, min.coverage=0.51) {
 
     ## calculate how much overlap there is between hits
     coverages <- apply(result.subset, 1, function(x)x['alignment.length'] / max(x['query.length'], x['subject.length']))
-    num.discarded.hits <- sum(coverages < MIN.COVERAGE)
+    num.discarded.hits <- sum(coverages < min.coverage)
     cat("Discarding ", num.discarded.hits, " BLAST hits due to insufficient coverage\n")
     
     ## keep only the gis for which there is enough overlapping hits
-    result.subset <- result.subset[which(coverages >= MIN.COVERAGE),]
+    result.subset <- result.subset[which(coverages >= min.coverage),]
 
     return (result.subset)
 }

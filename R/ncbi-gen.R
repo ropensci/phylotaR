@@ -23,6 +23,15 @@ seqs.for.gis <- function( gis, local=FALSE, dir=NULL, omit.defline=TRUE ) {
     return(seqs)
 }
 
+seqs.for.gis2 <- function(gis) {
+    
+    ret <- lapply(gis, function(gi) {
+        cmd <- paste('esearch -db nuccore -query ', gi, '| efetch -format fasta')
+        paste(system(cmd, intern=T), collapse='')
+    })
+    return(ret)
+}
+
 ## retrieve seqs for GIs from ncbi server
 .remote.seqs.for.gis <- function( gis, omit.defline=TRUE ) {
     ## get FASTA records
