@@ -1,0 +1,140 @@
+## script to populate the phylota 'nodes' table
+
+library("RSQLite")
+require('CHNOSZ')
+
+## Schema in phylota database:
+## CREATE TABLE "nodes_194" (
+##  "ti" int(10)  NOT NULL,
+##  "ti_anc" int(10)  DEFAULT NULL,
+##  "terminal_flag" tinyint(1) DEFAULT NULL,
+##  "rank_flag" tinyint(1) DEFAULT NULL,
+##  "model" tinyint(1) DEFAULT NULL,
+##  "taxon_name" varchar(128) DEFAULT NULL,
+##  "common_name" varchar(128) DEFAULT NULL,
+##  "rank" varchar(64) DEFAULT NULL,
+##  "n_gi_node" int(10)  DEFAULT NULL,
+##  "n_gi_sub_nonmodel" int(10)  DEFAULT NULL,
+##  "n_gi_sub_model" int(10)  DEFAULT NULL,
+##  "n_clust_node" int(10)  DEFAULT NULL,
+##  "n_clust_sub" int(10)  DEFAULT NULL,
+##  "n_PIclust_sub" int(10)  DEFAULT NULL,
+##  "n_sp_desc" int(10)  DEFAULT NULL,
+##  "n_sp_model" int(10)  DEFAULT NULL,
+##  "n_leaf_desc" int(10)  DEFAULT NULL,
+##  "n_otu_desc" int(10)  DEFAULT NULL,
+##  "ti_genus" int(10)  DEFAULT NULL,
+##  "n_genera" int(10)  DEFAULT NULL,
+##  PRIMARY KEY ("ti")
+##);
+
+## The table is created from the 'nodes' table in the NCBI taxonomy
+## Therefore, a directory with the path where the NCBI taxonomy dump
+## is located must be provided
+node.create <- function(dbloc, taxdir, overwrite = FALSE) {
+    db <- dbConnect(RSQLite::SQLite(), dbloc)
+
+    ## Get data from NCBI taxonomy dump
+    ncbi.nodes <- getnodes(taxdir)
+    ncbi.names <- getnames(taxdir)
+
+    ## Prepare column values
+    ## terminal.flag=lapply(ncbi.nodes$id, function(n)length(children(n, ncbi.nodes)==0))
+    taxon.name <- ncbi.names[match(nodes$id, ncbi.names$id),"name"]
+    commons <- ncbi.names[grep ('common', ncbi.names$type),]
+    common.name <- commons$name[match(ncbi.nodes$id, commons$id)]
+    ## rank_flag is 0 if rank higher than genus
+    rank.flag=ifelse(ncbi.nodes$rank %in% c( 'genus', 'subgenus', 'species group',
+                                            'species subgroup', 'species', 'subspecies',
+                                            'varietas', 'forma'), 1, 0)
+    
+    ## Create dataframe with correct column names that will be
+    ## inserted into the database. Some fields will need additional
+    ## information and will be filled later
+    nodes.df <- data.frame(ti=ncbi.nodes$id,
+                           ti_anc=ncbi.nodes$parent,
+                           terminal_flag=NA,
+                           rank_flag=rank.flag,
+                           model=NA,
+                           taxon_name=taxon.name,
+                           common_name=common.name,
+                           rank=ncbi.nodes$rank,
+                           n_gi_node=NA,
+                           n_gi_sub_nonmodel=NA,
+                           n_gi_sub_model=NA,
+                           n_clust_node=NA,
+                           n_clust_sub=NA,
+                           n_PIclust_sub=NA,
+                           n_sp_desc=NA,
+                           n_sp_model=NA,
+                           n_leaf_desc=NA,
+                           n_otu_desc=NA,
+                           ti_genus=NA,
+                           n_genera=NA
+                           )
+    nodes.df = transform(nodes.df, ti=as.integer(ti), ti_anc=as.integer(ti_anc), rank_flag=as.integer(rank_flag))
+    dbWriteTable(conn=db, name='nodes', value=nodes.df, row.names=F, overwrite=overwrite)
+    dbDisconnect(db)
+}
+
+## Populates the fields n_gi_node, ...
+## Need table accession2taxid for doing so
+##populate.n_gi <- function(dbloc, taxdir) {
+    ## populate for kingdoms viridiplantae, fungi, metazoa
+##    kingdoms <- c(33090, 4751, 33208)          
+##}
+
+## recursive function to add number of sequences for each taxon to table as produced by getnodes()
+add.numseqs <- function(taxid, nodes) {
+    total <- nrow(nodes)
+    num.seqs <- 0    
+
+    if (getrank(taxid, taxdir, nodes) %in% c('species', 'subspecies','varietas', 'forma')){
+        curr.num.seqs <- num.seqs.for.taxid(taxid, nodes)
+        num.seqs <- num.seqs + curr.num.seqs
+        nodes[which(nodes$id==taxid),'seqs'] <- curr.num.seqs
+    }
+
+    for (child in children(taxid, nodes)) {        
+        ## 1 is its own parent, therefore omit
+        if (child==1) {
+            next
+        }        
+#        else {
+        l <- add.numseqs(child, nodes)
+        nodes <- l$nodes            
+        num.seqs <- num.seqs + l$numseqs
+#        }
+    }
+    nodes[which(nodes$id==taxid),'seqs'] <- num.seqs
+    ret <- list(nodes=nodes, numseqs=num.seqs)
+    return(ret)
+}
+
+num.seqs.for.taxid <- function(taxid, nodes) {
+    ## taxid could be higher level, therefore include all descendants
+    ids <- c(taxid, descendants(taxid, nodes))
+    idstr <- paste0(ids, collapse=',')
+    str <- paste('select count(*) from accession2taxid where taxid in (', idstr, ')')
+    l <- dbGetQuery(con, str)
+    return(l[[1]])
+}
+
+descendants <- function(id, nodes) {
+    queue <- id
+    result <- numeric()
+    while (length(queue)>0) {
+        currentid <- head(queue, 1)
+        queue <- tail(queue, length(queue)-1)
+        currentchildren <- children(currentid, nodes)
+        result <- c(result, currentchildren)
+        queue <- c(queue, currentchildren)      
+    }
+    return(result)
+}
+
+children <- function(id, nodes) {
+    return(nodes$id[which(nodes$parent==id)])
+}
+
+    
