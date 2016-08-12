@@ -47,7 +47,7 @@ node.create <- function(dbloc, taxdir, overwrite = FALSE) {
     rank.flag=ifelse(ncbi.nodes$rank %in% c( 'genus', 'subgenus', 'species group',
                                             'species subgroup', 'species', 'subspecies',
                                             'varietas', 'forma'), 1, 0)
-    
+
     ## Create dataframe with correct column names that will be
     ## inserted into the database. Some fields will need additional
     ## information and will be filled later
@@ -72,40 +72,51 @@ node.create <- function(dbloc, taxdir, overwrite = FALSE) {
                            ti_genus=NA,
                            n_genera=NA
                            )
-    nodes.df = transform(nodes.df, ti=as.integer(ti), ti_anc=as.integer(ti_anc), rank_flag=as.integer(rank_flag))
+    ## set correct data types
+    nodes.df <- transform(nodes.df, ti=as.integer(ti), ti_anc=as.integer(ti_anc), rank_flag=as.integer(rank_flag))
     dbWriteTable(conn=db, name='nodes', value=nodes.df, row.names=F, overwrite=overwrite)
     dbDisconnect(db)
 }
 
-## Populates the fields n_gi_node, ...
+## Gets the fields n_gi_node,
 ## Need table accession2taxid for doing so
-##populate.n_gi <- function(dbloc, taxdir) {
-    ## populate for kingdoms viridiplantae, fungi, metazoa
-##    kingdoms <- c(33090, 4751, 33208)          
-##}
+get.n_gi <- function(dbloc, taxdir) {
+    ## get data for kingdoms viridiplantae, fungi, metazoa
+    kingdoms <- c(33090, 4751, 33208)
+
+
+}
+
+## add column with number of seqs for subtree or terminals to a nodes table
+num.seqs.for.nodes <- function(root.taxon, nodes) {
+    return(.num.seqs.for.descendants(root.taxon, nodes)$nodes)
+}
 
 ## recursive function to add number of sequences for each taxon to table as produced by getnodes()
-add.numseqs <- function(taxid, nodes) {
+.num.seqs.for.descendants <- function(taxid, nodes) {
     total <- nrow(nodes)
-    num.seqs <- 0    
-
+    num.seqs <- 0
+    name <- as.vector(ncbi.names$name)[which(ncbi.names$id==taxid)]
     if (getrank(taxid, taxdir, nodes) %in% c('species', 'subspecies','varietas', 'forma')){
         curr.num.seqs <- num.seqs.for.taxid(taxid, nodes)
         num.seqs <- num.seqs + curr.num.seqs
-        nodes[which(nodes$id==taxid),'seqs'] <- curr.num.seqs
     }
 
-    for (child in children(taxid, nodes)) {        
+    for (child in children(taxid, nodes)) {
         ## 1 is its own parent, therefore omit
         if (child==1) {
             next
-        }        
-#        else {
-        l <- add.numseqs(child, nodes)
-        nodes <- l$nodes            
-        num.seqs <- num.seqs + l$numseqs
-#        }
+        }
+        l <- .num.seqs.for.descendants(child, nodes)
+        nodes <- l$nodes
+
+        ## If children are (possibly) terminal nodes, do not add seq count again, because this was done above!
+        if (! getrank(taxid, taxdir, nodes) %in% c('species', 'subspecies','varietas', 'forma')){
+            num.seqs <- num.seqs + l$numseqs
+        }
+        nodes[which(nodes$id==taxid),'seqs'] <- num.seqs
     }
+
     nodes[which(nodes$id==taxid),'seqs'] <- num.seqs
     ret <- list(nodes=nodes, numseqs=num.seqs)
     return(ret)
@@ -116,7 +127,7 @@ num.seqs.for.taxid <- function(taxid, nodes) {
     ids <- c(taxid, descendants(taxid, nodes))
     idstr <- paste0(ids, collapse=',')
     str <- paste('select count(*) from accession2taxid where taxid in (', idstr, ')')
-    l <- dbGetQuery(con, str)
+    l <- dbGetQuery(db, str)
     return(l[[1]])
 }
 
@@ -128,7 +139,7 @@ descendants <- function(id, nodes) {
         queue <- tail(queue, length(queue)-1)
         currentchildren <- children(currentid, nodes)
         result <- c(result, currentchildren)
-        queue <- c(queue, currentchildren)      
+        queue <- c(queue, currentchildren)
     }
     return(result)
 }
@@ -137,4 +148,4 @@ children <- function(id, nodes) {
     return(nodes$id[which(nodes$parent==id)])
 }
 
-    
+
