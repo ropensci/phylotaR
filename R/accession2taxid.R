@@ -3,7 +3,7 @@
 ## The table is created from the mapping file
 ## accession2taxid/nucl_gb.accession2taxid
 
-accession2taxid.create <- function(dbloc, taxdir, droptable=F) {
+accession2taxid.create <- function(dbloc, taxdir, overwrite=F) {
 
     ## specify location of NCBI mapping file
     subdir <- 'accession2taxid'
@@ -13,7 +13,7 @@ accession2taxid.create <- function(dbloc, taxdir, droptable=F) {
     tmp <- tempfile()
     cat(file=tmp, '.separator "\\t"\n')
     ## table might already exist
-    if (droptable) {
+    if (overwrite) {
         cat(file=tmp, append=T, 'DROP TABLE accession2taxid;\n')
     }
     ## create table to get correct types
