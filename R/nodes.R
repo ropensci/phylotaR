@@ -103,102 +103,132 @@ get.n_gi <- function(nodes) {
     return(nodes$seqs)
 }
 
-## add column with number of seqs for subtree or terminals to a nodes table
-add.num.seqs <- function(root.taxon, nodes) {
-    return(.num.seqs.for.descendants2(root.taxon, nodes))
-}
-
-.num.seqs.for.descendants2 <- function(taxid, nodes) {
-
-    num.seqs.node <- 0
-    num.seqs.subtree <- 0
-    
-    ##anchor
-    if ( getrank(taxid, NULL, nodes=nodes) %in% c('species', 'subspecies') ) {
-        curr.num.seqs <- num.seqs.for.taxid(taxid, nodes)
-        num.seqs.node <- curr.num.seqs
-        num.seqs.subtree <- num.seqs.subtree + num.seqs.node
-    }
-
-    if ( getrank (taxid, NULL, nodes=nodes) == 'subspecies') {
-        num.seqs.subtree <- 0
-    }
-    
-    for (child in children(taxid, nodes)) {
-        nodes <- .num.seqs.for.descendants2(child, nodes)
-
-        ##if (! getrank(taxid, NULL, nodes=nodes) %in% c('species', 'subspecies') ) {
-        num.seqs.subtree <- num.seqs.subtree + nodes[which(nodes$id==child),'num.seqs.subtree']
-        ##}
-    }    
-
-    cat("Setting for taxid ", taxid, "  ", num.seqs.subtree, "\n")
-    nodes[which(nodes$id==taxid),'num.seqs.node'] <- num.seqs.node
-    nodes[which(nodes$id==taxid),'num.seqs.subtree'] <- num.seqs.subtree
-    return(nodes)
-}
-
-## recursive function to add number of sequences for each taxon to table as produced by getnodes()
-.num.seqs.for.descendants <- function(taxid, nodes) {
-    total <- nrow(nodes)
-    num.seqs <- 0
+## Recursive function to add number of sequences for each taxon to table as produced by getnodes().
+## We set sequences for 'node' and 'subtree', a node is of rank species or lower, subtree includes all
+## desendants. We also distinguish between model (>=20000 seqs per node) and nonmodel organisms.
+add.num.seqs <- function(taxid, nodes) {
     num.seqs.node <- 0
     num.seqs.subtree <- 0
     num.seqs.subtree.model <- 0
-    num.seqs.subtree.nonmodel <- 0
-    cat("Taxid : ", taxid, "\n")
-    ## ANCHOR OF RECURSION ... set sequence counts for the below levels
-    if (getrank(taxid, NULL, nodes=nodes) %in% c('species', 'subspecies','varietas', 'forma')){
+    num.seqs.subtree.nonmodel <- 0    
+    num.leaf.desc <- 0 
+    num.spec.desc <- 0
+    ## number of model species
+    num.spec.model <- 0
+    ti.genus <- nodes[which(nodes$id==taxid), 'ti.genus']
+    n.genera <- 0
+    num.otu.desc <- 1
+
+    stats <- c(num.seqs.node=0,
+               num.seqs.subtree.model=0,
+               num.seqs.subtree.nonmodel=0,
+               num.leaf.desc=0, ## also counts itsself, for a leaf it is 1
+               num.spec.desc=0, ## also counts itsself, for a species it is 1
+               num.spec.model=0,
+               ti.genus=nodes[which(nodes$id==taxid), 'ti.genus'],
+               n.genra=0,
+               num.otu.desc=0)
+    
+    ## Ranks for which we directly get the species count;
+    ## for ranks above this, we will get the sum of their children.
+    ## For taxa with these ranks, there will also be a 'n_gi_node'
+    node.ranks <- c('species', 'subspecies', 'varietas', 'forma')
+
+    ## Recursion anchor
+    rank <- getrank(taxid, NULL, nodes=nodes)
+    if (rank %in% node.ranks) {
         curr.num.seqs <- num.seqs.for.taxid(taxid, nodes)
-        num.seqs <- num.seqs + curr.num.seqs
-
         num.seqs.node <- curr.num.seqs
-        num.seqs.subtree <- num.seqs.subtree + curr.num.seqs
-        cat("Num seqs subtree : ", num.seqs.subtree , "\n")
-        if (curr.num.seqs > 20000) {
-            num.seqs.subtree.model <- num.seqs.subtree.model + curr.num.seqs
+        stats['num.seqs.node'] <- curr.num.seqs
+        num.seqs.subtree <- curr.num.seqs
+        stats['num.seqs.subtree'] <- curr.num.seqs
+        if (curr.num.seqs >= 20000) {
+            num.seqs.subtree.model <- curr.num.seqs
+            stats['num.seqs.subtree.model'] <- curr.num.seqs
         } else {
-            num.seqs.subtree.nonmodel <- num.seqs.subtree.nonmodel + curr.num.seqs
+            num.seqs.subtree.nonmodel <- curr.num.seqs
+            stats['num.seqs.subtree.nonmodel'] <- curr.num.seqs
         }
-    }
-
-    for (child in children(taxid, nodes)) {
-        ## 1 is its own parent, therefore omit
-        if (child==1) {
-            next
-        }
-        l <- .num.seqs.for.descendants(child, nodes)
-        nodes <- l$nodes
-                
-        ## If children are (possibly) terminal nodes, do not add seq count again, because this was done above!
-        if (! getrank(taxid, NULL, nodes=nodes) %in% c('species', 'subspecies','varietas', 'forma')){
-            num.seqs <- num.seqs + l$num.seqs        
-            num.seqs.subtree <- num.seqs.subtree + nodes[which(nodes$id==child),'num.seqs.subtree']
-            cat("Now num seqs subtree : ", num.seqs.subtree, "\n")
-            num.seqs.subtree.model <- num.seqs.subtree.model + nodes[which(nodes$id==child),'num.seqs.subtree.model']    
-            num.seqs.subtree.nonmodel <- num.seqs.subtree.nonmodel + nodes[which(nodes$id==child),'num.seqs.subtree.nonmodel']                
+        if (rank == 'species') {        
+            num.spec.desc <- 1
+            stats['num.spec.desc']
+            if (curr.num.seqs >= 20000) {
+                num.spec.model <- 1
+                stats['num.spec.model'] <- 1
+            }
         }        
-
-
-##        cat("Child : ", child, " model : ", num.seqs.subtree.model, " nonmodel: ", num.seqs.subtree.nonmodel, "\n")
-
     }
-    nodes[which(nodes$id==taxid),'num.seqs'] <- num.seqs
-    nodes[which(nodes$id==taxid),'num.seqs.node'] <- num.seqs.node
-    nodes[which(nodes$id==taxid),'num.seqs.subtree'] <- num.seqs.subtree + num.seqs.node
-    nodes[which(nodes$id==taxid),'num.seqs.subtree.model'] <- num.seqs.subtree.model
-    nodes[which(nodes$id==taxid),'num.seqs.subtree.nonmodel'] <- num.seqs.subtree.nonmodel
-    ret <- list(nodes=nodes, num.seqs=num.seqs)
-    return(ret)
+
+    if (rank == 'genus') {
+        ti.genus <- taxid
+        stats['ti.genus'] <- taxid
+    }
+    
+    ch <- children(taxid, nodes)
+    if (length(ch)==0) {
+        num.leaf.desc <- num.leaf.desc + 1
+        stats['num.leaf.desc'] <- stats['num.leaf.desc'] + 1
+    }
+    ## call recursively for children
+    for (child in ch) {
+        ## ti.genus has to be passed down the tree and not upwards...
+        if (! is.null(ti.genus)) {
+            nodes[which(nodes$id==child),'ti.genus'] <- stats['ti.genus']
+        }        
+        nodes <- add.num.seqs(child, nodes)
+        if (! rank %in% node.ranks) {
+            num.seqs.subtree <- num.seqs.subtree + nodes[which(nodes$id==child),'num.seqs.subtree']
+            #stats['num.seqs.subtree'] <- stats['num.seqs.subtree'] + nodes[which(nodes$id==child),'num.seqs.subtree']
+            num.seqs.subtree.model <- num.seqs.subtree.model + nodes[which(nodes$id==child),'num.seqs.subtree.model']
+            stats['num.seqs.subtree.model'] <- stats['num.seqs.subtree.model'] + nodes[which(nodes$id==child),'num.seqs.subtree.model']
+            num.seqs.subtree.nonmodel <- num.seqs.subtree.nonmodel + nodes[which(nodes$id==child),'num.seqs.subtree.nonmodel']
+            stats['num.seqs.subtree.nonmodel'] <- stats['num.seqs.subtree.nonmodel'] + nodes[which(nodes$id==child),'num.seqs.subtree.nonmodel']
+        }
+        if (getrank(child, NULL, nodes) == 'genus') {
+            n.genera <- n.genera + 1
+            stats['n.genera'] <- stats['n.genera'] + 1
+        }
+        num.leaf.desc <- num.leaf.desc + nodes[which(nodes$id==child),'num.leaf.desc']
+        stats['num.leaf.desc'] <- stats['num.leaf.desc'] + nodes[which(nodes$id==child),'num.leaf.desc']
+        num.otu.desc <- num.otu.desc + nodes[which(nodes$id==child),'num.otu.desc']
+        stats['num.otu.desc'] <- stats['num.otu.desc'] + nodes[which(nodes$id==child),'num.otu.desc']
+        num.spec.desc <- num.spec.desc + nodes[which(nodes$id==child),'num.spec.desc']
+        stats['num.spec.desc'] <- stats['num.spec.desc'] + nodes[which(nodes$id==child),'num.spec.desc']
+        num.spec.model <- num.spec.model + nodes[which(nodes$id==child),'num.spec.model']
+        stats['num.spec.model'] <- stats['num.spec.model'] + nodes[which(nodes$id==child),'num.spec.model']
+        n.genera <- n.genera + nodes[which(nodes$id==child),'n.genera']
+        stats['n.genera'] <- stats['n.genera'] + nodes[which(nodes$id==child),'n.genera']
+    }       
+    nodes[which(nodes$id==taxid), names(stats)] <- stats
+    ## Set the sequence numbers as columns to the nodes table
+#    nodes[which(nodes$id==taxid),'num.seqs.node'] <- num.seqs.node
+#    nodes[which(nodes$id==taxid),'num.seqs.subtree'] <- num.seqs.subtree
+#    nodes[which(nodes$id==taxid),'num.seqs.subtree.model'] <- num.seqs.subtree.model
+#    nodes[which(nodes$id==taxid),'num.seqs.subtree.nonmodel'] <- num.seqs.subtree.nonmodel    
+
+#    nodes[which(nodes$id==taxid),'num.leaf.desc'] <- num.leaf.desc
+#    nodes[which(nodes$id==taxid),'num.otu.desc'] <- num.otu.desc
+#    nodes[which(nodes$id==taxid),'num.spec.desc'] <- num.spec.desc
+#    nodes[which(nodes$id==taxid),'num.spec.model'] <- num.spec.model
+#    nodes[which(nodes$id==taxid),'n.genera'] <- n.genera    
+#    nodes[which(nodes$id==taxid),'ti.genus'] <- ifelse(is.null(ti.genus, NA, ti.genus))
+    
+    return(nodes)
 }
 
+
+#num.seqs.for.taxid <- function(taxid, nodes) {
+#    db <- .db()
+#    ids <- c(taxid, descendants(taxid, nodes))
+#    idstr <- paste0(ids, collapse=',')
+#    str <- paste('select count(*) from accession2taxid where taxid in (', idstr, ')')
+#    l <- dbGetQuery(db, str)
+#    return(l[[1]])
+#}
+library('rentrez')
 num.seqs.for.taxid <- function(taxid, nodes) {
-    db <- .db()
-    ids <- c(taxid, descendants(taxid, nodes))
-    idstr <- paste0(ids, collapse=',')
-    str <- paste('select count(*) from accession2taxid where taxid in (', idstr, ')')
-    l <- dbGetQuery(db, str)
-    return(l[[1]])
+    search <- entrez_search(db='nucleotide', term=paste0('txid', taxid, '[Organism:exp]'), retmax=999999999)
+    return (search$count)
 }
 
 ## function to get a singleton global database object
