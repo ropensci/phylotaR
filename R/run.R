@@ -14,4 +14,4 @@ taxdir <- '~/ftp.ncbi.nih.gov/pub/taxonomy'
 accession2taxid.create(dbname, taxdir, overwrite=F)
 
 ## make nodes table
-nodes.create(dbname, taxdir, root.taxa=root, overwrite=T)
+nodes.create(dbname, taxdir, root.taxa=root.taxon, overwrite=T)
