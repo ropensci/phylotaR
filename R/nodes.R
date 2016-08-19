@@ -31,7 +31,7 @@ library("CHNOSZ")
 ## The table is created from the 'nodes' table in the NCBI taxonomy
 ## Therefore, a directory with the path where the NCBI taxonomy dump
 ## is located must be provided
-nodes.create <- function(dbloc, taxdir, root.taxa = c(33090, 4751, 33208), overwrite = FALSE) {
+nodes.create <- function(dbloc, taxdir, root.taxa = c(33090, 4751, 33208), overwrite = FALSE, append = TRUE) {
     db <- .db(dbloc)
 
     ## Get data from NCBI taxonomy dump
@@ -74,7 +74,12 @@ nodes.create <- function(dbloc, taxdir, root.taxa = c(33090, 4751, 33208), overw
                            ti_genus=as.integer(nodes$ti.genus),
                            n_genera=as.integer(nodes$num.genera)
                            )
-    ret <- dbWriteTable(conn=db, name='nodes', value=nodes.df, row.names=F, overwrite=overwrite)
+    ret <- FALSE
+    write.table(nodes.df, file='nodes.tsv', sep="\t", row.names=F)
+    repeat {
+    	   try(ret <- dbWriteTable(conn=db, name='nodes', value=nodes.df, row.names=F, overwrite=overwrite, append=append))
+	   if(!is(ret, "try-error")) break
+    }
     dbDisconnect(db)
     rm(db)
     return(ret)
@@ -165,6 +170,7 @@ add.stats <- function(taxids, nodes) {
     for (n in names(stats)) {
         nodes[which(nodes$id==taxid),n] <- stats[n]
     }    
+    cat("Added species counts for taxid ", taxid, "\n")
     return(nodes)
 }
 
