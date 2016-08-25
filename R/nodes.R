@@ -1,7 +1,8 @@
 ## script to populate the phylota 'nodes' table
+## Dependency: Table 'accession2taxid'
 
-library("RSQLite")
 library("CHNOSZ")
+source('db.R')
 
 ## Schema in phylota database:
 ## CREATE TABLE "nodes_194" (
@@ -162,11 +163,11 @@ add.stats <- function(taxids, nodes) {
         }
         stats['num.leaf.desc'] <- stats['num.leaf.desc'] + nodes[which(nodes$id==child),'num.leaf.desc']
         stats['num.otu.desc'] <- stats['num.otu.desc'] + nodes[which(nodes$id==child),'num.otu.desc']
-        stats['num.spec.desc'] <- stats['num.spec.desc'] + nodes[which(nodes$id==child),'num.spec.desc']
-        
+        stats['num.spec.desc'] <- stats['num.spec.desc'] + nodes[which(nodes$id==child),'num.spec.desc']        
         stats['num.spec.model'] <- stats['num.spec.model'] + nodes[which(nodes$id==child),'num.spec.model']
         stats['num.genera'] <- stats['num.genera'] + nodes[which(nodes$id==child),'num.genera']
-    }       
+    }
+    ## add stats to data frame
     for (n in names(stats)) {
         nodes[which(nodes$id==taxid),n] <- stats[n]
     }    
@@ -188,20 +189,6 @@ num.seqs.for.taxid <- function(taxid, nodes) {
 ##    search <- entrez_search(db='nucleotide', term=paste0('txid', taxid, '[Organism:exp]'), retmax=999999999)
 ##    return (search$count)
 ##}
-
-## function to get a singleton global database object
-.db <- function(dbloc = NULL) {
-    if (exists('db')){
-        return(db)
-    }
-    else {
-        if (is.null(dbloc)) {
-            stop('Need location of database')
-        }
-        db <<- dbConnect(RSQLite::SQLite(), dbloc)
-    }
-    return(db)        
-}
 
 descendants <- function(id, nodes) {
     queue <- id

@@ -70,7 +70,7 @@ num.seqs.for.taxid <- function(taxid) {
 
 gis.for.taxid <- function(taxid) {
     ## taxid could be higher level, therefore include all descendants
-    ids <- c(taxid, descendants(taxid))
+    ids <- c(taxid, descendants(taxid, nodes))
     idstr <- paste0(ids, collapse=',')
     str <- paste('select gi from accession2taxid where taxid in (', idstr, ')')
     l <- dbGetQuery(con, str)

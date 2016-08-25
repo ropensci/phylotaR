@@ -240,3 +240,25 @@ ncbi.taxonomic.ranks <<- c('superkingdom', 'kingdom', 'subkingdom', 'superphylum
 					   'order', 'suborder', 'infraorder', 'parvorder', 'superfamily', 'family',
 					   'subfamily', 'tribe', 'subtribe', 'genus', 'subgenus', 'species group',
 					   'species subgroup', 'species', 'subspecies','varietas', 'forma')
+
+
+.gis.for.taxid <- function(taxids) {
+    db <- .db()
+    ## given taxid can be higher level, therefore include all descendants
+
+    ## get all descendants of the taxid(s) from database
+    descendants <- numeric()
+    queue <- taxids
+    while (length(queue)>0) {
+        currentid <- head(queue, 1)
+        queue <- tail(queue, length(queue)-1)
+        qu <- paste('select ti from nodes where ti_anc = ', currentid)
+        current.children <- dbGetQuery(db, qu)[[1]]
+        descendants <- c(descendants, current.children)
+        queue <- c(queue, current.children)
+    }
+    idstr <- paste0(descendants, collapse=',')
+    str <- paste('select gi from accession2taxid where taxid in (', idstr, ')')
+    l <- dbGetQuery(db, str)
+    return(l[[1]])        
+}

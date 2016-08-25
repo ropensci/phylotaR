@@ -1,3 +1,4 @@
+require('plyr')
 
 make.blast.db <- function(seqs, dbfile='blastdb.fa', dir='.') {
     
