@@ -2,6 +2,7 @@
 ## Dependency: Table 'accession2taxid'
 
 library("CHNOSZ")
+library('rentrez')
 source('db.R')
 
 ## Schema in phylota database:
@@ -41,7 +42,7 @@ nodes.create <- function(dbloc, taxdir, root.taxa = c(33090, 4751, 33208), overw
 
     ## add sequence counts etc
     nodes <- add.stats(root.taxa, ncbi.nodes)
-    
+
     ## add other column values
     taxon.name <- as.character(ncbi.names[match(nodes$id, ncbi.names$id),"name"])
     commons <- ncbi.names[grep ('common', ncbi.names$type),]
@@ -50,7 +51,7 @@ nodes.create <- function(dbloc, taxdir, root.taxa = c(33090, 4751, 33208), overw
     ##rank.flag=ifelse(nodes$rank %in% c( 'genus', 'subgenus', 'species group',
     ##                                        'species subgroup', 'species', 'subspecies',
     ##                                        'varietas', 'forma'), 1, 0)
-        
+
     ## Create dataframe with correct column names that will be
     ## inserted into the database. Some fields will need additional
     ## information and will be filled later
@@ -88,7 +89,7 @@ nodes.create <- function(dbloc, taxdir, root.taxa = c(33090, 4751, 33208), overw
 
 add.stats <- function(taxids, nodes) {
     result <- data.frame()
-    
+
     for (tax in taxids) {
         n <- .rec.add.stats(tax, nodes)
         ## only add rows for which we collected stats
@@ -96,7 +97,7 @@ add.stats <- function(taxids, nodes) {
     }
     return(result)
 }
-    
+
 ## Recursive function to add number of sequences for each taxon to table as produced by getnodes().
 ## We set sequences for 'node' and 'subtree', a node is of rank species or lower, subtree includes all
 ## desendants. We also distinguish between model (>=20000 seqs per node) and nonmodel organisms.
@@ -111,16 +112,16 @@ add.stats <- function(taxids, nodes) {
                ti.genus=nodes[which(nodes$id==taxid), 'ti.genus'],
                num.genera=0,
                num.otu.desc=1)
-    
+
     ## Ranks for which we directly get the species count;
     ## for ranks above this, we will get the sum of their children.
     ## For taxa with these ranks, there will also be a 'n_gi_node'
     node.ranks <- c('species', 'subspecies', 'varietas', 'forma')
-    
+
     ## Recursion anchor
     rank <- getrank(taxid, NULL, nodes=nodes)
     if (rank %in% node.ranks) {
-        curr.num.seqs <- num.seqs.for.taxid(taxid, nodes)
+        curr.num.seqs <- .num.seqs.for.taxid(taxid)
         num.seqs.node <- curr.num.seqs
         stats['num.seqs.node'] <- curr.num.seqs
         if (curr.num.seqs >= 20000) {
@@ -130,18 +131,18 @@ add.stats <- function(taxids, nodes) {
             num.seqs.subtree.nonmodel <- curr.num.seqs
             stats['num.seqs.subtree.nonmodel'] <- curr.num.seqs
         }
-        if (rank == 'species') {        
+        if (rank == 'species') {
             stats['num.spec.desc'] <- 1
             if (curr.num.seqs >= 20000) {
                 stats['num.spec.model'] <- 1
             }
-        }        
+        }
     }
 
     if (rank == 'genus') {
         stats['ti.genus'] <- taxid
     }
-    
+
     ch <- children(taxid, nodes)
     if (length(ch)==0) {
         stats['num.leaf.desc'] <- stats['num.leaf.desc'] + 1
@@ -151,7 +152,7 @@ add.stats <- function(taxids, nodes) {
         ## ti.genus has to be passed down the tree and not upwards...
         if (! is.null(stats['ti.genus'])) {
             nodes[which(nodes$id==child),'ti.genus'] <- stats['ti.genus']
-        }        
+        }
         nodes <- .rec.add.stats(child, nodes)
         ## add sequence counts for higher level nodes
         if (! rank %in% node.ranks) {
@@ -163,32 +164,39 @@ add.stats <- function(taxids, nodes) {
         }
         stats['num.leaf.desc'] <- stats['num.leaf.desc'] + nodes[which(nodes$id==child),'num.leaf.desc']
         stats['num.otu.desc'] <- stats['num.otu.desc'] + nodes[which(nodes$id==child),'num.otu.desc']
-        stats['num.spec.desc'] <- stats['num.spec.desc'] + nodes[which(nodes$id==child),'num.spec.desc']        
+        stats['num.spec.desc'] <- stats['num.spec.desc'] + nodes[which(nodes$id==child),'num.spec.desc']
         stats['num.spec.model'] <- stats['num.spec.model'] + nodes[which(nodes$id==child),'num.spec.model']
         stats['num.genera'] <- stats['num.genera'] + nodes[which(nodes$id==child),'num.genera']
     }
     ## add stats to data frame
     for (n in names(stats)) {
         nodes[which(nodes$id==taxid),n] <- stats[n]
-    }    
+    }
     cat("Added species counts for taxid ", taxid, "\n")
     return(nodes)
 }
 
-num.seqs.for.taxid <- function(taxid, nodes) {
-    db <- .db()
-    ids <- c(taxid, descendants(taxid, nodes))
-    idstr <- paste0(ids, collapse=',')
-    str <- paste('select count(*) from accession2taxid where taxid in (', idstr, ')')
-    l <- dbGetQuery(db, str)
-    return(l[[1]])
+#num.seqs.for.taxid <- function(taxid, nodes) {
+#    db <- .db()
+#    ids <- c(taxid, descendants(taxid, nodes))
+#    idstr <- paste0(ids, collapse=',')
+#    str <- paste('select count(*) from accession2taxid where taxid in (', idstr, ')')
+#    l <- dbGetQuery(db, str)
+#    return(l[[1]])
+#}
+
+.gis.for.taxid <- function(taxid) {
+    search <- entrez_search(db='nucleotide', term=paste0('txid', taxid, '[Organism:exp]', '1:25000[SLEN]'), use_history=T, retmax=1e9-1)
+    return(search$ids)
 }
 
-##library('rentrez')
-##num.seqs.for.taxid <- function(taxid, nodes) {
-##    search <- entrez_search(db='nucleotide', term=paste0('txid', taxid, '[Organism:exp]'), retmax=999999999)
-##    return (search$count)
-##}
+.num.seqs.for.taxid <- function(taxid) {
+    search <- entrez_search(db='nucleotide', term=paste0('txid', taxid, '[Organism:exp]', '1:25000[SLEN]'), use_history=T, retmax=1)
+    return(search$count)
+}
+
+
+
 
 descendants <- function(id, nodes) {
     queue <- id
