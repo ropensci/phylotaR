@@ -196,8 +196,6 @@ add.stats <- function(taxids, nodes) {
 }
 
 
-
-
 descendants <- function(id, nodes) {
     queue <- id
     result <- numeric()
@@ -215,4 +213,35 @@ children <- function(id, nodes) {
     return(nodes$id[which(nodes$parent==id)])
 }
 
+## For a taxid, get sets of descendant nodes that do not subtend more than
+## max.size
+## Traverses down the tree and look for the number of
+## species (and lower ranks) subtended by the each internal node. If the
+## numer of species (and lower) is less than max.size, the node will be in the result set,
+## if not, the tree will be traversed further
+## !! Only partitions down to level
+partition.to.subclades <- function(taxid, nodes, max.size=200) {
+    result <- vector()
+    node.ranks <- c('species', 'subspecies', 'varietas', 'forma')
+    queue <- taxid
+    while(length(queue) > 0) {
+        currentid <- head(queue, 1)
+        queue <- tail(queue, length(queue)-1)
 
+        rank <- nodes$rank[match(currentid, nodes$id)]
+        ## 
+        if (rank=='genus') {
+            result <- c(result, currentid)
+            next
+        }
+        
+        desc <- descendants(currentid, nodes)
+        desc.nodes <- nodes[match(desc, nodes$id),]
+        ## get the number of species (and lower) from all descendants
+        num.sp.lower <- nrow(desc.nodes[which(desc.nodes$rank %in% node.ranks),])
+        if (num.sp.lower > max.size) {
+            
+        }
+    }
+        
+}
