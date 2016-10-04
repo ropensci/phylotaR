@@ -47,8 +47,9 @@ source('db.R')
 ##);
 
 clusters.create <- function(root.taxon, max.seqs=25000) {
-
-    all.clusters <- list()
+    db <- .db(dbloc)
+    
+    all.entries <- list()
     queue <- root.taxon
     while(length(queue) > 0) {
         currentid <- head(queue, 1)
@@ -58,11 +59,11 @@ clusters.create <- function(root.taxon, max.seqs=25000) {
             queue <- c(queue, .children(currentid))
         }
         else {
-            cl <- .make.clusters(currentid)
-            all.clusters <- rbind(all.clusters, cl)
+            cl <- .make.entries(currentid)
+            all.entries <- rbind(all.entries, cl)
         }
     }
-    return (all.clusters)
+    return (all.entries)
 }
 
 .make.clusters <- function(taxon) {
@@ -73,18 +74,34 @@ clusters.create <- function(root.taxon, max.seqs=25000) {
     blast.results <- blast.all.vs.all(dbfile)
     cat("Number of BLAST results ", nrow(blast.results), "\n")
     filtered.blast.results <- filter.blast.results(blast.results)
-    ## get sequence clusters
-    clusters <- cluster.blast.results(filtered.blast.results)
+    ## sequence clusters are stored in a list of lists, named by gi
+    ## Get top-level clusters
+    toplevel.cl <- cluster.blast.results(filtered.blast.results)
+    clusters <- lapply(names(toplevel.cl), function(x)list(taxid=taxon, seed.gi=x, gis=toplevel.cl[[x]]))
+    
 
+    
+    ## 'cluster object' is represented as a list, having three fields: taxid, seed.gi and vector with GIs
+    ## Turn the toplevel cluster into list of 'cluster objects'
+    
+
+    
+##    all.clusters <- list()
+##    cl <- cluster.blast.results(filtered.blast.results)
+    
+    all.clusters[[as.character(taxon)]] <- cl    
+    
 }
 
 ## input: List of clusters
 .make.cluster.entries <- function(clusters, taxid, parent, seqs) {
     ## take the column names in the database as names here
-    result <- data.frame()
+    result <- data.frame(ti_root=integer(), ci=integer(), cl_type=character(), n_gi=integer(), n_ti=integer(),
+                         MinLength=integer(), MaxLength=integer(), ci_anc=integer(), seed_gi=integer(), n_gen=integer(),
+                         stringsAsFactors=FALSE)
     for (i in 1:length(clusters)) {
         cl <- clusters[[i]]
-        entry <- vector()
+        entry <- vector()                
         entry['ti_root'] <- taxid
         entry['ci'] <- i-1
         entry['cl_type'] <- ifelse(length(.children(taxid)) > 0, 'subtree', 'node')
@@ -97,17 +114,35 @@ clusters.create <- function(root.taxon, max.seqs=25000) {
         l <- sapply(cl.seqs, nchar)
         entry['MinLength'] <- min(l)
         entry['MaxLength'] <- max(l)
+        parent <- ifelse(is.null(parent)||is.na(parent), NA, parent)
         entry['ci_anc'] <- parent
         entry['seed_gi'] <- names(clusters)[i]
         ## get number of genera
         entry['n_gen'] <- length(unique(sapply(tis, .genus.for.taxid)))
 
-    }
-
+        ## make a unique cluster id consisting of seed gi, taxon id, cluster id, cluster type
+        unique.id <- paste0(entry['seed_gi'], '-', taxid, '-', entry['ci'], '-', entry['cl_type'])        
+        ## entry['n_child'] <-
+        ## entry['root_cluster'] <-
+        result[unique.id, colnames(result)] <- entry[colnames(result)]
+    }   
+    return(result)
 }
 
-.make.child.clusters <- function(cluster, taxid) {
+## input: list of clusters, named by seed gi and the corresponding taxon id for these clusters
+## output: list of lists of clusters, named by the corresponding child taxon ids
+.child.clusters <- function(cluster, taxid) {
+    result <- list
+    queue <- .children(taxid)
+    while(length(queue) > 0) {
+        currentid <- head(queue, 1)
+        queue <- tail(queue, length(queue)-1)
 
+
+        queue <- c(queue, .children(currentid))
+    }
+    children <- .children(taxid)
+    
 }
 
 cluster.blast.results <- function(blast.results, informative=T) {
@@ -122,7 +157,7 @@ cluster.blast.results <- function(blast.results, informative=T) {
     cluster.list <- lapply(unique(clusters), function(x)sort(names(clusters)[which(clusters==x)]))
 
     ## Get the seed gi, we will chose it to be the sequence in the cluster that has
-    ## the most hits with the ther members in the cluster; i.e. the most connected
+    ## the most hits with the other members in the cluster; i.e. the most connected
     ## node in the graph
     degrees <- degree(g)
     seed.gis <- sapply(cluster.list, function(c){

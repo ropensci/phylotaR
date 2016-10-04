@@ -22,7 +22,7 @@ accession2taxid.create <- function(dbloc, taxdir, overwrite=F) {
 
     ## create an index on taxid and gi
     cat(file=tmp, append=T, 'CREATE INDEX taxid on accession2taxid(taxid);\n')
-    cat(file=tmp, append=T, 'CREATE INDEX taxid on accession2taxid(gi);\n')
+    cat(file=tmp, append=T, 'CREATE INDEX gi on accession2taxid(gi);\n')
 
     ## prepare command and run
     cmd <- paste('sqlite3', dbloc, '<', tmp)
