@@ -41,7 +41,7 @@ blast.all.vs.all <- function(dbname='blastdb.fa', evalue.cutoff=1.0e-10, outfile
     return (blast.results)    
 }
 
-filter.blast.results <- function(results, min.coverage=0.51) {
+filter.blast.results <- function(blast.results, seqs, min.coverage=0.51) {
 
     ## collapse HSPs such that we end up with unique query-subject pairs
     result.subset <- ddply(blast.results, c("query.id", "subject.id"), function(x)colSums(x['alignment.length']))

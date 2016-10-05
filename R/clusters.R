@@ -1,12 +1,10 @@
 ## script to populate the phylota 'clusters' table
 ## Dependencies: tables 'accession2taxid', 'nodes'
 
-library("RSQLite")
+library('RSQLite')
 library('igraph')
 source('blast.R')
 source('db.R')
-
-
 
 ## Schema in phylota database:
 ## CREATE TABLE "clusters_194" (
@@ -47,7 +45,7 @@ source('db.R')
 ##);
 
 clusters.create <- function(root.taxon, max.seqs=25000) {
-    db <- .db(dbloc)
+    db <- .db(dbname)
     
     all.entries <- list()
     queue <- root.taxon
@@ -66,87 +64,89 @@ clusters.create <- function(root.taxon, max.seqs=25000) {
     return (all.entries)
 }
 
-.make.clusters <- function(taxon) {
-    cat("Retrieving sequences\n")
-    seqs <- .seqs.for.taxid( taxon )
-    ##gis <- names(seqs)
-    dbfile <- make.blast.db(seqs)
-    blast.results <- blast.all.vs.all(dbfile)
-    cat("Number of BLAST results ", nrow(blast.results), "\n")
-    filtered.blast.results <- filter.blast.results(blast.results)
+.make.clusters <- function(taxon, seqs=NULL, parent=NULL, blast.results=NULL, recursive=TRUE) {
+
+    ## retreive sequences if not done so before
+    gis <- vector()
+    if (is.null(seqs)) {
+        cat("Retrieving sequences\n")
+        seqs <- .seqs.for.taxid(taxon)
+        gis <- names(seqs)
+    }
+    else {
+        gis <- .gis.for.taxid(taxon)
+        seqs <- seqs[gis]        
+    }
+    ## if we have not yet blasted the sequences, do so
+    if (is.null(blast.results)) {
+        dbfile <- make.blast.db(seqs)
+        blast.results <- blast.all.vs.all(dbfile)
+        cat("Number of BLAST results ", nrow(blast.results), "\n")
+        filtered.blast.results <- filter.blast.results(blast.results, seqs)
+    }
+    else {
+        ## filter blast results to include only the gis for the current taxon
+        blast.results = blast.results[which(blast.results$subject.id %in% gis),]
+    }        
     ## sequence clusters are stored in a list of lists, named by gi
     ## Get top-level clusters
-    toplevel.cl <- cluster.blast.results(filtered.blast.results)
-    clusters <- lapply(names(toplevel.cl), function(x)list(taxid=taxon, seed.gi=x, gis=toplevel.cl[[x]]))
-    
-
-    
-    ## 'cluster object' is represented as a list, having three fields: taxid, seed.gi and vector with GIs
-    ## Turn the toplevel cluster into list of 'cluster objects'
-    
-
-    
-##    all.clusters <- list()
-##    cl <- cluster.blast.results(filtered.blast.results)
-    
-    all.clusters[[as.character(taxon)]] <- cl    
-    
+    clusters <- cluster.blast.results(filtered.blast.results)
+    ## make dataframe with fields as in PhyLoTa database
+    entries <- .make.cluster.entries(clusters, taxon, seqs)
+    ## retrieve clusters for child taxa
+    if (recursive) {
+        for (ch in .children(taxon)) {
+            child.entries <- .make.clusters(ch, seqs, taxon, blast.results)
+            ## two parameters can only be calculated if the entry list contains multiple levels:
+            ##  n_child, the number of child clusters, ci_anc, the parent cluster.
+            ##  Parent and child cluster (should hopefully) have the same seed gi, so
+            ##  we use this to indetify the relation of clusters on different hierarchies                        
+            ## determine which seed gis of the child match the one of the parent
+            idx <- match(child.entries$seed_gi, entries$seed_gi)
+            child.entries$ci_anc <- entries$ci[idx]
+            entries$n_child[idx] <- entries$n_child[idx] + 1
+            ## increment number of child clusters in parent            
+            entries <- rbind(entries, child.entries)
+        }
+    }        
+    return(entries)
 }
 
 ## input: List of clusters
-.make.cluster.entries <- function(clusters, taxid, parent, seqs) {
+.make.cluster.entries <- function(clusters, taxid, seqs) {
     ## take the column names in the database as names here
     result <- data.frame(ti_root=integer(), ci=integer(), cl_type=character(), n_gi=integer(), n_ti=integer(),
                          MinLength=integer(), MaxLength=integer(), ci_anc=integer(), seed_gi=integer(), n_gen=integer(),
-                         stringsAsFactors=FALSE)
+                         n_child=integer(), stringsAsFactors=FALSE)
     for (i in 1:length(clusters)) {
         cl <- clusters[[i]]
-        entry <- vector()                
-        entry['ti_root'] <- taxid
-        entry['ci'] <- i-1
-        entry['cl_type'] <- ifelse(length(.children(taxid)) > 0, 'subtree', 'node')
-        entry['n_gi'] <- length(cl)
+        result[i,'ti_root'] <- taxid
+        result[i,'ci'] <- i-1
+        result[i,'cl_type'] <- ifelse(length(.children(taxid)) > 0, 'subtree', 'node')
+        result[i,'n_gi'] <- length(cl)
         ## all taxon ids for gis in cluster
         tis <- unique(sapply(cl, .taxid.for.gi))
-        entry['n_ti'] <- length(tis)
+        result[i,'n_ti'] <- length(tis)
         ## get sequences and determine their lengths
         cl.seqs <- lapply(cl, function(gi)seqs[[as.character(gi)]])
         l <- sapply(cl.seqs, nchar)
-        entry['MinLength'] <- min(l)
-        entry['MaxLength'] <- max(l)
-        parent <- ifelse(is.null(parent)||is.na(parent), NA, parent)
-        entry['ci_anc'] <- parent
-        entry['seed_gi'] <- names(clusters)[i]
+        result[i,'MinLength'] <- min(l)
+        result[i,'MaxLength'] <- max(l)
+        result[i,'seed_gi'] <- names(clusters)[i]
         ## get number of genera
-        entry['n_gen'] <- length(unique(sapply(tis, .genus.for.taxid)))
-
+        result[i,'n_gen'] <- length(unique(sapply(tis, .genus.for.taxid)))
+        ## n_child and ci_anc will be set (or incremented) later, when multiple hierarchies are calculated
+        result[i,'n_child'] <- 0
+        result[i,'ci_anc'] <- NA        
         ## make a unique cluster id consisting of seed gi, taxon id, cluster id, cluster type
-        unique.id <- paste0(entry['seed_gi'], '-', taxid, '-', entry['ci'], '-', entry['cl_type'])        
-        ## entry['n_child'] <-
-        ## entry['root_cluster'] <-
-        result[unique.id, colnames(result)] <- entry[colnames(result)]
+        unique.id <- paste0(result[i,'seed_gi'], '-', taxid, '-', result[i,'ci'], '-', result[i,'cl_type'])        
+        rownames(result)[i] = unique.id
     }   
     return(result)
 }
 
-## input: list of clusters, named by seed gi and the corresponding taxon id for these clusters
-## output: list of lists of clusters, named by the corresponding child taxon ids
-.child.clusters <- function(cluster, taxid) {
-    result <- list
-    queue <- .children(taxid)
-    while(length(queue) > 0) {
-        currentid <- head(queue, 1)
-        queue <- tail(queue, length(queue)-1)
-
-
-        queue <- c(queue, .children(currentid))
-    }
-    children <- .children(taxid)
-    
-}
-
 cluster.blast.results <- function(blast.results, informative=T) {
-    g <- graph.data.frame(filtered.blast.results[,c("query.id", "subject.id")], directed=F)
+    g <- graph.data.frame(blast.results[,c("query.id", "subject.id")], directed=F)
     clusters <- clusters(g)
 
     ## filter for phylogenetically informative clusters
@@ -187,12 +187,20 @@ cluster.blast.results <- function(blast.results, informative=T) {
     return(search$count)
 }
 
-.genera.for.taxids <- function(taxids) {
+.genus.for.taxid <- function(taxid) {
+    ##cat("Retreiving genus for taxid ", taxid, "\n")
     db <- .db()
-    query <- paste('select ti_genus from nodes where ti in (', paste(taxids, collapse=','), ')')
+    query <- paste('select ti_genus from nodes where ti=', taxid)
     l <- dbGetQuery(db, query)
     return(l[[1]])
 }
+
+##.genera.for.taxids <- function(taxids) {
+##    db <- .db()
+##    query <- paste('select ti_genus from nodes where ti in (', paste(taxids, collapse=','), ')')
+##    l <- dbGetQuery(db, query)
+##    return(l[[1]])
+##}
 
 .seqs.for.taxid <- function(taxid) {
     search <- entrez_search(db='nucleotide', term=paste0('txid', taxid, '[Organism:exp]', '1:25000[SLEN]'), use_history=T, retmax=1e9-1)
@@ -203,9 +211,9 @@ cluster.blast.results <- function(blast.results, informative=T) {
         cat("Retreiving seqs ", seq.idx+1, " to ", ifelse(seq.idx+10000<length(gis), seq.idx+10000, length(gis)), "\n");
         res <- entrez_fetch(db="nuccore", rettype="fasta", web_history=search$web_history, retmax=10000, retstart=seq.idx)
         ## split fasta string on '>'
-        seqs <- unlist(strsplit(res, "(?<=[^>])(?=>)", perl=T))
+        seqs <- unlist(strsplit(res, "(?<=[^>])(?=\n>)", perl=T))
         ## clear defline
-        seqs <- gsub("^>.*?\\n", "", seqs)
+        seqs <- gsub("^\n?>.*?\\n", "", seqs)
         ## clear newlines
         seqs <- gsub("\n", "", seqs, fixed=TRUE)
         allseqs <- c(allseqs, seqs)
@@ -214,26 +222,11 @@ cluster.blast.results <- function(blast.results, informative=T) {
     return(allseqs)
 }
 
-#.taxid.for.gi <- function(gi) {
-#    cat("Retreiving taxid for gi ", gi, "\n")
-#    search <- entrez_search(db='nucleotide', term=gi, use_history=T)
-#    res <- entrez_fetch(db="nuccore", rettype="xml", web_history=search$web_history, complexity=4)
-#    ti <- as.numeric(gsub(".*taxon.*?id\\s([0-9]+).*", '\\1', res))
-#    return(ti)
-#}
-
 .taxid.for.gi <- function(gi) {
-    cat("Retreiving taxid for gi ", gi, "\n")
+    ##cat("Retreiving taxid for gi ", gi, "\n")
     db <- .db()
     query <- paste('select taxid from accession2taxid where gi=', gi)
     l <- dbGetQuery(db, query)
     return(l[[1]])
 }
 
-.genus.for.taxid <- function(taxid) {
-    cat("Retreiving genus for taxid ", taxid, "\n")
-    db <- .db()
-    query <- paste('select ti_genus from nodes where ti=', taxid)
-    l <- dbGetQuery(db, query)
-    return(l[[1]])
-}
