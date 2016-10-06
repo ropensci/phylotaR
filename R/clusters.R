@@ -68,6 +68,7 @@ clusters.create <- function(root.taxon, max.seqs=25000) {
 
     ## retreive sequences if not done so before
     gis <- vector()
+    filtered.blast.results <- data.frame()
     if (is.null(seqs)) {
         cat("Retrieving sequences\n")
         seqs <- .seqs.for.taxid(taxon)
@@ -85,64 +86,86 @@ clusters.create <- function(root.taxon, max.seqs=25000) {
         filtered.blast.results <- filter.blast.results(blast.results, seqs)
     }
     else {
-        ## filter blast results to include only the gis for the current taxon
-        blast.results = blast.results[which(blast.results$subject.id %in% gis),]
+        ##  reduce blast results such that include only the gis for the current taxon
+        filtered.blast.results <- blast.results[which(blast.results$subject.id %in% gis),]
+        filtered.blast.results <- filtered.blast.results[which(filtered.blast.results$query.id %in% gis),]
     }        
     ## sequence clusters are stored in a list of lists, named by gi
     ## Get top-level clusters
     clusters <- cluster.blast.results(filtered.blast.results)
+
+    if (length(clusters) < 1) {
+        return(list())
+    }
+
     ## make dataframe with fields as in PhyLoTa database
-    entries <- .make.cluster.entries(clusters, taxon, seqs)
+    clusters <- .add.cluster.info(clusters, taxon, seqs)
+
     ## retrieve clusters for child taxa
     if (recursive) {
         for (ch in .children(taxon)) {
-            child.entries <- .make.clusters(ch, seqs, taxon, blast.results)
-            ## two parameters can only be calculated if the entry list contains multiple levels:
+
+            ## calculate clusters for child taxon
+            child.clusters <- .make.clusters(ch, seqs, taxon, filtered.blast.results)            
+            ## two parameters can only be calculated if we have cluster info on multiple taxonomic levels:
             ##  n_child, the number of child clusters, ci_anc, the parent cluster.
-            ##  Parent and child cluster (should hopefully) have the same seed gi, so
-            ##  we use this to indetify the relation of clusters on different hierarchies                        
-            ## determine which seed gis of the child match the one of the parent
-            idx <- match(child.entries$seed_gi, entries$seed_gi)
-            child.entries$ci_anc <- entries$ci[idx]
-            entries$n_child[idx] <- entries$n_child[idx] + 1
-            ## increment number of child clusters in parent            
-            entries <- rbind(entries, child.entries)
+            ##  Since we are dealing with single-likeage clusters, we can identify the parent cluster of a
+            ##  cluster if at least one gi of both clusters is the same.         
+            child.clusters <- lapply(child.clusters, function(cc) {
+                ## indices of the parent clusters that contain a gi of the child clusters
+                idx <- which(sapply(clusters, function(c) any(cc$gis %in% c$gis)))
+                ## set parent cluster to child cluster
+                cc$ci_anc <- clusters[[idx]]$ci
+                ## update child count of parent clusters
+                clusters[[idx]]$n_child <- clusters[[idx]]$n_child + 1
+                cc
+            })
+            ## append child clusters to result cluster list
+            clusters <- c(clusters, child.clusters)
         }
-    }        
-    return(entries)
+    }
+    return(clusters)
 }
 
+## returns a data frame with columns matchine the fields in PhyLoTA's cluster table
+.make.cluster.entries <- function(clusters) {
+    ## remove gi and id fields which won't be part of cluster table
+    l <- lapply(clusters, function(cl)cl[which(!names(cl)%in%c('gis', 'tis', 'unique_id'))])
+    ## create data frame
+    df <- do.call(rbind, lapply(l, as.data.frame))
+    return(df)
+}
+    
 ## input: List of clusters
-.make.cluster.entries <- function(clusters, taxid, seqs) {
-    ## take the column names in the database as names here
-    result <- data.frame(ti_root=integer(), ci=integer(), cl_type=character(), n_gi=integer(), n_ti=integer(),
-                         MinLength=integer(), MaxLength=integer(), ci_anc=integer(), seed_gi=integer(), n_gen=integer(),
-                         n_child=integer(), stringsAsFactors=FALSE)
+.add.cluster.info <- function(clusters, taxid, seqs) {
+
+    ## we will take the column names in the database as names in the list
     for (i in 1:length(clusters)) {
-        cl <- clusters[[i]]
-        result[i,'ti_root'] <- taxid
-        result[i,'ci'] <- i-1
-        result[i,'cl_type'] <- ifelse(length(.children(taxid)) > 0, 'subtree', 'node')
-        result[i,'n_gi'] <- length(cl)
+        cl <- clusters[[i]]        
+        cl$ti_root <- taxid
+        cl$ci <- i-1
+        cl$cl_type <- ifelse(length(.children(taxid)) > 0, 'subtree', 'node')
+        cl$n_gi <- length(cl$gis)
         ## all taxon ids for gis in cluster
-        tis <- unique(sapply(cl, .taxid.for.gi))
-        result[i,'n_ti'] <- length(tis)
+        tis <- unlist(unique(sapply(cl$gis, .taxid.for.gi)))
+        cl$tis <- tis
+        cl$n_ti <- length(tis)
         ## get sequences and determine their lengths
-        cl.seqs <- lapply(cl, function(gi)seqs[[as.character(gi)]])
+        cl.seqs <- lapply(cl$gis, function(gi)seqs[[as.character(gi)]])
         l <- sapply(cl.seqs, nchar)
-        result[i,'MinLength'] <- min(l)
-        result[i,'MaxLength'] <- max(l)
-        result[i,'seed_gi'] <- names(clusters)[i]
+        cl$MinLength <- min(l)
+        cl$MaxLength <- max(l)
         ## get number of genera
-        result[i,'n_gen'] <- length(unique(sapply(tis, .genus.for.taxid)))
+        cl$n_gen <- length(unique(sapply(tis, .genus.for.taxid)))
         ## n_child and ci_anc will be set (or incremented) later, when multiple hierarchies are calculated
-        result[i,'n_child'] <- 0
-        result[i,'ci_anc'] <- NA        
+        cl$n_child <- 0
+        cl$ci_anc <- NA
         ## make a unique cluster id consisting of seed gi, taxon id, cluster id, cluster type
-        unique.id <- paste0(result[i,'seed_gi'], '-', taxid, '-', result[i,'ci'], '-', result[i,'cl_type'])        
-        rownames(result)[i] = unique.id
+        unique.id <- paste0(cl$seed_gi, '-', taxid, '-', cl$ci, '-', cl$cl_type)
+        cl$unique_id <- unique.id        
+        clusters[[i]] <- cl
     }   
-    return(result)
+    return(clusters)
 }
 
 cluster.blast.results <- function(blast.results, informative=T) {
@@ -152,21 +175,24 @@ cluster.blast.results <- function(blast.results, informative=T) {
     ## filter for phylogenetically informative clusters
     if (informative) {
         clusters <- clusters$membership[which(clusters$membership %in% which (clusters$csize > 2))]
+    } else {
+        clusters <- clusters$membership
     }
     ## we will return a list, one entry with sequence IDs for each cluster
-    cluster.list <- lapply(unique(clusters), function(x)sort(names(clusters)[which(clusters==x)]))
-
+    cluster.list <- lapply(unique(clusters), function(x) {
+        list(gis=sort(names(clusters)[which(clusters==x)]))
+    })
+    
     ## Get the seed gi, we will chose it to be the sequence in the cluster that has
     ## the most hits with the other members in the cluster; i.e. the most connected
     ## node in the graph
     degrees <- degree(g)
-    seed.gis <- sapply(cluster.list, function(c){
-        idx <- order(degrees[c], decreasing=T)[1] ## index of most connected component
-        c[idx]
+    ## get seed gis and as field to clusters
+    cluster.list <- lapply(cluster.list, function(cl){
+        idx <- order(degrees[cl$gis], decreasing=T)[1] ## index of most connected component
+        cl$seed_gi <- cl$gis[idx]
+        cl
     })
-    ## set seed gis as names to cluster list
-    names(cluster.list) <- as.character(seed.gis)
-    ##names(cluster.list) <- paste('cluster', 1:length(cluster.list), sep='')
     return (cluster.list)
 }
 
