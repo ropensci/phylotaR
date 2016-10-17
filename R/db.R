@@ -2,7 +2,7 @@ library("RSQLite")
 
 ## function to get a singleton global database object
 .db <- function(dbloc = NULL) {
-    if (exists('db')){
+    if (exists('db') && dbIsValid(db)){
         return(db)
     }
     else {
