@@ -57,7 +57,7 @@ clusters.create <- function(root.taxon, max.seqs=25000) {
             queue <- c(queue, .children(currentid))
         }
         else {
-            cl <- .make.entries(currentid)
+            cl <- .make.cluster.entries(currentid)
             all.entries <- rbind(all.entries, cl)
         }
     }
