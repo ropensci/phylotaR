@@ -4,6 +4,7 @@
 library("CHNOSZ")
 library('rentrez')
 source('db.R')
+source('ncbi-remote.R')
 
 ## Schema in phylota database:
 ## CREATE TABLE "nodes_194" (
@@ -79,7 +80,7 @@ nodes.create <- function(dbloc, taxdir, root.taxa = c(33090, 4751, 33208), overw
     ret <- FALSE
     write.table(nodes.df, file='nodes.tsv', sep="\t", row.names=F)
     repeat {
-    	   try(ret <- dbWriteTable(conn=db, name='nodes', value=nodes.df, row.names=F, overwrite=overwrite, append=append))
+    	   ret <- try(dbWriteTable(conn=db, name='nodes', value=nodes.df, row.names=F, overwrite=overwrite, append=append))
 	   if(!is(ret, "try-error")) break
     }
     dbDisconnect(db)
@@ -184,11 +185,6 @@ add.stats <- function(taxids, nodes) {
 #    l <- dbGetQuery(db, str)
 #    return(l[[1]])
 #}
-
-.gis.for.taxid <- function(taxid) {
-    search <- entrez_search(db='nucleotide', term=paste0('txid', taxid, '[Organism:exp]', '1:25000[SLEN]'), use_history=T, retmax=1e9-1)
-    return(search$ids)
-}
 
 .num.seqs.for.taxid <- function(taxid) {
     search <- entrez_search(db='nucleotide', term=paste0('txid', taxid, '[Organism:exp]', '1:25000[SLEN]'), use_history=T, retmax=1)

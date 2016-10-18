@@ -5,6 +5,7 @@ library('RSQLite')
 library('igraph')
 source('blast.R')
 source('db.R')
+source('ncbi-remote.R')
 
 ## Schema in phylota database:
 ## CREATE TABLE "clusters_194" (
@@ -66,41 +67,51 @@ clusters.create <- function(root.taxon, max.seqs=25000) {
 
 .make.clusters <- function(taxon, seqs=NULL, parent=NULL, blast.results=NULL, recursive=TRUE) {
 
+    cat("Attempting to make clusters for taxid ", taxon, "\n")
     ## retreive sequences if not done so before
     gis <- vector()
     filtered.blast.results <- data.frame()
     if (is.null(seqs)) {
-        cat("Retrieving sequences\n")
+        cat("Retrieving sequences for taxon ", taxon, "\n")
         seqs <- .seqs.for.taxid(taxon)
         gis <- names(seqs)
     }
     else {
         gis <- .gis.for.taxid(taxon)
-        seqs <- seqs[gis]        
     }
+    if (length(gis)<1) {
+        return(list())
+    }
+    seqs <- seqs[gis]
     ## if we have not yet blasted the sequences, do so
     if (is.null(blast.results)) {
+        cat("Performing all vs all BLAST\n")
         dbfile <- make.blast.db(seqs)
         blast.results <- blast.all.vs.all(dbfile)
         cat("Number of BLAST results ", nrow(blast.results), "\n")
+        cat("Filtering BLAST results\n")
         filtered.blast.results <- filter.blast.results(blast.results, seqs)
     }
     else {
         ##  reduce blast results such that include only the gis for the current taxon
+        cat("Taking BLAST results from parent cluster\n")
         filtered.blast.results <- blast.results[which(blast.results$subject.id %in% gis),]
         filtered.blast.results <- filtered.blast.results[which(filtered.blast.results$query.id %in% gis),]
     }        
     ## sequence clusters are stored in a list of lists, named by gi
     ## Get top-level clusters
+    cat("Clustering BLAST results\n")
     clusters <- cluster.blast.results(filtered.blast.results)
 
+    ## exit if there are no clusters
     if (length(clusters) < 1) {
         return(list())
     }
 
     ## make dataframe with fields as in PhyLoTa database
     clusters <- .add.cluster.info(clusters, taxon, seqs)
-
+    cat("Generated ", length(clusters), "clusters\n")
+    
     ## retrieve clusters for child taxa
     if (recursive) {
         for (ch in .children(taxon)) {
@@ -113,7 +124,9 @@ clusters.create <- function(root.taxon, max.seqs=25000) {
             ##  cluster if at least one gi of both clusters is the same.         
             child.clusters <- lapply(child.clusters, function(cc) {
                 ## indices of the parent clusters that contain a gi of the child clusters
-                idx <- which(sapply(clusters, function(c) any(cc$gis %in% c$gis)))
+                ## If a gi is in two clusters (e.g. parent and grandparent), take the lower one, by taking
+                ## the higher index
+                idx <- max(which(sapply(clusters, function(c) any(cc$gis %in% c$gis))))
                 ## set parent cluster to child cluster
                 cc$ci_anc <- clusters[[idx]]$ci
                 ## update child count of parent clusters
@@ -147,9 +160,9 @@ clusters.create <- function(root.taxon, max.seqs=25000) {
         cl$cl_type <- ifelse(length(.children(taxid)) > 0, 'subtree', 'node')
         cl$n_gi <- length(cl$gis)
         ## all taxon ids for gis in cluster
-        tis <- unlist(unique(sapply(cl$gis, .taxid.for.gi)))
+        tis <- unname(unlist(sapply(cl$gis, .taxid.for.gi)))
         cl$tis <- tis
-        cl$n_ti <- length(tis)
+        cl$n_ti <- length(unique(tis))
         ## get sequences and determine their lengths
         cl.seqs <- lapply(cl$gis, function(gi)seqs[[as.character(gi)]])
         l <- sapply(cl.seqs, nchar)
@@ -201,11 +214,6 @@ cluster.blast.results <- function(blast.results, informative=T) {
     query <- paste('select ti from nodes where ti_anc =', taxid)
     l <- dbGetQuery(db, query)
     return(l[[1]])
-}
-
-.gis.for.taxid <- function(taxid) {
-    search <- entrez_search(db='nucleotide', term=paste0('txid', taxid, '[Organism:exp]', '1:25000[SLEN]'), use_history=T, retmax=1e9-1)
-    return(search$ids)
 }
 
 .num.seqs.for.taxid <- function(taxid) {

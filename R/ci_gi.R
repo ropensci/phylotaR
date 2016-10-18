@@ -16,7 +16,16 @@
 ## Input: list of clusters, as produced by .make.clusters
 ci_gi.create <- function(clusters) {
     ## select relevant columns and make data frame
-    df <- do.call(rbind, lapply(cl, function(x)as.data.frame(x)[ , c('ti_root', 'ci', 'cl_type', 'gis', 'tis') ]))
+    df <- do.call(rbind, lapply(clusters, function(x)as.data.frame(x)[ , c('ti_root', 'ci', 'cl_type', 'gis', 'tis') ]))
+
+    lapply(clusters, function(c) {
+        data.frame(ti=rep(c$ti_root, c$n_gi),
+                   clustid=rep(c$ci, c$n_gi),
+                   cl_type=rep(c$cl_type, c$n_gi),
+                   gi=c$gis,
+                   ti_of_gi=c$tis)        
+    })
+
     names(df)[names(df) == 'gis'] <- 'gi'
     names(df)[names(df) == 'tis'] <- 'ti_of_gi'
     names(df)[names(df) == 'ci'] <- 'clustid'
