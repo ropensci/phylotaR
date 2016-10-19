@@ -9,7 +9,7 @@ make.blast.db <- function(seqs, dbfile='blastdb.fa', dir='.') {
     
     ## Write user-supplied gis to file
     for (gi in names(seqs)) {
-        write(paste0("> ", gi, "\n", seqs[[as.character(gi)]],"\n"), file=file, append=T)
+        write(paste0("> ", gi, "\n", seqs[[as.character(gi)]]$seq), file=file, append=T)
     }
     cmd <- paste('makeblastdb -in', file, '-dbtype nucl')
     system(cmd)
@@ -47,8 +47,8 @@ filter.blast.results <- function(blast.results, seqs, min.coverage=0.51) {
     result.subset <- ddply(blast.results, c("query.id", "subject.id"), function(x)colSums(x['alignment.length']))
 
     ## adjust query and subject lengths for collapsed rows
-    result.subset['query.length'] <- sapply(result.subset$query.id, function(id){nchar(seqs[[as.character(id)]])})
-    result.subset['subject.length'] <- sapply(result.subset$subject.id, function(id){nchar(seqs[[as.character(id)]])})
+    result.subset['query.length'] <- sapply(result.subset$query.id, function(id){seqs[[as.character(id)]]$length})
+    result.subset['subject.length'] <- sapply(result.subset$subject.id, function(id){seqs[[as.character(id)]]$length})
 
     ## calculate how much overlap there is between hits
     coverages <- apply(result.subset, 1, function(x)x['alignment.length'] / max(x['query.length'], x['subject.length']))

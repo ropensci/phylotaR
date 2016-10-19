@@ -177,21 +177,6 @@ add.stats <- function(taxids, nodes) {
     return(nodes)
 }
 
-#num.seqs.for.taxid <- function(taxid, nodes) {
-#    db <- .db()
-#    ids <- c(taxid, descendants(taxid, nodes))
-#    idstr <- paste0(ids, collapse=',')
-#    str <- paste('select count(*) from accession2taxid where taxid in (', idstr, ')')
-#    l <- dbGetQuery(db, str)
-#    return(l[[1]])
-#}
-
-.num.seqs.for.taxid <- function(taxid) {
-    search <- entrez_search(db='nucleotide', term=paste0('txid', taxid, '[Organism:exp]', '1:25000[SLEN]'), use_history=T, retmax=1)
-    return(search$count)
-}
-
-
 descendants <- function(id, nodes) {
     queue <- id
     result <- numeric()

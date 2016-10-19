@@ -45,10 +45,11 @@ source('ncbi-remote.R')
 ##  PRIMARY KEY ("uid")
 ##);
 
-clusters.create <- function(root.taxon, max.seqs=25000) {
+clusters.ci_gi.seqs.create <- function(root.taxon, max.seqs=25000) {
     db <- .db(dbname)
     
-    all.entries <- list()
+    cluster.entries <- list()
+    
     queue <- root.taxon
     while(length(queue) > 0) {
         currentid <- head(queue, 1)
@@ -58,6 +59,7 @@ clusters.create <- function(root.taxon, max.seqs=25000) {
             queue <- c(queue, .children(currentid))
         }
         else {
+            
             cl <- .make.cluster.entries(currentid)
             all.entries <- rbind(all.entries, cl)
         }
@@ -117,7 +119,7 @@ clusters.create <- function(root.taxon, max.seqs=25000) {
         for (ch in .children(taxon)) {
 
             ## calculate clusters for child taxon
-            child.clusters <- .make.clusters(ch, seqs, taxon, filtered.blast.results)            
+            child.clusters <- .make.clusters(ch, seqs, taxon, filtered.blast.results)
             ## two parameters can only be calculated if we have cluster info on multiple taxonomic levels:
             ##  n_child, the number of child clusters, ci_anc, the parent cluster.
             ##  Since we are dealing with single-likeage clusters, we can identify the parent cluster of a
@@ -155,21 +157,20 @@ clusters.create <- function(root.taxon, max.seqs=25000) {
     ## we will take the column names in the database as names in the list
     for (i in 1:length(clusters)) {
         cl <- clusters[[i]]        
+        cl.seqs <- lapply(cl$gis, function(gi)seqs[[as.character(gi)]])       
         cl$ti_root <- taxid
         cl$ci <- i-1
         cl$cl_type <- ifelse(length(.children(taxid)) > 0, 'subtree', 'node')
         cl$n_gi <- length(cl$gis)
-        ## all taxon ids for gis in cluster
-        tis <- unname(unlist(sapply(cl$gis, .taxid.for.gi)))
-        cl$tis <- tis
-        cl$n_ti <- length(unique(tis))
-        ## get sequences and determine their lengths
-        cl.seqs <- lapply(cl$gis, function(gi)seqs[[as.character(gi)]])
-        l <- sapply(cl.seqs, nchar)
+        ## all taxon ids for gis in cluster                
+        cl$tis <- sapply(cl.seqs, '[[', 'ti')
+        cl$n_ti <- length(unique(cl$tis))
+        ## sequence lengths
+        l <- sapply(cl.seqs, '[[', 'length')
         cl$MinLength <- min(l)
         cl$MaxLength <- max(l)
         ## get number of genera
-        cl$n_gen <- length(unique(sapply(tis, .genus.for.taxid)))
+        cl$n_gen <- length(unique(sapply(cl$tis, .genus.for.taxid)))
         ## n_child and ci_anc will be set (or incremented) later, when multiple hierarchies are calculated
         cl$n_child <- 0
         cl$ci_anc <- NA
@@ -216,11 +217,6 @@ cluster.blast.results <- function(blast.results, informative=T) {
     return(l[[1]])
 }
 
-.num.seqs.for.taxid <- function(taxid) {
-    search <- entrez_search(db='nucleotide', term=paste0('txid', taxid, '[Organism:exp]', '1:25000[SLEN]'), use_history=T, retmax=1)
-    return(search$count)
-}
-
 .genus.for.taxid <- function(taxid) {
     ##cat("Retreiving genus for taxid ", taxid, "\n")
     db <- .db()
@@ -235,32 +231,4 @@ cluster.blast.results <- function(blast.results, informative=T) {
 ##    l <- dbGetQuery(db, query)
 ##    return(l[[1]])
 ##}
-
-.seqs.for.taxid <- function(taxid) {
-    search <- entrez_search(db='nucleotide', term=paste0('txid', taxid, '[Organism:exp]', '1:25000[SLEN]'), use_history=T, retmax=1e9-1)
-    gis <- search$ids;
-    cat("Going to retrieve ", length(gis), " sequences\n")
-    allseqs <- numeric()
-    for (seq.idx in seq(0, length(gis), 10000)) {
-        cat("Retreiving seqs ", seq.idx+1, " to ", ifelse(seq.idx+10000<length(gis), seq.idx+10000, length(gis)), "\n");
-        res <- entrez_fetch(db="nuccore", rettype="fasta", web_history=search$web_history, retmax=10000, retstart=seq.idx)
-        ## split fasta string on '>'
-        seqs <- unlist(strsplit(res, "(?<=[^>])(?=\n>)", perl=T))
-        ## clear defline
-        seqs <- gsub("^\n?>.*?\\n", "", seqs)
-        ## clear newlines
-        seqs <- gsub("\n", "", seqs, fixed=TRUE)
-        allseqs <- c(allseqs, seqs)
-    }
-    names(allseqs) <- gis
-    return(allseqs)
-}
-
-.taxid.for.gi <- function(gi) {
-    ##cat("Retreiving taxid for gi ", gi, "\n")
-    db <- .db()
-    query <- paste('select taxid from accession2taxid where gi=', gi)
-    l <- dbGetQuery(db, query)
-    return(l[[1]])
-}
 
