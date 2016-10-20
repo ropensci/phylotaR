@@ -6,6 +6,7 @@ library('igraph')
 source('blast.R')
 source('db.R')
 source('ncbi-remote.R')
+source('query-local.R')
 
 ## Schema in phylota database:
 ## CREATE TABLE "clusters_194" (
@@ -45,31 +46,61 @@ source('ncbi-remote.R')
 ##  PRIMARY KEY ("uid")
 ##);
 
-clusters.ci_gi.seqs.create <- function(root.taxon, max.seqs=25000) {
+clusters.ci_gi.seqs.create <- function(root.taxon, file.stem=NULL, max.seqs=25000) {
     db <- .db(dbname)
-    
-    cluster.entries <- list()
-    
+
+    cluster.entries <- data.frame()
+    seq.entries <- data.frame()
+    ci_gi.entries <- data.frame()
+
+    ## get all nodes that will be processed:
+    ## all nodes for which all children contain < max.seqs sequences
+    taxa.to.process <- vector()
+
     queue <- root.taxon
     while(length(queue) > 0) {
-        currentid <- head(queue, 1)
+        
+        currentid <- head(queue, 1)        
         queue <- tail(queue, length(queue)-1)
-
-        if (.num.seqs.for.taxid(currentid) > max.seqs) {
+        cat("Getting seq counts for taxid ", currentid, "\n")
+        if (.local.num.seqs.for.taxid(currentid) > max.seqs) {
+            cat("Too many seqs; retreiving children \n")
             queue <- c(queue, .children(currentid))
         }
         else {
-            
-            cl <- .make.cluster.entries(currentid)
-            all.entries <- rbind(all.entries, cl)
+            cat("Will process ", currentid, "\n")
+            taxa.to.process <- c(taxa.to.process, currentid)
+            ## generate data frames with entries for seqs, clusters, and ci_gi
+            #seqs <- .seqs.for.taxid(currentid)
+            #seqdf <- .make.seq.entries(seqs)
+            #clusters <- .make.clusters(currentid, seqs)
+            #cldf <- .make.cluster.entries(clusters)
+            #cigidf <- .make.ci_gi.entries(clusters)
+
+            ## either append data frames to result which will be returned or
+            ## append results to file imedeately
+            #if (is.null(file.stem)){
+            #    cluster.entries <- rbind(cluster.entries, cldf)
+            #    seq.entries <- rbind(seq.entries, seqdf)
+            #    ci_gi.entries <- rbind(ci_gi.entries, cigidf)
+            #}
+            #else {                
+            #    clusters.file <- paste0(file.stem, '-clusters.tsv')
+            #    write.table(cldf, file=clusters.file, append=file.exists(clusters.file), quote=F, sep="\t", row.names=F)
+            #    seqs.file <- paste0(file.stem, '-seqs.tsv')
+            #    write.table(seqdf, file=seqs.file, append=file.exists(seqs.file), quote=F, sep="\t", row.names=F)
+            #    ci_gi.file <- paste0(file.stem, '-ci_gi.tsv')
+            #    write.table(cigidf, file=ci_gi.file, append=file.exists(ci_gi.file), quote=F, sep="\t", row.names=F)
+            #}
         }
-    }
-    return (all.entries)
+##        cat("Processed taxid ", currentid, "\n")
+    }    
+    return (list(clusters=cluster.entries, seqs=seq.entries, ci_gi=ci_gi.entries))
 }
 
 .make.clusters <- function(taxon, seqs=NULL, parent=NULL, blast.results=NULL, recursive=TRUE) {
 
-    cat("Attempting to make clusters for taxid ", taxon, "\n")
+    cat("Making clusters for taxid ", taxon, "\n")
     ## retreive sequences if not done so before
     gis <- vector()
     filtered.blast.results <- data.frame()
@@ -117,7 +148,7 @@ clusters.ci_gi.seqs.create <- function(root.taxon, max.seqs=25000) {
     ## retrieve clusters for child taxa
     if (recursive) {
         for (ch in .children(taxon)) {
-
+            cat("Processing child ", ch, "\n")
             ## calculate clusters for child taxon
             child.clusters <- .make.clusters(ch, seqs, taxon, filtered.blast.results)
             ## two parameters can only be calculated if we have cluster info on multiple taxonomic levels:
@@ -139,6 +170,7 @@ clusters.ci_gi.seqs.create <- function(root.taxon, max.seqs=25000) {
             clusters <- c(clusters, child.clusters)
         }
     }
+    cat("Finished making ", length(clusters), " clusters for taxid ", taxon, "\n")
     return(clusters)
 }
 
@@ -150,7 +182,11 @@ clusters.ci_gi.seqs.create <- function(root.taxon, max.seqs=25000) {
     df <- do.call(rbind, lapply(l, as.data.frame))
     return(df)
 }
-    
+
+.make.seq.entries <- function(seqs) {
+    do.call(rbind, lapply(seqs, as.data.frame))
+}
+
 ## input: List of clusters
 .add.cluster.info <- function(clusters, taxid, seqs) {
 

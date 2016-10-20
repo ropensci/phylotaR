@@ -14,7 +14,7 @@
 ## CREATE INDEX ti_of_gi ON ci_gi_194(ti_of_gi);
 
 ## Input: list of clusters, as produced by .make.clusters
-ci_gi.create <- function(clusters) {
+.make.ci_gi.entries <- function(clusters) {
     ## select relevant columns from cluster objects and make data frame    
     df <- do.call(rbind, lapply(clusters, function(c) {
         data.frame(ti=rep(c$ti_root, c$n_gi),

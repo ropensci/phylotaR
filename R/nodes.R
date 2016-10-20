@@ -80,8 +80,8 @@ nodes.create <- function(dbloc, taxdir, root.taxa = c(33090, 4751, 33208), overw
     ret <- FALSE
     write.table(nodes.df, file='nodes.tsv', sep="\t", row.names=F)
     repeat {
-    	   ret <- try(dbWriteTable(conn=db, name='nodes', value=nodes.df, row.names=F, overwrite=overwrite, append=append))
-	   if(!is(ret, "try-error")) break
+        ret <- try(dbWriteTable(conn=db, name='nodes', value=nodes.df, row.names=F, overwrite=overwrite, append=append))
+        if(!is(ret, "try-error")) break
     }
     dbDisconnect(db)
     rm(db)
@@ -90,18 +90,42 @@ nodes.create <- function(dbloc, taxdir, root.taxa = c(33090, 4751, 33208), overw
 
 add.stats <- function(taxids, nodes) {
     result <- data.frame()
+    
+    ## do calculation in parallel; pick roughly a number of nodes
+    ## equal to twice the number of CPUs available, to make
+    ## sure we won't have unused CPUs
+    ids.to.process <- taxids
+    ids.not.processed <- vector()
+    cores <- 4
 
-    for (tax in taxids) {
-        n <- .rec.add.stats(tax, nodes)
-        ## only add rows for which we collected stats
-        result <- rbind(result, n[which(! is.na(n$num.seqs.node)),])
+    ## CAUTION: below could get stuck if there are not enough echildren and many cores!
+    while (length(ids.to.process) < cores*2) {
+        currentid <- head(ids.to.process, 1)
+        if (length(currentid < 1)) break;
+        cat("CurrentID : ", currentid, "\n")
+        ids.to.process <- tail(ids.to.process, length(ids.to.process)-1)
+        
+        for (ch in children(currentid, nodes)) {
+            ids.to.process <- c(ids.to.process, ch)
+        }
+        
+        ids.not.processed <- c(ids.not.processed, currentid)        
     }
+    ##    for (tax in ids.to.process) {
+    result <- foreach (tax=ids.to.process, .combine=rbind) %dopar% {
+        n <- .rec.add.stats(tax, nodes)        
+        ## only return rows for which we collected stats, all others have NA in num.seqs.node
+        n[which(! is.na(n$num.seqs.node)),]
+    }
+    
+    recover()
+    
     return(result)
 }
 
 ## Recursive function to add number of sequences for each taxon to table as produced by getnodes().
-## We set sequences for 'node' and 'subtree', a node is of rank species or lower, subtree includes all
-## desendants. We also distinguish between model (>=20000 seqs per node) and nonmodel organisms.
+## We set sequence counts for 'node' and 'subtree', if a node is of rank species or lower. For subtree,
+## this includes all desendants. We also distinguish between model (>=20000 seqs per node) and nonmodel organisms.
 .rec.add.stats <- function(taxid, nodes) {
 
     stats <- c(num.seqs.node=0,
@@ -148,8 +172,10 @@ add.stats <- function(taxids, nodes) {
     if (length(ch)==0) {
         stats['num.leaf.desc'] <- stats['num.leaf.desc'] + 1
     }
-    ## call function recursively for children
+
+    ## call function recursively for children    
     for (child in ch) {
+                
         ## ti.genus has to be passed down the tree and not upwards...
         if (! is.null(stats['ti.genus'])) {
             nodes[which(nodes$id==child),'ti.genus'] <- stats['ti.genus']
