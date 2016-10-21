@@ -59,8 +59,8 @@ clusters.ci_gi.seqs.create <- function(root.taxon, file.stem=NULL, max.seqs=2500
 
     queue <- root.taxon
     while(length(queue) > 0) {
-        
-        currentid <- head(queue, 1)        
+
+        currentid <- head(queue, 1)
         queue <- tail(queue, length(queue)-1)
         cat("Getting seq counts for taxid ", currentid, "\n")
         if (.local.num.seqs.for.taxid(currentid) > max.seqs) {
@@ -70,31 +70,34 @@ clusters.ci_gi.seqs.create <- function(root.taxon, file.stem=NULL, max.seqs=2500
         else {
             cat("Will process ", currentid, "\n")
             taxa.to.process <- c(taxa.to.process, currentid)
-            ## generate data frames with entries for seqs, clusters, and ci_gi
-            #seqs <- .seqs.for.taxid(currentid)
-            #seqdf <- .make.seq.entries(seqs)
-            #clusters <- .make.clusters(currentid, seqs)
-            #cldf <- .make.cluster.entries(clusters)
-            #cigidf <- .make.ci_gi.entries(clusters)
-
-            ## either append data frames to result which will be returned or
-            ## append results to file imedeately
-            #if (is.null(file.stem)){
-            #    cluster.entries <- rbind(cluster.entries, cldf)
-            #    seq.entries <- rbind(seq.entries, seqdf)
-            #    ci_gi.entries <- rbind(ci_gi.entries, cigidf)
-            #}
-            #else {                
-            #    clusters.file <- paste0(file.stem, '-clusters.tsv')
-            #    write.table(cldf, file=clusters.file, append=file.exists(clusters.file), quote=F, sep="\t", row.names=F)
-            #    seqs.file <- paste0(file.stem, '-seqs.tsv')
-            #    write.table(seqdf, file=seqs.file, append=file.exists(seqs.file), quote=F, sep="\t", row.names=F)
-            #    ci_gi.file <- paste0(file.stem, '-ci_gi.tsv')
-            #    write.table(cigidf, file=ci_gi.file, append=file.exists(ci_gi.file), quote=F, sep="\t", row.names=F)
-            #}
         }
 ##        cat("Processed taxid ", currentid, "\n")
-    }    
+    }
+##    recover()
+    foreach (taxid=taxa.to.process) %dopar% {
+        ## generate data frames with entries for seqs, clusters, and ci_gi
+        seqs <- .seqs.for.taxid(taxid)
+        seqdf <- .make.seq.entries(seqs)
+        clusters <- .make.clusters(taxid, seqs)
+        cldf <- .make.cluster.entries(clusters)
+        cigidf <- .make.ci_gi.entries(clusters)
+
+        ## either append data frames to result which will be returned or
+        ## append results to file imedeately
+        if (is.null(file.stem)){
+            cluster.entries <- rbind(cluster.entries, cldf)
+            seq.entries <- rbind(seq.entries, seqdf)
+            ci_gi.entries <- rbind(ci_gi.entries, cigidf)
+        }
+        else {
+            clusters.file <- paste0(file.stem, '-clusters.tsv')
+            write.table(cldf, file=clusters.file, append=file.exists(clusters.file), quote=F, sep="\t", row.names=F)
+            seqs.file <- paste0(file.stem, '-seqs.tsv')
+            write.table(seqdf, file=seqs.file, append=file.exists(seqs.file), quote=F, sep="\t", row.names=F)
+            ci_gi.file <- paste0(file.stem, '-ci_gi.tsv')
+            write.table(cigidf, file=ci_gi.file, append=file.exists(ci_gi.file), quote=F, sep="\t", row.names=F)
+        }
+    }
     return (list(clusters=cluster.entries, seqs=seq.entries, ci_gi=ci_gi.entries))
 }
 
@@ -130,7 +133,7 @@ clusters.ci_gi.seqs.create <- function(root.taxon, file.stem=NULL, max.seqs=2500
         cat("Taking BLAST results from parent cluster\n")
         filtered.blast.results <- blast.results[which(blast.results$subject.id %in% gis),]
         filtered.blast.results <- filtered.blast.results[which(filtered.blast.results$query.id %in% gis),]
-    }        
+    }
     ## sequence clusters are stored in a list of lists, named by gi
     ## Get top-level clusters
     cat("Clustering BLAST results\n")
@@ -144,7 +147,7 @@ clusters.ci_gi.seqs.create <- function(root.taxon, file.stem=NULL, max.seqs=2500
     ## make dataframe with fields as in PhyLoTa database
     clusters <- .add.cluster.info(clusters, taxon, seqs)
     cat("Generated ", length(clusters), "clusters\n")
-    
+
     ## retrieve clusters for child taxa
     if (recursive) {
         for (ch in .children(taxon)) {
@@ -154,7 +157,7 @@ clusters.ci_gi.seqs.create <- function(root.taxon, file.stem=NULL, max.seqs=2500
             ## two parameters can only be calculated if we have cluster info on multiple taxonomic levels:
             ##  n_child, the number of child clusters, ci_anc, the parent cluster.
             ##  Since we are dealing with single-likeage clusters, we can identify the parent cluster of a
-            ##  cluster if at least one gi of both clusters is the same.         
+            ##  cluster if at least one gi of both clusters is the same.
             child.clusters <- lapply(child.clusters, function(cc) {
                 ## indices of the parent clusters that contain a gi of the child clusters
                 ## If a gi is in two clusters (e.g. parent and grandparent), take the lower one, by taking
@@ -192,13 +195,13 @@ clusters.ci_gi.seqs.create <- function(root.taxon, file.stem=NULL, max.seqs=2500
 
     ## we will take the column names in the database as names in the list
     for (i in 1:length(clusters)) {
-        cl <- clusters[[i]]        
-        cl.seqs <- lapply(cl$gis, function(gi)seqs[[as.character(gi)]])       
+        cl <- clusters[[i]]
+        cl.seqs <- lapply(cl$gis, function(gi)seqs[[as.character(gi)]])
         cl$ti_root <- taxid
         cl$ci <- i-1
         cl$cl_type <- ifelse(length(.children(taxid)) > 0, 'subtree', 'node')
         cl$n_gi <- length(cl$gis)
-        ## all taxon ids for gis in cluster                
+        ## all taxon ids for gis in cluster
         cl$tis <- sapply(cl.seqs, '[[', 'ti')
         cl$n_ti <- length(unique(cl$tis))
         ## sequence lengths
@@ -212,9 +215,9 @@ clusters.ci_gi.seqs.create <- function(root.taxon, file.stem=NULL, max.seqs=2500
         cl$ci_anc <- NA
         ## make a unique cluster id consisting of seed gi, taxon id, cluster id, cluster type
         unique.id <- paste0(cl$seed_gi, '-', taxid, '-', cl$ci, '-', cl$cl_type)
-        cl$unique_id <- unique.id        
+        cl$unique_id <- unique.id
         clusters[[i]] <- cl
-    }   
+    }
     return(clusters)
 }
 
@@ -232,7 +235,7 @@ cluster.blast.results <- function(blast.results, informative=T) {
     cluster.list <- lapply(unique(clusters), function(x) {
         list(gis=sort(names(clusters)[which(clusters==x)]))
     })
-    
+
     ## Get the seed gi, we will chose it to be the sequence in the cluster that has
     ## the most hits with the other members in the cluster; i.e. the most connected
     ## node in the graph

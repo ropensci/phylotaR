@@ -90,7 +90,7 @@ nodes.create <- function(dbloc, taxdir, root.taxa = c(33090, 4751, 33208), overw
 
 add.stats <- function(taxids, nodes) {
     result <- data.frame()
-    
+
     ## do calculation in parallel; pick roughly a number of nodes
     ## equal to twice the number of CPUs available, to make
     ## sure we won't have unused CPUs
@@ -104,22 +104,19 @@ add.stats <- function(taxids, nodes) {
         if (length(currentid < 1)) break;
         cat("CurrentID : ", currentid, "\n")
         ids.to.process <- tail(ids.to.process, length(ids.to.process)-1)
-        
+
         for (ch in children(currentid, nodes)) {
             ids.to.process <- c(ids.to.process, ch)
         }
-        
-        ids.not.processed <- c(ids.not.processed, currentid)        
+
+        ids.not.processed <- c(ids.not.processed, currentid)
     }
     ##    for (tax in ids.to.process) {
     result <- foreach (tax=ids.to.process, .combine=rbind) %dopar% {
-        n <- .rec.add.stats(tax, nodes)        
+        n <- .rec.add.stats(tax, nodes)
         ## only return rows for which we collected stats, all others have NA in num.seqs.node
         n[which(! is.na(n$num.seqs.node)),]
     }
-    
-    recover()
-    
     return(result)
 }
 
@@ -173,9 +170,9 @@ add.stats <- function(taxids, nodes) {
         stats['num.leaf.desc'] <- stats['num.leaf.desc'] + 1
     }
 
-    ## call function recursively for children    
+    ## call function recursively for children
     for (child in ch) {
-                
+
         ## ti.genus has to be passed down the tree and not upwards...
         if (! is.null(stats['ti.genus'])) {
             nodes[which(nodes$id==child),'ti.genus'] <- stats['ti.genus']
