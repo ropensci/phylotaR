@@ -34,7 +34,7 @@ source('ncbi-remote.R')
 ## The table is created from the 'nodes' table in the NCBI taxonomy
 ## Therefore, a directory with the path where the NCBI taxonomy dump
 ## is located must be provided
-nodes.create <- function(dbloc, taxdir, root.taxa = c(33090, 4751, 33208), file.name='nodes.tsv') {
+nodes.create <- function(dbloc, taxdir, root.taxa = c(33090, 4751, 33208), file.name='nodes.tsv', cores=3) {
     db <- .db(dbloc)
 
     ## Get data from NCBI taxonomy dump
@@ -46,7 +46,6 @@ nodes.create <- function(dbloc, taxdir, root.taxa = c(33090, 4751, 33208), file.
     ## sure we won't have unused CPUs
     ids.to.process <- root.taxa
     ids.not.processed <- vector()
-    cores <- 3
 
     ## CAUTION: loop below could get stuck if there are not enough echildren and many cores!
     while (length(ids.to.process) < (cores*2)) {
