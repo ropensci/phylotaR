@@ -65,7 +65,7 @@ nodes.create <- function(dbloc, taxdir, root.taxa = c(33090, 4751, 33208), file.
     }
 
     ##    for (tax in ids.to.process) {
-    foreach (i=1:length(ids.to.process), .combine=rbind) %dopar% {
+    foreach (i=1:length(ids.to.process)) %dopar% {
         tax <- ids.to.process[i]
         cat("Processing taxid ", tax, " # ", i, " / ", length(ids.to.process), "\n")
         n <- .rec.add.stats(tax, ncbi.nodes)
