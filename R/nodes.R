@@ -41,44 +41,79 @@ nodes.create <- function(dbloc, taxdir, root.taxa = c(33090, 4751, 33208), file.
     ncbi.nodes <- getnodes(taxdir)
     ncbi.names <- getnames(taxdir)
 
-    ## add sequence counts etc
-    nodes <- add.stats(root.taxa, ncbi.nodes)
+    ## do calculation in parallel; pick roughly a number of taxon ids
+    ## equal to twice the number of CPUs available, to make
+    ## sure we won't have unused CPUs
+    ids.to.process <- root.taxa
+    ids.not.processed <- vector()
+    cores <- 3
 
-    ## add other column values
-    taxon.name <- as.character(ncbi.names[match(nodes$id, ncbi.names$id),"name"])
-    commons <- ncbi.names[grep ('common', ncbi.names$type),]
-    common.name <- as.character(commons$name[match(nodes$id, commons$id)])
-    ## rank_flag is 0 if rank higher than genus
-    ##rank.flag=ifelse(nodes$rank %in% c( 'genus', 'subgenus', 'species group',
-    ##                                        'species subgroup', 'species', 'subspecies',
-    ##                                        'varietas', 'forma'), 1, 0)
+    ## CAUTION: loop below could get stuck if there are not enough echildren and many cores!
+    while (length(ids.to.process) < (cores*2)) {
+        currentid <- head(ids.to.process, 1)
 
-    ## Create dataframe with correct column names that will be
-    ## inserted into the database. Some fields will need additional
-    ## information and will be filled later
-    nodes.df <- data.frame(ti=as.integer(nodes$id),
-                           ti_anc=as.integer(nodes$parent),
-                           terminal_flag=NA,
-                           rank_flag=as.integer(! nodes$rank=='no rank'),
-                           model=NA,
-                           taxon_name=taxon.name,
-                           common_name=common.name,
-                           rank=as.character(nodes$rank),
-                           n_gi_node=as.integer(nodes$num.seqs.node),
-                           n_gi_sub_nonmodel=as.integer(nodes$num.seqs.subtree.nonmodel),
-                           n_gi_sub_model=as.integer(nodes$num.seqs.subtree.model),
-                           n_clust_node=NA,
-                           n_clust_sub=NA,
-                           n_PIclust_sub=NA,
-                           n_sp_desc=as.integer(nodes$num.spec.desc),
-                           n_sp_model=as.integer(nodes$num.spec.model),
-                           n_leaf_desc=as.integer(nodes$num.leaf.desc),
-                           n_otu_desc=as.integer(nodes$num.otu.desc),
-                           ti_genus=as.integer(nodes$ti.genus),
-                           n_genera=as.integer(nodes$num.genera)
-                           )
-    ret <- FALSE
-    write.table(nodes.df, file=file.name, sep="\t", row.names=F)
+        ## do not go further down if we are at genus or lower, because we would't get the ti_genus of the children!
+        if (getrank(currentid, NULL, nodes=ncbi.nodes) %in% c('genus', 'species', 'subspecies', 'varietas', 'forma'))
+            break
+
+        cat("CurrentID : ", currentid, "\n")
+        ids.to.process <- tail(ids.to.process, length(ids.to.process)-1)
+
+        for (ch in children(currentid, ncbi.nodes)) {
+            ids.to.process <- c(ids.to.process, ch)
+        }
+        ids.not.processed <- c(ids.not.processed, currentid)
+    }
+
+    ##    for (tax in ids.to.process) {
+    for (i in 1:length(ids.to.process)) {
+        ##foreach (i=1:length(ids.to.process), .combine=rbind) %dopar% {
+        tax <- ids.to.process[i]
+        cat("Processing taxid ", tax, " # ", i, " / ", length(ids.to.process), "\n")
+        n <- .rec.add.stats(tax, ncbi.nodes)
+        ## only return rows for which we collected stats, all others have NA in num.seqs.node
+        current.nodes <- n[which(! is.na(n$num.seqs.node)),]
+
+        ## Prepare result for writing to file
+
+
+        ## add other column values
+        taxon.name <- as.character(ncbi.names[match(current.nodes$id, ncbi.names$id),"name"])
+        commons <- ncbi.names[grep ('common', ncbi.names$type),]
+        common.name <- as.character(commons$name[match(current.nodes$id, commons$id)])
+        ## rank_flag is 0 if rank higher than genus
+        ##rank.flag=ifelse(current.nodes$rank %in% c( 'genus', 'subgenus', 'species group',
+        ##                                        'species subgroup', 'species', 'subspecies',
+        ##                                        'varietas', 'forma'), 1, 0)
+
+        ## Create dataframe with correct column names that will be
+        ## inserted into the database. Some fields will need additional
+        ## information and will be filled later
+        nodes.df <- data.frame(ti=as.integer(current.nodes$id),
+                               ti_anc=as.integer(current.nodes$parent),
+                               terminal_flag=NA,
+                               rank_flag=as.integer(! current.nodes$rank=='no rank'),
+                               model=NA,
+                               taxon_name=taxon.name,
+                               common_name=common.name,
+                               rank=as.character(current.nodes$rank),
+                               n_gi_node=as.integer(current.nodes$num.seqs.node),
+                               n_gi_sub_nonmodel=as.integer(current.nodes$num.seqs.subtree.nonmodel),
+                               n_gi_sub_model=as.integer(current.nodes$num.seqs.subtree.model),
+                               n_clust_node=NA,
+                               n_clust_sub=NA,
+                               n_PIclust_sub=NA,
+                               n_sp_desc=as.integer(current.nodes$num.spec.desc),
+                               n_sp_model=as.integer(current.nodes$num.spec.model),
+                               n_leaf_desc=as.integer(current.nodes$num.leaf.desc),
+                               n_otu_desc=as.integer(current.nodes$num.otu.desc),
+                               ti_genus=as.integer(current.nodes$ti.genus),
+                               n_genera=as.integer(current.nodes$num.genera)
+                               )
+        write.table(nodes.df, file=file.name, sep="\t", row.names=F, append=file.exists(file.name), col.names=!file.exists(file.name))
+        cat("Wrote ", nrow(nodes.df), " entries to file\n")
+        cat("Finished processing taxid ", tax, " # ", i, " / ", length(ids.to.process), "\n")
+    }
 }
 
 ## TODO: make functionality to insert in DB
@@ -99,21 +134,22 @@ add.stats <- function(taxids, nodes) {
     ## sure we won't have unused CPUs
     ids.to.process <- taxids
     ids.not.processed <- vector()
-    cores <- 4
+    cores <- 3
 
-    ## CAUTION: below could get stuck if there are not enough echildren and many cores!
-    while (length(ids.to.process) < cores*2) {
+    ## CAUTION: loop below could get stuck if there are not enough echildren and many cores!
+    while (length(ids.to.process) < (cores*2)) {
         currentid <- head(ids.to.process, 1)
-        if (length(currentid < 1)) break;
+        if (length(currentid)<1) break;
         cat("CurrentID : ", currentid, "\n")
         ids.to.process <- tail(ids.to.process, length(ids.to.process)-1)
 
         for (ch in children(currentid, nodes)) {
             ids.to.process <- c(ids.to.process, ch)
         }
-
         ids.not.processed <- c(ids.not.processed, currentid)
+
     }
+
     ##    for (tax in ids.to.process) {
     result <- foreach (i=1:length(ids.to.process), .combine=rbind) %dopar% {
         tax <- ids.to.process[i]
@@ -123,6 +159,7 @@ add.stats <- function(taxids, nodes) {
         ## only return rows for which we collected stats, all others have NA in num.seqs.node
         n[which(! is.na(n$num.seqs.node)),]
     }
+    recover()
     return(result)
 }
 
