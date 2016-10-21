@@ -21,6 +21,7 @@ require('rentrez')
         else {
             ## retry if an error was thrown
             cat("Retry #", i, "calling rentrez function \n")
+            print(args)
         }
     }
     return (result)
@@ -56,13 +57,18 @@ require('rentrez')
                  retmax=1e9-1)
     search <- .safe.ncbi.query(entrez_search, args)
     gis <- search$ids;
-    cat("Going to retrieve ", length(gis), " sequences\n")
+    if (length(gis) < 1) {
+        return(list())
+    }
+    cat("Going to retrieve ", length(gis), " sequences for taxid ", taxid, "\n")
     allseqs <- numeric()
     ## Fetch sequences in increments
     increment <- 500
     for (seq.idx in seq(0, length(gis), increment)) {
         ## Get FASTA strings for IDs in the specified segment
-        cat("Retreiving seqs ", seq.idx+1, " to ", ifelse(seq.idx+increment<length(gis), seq.idx+increment, length(gis)), "\n");
+        cat("Retreiving seqs ", seq.idx+1, " to ",
+            ifelse(seq.idx+increment<length(gis), seq.idx+increment, length(gis)),
+            " for taxid ", taxid, "\n");
         seqargs <- list(db="nuccore",
                         rettype="fasta",
                         web_history=search$web_history,
@@ -78,7 +84,11 @@ require('rentrez')
         
         ## Get summary object to retreive taxid, accession, and other parameters for seqs
         summaries <- .safe.ncbi.query(entrez_summary, list(db='nucleotide',  web_history=search$web_history,retmax=increment, retstart=seq.idx))
-
+        ## turn to list when only one result
+        if (length(seqstrs)==1) {
+            summaries <- list(summaries)
+        }
+        
         seqs <- lapply(1:length(seqstrs), function(i) {
             sm <- summaries[[i]]
             se <- seqstrs[[i]]

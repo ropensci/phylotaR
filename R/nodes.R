@@ -34,7 +34,7 @@ source('ncbi-remote.R')
 ## The table is created from the 'nodes' table in the NCBI taxonomy
 ## Therefore, a directory with the path where the NCBI taxonomy dump
 ## is located must be provided
-nodes.create <- function(dbloc, taxdir, root.taxa = c(33090, 4751, 33208), overwrite = FALSE, append = TRUE) {
+nodes.create <- function(dbloc, taxdir, root.taxa = c(33090, 4751, 33208), file.name='nodes.tsv') {
     db <- .db(dbloc)
 
     ## Get data from NCBI taxonomy dump
@@ -78,15 +78,18 @@ nodes.create <- function(dbloc, taxdir, root.taxa = c(33090, 4751, 33208), overw
                            n_genera=as.integer(nodes$num.genera)
                            )
     ret <- FALSE
-    write.table(nodes.df, file='nodes.tsv', sep="\t", row.names=F)
-    repeat {
-        ret <- try(dbWriteTable(conn=db, name='nodes', value=nodes.df, row.names=F, overwrite=overwrite, append=append))
-        if(!is(ret, "try-error")) break
-    }
-    dbDisconnect(db)
-    rm(db)
-    return(ret)
+    write.table(nodes.df, file=file.name, sep="\t", row.names=F)
 }
+
+## TODO: make functionality to insert in DB
+##    repeat {
+##        ret <- try(dbWriteTable(conn=db, name='nodes', value=nodes.df, row.names=F, overwrite=overwrite, append=append))
+##        if(!is(ret, "try-error")) break
+##    }
+##    dbDisconnect(db)
+##    rm(db)
+##    return(ret)
+
 
 add.stats <- function(taxids, nodes) {
     result <- data.frame()
@@ -112,8 +115,11 @@ add.stats <- function(taxids, nodes) {
         ids.not.processed <- c(ids.not.processed, currentid)
     }
     ##    for (tax in ids.to.process) {
-    result <- foreach (tax=ids.to.process, .combine=rbind) %dopar% {
+    result <- foreach (i=1:length(ids.to.process), .combine=rbind) %dopar% {
+        tax <- ids.to.process[i]
+        cat("Processing taxid ", tax, " # ", i, " / ", length(ids.to.process), "\n")
         n <- .rec.add.stats(tax, nodes)
+        cat("Finished processing taxid ", tax, " # ", i, " / ", length(ids.to.process), "\n")
         ## only return rows for which we collected stats, all others have NA in num.seqs.node
         n[which(! is.na(n$num.seqs.node)),]
     }

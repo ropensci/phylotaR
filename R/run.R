@@ -18,10 +18,10 @@ taxdir <- '/home/hettling/ftp.ncbi.nih.gov/pub/taxonomy'
 
 library(foreach)
 library(doMC)
-registerDoMC(4)
+registerDoMC(3)
 
 ## make nodes table
-root.taxon <- 3313 ##1445964  ##1437180 #1445964 ## ##1437180##1445964##3394#3297 #3683 #3684#3683# 
+root.taxon <- 1437180 ##3313 ##1445964  ##1437180 #1445964 ## ##1437180##1445964##3394#3297 #3683 #3684#3683# 
 ##nodes.create(dbname, taxdir, root.taxa=root.taxon, overwrite=T, append=F)
 ##cl <- clusters.create(root.taxon, dbname)
 

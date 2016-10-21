@@ -46,8 +46,7 @@ source('query-local.R')
 ##  PRIMARY KEY ("uid")
 ##);
 
-clusters.ci_gi.seqs.create <- function(root.taxon, file.stem=NULL, max.seqs=25000) {
-    db <- .db(dbname)
+clusters.ci_gi.seqs.create <- function(root.taxon, file.stem=NULL, max.seqs=25000, informative=FALSE) {
 
     cluster.entries <- data.frame()
     seq.entries <- data.frame()
@@ -63,22 +62,27 @@ clusters.ci_gi.seqs.create <- function(root.taxon, file.stem=NULL, max.seqs=2500
         currentid <- head(queue, 1)
         queue <- tail(queue, length(queue)-1)
         cat("Getting seq counts for taxid ", currentid, "\n")
-        if (.local.num.seqs.for.taxid(currentid) > max.seqs) {
+        num.seqs <- .local.num.seqs.for.taxid(currentid)
+        if ( num.seqs > max.seqs) {
             cat("Too many seqs; retreiving children \n")
             queue <- c(queue, .children(currentid))
+        }
+        else if (num.seqs == 0) {
+            cat("No sequences for taxid ", currentid, "\n")
         }
         else {
             cat("Will process ", currentid, "\n")
             taxa.to.process <- c(taxa.to.process, currentid)
         }
-##        cat("Processed taxid ", currentid, "\n")
     }
-##    recover()
-    foreach (taxid=taxa.to.process) %dopar% {
+    foreach (i=1:length(taxa.to.process)) %dopar% {
+##    for (i in 1:length(taxa.to.process)) {
+        taxid <- taxa.to.process[i]
+        cat("Processing taxid ", taxid, " # ", i, " / ", length(taxa.to.process), "\n")
         ## generate data frames with entries for seqs, clusters, and ci_gi
         seqs <- .seqs.for.taxid(taxid)
         seqdf <- .make.seq.entries(seqs)
-        clusters <- .make.clusters(taxid, seqs)
+        clusters <- .make.clusters(taxid, seqs, informative=informative)
         cldf <- .make.cluster.entries(clusters)
         cigidf <- .make.ci_gi.entries(clusters)
 
@@ -91,17 +95,18 @@ clusters.ci_gi.seqs.create <- function(root.taxon, file.stem=NULL, max.seqs=2500
         }
         else {
             clusters.file <- paste0(file.stem, '-clusters.tsv')
-            write.table(cldf, file=clusters.file, append=file.exists(clusters.file), quote=F, sep="\t", row.names=F)
+            write.table(cldf, file=clusters.file, append=file.exists(clusters.file), quote=F, sep="\t", row.names=F, col.names=!file.exists(clusters.file))
             seqs.file <- paste0(file.stem, '-seqs.tsv')
-            write.table(seqdf, file=seqs.file, append=file.exists(seqs.file), quote=F, sep="\t", row.names=F)
+            write.table(seqdf, file=seqs.file, append=file.exists(seqs.file), quote=F, sep="\t", row.names=F, col.names=!file.exists(seqs.file))
             ci_gi.file <- paste0(file.stem, '-ci_gi.tsv')
-            write.table(cigidf, file=ci_gi.file, append=file.exists(ci_gi.file), quote=F, sep="\t", row.names=F)
+            write.table(cigidf, file=ci_gi.file, append=file.exists(ci_gi.file), quote=F, sep="\t", row.names=F, col.names=!file.exists(ci_gi.file))
         }
+        cat("Finished processing taxid ", taxid, " # ", i, " / ", length(taxa.to.process), "\n")
     }
     return (list(clusters=cluster.entries, seqs=seq.entries, ci_gi=ci_gi.entries))
 }
 
-.make.clusters <- function(taxon, seqs=NULL, parent=NULL, blast.results=NULL, recursive=TRUE) {
+.make.clusters <- function(taxon, seqs=NULL, parent=NULL, blast.results=NULL, recursive=TRUE, informative=FALSE) {
 
     cat("Making clusters for taxid ", taxon, "\n")
     ## retreive sequences if not done so before
@@ -115,29 +120,45 @@ clusters.ci_gi.seqs.create <- function(root.taxon, file.stem=NULL, max.seqs=2500
     else {
         gis <- .gis.for.taxid(taxon)
     }
-    if (length(gis)<1) {
+
+    ## Handle empty and singleton clusters
+    if (length(gis)==0) {
         return(list())
     }
-    seqs <- seqs[gis]
+    if (length(gis)==1) {
+        singleton <- list(list(gis=gis, seed_gi=gis))
+        singleton <- .add.cluster.info(singleton, taxon, seqs)      
+        return(singleton)
+    }
+
+    seqs <- seqs[gis]    
     ## if we have not yet blasted the sequences, do so
     if (is.null(blast.results)) {
         cat("Performing all vs all BLAST\n")
-        dbfile <- make.blast.db(seqs)
-        blast.results <- blast.all.vs.all(dbfile)
+        ## make unique name for BLAST files 
+        ## TODO: Change this to tempdir later
+        dir = './blast'
+        if (! dir.exists(dir)) {
+            dir.create(dir)
+        }        
+        dbfile <- paste0('taxon-', taxon, '-db.fa')
+        outfile <- paste0('taxon-', taxon, '-blastout.txt')
+        make.blast.db(seqs, dbfile=dbfile, dir=dir)
+        blast.results <- blast.all.vs.all(dbfile, outfile=outfile, dir=dir)
         cat("Number of BLAST results ", nrow(blast.results), "\n")
         cat("Filtering BLAST results\n")
-        filtered.blast.results <- filter.blast.results(blast.results, seqs)
+        filtered.blast.results <- filter.blast.results(blast.results, seqs)       
     }
     else {
         ##  reduce blast results such that include only the gis for the current taxon
-        cat("Taking BLAST results from parent cluster\n")
+        cat("Using BLAST results from parent cluster\n")
         filtered.blast.results <- blast.results[which(blast.results$subject.id %in% gis),]
         filtered.blast.results <- filtered.blast.results[which(filtered.blast.results$query.id %in% gis),]
     }
     ## sequence clusters are stored in a list of lists, named by gi
     ## Get top-level clusters
     cat("Clustering BLAST results\n")
-    clusters <- cluster.blast.results(filtered.blast.results)
+    clusters <- cluster.blast.results(filtered.blast.results, informative=informative)
 
     ## exit if there are no clusters
     if (length(clusters) < 1) {
