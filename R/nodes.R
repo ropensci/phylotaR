@@ -31,6 +31,19 @@ source('ncbi-remote.R')
 ##  PRIMARY KEY ("ti")
 ##);
 
+remote.nodes.create <- function(root.taxa = c(33090, 4751, 33208), file.name='nodes.tsv', cores=3) {
+    require('taxize')
+    nodes <- do.call(rbind, lapply(root.taxa, ncbi_get_taxon_summary))
+    nodes <- transform(nodes, uid=as.numeric(uid))
+
+    for (tax in nodes$uid) {
+        n <- .add.stats.rem(tax, nodes, recursive=TRUE)
+    }
+    
+    
+}
+
+
 ## The table is created from the 'nodes' table in the NCBI taxonomy
 ## Therefore, a directory with the path where the NCBI taxonomy dump
 ## is located must be provided
@@ -50,7 +63,7 @@ nodes.create <- function(dbloc, taxdir, root.taxa = c(33090, 4751, 33208), file.
     ## CAUTION: loop below could get stuck if there are not enough echildren and many cores!
     while (length(ids.to.process) < (cores*2)) {
         currentid <- head(ids.to.process, 1)
-
+        
         ## do not go further down if we are at genus or lower, because we would't get the field ti_genus of the children!
         if (getrank(currentid, NULL, nodes=ncbi.nodes) %in% c('genus', 'species', 'subspecies', 'varietas', 'forma'))
             break
@@ -152,7 +165,7 @@ nodes.create <- function(dbloc, taxdir, root.taxa = c(33090, 4751, 33208), file.
                ti.genus= ifelse(is.null(ti.genus), NA, ti.genus),
                num.genera=0,
                num.otu.desc=1)
-
+    stats <- sapply(stats, as.numeric)
     ## Ranks for which we directly get the species count;
     ## for ranks above this, we will get the sum of their children.
     ## For taxa with these ranks, there will also be a 'n_gi_node'
@@ -220,6 +233,94 @@ nodes.create <- function(dbloc, taxdir, root.taxa = c(33090, 4751, 33208), file.
     cat("Added species counts for taxid ", taxid, "\n")
     return(nodes)
 }
+
+.add.stats.rem <- function(taxid, nodes, recursive=FALSE) {
+
+    ## ti_genus might have been passed down from parent node
+
+    ti.genus <- nodes[which(nodes$id==taxid), 'ti.genus']
+    
+    stats <- c(num.seqs.node=0,
+               num.seqs.subtree.model=0,
+               num.seqs.subtree.nonmodel=0,
+               num.leaf.desc=0, ## also counts itsself, for a leaf it is 1
+               num.spec.desc=0, ## also counts itsself, for a species it is 1
+               num.spec.model=0,
+               ti.genus= ifelse(is.null(ti.genus), NA, ti.genus),
+               num.genera=0,
+               num.otu.desc=1)
+
+    ## Ranks for which we directly get the species count;
+    ## for ranks above this, we will get the sum of their children.
+    ## For taxa with these ranks, there will also be a 'n_gi_node'
+    node.ranks <- c('species', 'subspecies', 'varietas', 'forma')
+
+    ## Recursion anchor
+    rank <- nodes[match(taxid, nodes$uid),'rank']
+    if (rank %in% node.ranks) {
+        curr.num.seqs <- .num.seqs.for.taxid(taxid)
+        num.seqs.node <- curr.num.seqs
+        stats['num.seqs.node'] <- curr.num.seqs
+        if (curr.num.seqs >= 20000) {
+            num.seqs.subtree.model <- curr.num.seqs
+            stats['num.seqs.subtree.model'] <- curr.num.seqs
+        } else {
+            num.seqs.subtree.nonmodel <- curr.num.seqs
+            stats['num.seqs.subtree.nonmodel'] <- curr.num.seqs
+        }
+        if (rank == 'species') {
+            stats['num.spec.desc'] <- 1
+            if (curr.num.seqs >= 20000) {
+                stats['num.spec.model'] <- 1
+            }
+        }
+    }
+
+    if (rank == 'genus') {
+        stats['ti.genus'] <- taxid
+    }
+
+    ch <- taxize::children(taxid, db='ncbi')[[1]]
+    if (nrow(ch)==0) {
+        stats['num.leaf.desc'] <- stats['num.leaf.desc'] + 1
+    }
+    
+    ## add counts from children
+    for (child in ch$childtaxa_id) {
+
+        ## extend nodes for child
+        nodes <- rbind(nodes, ncbi_get_taxon_summary(child))
+        ## ti.genus has to be passed down the tree and not upwards...
+        if (! is.na(stats['ti.genus'])) {
+             nodes[which(nodes$uid==child),'ti.genus'] <- stats['ti.genus']
+        }
+        if (recursive == TRUE) {
+            ## call function recursively for children
+            nodes <- .add.stats.rem(child, nodes, recursive=TRUE)
+        }
+        ## add subtree sequence counts for higher level nodes
+        if (! rank %in% node.ranks) {
+            stats['num.seqs.subtree.model'] <- stats['num.seqs.subtree.model'] + nodes[which(nodes$uid==child),'num.seqs.subtree.model']
+            stats['num.seqs.subtree.nonmodel'] <- stats['num.seqs.subtree.nonmodel'] + nodes[which(nodes$uid==child),'num.seqs.subtree.nonmodel']
+        }
+        if (nodes[match(taxid, nodes$uid),'rank'] == 'genus') {
+            stats['num.genera'] <- stats['num.genera'] + 1
+        }
+        stats['num.leaf.desc'] <- stats['num.leaf.desc'] + nodes[which(nodes$uid==child),'num.leaf.desc']
+        stats['num.otu.desc'] <- stats['num.otu.desc'] + nodes[which(nodes$uid==child),'num.otu.desc']
+        stats['num.spec.desc'] <- stats['num.spec.desc'] + nodes[which(nodes$uid==child),'num.spec.desc']
+        stats['num.spec.model'] <- stats['num.spec.model'] + nodes[which(nodes$uid==child),'num.spec.model']
+        stats['num.genera'] <- stats['num.genera'] + nodes[which(nodes$uid==child),'num.genera']
+    }
+    ## add stats to data frame
+    for (n in names(stats)) {
+        nodes[which(nodes$uid==taxid),n] <- stats[n]
+    }
+
+    cat("Added species counts for taxid ", taxid, "\n")
+    return(nodes)
+}
+
 
 descendants <- function(id, nodes) {
     queue <- id
