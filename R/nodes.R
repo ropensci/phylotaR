@@ -81,16 +81,22 @@ nodes.create <- function(dbloc, taxdir, root.taxa = c(33090, 4751, 33208), file.
 
         ## remove from queue
         ids.to.process <- tail(ids.to.process, length(ids.to.process)-1)
-
+        
         if (currentid %in% ids.skip) {
             cat("Node with ID ", currentid, " already processed. Skipping \n");
             next
         }
 
-        for (ch in children(currentid, ncbi.nodes)) {
-            ids.to.process <- c(ids.to.process, ch)
+        for (ch in children(currentid, ncbi.nodes)) {            
+            if (! ch %in% ids.skip) {
+                ids.to.process <- c(ids.to.process, ch)
+            }
+            else {
+                cat("Child ", ch, " already processed. Skipping \n")
+            }
         }
         ids.not.processed <- c(ids.not.processed, currentid)
+        
     }
 
     ##    for (tax in ids.to.process) {
