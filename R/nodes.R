@@ -54,22 +54,38 @@ nodes.create <- function(dbloc, taxdir, root.taxa = c(33090, 4751, 33208), file.
     ncbi.nodes <- getnodes(taxdir)
     ncbi.names <- getnames(taxdir)
 
-    ## do calculation in parallel; pick roughly a number of taxon ids
+    ## Nodes that are alreay in the table can be skipped.
+    ## Try to load nodes table and collect ids of nodes
+    ## that are already processed
+    ids.skip <- vector()
+    if (file.exists(file.name)) {
+        df <- read.table(file.name, header=T)
+        ids.skip <- df$ti
+    }
+    
+    ## Do calculation in parallel; pick roughly a number of taxon ids
     ## equal to twice the number of CPUs available, to make
     ## sure we won't have unused CPUs
     ids.to.process <- root.taxa
     ids.not.processed <- vector()
-
+       
     ## CAUTION: loop below could get stuck if there are not enough echildren and many cores!
-    while (length(ids.to.process) < (cores*2)) {
+    while (length(ids.to.process) < (cores*2) && length(ids.to.process > 0)) {
+        ## skip if node entry was already generated: 
         currentid <- head(ids.to.process, 1)
-        
+        cat("CurrentID : ", currentid, "\n")        
+
         ## do not go further down if we are at genus or lower, because we would't get the field ti_genus of the children!
         if (getrank(currentid, NULL, nodes=ncbi.nodes) %in% c('genus', 'species', 'subspecies', 'varietas', 'forma'))
             break
 
-        cat("CurrentID : ", currentid, "\n")
+        ## remove from queue
         ids.to.process <- tail(ids.to.process, length(ids.to.process)-1)
+
+        if (currentid %in% ids.skip) {
+            cat("Node with ID ", currentid, " already processed. Skipping \n");
+            next
+        }
 
         for (ch in children(currentid, ncbi.nodes)) {
             ids.to.process <- c(ids.to.process, ch)
