@@ -76,8 +76,8 @@ nodes.create <- function(dbloc, taxdir, root.taxa = c(33090, 4751, 33208), file.
         cat("CurrentID : ", currentid, "\n")        
 
         ## do not go further down if we are at genus or lower, because we would't get the field ti_genus of the children!
-        if (getrank(currentid, NULL, nodes=ncbi.nodes) %in% c('genus', 'species', 'subspecies', 'varietas', 'forma'))
-            break
+        ##if (getrank(currentid, NULL, nodes=ncbi.nodes) %in% c('genus', 'species', 'subspecies', 'varietas', 'forma'))
+        ##    break
 
         ## remove from queue
         ids.to.process <- tail(ids.to.process, length(ids.to.process)-1)
@@ -355,6 +355,20 @@ descendants <- function(id, nodes) {
         queue <- c(queue, currentchildren)
     }
     return(result)
+}
+
+num.descendants <- function(id, nodes) {
+    queue <- id
+    result <- 0
+    while (length(queue)>0) {        
+        result <- result + length(queue)
+        newqueue <- foreach (i=seq_along(queue), .combine=c) %dopar% {        
+            children(queue[i], nodes)
+        }
+        queue <- newqueue
+    }
+    return(result-1)
+    
 }
 
 children <- function(id, nodes) {
