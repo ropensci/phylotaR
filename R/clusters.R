@@ -46,7 +46,7 @@ source('query-local.R')
 ##  PRIMARY KEY ("uid")
 ##);
 
-clusters.ci_gi.seqs.create <- function(root.taxon, file.stem=NULL, max.seqs=25000, informative=FALSE) {
+clusters.ci_gi.seqs.create <- function(root.taxon=c(33090, 4751, 33208), file.stem=NULL, max.seqs=25000, informative=FALSE) {
 
     cluster.entries <- data.frame()
     seq.entries <- data.frame()
@@ -58,7 +58,7 @@ clusters.ci_gi.seqs.create <- function(root.taxon, file.stem=NULL, max.seqs=2500
 
     queue <- root.taxon
     while(length(queue) > 0) {
-
+        
         currentid <- head(queue, 1)
         queue <- tail(queue, length(queue)-1)
         cat("Getting seq counts for taxid ", currentid, "\n")

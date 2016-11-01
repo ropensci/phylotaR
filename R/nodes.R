@@ -38,11 +38,8 @@ remote.nodes.create <- function(root.taxa = c(33090, 4751, 33208), file.name='no
 
     for (tax in nodes$uid) {
         n <- .add.stats.rem(tax, nodes, recursive=TRUE)
-    }
-    
-    
+    }        
 }
-
 
 ## The table is created from the 'nodes' table in the NCBI taxonomy
 ## Therefore, a directory with the path where the NCBI taxonomy dump
@@ -54,6 +51,10 @@ nodes.create <- function(dbloc, taxdir, root.taxa = c(33090, 4751, 33208), file.
     ncbi.nodes <- getnodes(taxdir)
     ncbi.names <- getnames(taxdir)
 
+    set <- get.manageable.node.set(root.taxa, ncbi.nodes, max.descendants=20000, timeout=10)
+    ids.to.process <- set$manageable.nodes
+    ids.not.processed <- set$rejected.nodes
+       
     ## Nodes that are alreay in the table can be skipped.
     ## Try to load nodes table and collect ids of nodes
     ## that are already processed
@@ -61,46 +62,11 @@ nodes.create <- function(dbloc, taxdir, root.taxa = c(33090, 4751, 33208), file.
     if (file.exists(file.name)) {
         df <- read.table(file.name, header=T)
         ids.skip <- df$ti
+        ## remove from taxa to process
+        ids.to.process <- ids.to.process[! ids.to.process %in% ids.skip]
+        ids.not.processed <- ids.not.processed[! ids.not.processed %in% ids.skip]
     }
-    
-    ## Do calculation in parallel; pick roughly a number of taxon ids
-    ## equal to twice the number of CPUs available, to make
-    ## sure we won't have unused CPUs
-    ids.to.process <- root.taxa
-    ids.not.processed <- vector()
-       
-    ## CAUTION: loop below could get stuck if there are not enough echildren and many cores!
-    while (length(ids.to.process) < (cores*2) && length(ids.to.process > 0)) {
-        ## skip if node entry was already generated: 
-        currentid <- head(ids.to.process, 1)
-        cat("CurrentID : ", currentid, "\n")        
-
-        ## do not go further down if we are at genus or lower, because we would't get the field ti_genus of the children!
-        ##if (getrank(currentid, NULL, nodes=ncbi.nodes) %in% c('genus', 'species', 'subspecies', 'varietas', 'forma'))
-        ##    break
-
-        ## remove from queue
-        ids.to.process <- tail(ids.to.process, length(ids.to.process)-1)
-        
-        if (currentid %in% ids.skip) {
-            cat("Node with ID ", currentid, " already processed. Skipping \n");
-            next
-        }
-
-        for (ch in children(currentid, ncbi.nodes)) {            
-            if (! ch %in% ids.skip) {
-                ids.to.process <- c(ids.to.process, ch)
-            }
-            else {
-                cat("Child ", ch, " already processed. Skipping \n")
-            }
-        }
-        ids.not.processed <- c(ids.not.processed, currentid)
-        
-    }
-
-    ##    for (tax in ids.to.process) {
-    ##nodes.written <- data.frame()
+            
     cat("Adding ", length(ids.to.process), " nodes recursively, in parallel \n")
     ##for (i in seq_along(ids.to.process)) {
     nodes.written <- foreach (i=seq_along(ids.to.process), .combine=rbind) %dopar% {
@@ -125,6 +91,38 @@ nodes.create <- function(dbloc, taxdir, root.taxa = c(33090, 4751, 33208), file.
         .write.row(current.nodes, ncbi.names, file.name)
         cat("Finished processing taxid ", tax, " # ", i, " / ", length(ids.not.processed), "\n")
     }
+}
+
+## Given a root taxon, returns a set of nodes that only have up to a maximum
+## number of descendant nodes
+get.manageable.node.set <- function(root.taxa, ncbi.nodes, max.descendants=10000, timeout=10) {
+    queue <- root.taxa
+    manageable.nodes <- vector()
+    num.descendants <- vector()
+    rejected.nodes <- vector()
+    while(length(queue) > 0) {
+        id <- head(queue, 1)
+        
+        ## If there are more descendants than max.descendants or retrieveing
+        ## the number takes longer than <timeout> secounds, discard the node 
+        ## and add its children to the queue        
+        n.desc <- .eval.time.limit(num.descendants(id, ncbi.nodes), cpu=timeout)
+        if (is.null(n.desc) || n.desc > max.descendants) {
+            queue <- c(queue, children(id, ncbi.nodes))            
+            rejected.nodes <- c(rejected.nodes, id)
+            cat("Taxon ", id, " has too many descendants or timeout reached. Processing child taxa.\n")
+        }
+        else {
+            manageable.nodes <- c(manageable.nodes, id)
+            num.descendants <- c(num.descendants, n.desc)
+            cat("Taxon ", id, " has maneagable number of descendants: ", n.desc, "\n")
+        }
+        ## remove current node from queue
+        queue <- tail(queue, length(queue)-1)
+    }
+    return(list(manageable.nodes=manageable.nodes,
+                rejected.nodes=rejected.nodes,
+                num.descendants=num.descendants))
 }
 
 .write.row <- function(nodes, ncbi.names, file.name) {
@@ -367,11 +365,15 @@ num.descendants <- function(id, nodes) {
         }
         queue <- newqueue
     }
-    return(result-1)
-    
+    return(result-1)    
 }
 
 children <- function(id, nodes) {
     return(nodes$id[which(nodes$parent==id)])
 }
 
+.eval.time.limit <- function(expr, cpu = Inf, elapsed = Inf) {
+    y <- try({setTimeLimit(cpu, elapsed); expr}, silent = TRUE) 
+    setTimeLimit()
+    if(inherits(y, "try-error")) NULL else y 
+}
