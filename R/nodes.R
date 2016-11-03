@@ -48,13 +48,15 @@ nodes.create <- function(dbloc, taxdir, root.taxa = c(33090, 4751, 33208), file.
     db <- .db(dbloc)
 
     ## Get data from NCBI taxonomy dump
-    ncbi.nodes <- getnodes(taxdir)
-    ncbi.names <- getnames(taxdir)
+    if (! exists('ncbi.nodes')) 
+        ncbi.nodes <<- getnodes(taxdir)
+    if (! exists('ncbi.names'))
+        ncbi.names <<- getnames(taxdir)
 
-    set <- get.manageable.node.set(root.taxa, ncbi.nodes, max.descendants=20000, timeout=10)
+    set <- get.manageable.node.set(root.taxa, ncbi.nodes, max.descendants=10000, timeout=10)
     ids.to.process <- set$manageable.nodes
     ids.not.processed <- set$rejected.nodes
-       
+
     ## Nodes that are alreay in the table can be skipped.
     ## Try to load nodes table and collect ids of nodes
     ## that are already processed
@@ -66,29 +68,35 @@ nodes.create <- function(dbloc, taxdir, root.taxa = c(33090, 4751, 33208), file.
         ids.to.process <- ids.to.process[! ids.to.process %in% ids.skip]
         ids.not.processed <- ids.not.processed[! ids.not.processed %in% ids.skip]
     }
-            
-    cat("Adding ", length(ids.to.process), " nodes recursively, in parallel \n")
-    ##for (i in seq_along(ids.to.process)) {
-    nodes.written <- foreach (i=seq_along(ids.to.process), .combine=rbind) %dopar% {
+    
+    cat("Adding ", length(ids.to.process), " nodes recursively, in parallel \n")    
+    ##for (i in seq_along(ids.to.process)) {        
+    foreach (i=seq_along(ids.to.process)) %dopar% {
         tax <- ids.to.process[i]
         cat("Recursively processing taxid ", tax, " # ", i, " / ", length(ids.to.process), "\n")
-        n <- .add.stats(tax, ncbi.nodes, recursive=TRUE)
-        ## only return rows for which we collected stats, all others have NA in num.seqs.node
-        current.nodes <- n[which(! is.na(n$num.seqs.node)),]
-        .write.row(current.nodes, ncbi.names, file.name)
+        start <- .init.nodes.df()
+        n <- .add.stats(tax, start, recursive=TRUE)
+        ## only return rows for which we collected stats, all others have NA in n_gi_node
+        .write.row(n, ncbi.names, file.name)
         cat("Finished processing taxid ", tax, " # ", i, " / ", length(ids.to.process), "\n")
-        ##nodes.written <- rbind(nodes.written, current.nodes)
-        current.nodes
     }
-    ## add the top nodes non-recursively
-    cat("Adding ", length(ids.not.processed), " top-level nodes non-recursively, in parallel \n")
-    ##for (i in seq_along(ids.not.processed)) {
-    foreach(i=seq_along(ids.not.processed)) %dopar% {
-        tax <- ids.to.process[i]
-        cat("Processing taxid ", tax, " # ", i, " / ", length(ids.not.processed), "\n")
+
+    ## Add the top nodes non-recursively. This has to be in reversed order to make sure a parent is not
+    ## inserted before it's children, since we need the info from the children. Therefore, this must not
+    ## happen in parallel!
+    cat("Adding ", length(ids.not.processed), " top-level nodes non-recursively, sequentially \n")    
+    for (i in seq_along(ids.not.processed)) {
+        tax <- rev(ids.not.processed)[i]
+        ##foreach(i=seq_along(ids.not.processed)) %dopar% {        
+        ## reload nodes that have been written before
+        nodes.written <- read.table(file.name, header=T)
+        nodes.written <- nodes.written[,c('ti','ti_anc','rank','n_gi_node','n_gi_sub_nonmodel','n_gi_sub_model',
+                                          'n_sp_desc', 'n_sp_model', 'n_leaf_desc', 'n_otu_desc', 'ti_genus',
+                                          'n_genera')]
+
+        cat("Processing taxid ", tax, " # ", i, " / ", length(ids.not.processed), "\n")        
         n <- .add.stats(tax, nodes.written, recursive=FALSE)
-        current.nodes <- n[match(tax, n$id),]
-        .write.row(current.nodes, ncbi.names, file.name)
+        .write.row(n[match(tax, n$ti),], ncbi.names, file.name)
         cat("Finished processing taxid ", tax, " # ", i, " / ", length(ids.not.processed), "\n")
     }
 }
@@ -128,33 +136,33 @@ get.manageable.node.set <- function(root.taxa, ncbi.nodes, max.descendants=10000
 .write.row <- function(nodes, ncbi.names, file.name) {
     ## Prepare for writing to file
     ## add other column values
-    taxon.name <- as.character(ncbi.names[match(nodes$id, ncbi.names$id),"name"])
+    taxon_name<- as.character(ncbi.names[match(nodes$ti, ncbi.names$id),"name"])
     commons <- ncbi.names[grep ('common', ncbi.names$type),]
-    common.name <- as.character(commons$name[match(nodes$id, commons$id)])
+    common_name <- as.character(commons$name[match(nodes$ti, commons$id)])
 
     ## Create dataframe with correct column names that will be
     ## inserted into the database. Some fields (such as cluster info) will need additional
     ## information and will be filled later
-    nodes.df <- data.frame(ti=as.integer(nodes$id),
-                           ti_anc=as.integer(nodes$parent),
+    nodes.df <- data.frame(ti=as.integer(nodes$ti),
+                           ti_anc=as.integer(nodes$ti_anc),
                            terminal_flag=NA,
                            rank_flag=as.integer(! nodes$rank=='no rank'),
                            model=NA,
-                           taxon_name=taxon.name,
-                           common_name=common.name,
+                           taxon_name=taxon_name,
+                           common_name=common_name,
                            rank=as.character(nodes$rank),
-                           n_gi_node=as.integer(nodes$num.seqs.node),
-                           n_gi_sub_nonmodel=as.integer(nodes$num.seqs.subtree.nonmodel),
-                           n_gi_sub_model=as.integer(nodes$num.seqs.subtree.model),
+                           n_gi_node=as.integer(nodes$n_gi_node),
+                           n_gi_sub_nonmodel=as.integer(nodes$n_gi_sub_nonmodel),
+                           n_gi_sub_model=as.integer(nodes$n_gi_sub_model),
                            n_clust_node=NA,
                            n_clust_sub=NA,
                            n_PIclust_sub=NA,
-                           n_sp_desc=as.integer(nodes$num.spec.desc),
-                           n_sp_model=as.integer(nodes$num.spec.model),
-                           n_leaf_desc=as.integer(nodes$num.leaf.desc),
-                           n_otu_desc=as.integer(nodes$num.otu.desc),
-                           ti_genus=as.integer(nodes$ti.genus),
-                           n_genera=as.integer(nodes$num.genera)
+                           n_sp_desc=as.integer(nodes$n_sp_desc),
+                           n_sp_model=as.integer(nodes$n_sp_model),
+                           n_leaf_desc=as.integer(nodes$n_leaf_desc),
+                           n_otu_desc=as.integer(nodes$n_otu_desc),
+                           ti_genus=as.integer(nodes$ti_genus),
+                           n_genera=as.integer(nodes$n_genera)
                            )
     write.table(nodes.df, file=file.name, sep="\t", row.names=F, append=file.exists(file.name), col.names=!file.exists(file.name))
     cat("Wrote ", nrow(nodes.df), " entries to file\n")
@@ -169,63 +177,88 @@ get.manageable.node.set <- function(root.taxa, ncbi.nodes, max.descendants=10000
 ##    rm(db)
 ##    return(ret)
 
+.init.nodes.df <- function() {
+    nodes.df <- data.frame(ti=numeric(),
+                           ti_anc=numeric(),
+                           rank=character(),
+                           n_gi_node=numeric(),
+                           n_gi_sub_nonmodel=numeric(),
+                           n_gi_sub_model=numeric(),
+                           n_sp_desc=numeric(),
+                           n_sp_model=numeric(),
+                           n_leaf_desc=numeric(),
+                           n_otu_desc=numeric(),
+                           ti_genus=numeric(),
+                           n_genera=numeric()
+                           )
+    return(nodes.df)
+}
+
 ## Recursive function to add number of sequences for each taxon to table as produced by getnodes().
 ## We set sequence counts for 'node' and 'subtree', if a node is of rank species or lower. For subtree,
 ## this includes all desendants. We also distinguish between model (>=20000 seqs per node) and nonmodel organisms.
 .add.stats <- function(taxid, nodes, recursive=FALSE) {
 
+    ## create node vector storing all relevant info
+    nodeinfo <- ncbi.nodes[match(taxid, ncbi.nodes$id),]
+    
     ## ti_genus might have been passed down from parent node
-    ti.genus <- nodes[which(nodes$id==taxid), 'ti.genus']
-    stats <- c(num.seqs.node=0,
-               num.seqs.subtree.model=0,
-               num.seqs.subtree.nonmodel=0,
-               num.leaf.desc=0, ## also counts itsself, for a leaf it is 1
-               num.spec.desc=0, ## also counts itsself, for a species it is 1
-               num.spec.model=0,
-               ti.genus= ifelse(is.null(ti.genus), NA, ti.genus),
-               num.genera=0,
-               num.otu.desc=1)
-    stats <- sapply(stats, as.numeric)
+    ti_genus <- nodes[which(nodes$ti==taxid), 'ti_genus']
+    stats <- data.frame(ti=taxid,
+                        ti_anc=nodeinfo$parent,
+                        rank=nodeinfo$rank,        
+                        n_gi_node=0,
+                        n_gi_sub_model=0,
+                        n_gi_sub_nonmodel=0,
+                        n_leaf_desc=0, ## also counts itsself, for a leaf it is 1
+                        n_sp_desc=0, ## also counts itsself, for a species it is 1
+                        n_sp_model=0,
+                        ti_genus= ifelse(is.null(ti_genus), NA, ti_genus),
+                        n_genera=0,
+                        n_otu_desc=1)
+    ## stats <- sapply(stats, as.numeric)
+    
     ## Ranks for which we directly get the species count;
     ## for ranks above this, we will get the sum of their children.
     ## For taxa with these ranks, there will also be a 'n_gi_node'
     node.ranks <- c('species', 'subspecies', 'varietas', 'forma')
 
     ## Recursion anchor
-    rank <- getrank(taxid, NULL, nodes=nodes)
+    rank <- getrank(taxid, NULL, nodes=ncbi.nodes)
+    
     if (rank %in% node.ranks) {
         curr.num.seqs <- .num.seqs.for.taxid(taxid)
-        num.seqs.node <- curr.num.seqs
-        stats['num.seqs.node'] <- curr.num.seqs
+        n_gi_node <- curr.num.seqs
+        stats['n_gi_node'] <- curr.num.seqs
         if (curr.num.seqs >= 20000) {
-            num.seqs.subtree.model <- curr.num.seqs
-            stats['num.seqs.subtree.model'] <- curr.num.seqs
+            n_gi_sub_model <- curr.num.seqs
+            stats['n_gi_sub_model'] <- curr.num.seqs
         } else {
-            num.seqs.subtree.nonmodel <- curr.num.seqs
-            stats['num.seqs.subtree.nonmodel'] <- curr.num.seqs
+            n_gi_sub_nonmodel <- curr.num.seqs
+            stats['n_gi_sub_nonmodel'] <- curr.num.seqs
         }
         if (rank == 'species') {
-            stats['num.spec.desc'] <- 1
+            stats['n_sp_desc'] <- 1
             if (curr.num.seqs >= 20000) {
-                stats['num.spec.model'] <- 1
+                stats['n_sp_model'] <- 1
             }
         }
     }
 
     if (rank == 'genus') {
-        stats['ti.genus'] <- taxid
+        stats['ti_genus'] <- taxid
     }
 
-    ch <- children(taxid, nodes)
+    ch <- children(taxid, ncbi.nodes)
     if (length(ch)==0) {
-        stats['num.leaf.desc'] <- stats['num.leaf.desc'] + 1
+        stats['n_leaf_desc'] <- stats['n_leaf_desc'] + 1
     }
 
     ## add counts from children
     for (child in ch) {
-        ## ti.genus has to be passed down the tree and not upwards...
-        if (! is.na(stats['ti.genus'])) {
-             nodes[which(nodes$id==child),'ti.genus'] <- stats['ti.genus']
+        ## ti_genus has to be passed down the tree and not upwards...
+        if (! is.na(stats['ti_genus'])) {
+             nodes[which(nodes$ti==child),'ti_genus'] <- stats['ti_genus']
         }
         if (recursive == TRUE) {
             ## call function recursively for children
@@ -233,23 +266,25 @@ get.manageable.node.set <- function(root.taxa, ncbi.nodes, max.descendants=10000
         }
         ## add subtree sequence counts for higher level nodes
         if (! rank %in% node.ranks) {
-            stats['num.seqs.subtree.model'] <- stats['num.seqs.subtree.model'] + nodes[which(nodes$id==child),'num.seqs.subtree.model']
-            stats['num.seqs.subtree.nonmodel'] <- stats['num.seqs.subtree.nonmodel'] + nodes[which(nodes$id==child),'num.seqs.subtree.nonmodel']
+            stats['n_gi_sub_model'] <- stats['n_gi_sub_model'] + nodes[which(nodes$ti==child),'n_gi_sub_model']
+            stats['n_gi_sub_nonmodel'] <- stats['n_gi_sub_nonmodel'] + nodes[which(nodes$ti==child),'n_gi_sub_nonmodel']
         }
-        if (getrank(child, NULL, nodes) == 'genus') {
-            stats['num.genera'] <- stats['num.genera'] + 1
+        if (getrank(child, NULL, nodes=ncbi.nodes) == 'genus') {
+            stats['n_genera'] <- stats['n_genera'] + 1
         }
-        stats['num.leaf.desc'] <- stats['num.leaf.desc'] + nodes[which(nodes$id==child),'num.leaf.desc']
-        stats['num.otu.desc'] <- stats['num.otu.desc'] + nodes[which(nodes$id==child),'num.otu.desc']
-        stats['num.spec.desc'] <- stats['num.spec.desc'] + nodes[which(nodes$id==child),'num.spec.desc']
-        stats['num.spec.model'] <- stats['num.spec.model'] + nodes[which(nodes$id==child),'num.spec.model']
-        stats['num.genera'] <- stats['num.genera'] + nodes[which(nodes$id==child),'num.genera']
+        stats['n_leaf_desc'] <- stats['n_leaf_desc'] + nodes[which(nodes$ti==child),'n_leaf_desc']
+        stats['n_otu_desc'] <- stats['n_otu_desc'] + nodes[which(nodes$ti==child),'n_otu_desc']
+        stats['n_sp_desc'] <- stats['n_sp_desc'] + nodes[which(nodes$ti==child),'n_sp_desc']
+        stats['n_sp_model'] <- stats['n_sp_model'] + nodes[which(nodes$ti==child),'n_sp_model']
+        stats['n_genera'] <- stats['n_genera'] + nodes[which(nodes$ti==child),'n_genera']
     }
     ## add stats to data frame
-    for (n in names(stats)) {
-        nodes[which(nodes$id==taxid),n] <- stats[n]
-    }
-
+    #for (n in names(stats)) {
+    #    nodes[which(nodes$ti==taxid),n] <- stats[n]
+    #}
+    
+    nodes <- rbind(nodes, stats[names(nodes)])
+    
     cat("Added species counts for taxid ", taxid, "\n")
     return(nodes)
 }
@@ -258,17 +293,17 @@ get.manageable.node.set <- function(root.taxa, ncbi.nodes, max.descendants=10000
 
     ## ti_genus might have been passed down from parent node
 
-    ti.genus <- nodes[which(nodes$id==taxid), 'ti.genus']
+    ti_genus <- nodes[which(nodes$ti==taxid), 'ti_genus']
     
-    stats <- c(num.seqs.node=0,
-               num.seqs.subtree.model=0,
-               num.seqs.subtree.nonmodel=0,
-               num.leaf.desc=0, ## also counts itsself, for a leaf it is 1
-               num.spec.desc=0, ## also counts itsself, for a species it is 1
-               num.spec.model=0,
-               ti.genus= ifelse(is.null(ti.genus), NA, ti.genus),
-               num.genera=0,
-               num.otu.desc=1)
+    stats <- c(n_gi_node=0,
+               n_gi_sub_model=0,
+               n_gi_sub_nonmodel=0,
+               n_leaf_desc=0, ## also counts itsself, for a leaf it is 1
+               n_sp_desc=0, ## also counts itsself, for a species it is 1
+               n_sp_model=0,
+               ti_genus= ifelse(is.null(ti_genus), NA, ti_genus),
+               n_genera=0,
+               n_otu_desc=1)
 
     ## Ranks for which we directly get the species count;
     ## for ranks above this, we will get the sum of their children.
@@ -279,30 +314,30 @@ get.manageable.node.set <- function(root.taxa, ncbi.nodes, max.descendants=10000
     rank <- nodes[match(taxid, nodes$uid),'rank']
     if (rank %in% node.ranks) {
         curr.num.seqs <- .num.seqs.for.taxid(taxid)
-        num.seqs.node <- curr.num.seqs
-        stats['num.seqs.node'] <- curr.num.seqs
+        n_gi_node <- curr.num.seqs
+        stats['n_gi_node'] <- curr.num.seqs
         if (curr.num.seqs >= 20000) {
-            num.seqs.subtree.model <- curr.num.seqs
-            stats['num.seqs.subtree.model'] <- curr.num.seqs
+            n_gi_sub_model <- curr.num.seqs
+            stats['n_gi_sub_model'] <- curr.num.seqs
         } else {
-            num.seqs.subtree.nonmodel <- curr.num.seqs
-            stats['num.seqs.subtree.nonmodel'] <- curr.num.seqs
+            n_gi_sub_nonmodel <- curr.num.seqs
+            stats['n_gi_sub_nonmodel'] <- curr.num.seqs
         }
         if (rank == 'species') {
-            stats['num.spec.desc'] <- 1
+            stats['n_sp_desc'] <- 1
             if (curr.num.seqs >= 20000) {
-                stats['num.spec.model'] <- 1
+                stats['n_sp_model'] <- 1
             }
         }
     }
 
     if (rank == 'genus') {
-        stats['ti.genus'] <- taxid
+        stats['ti_genus'] <- taxid
     }
 
     ch <- taxize::children(taxid, db='ncbi')[[1]]
     if (nrow(ch)==0) {
-        stats['num.leaf.desc'] <- stats['num.leaf.desc'] + 1
+        stats['n_leaf_desc'] <- stats['n_leaf_desc'] + 1
     }
     
     ## add counts from children
@@ -310,9 +345,9 @@ get.manageable.node.set <- function(root.taxa, ncbi.nodes, max.descendants=10000
 
         ## extend nodes for child
         nodes <- rbind(nodes, ncbi_get_taxon_summary(child))
-        ## ti.genus has to be passed down the tree and not upwards...
-        if (! is.na(stats['ti.genus'])) {
-             nodes[which(nodes$uid==child),'ti.genus'] <- stats['ti.genus']
+        ## ti_genus has to be passed down the tree and not upwards...
+        if (! is.na(stats['ti_genus'])) {
+             nodes[which(nodes$uid==child),'ti_genus'] <- stats['ti_genus']
         }
         if (recursive == TRUE) {
             ## call function recursively for children
@@ -320,17 +355,17 @@ get.manageable.node.set <- function(root.taxa, ncbi.nodes, max.descendants=10000
         }
         ## add subtree sequence counts for higher level nodes
         if (! rank %in% node.ranks) {
-            stats['num.seqs.subtree.model'] <- stats['num.seqs.subtree.model'] + nodes[which(nodes$uid==child),'num.seqs.subtree.model']
-            stats['num.seqs.subtree.nonmodel'] <- stats['num.seqs.subtree.nonmodel'] + nodes[which(nodes$uid==child),'num.seqs.subtree.nonmodel']
+            stats['n_gi_sub_model'] <- stats['n_gi_sub_model'] + nodes[which(nodes$uid==child),'n_gi_sub_model']
+            stats['n_gi_sub_nonmodel'] <- stats['n_gi_sub_nonmodel'] + nodes[which(nodes$uid==child),'n_gi_sub_nonmodel']
         }
         if (nodes[match(taxid, nodes$uid),'rank'] == 'genus') {
-            stats['num.genera'] <- stats['num.genera'] + 1
+            stats['n_genera'] <- stats['n_genera'] + 1
         }
-        stats['num.leaf.desc'] <- stats['num.leaf.desc'] + nodes[which(nodes$uid==child),'num.leaf.desc']
-        stats['num.otu.desc'] <- stats['num.otu.desc'] + nodes[which(nodes$uid==child),'num.otu.desc']
-        stats['num.spec.desc'] <- stats['num.spec.desc'] + nodes[which(nodes$uid==child),'num.spec.desc']
-        stats['num.spec.model'] <- stats['num.spec.model'] + nodes[which(nodes$uid==child),'num.spec.model']
-        stats['num.genera'] <- stats['num.genera'] + nodes[which(nodes$uid==child),'num.genera']
+        stats['n_leaf_desc'] <- stats['n_leaf_desc'] + nodes[which(nodes$uid==child),'n_leaf_desc']
+        stats['n_otu_desc'] <- stats['n_otu_desc'] + nodes[which(nodes$uid==child),'n_otu_desc']
+        stats['n_sp_desc'] <- stats['n_sp_desc'] + nodes[which(nodes$uid==child),'n_sp_desc']
+        stats['n_sp_model'] <- stats['n_sp_model'] + nodes[which(nodes$uid==child),'n_sp_model']
+        stats['n_genera'] <- stats['n_genera'] + nodes[which(nodes$uid==child),'n_genera']
     }
     ## add stats to data frame
     for (n in names(stats)) {
