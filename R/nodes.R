@@ -38,7 +38,7 @@ remote.nodes.create <- function(root.taxa = c(33090, 4751, 33208), file.name='no
 
     for (tax in nodes$uid) {
         n <- .add.stats.rem(tax, nodes, recursive=TRUE)
-    }        
+    }
 }
 
 ## The table is created from the 'nodes' table in the NCBI taxonomy
@@ -48,75 +48,107 @@ nodes.create <- function(dbloc, taxdir, root.taxa = c(33090, 4751, 33208), file.
     db <- .db(dbloc)
 
     ## Get data from NCBI taxonomy dump
-    if (! exists('ncbi.nodes')) 
+    if (! exists('ncbi.nodes'))
         ncbi.nodes <<- getnodes(taxdir)
     if (! exists('ncbi.names'))
         ncbi.names <<- getnames(taxdir)
 
-    set <- get.manageable.node.set(root.taxa, ncbi.nodes, max.descendants=10000, timeout=10)
+    set <- get.manageable.node.set(root.taxa, ncbi.nodes, max.descendants=10000, timeout=10,
+                                   nodesfile=ifelse(file.exists(file.name), file.name, NULL ))
     ids.to.process <- set$manageable.nodes
     ids.not.processed <- set$rejected.nodes
 
     ## Nodes that are alreay in the table can be skipped.
     ## Try to load nodes table and collect ids of nodes
     ## that are already processed
-    ids.skip <- vector()
-    if (file.exists(file.name)) {
-        df <- read.table(file.name, header=T)
-        ids.skip <- df$ti
-        ## remove from taxa to process
-        ids.to.process <- ids.to.process[! ids.to.process %in% ids.skip]
-        ids.not.processed <- ids.not.processed[! ids.not.processed %in% ids.skip]
-    }
-    
-    cat("Adding ", length(ids.to.process), " nodes recursively, in parallel \n")    
-    ##for (i in seq_along(ids.to.process)) {        
+    #ids.skip <- vector()
+    #if (file.exists(file.name)) {
+    #    df <- read.table(file.name, header=T)
+    #    ids.skip <- df$ti
+    #    ## remove from taxa to process
+    #    ids.to.process <- ids.to.process[! ids.to.process %in% ids.skip]
+    #    ids.not.processed <- ids.not.processed[! ids.not.processed %in% ids.skip]
+    #}
+
+    cat("Adding ", length(ids.to.process), " nodes recursively, in parallel \n")
+    ##for (i in seq_along(ids.to.process)) {
     foreach (i=seq_along(ids.to.process)) %dopar% {
         tax <- ids.to.process[i]
         cat("Recursively processing taxid ", tax, " # ", i, " / ", length(ids.to.process), "\n")
-        start <- .init.nodes.df()
+        start <- data.frame()
+        if (file.exists(file.name)) {
+            start <- read.table(file.name, header=T)
+            start <- start[,c('ti','ti_anc','rank','n_gi_node','n_gi_sub_nonmodel','n_gi_sub_model',
+                                              'n_sp_desc', 'n_sp_model', 'n_leaf_desc', 'n_otu_desc', 'ti_genus',
+                                              'n_genera')]
+        }
+        else {
+            start <- .init.nodes.df()
+        }
         n <- .add.stats(tax, start, recursive=TRUE)
-        ## only return rows for which we collected stats, all others have NA in n_gi_node
-        .write.row(n, ncbi.names, file.name)
+        ids.to.write <- n$ti[which(!n$ti %in% start$ti)]
+        ids.to.write <- c(ids.to.write, tax)
+        ## only return rows which were not written to file before
+        subset <-n[match(ids.to.write, n$ti), ]
+        .write.row(subset, ncbi.names, file.name)
         cat("Finished processing taxid ", tax, " # ", i, " / ", length(ids.to.process), "\n")
     }
 
     ## Add the top nodes non-recursively. This has to be in reversed order to make sure a parent is not
     ## inserted before it's children, since we need the info from the children. Therefore, this must not
     ## happen in parallel!
-    cat("Adding ", length(ids.not.processed), " top-level nodes non-recursively, sequentially \n")    
+    cat("Adding ", length(ids.not.processed), " top-level nodes non-recursively, sequentially \n")
     for (i in seq_along(ids.not.processed)) {
         tax <- rev(ids.not.processed)[i]
-        ##foreach(i=seq_along(ids.not.processed)) %dopar% {        
+        ##foreach(i=seq_along(ids.not.processed)) %dopar% {
         ## reload nodes that have been written before
         nodes.written <- read.table(file.name, header=T)
         nodes.written <- nodes.written[,c('ti','ti_anc','rank','n_gi_node','n_gi_sub_nonmodel','n_gi_sub_model',
                                           'n_sp_desc', 'n_sp_model', 'n_leaf_desc', 'n_otu_desc', 'ti_genus',
                                           'n_genera')]
 
-        cat("Processing taxid ", tax, " # ", i, " / ", length(ids.not.processed), "\n")        
+        cat("Processing taxid ", tax, " # ", i, " / ", length(ids.not.processed), "\n")
         n <- .add.stats(tax, nodes.written, recursive=FALSE)
         .write.row(n[match(tax, n$ti),], ncbi.names, file.name)
         cat("Finished processing taxid ", tax, " # ", i, " / ", length(ids.not.processed), "\n")
     }
 }
 
+
 ## Given a root taxon, returns a set of nodes that only have up to a maximum
 ## number of descendant nodes
-get.manageable.node.set <- function(root.taxa, ncbi.nodes, max.descendants=10000, timeout=10) {
+get.manageable.node.set <- function(root.taxa, ncbi.nodes, max.descendants=10000, timeout=10, nodesfile=NULL) {
     queue <- root.taxa
     manageable.nodes <- vector()
     num.descendants <- vector()
     rejected.nodes <- vector()
+
+    nodes.written <- data.frame()
+    if (! is.null(nodesfile)) {
+        nodes.written <- read.table(nodesfile, header=T)
+    }
+    ##nodes.written <- ifelse(is.null(nodesfile), data.frame(), read.table(nodesfile, header=T))
+
+    total.count <- 0
     while(length(queue) > 0) {
         id <- head(queue, 1)
-        
+
+        ## remove current node from queue
+        queue <- tail(queue, length(queue)-1)
+
+        if (nrow(nodes.written) > 0) {
+            if (id %in% nodes.written$ti) {
+                cat("Taxon", id, "already in file", nodesfile, " -skipping- \n")
+                next
+            }
+        }
+
         ## If there are more descendants than max.descendants or retrieveing
-        ## the number takes longer than <timeout> secounds, discard the node 
-        ## and add its children to the queue        
+        ## the number takes longer than <timeout> secounds, discard the node
+        ## and add its children to the queue
         n.desc <- .eval.time.limit(num.descendants(id, ncbi.nodes), cpu=timeout)
         if (is.null(n.desc) || n.desc > max.descendants) {
-            queue <- c(queue, children(id, ncbi.nodes))            
+            queue <- c(queue, children(id, ncbi.nodes))
             rejected.nodes <- c(rejected.nodes, id)
             cat("Taxon ", id, " has too many descendants or timeout reached. Processing child taxa.\n")
         }
@@ -124,10 +156,11 @@ get.manageable.node.set <- function(root.taxa, ncbi.nodes, max.descendants=10000
             manageable.nodes <- c(manageable.nodes, id)
             num.descendants <- c(num.descendants, n.desc)
             cat("Taxon ", id, " has maneagable number of descendants: ", n.desc, "\n")
+            total.count <- total.count + n.desc
+            cat("Current number of nodes to be processed: ", total.count, "\n")
         }
-        ## remove current node from queue
-        queue <- tail(queue, length(queue)-1)
     }
+
     return(list(manageable.nodes=manageable.nodes,
                 rejected.nodes=rejected.nodes,
                 num.descendants=num.descendants))
@@ -199,14 +232,19 @@ get.manageable.node.set <- function(root.taxa, ncbi.nodes, max.descendants=10000
 ## this includes all desendants. We also distinguish between model (>=20000 seqs per node) and nonmodel organisms.
 .add.stats <- function(taxid, nodes, recursive=FALSE) {
 
+    if (taxid %in% nodes$ti) {
+        cat("Stats for node", taxid, "already there. Skipping \n")
+        return(nodes)
+    }
+
     ## create node vector storing all relevant info
     nodeinfo <- ncbi.nodes[match(taxid, ncbi.nodes$id),]
-    
+
     ## ti_genus might have been passed down from parent node
     ti_genus <- nodes[which(nodes$ti==taxid), 'ti_genus']
     stats <- data.frame(ti=taxid,
                         ti_anc=nodeinfo$parent,
-                        rank=nodeinfo$rank,        
+                        rank=nodeinfo$rank,
                         n_gi_node=0,
                         n_gi_sub_model=0,
                         n_gi_sub_nonmodel=0,
@@ -217,7 +255,7 @@ get.manageable.node.set <- function(root.taxa, ncbi.nodes, max.descendants=10000
                         n_genera=0,
                         n_otu_desc=1)
     ## stats <- sapply(stats, as.numeric)
-    
+
     ## Ranks for which we directly get the species count;
     ## for ranks above this, we will get the sum of their children.
     ## For taxa with these ranks, there will also be a 'n_gi_node'
@@ -225,7 +263,7 @@ get.manageable.node.set <- function(root.taxa, ncbi.nodes, max.descendants=10000
 
     ## Recursion anchor
     rank <- getrank(taxid, NULL, nodes=ncbi.nodes)
-    
+
     if (rank %in% node.ranks) {
         curr.num.seqs <- .num.seqs.for.taxid(taxid)
         n_gi_node <- curr.num.seqs
@@ -282,9 +320,9 @@ get.manageable.node.set <- function(root.taxa, ncbi.nodes, max.descendants=10000
     #for (n in names(stats)) {
     #    nodes[which(nodes$ti==taxid),n] <- stats[n]
     #}
-    
+
     nodes <- rbind(nodes, stats[names(nodes)])
-    
+
     cat("Added species counts for taxid ", taxid, "\n")
     return(nodes)
 }
@@ -294,7 +332,7 @@ get.manageable.node.set <- function(root.taxa, ncbi.nodes, max.descendants=10000
     ## ti_genus might have been passed down from parent node
 
     ti_genus <- nodes[which(nodes$ti==taxid), 'ti_genus']
-    
+
     stats <- c(n_gi_node=0,
                n_gi_sub_model=0,
                n_gi_sub_nonmodel=0,
@@ -339,7 +377,7 @@ get.manageable.node.set <- function(root.taxa, ncbi.nodes, max.descendants=10000
     if (nrow(ch)==0) {
         stats['n_leaf_desc'] <- stats['n_leaf_desc'] + 1
     }
-    
+
     ## add counts from children
     for (child in ch$childtaxa_id) {
 
@@ -393,14 +431,14 @@ descendants <- function(id, nodes) {
 num.descendants <- function(id, nodes) {
     queue <- id
     result <- 0
-    while (length(queue)>0) {        
+    while (length(queue)>0) {
         result <- result + length(queue)
-        newqueue <- foreach (i=seq_along(queue), .combine=c) %dopar% {        
+        newqueue <- foreach (i=seq_along(queue), .combine=c) %dopar% {
             children(queue[i], nodes)
         }
         queue <- newqueue
     }
-    return(result-1)    
+    return(result-1)
 }
 
 children <- function(id, nodes) {
@@ -408,7 +446,7 @@ children <- function(id, nodes) {
 }
 
 .eval.time.limit <- function(expr, cpu = Inf, elapsed = Inf) {
-    y <- try({setTimeLimit(cpu, elapsed); expr}, silent = TRUE) 
+    y <- try({setTimeLimit(cpu, elapsed); expr}, silent = TRUE)
     setTimeLimit()
-    if(inherits(y, "try-error")) NULL else y 
+    if(inherits(y, "try-error")) NULL else y
 }
