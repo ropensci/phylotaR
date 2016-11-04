@@ -5,7 +5,7 @@ require('rentrez')
 #' a query in case of no success.
 #' @param func A query function from package 'rentrez'
 #' @param args A list with named arguments for 'func'
-#' @param max.retry Number of trys to query remote server before givin gup
+#' @param max.retry Number of tries to query remote server before givin gup
 #' @return value returned by func or NULL if unsuccesful
 #' @examples
 #' search <- .safe.ncbi.query(entrez_search, list(db='nuccore', term="txid 1341354[Organism:exp]"))
@@ -13,22 +13,23 @@ require('rentrez')
     result <- NULL
     for (i in 1:max.retry) {
         ## Catch possible error
-        query <- try(do.call(func, args))        
+        query <- try(do.call(func, args))
         if( !is(query, "try-error") ) {
             result <- query
             break
-        }       
+        }
         else {
             ## retry if an error was thrown
             cat("Retry #", i, "calling rentrez function \n")
             print(args)
+            recover()
         }
     }
     return (result)
 }
 
 #' Given a taxon ID, get a vector with the Ganbank GI entries for this taxid
-#' from the remote NCBI server. 
+#' from the remote NCBI server.
 #' @param taxid NCBI taxon identifier
 #' @param max.len Maximum length of sequence to be included in GI list
 #' @return vector with GIs
@@ -40,7 +41,7 @@ require('rentrez')
                  use_history=T,
                  retmax=1e9-1)
     search <- .safe.ncbi.query(entrez_search, args)
-    
+
     return(search$ids)
 }
 
@@ -81,14 +82,14 @@ require('rentrez')
         seqstrs <- gsub("^\n?>.*?\\n", "", seqstrs)
         ## clear newlines
         seqstrs <- gsub("\n", "", seqstrs, fixed=TRUE)
-        
+
         ## Get summary object to retreive taxid, accession, and other parameters for seqs
         summaries <- .safe.ncbi.query(entrez_summary, list(db='nucleotide',  web_history=search$web_history,retmax=increment, retstart=seq.idx))
         ## turn to list when only one result
         if (length(seqstrs)==1) {
             summaries <- list(summaries)
         }
-        
+
         seqs <- lapply(1:length(seqstrs), function(i) {
             sm <- summaries[[i]]
             se <- seqstrs[[i]]
@@ -96,7 +97,7 @@ require('rentrez')
                         ti=sm$taxid,
                         acc=sm$caption,
                         acc_vers=sm$accessionversion,
-                        length=nchar(se), 
+                        length=nchar(se),
                         ##TODO: Division not in summary object, how to get?
                         division=NA,
                         acc_date=sm$createdate,
@@ -105,9 +106,14 @@ require('rentrez')
                         def=sm$title,
                         seq=se)
             seq
-        })                
-        allseqs <- c(allseqs, seqs)        
+        })
+        cat("Done retreiving", length(seqs), "(", seq.idx+1, "to",
+            ifelse(seq.idx+increment<length(gis), seq.idx+increment, length(gis)),
+            ") seqs for taxid", taxid, "\n")
+
+        allseqs <- c(allseqs, seqs)
     }
+    cat("Finished retreiving", length(allseqs), "sequences for taxid", taxid, "\n")
     names(allseqs) <- gis
     return(allseqs)
 }
