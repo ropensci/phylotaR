@@ -4,5 +4,5 @@
     db <- .db()
     query <- paste('select n_gi_sub_nonmodel, n_gi_sub_model from nodes where ti =', taxid)
     l <- dbGetQuery(db, query)
-    return(sum(l))
+    return(sum(as.numeric(l[1,])))
 }

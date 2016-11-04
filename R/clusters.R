@@ -58,11 +58,11 @@ clusters.ci_gi.seqs.create <- function(root.taxon=c(33090, 4751, 33208), file.st
 
     queue <- root.taxon
     while(length(queue) > 0) {
-        
+
         currentid <- head(queue, 1)
         queue <- tail(queue, length(queue)-1)
-        cat("Getting seq counts for taxid ", currentid, "\n")
         num.seqs <- .local.num.seqs.for.taxid(currentid)
+        cat("Number of seqs for taxid ", currentid, ":", num.seqs,  "\n")
         if ( num.seqs > max.seqs) {
             cat("Too many seqs; retreiving children \n")
             queue <- c(queue, .children(currentid))
@@ -127,27 +127,27 @@ clusters.ci_gi.seqs.create <- function(root.taxon=c(33090, 4751, 33208), file.st
     }
     if (length(gis)==1) {
         singleton <- list(list(gis=gis, seed_gi=gis))
-        singleton <- .add.cluster.info(singleton, taxon, seqs)      
+        singleton <- .add.cluster.info(singleton, taxon, seqs)
         return(singleton)
     }
 
-    seqs <- seqs[gis]    
+    seqs <- seqs[gis]
     ## if we have not yet blasted the sequences, do so
     if (is.null(blast.results)) {
         cat("Performing all vs all BLAST\n")
-        ## make unique name for BLAST files 
+        ## make unique name for BLAST files
         ## TODO: Change this to tempdir later
         dir = './blast'
-        if (! dir.exists(dir)) {
+        if (! file.exists(dir)) {
             dir.create(dir)
-        }        
+        }
         dbfile <- paste0('taxon-', taxon, '-db.fa')
         outfile <- paste0('taxon-', taxon, '-blastout.txt')
         make.blast.db(seqs, dbfile=dbfile, dir=dir)
         blast.results <- blast.all.vs.all(dbfile, outfile=outfile, dir=dir)
         cat("Number of BLAST results ", nrow(blast.results), "\n")
         cat("Filtering BLAST results\n")
-        filtered.blast.results <- filter.blast.results(blast.results, seqs)       
+        filtered.blast.results <- filter.blast.results(blast.results, seqs)
     }
     else {
         ##  reduce blast results such that include only the gis for the current taxon
