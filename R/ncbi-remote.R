@@ -22,7 +22,6 @@ require('rentrez')
             ## retry if an error was thrown
             cat("Retry #", i, "calling rentrez function \n")
             print(args)
-            recover()
         }
     }
     return (result)

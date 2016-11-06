@@ -1,24 +1,24 @@
 require('plyr')
 
 make.blast.db <- function(seqs, dbfile='blastdb.fa', dir='.') {
-    
-    if (length(seqs) < 3) stop('Need more than 2 sequences')
+
+    if (length(seqs) < 2) stop('Need more than 2 sequences')
 
     file <- file.path(dir, dbfile)
     file.create(file)
-    
+
     ## Write user-supplied gis to file
     for (gi in names(seqs)) {
         write(paste0("> ", gi, "\n", seqs[[as.character(gi)]]$seq), file=file, append=T)
     }
     cmd <- paste('makeblastdb -in', file, '-dbtype nucl')
-    system(cmd) == 0 || stop('Command ', cmd, 'did not return 0') 
-    
+    system(cmd) == 0 || stop('Command ', cmd, 'did not return 0')
+
     ## Check if files produced by makeblastdb command are present
     extensions <- c('nhr', 'nin', 'nsq')
     fnames <- sapply(extensions, function(e)paste0(file, '.', e))
     if ( ! all (sapply(fnames, file.exists))) {
-        stop('Command ', cmd, ' did not produce output files ', paste(fnames)) 
+        stop('Command ', cmd, ' did not produce output files ', paste(fnames))
     }
     return (file)
 }
@@ -29,17 +29,17 @@ blast.all.vs.all <- function(dbname='blastdb.fa', evalue.cutoff=1.0e-10, outfile
     dbname <- file.path(dir, dbname)
     ## DUST filtering is enabled by default in blastn, disable
     ## Also only allow same-strand matches
-    
+
     cmd <- paste('blastn -query', dbname, '-db', dbname, '-outfmt 6 -dust no -strand plus -evalue', evalue.cutoff, '-out', outfile)
-    system(cmd) == 0 || stop('Command ', cmd, 'did not return 0') 
+    system(cmd) == 0 || stop('Command ', cmd, 'did not return 0')
     if (! file.exists(outfile)) {
-        stop('Command ', cmd, 'did not produce output file ', outfile) 
+        stop('Command ', cmd, 'did not produce output file ', outfile)
     }
     blast.results <- read.table(outfile)
     colnames(blast.results) <- c('query.id', 'subject.id', 'identity', 'alignment.length',
                                  'mismatches', 'gap.opens', 'q.start', 'q.end', 's.start',
                                  's.end', 'evalue', 'bit.score')
-    return (blast.results)    
+    return (blast.results)
 }
 
 filter.blast.results <- function(blast.results, seqs, min.coverage=0.51) {
@@ -55,7 +55,7 @@ filter.blast.results <- function(blast.results, seqs, min.coverage=0.51) {
     coverages <- apply(result.subset, 1, function(x)x['alignment.length'] / max(x['query.length'], x['subject.length']))
     num.discarded.hits <- sum(coverages < min.coverage)
     cat("Discarding ", num.discarded.hits, " BLAST hits due to insufficient coverage\n")
-    
+
     ## keep only the gis for which there is enough overlapping hits
     result.subset <- result.subset[which(coverages >= min.coverage),]
 
