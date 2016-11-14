@@ -31,7 +31,7 @@ source('ncbi-remote.R')
 ##  PRIMARY KEY ("ti")
 ##);
 
-remote.nodes.create <- function(root.taxa = c(33090, 4751, 33208), file.name='nodes.tsv', cores=3) {
+remote.nodes.create <- function(root.taxa = c(33090, 4751, 33208), file.name='nodes.tsv') {
     require('taxize')
     nodes <- do.call(rbind, lapply(root.taxa, ncbi_get_taxon_summary))
     nodes <- transform(nodes, uid=as.numeric(uid))
@@ -44,8 +44,7 @@ remote.nodes.create <- function(root.taxa = c(33090, 4751, 33208), file.name='no
 ## The table is created from the 'nodes' table in the NCBI taxonomy
 ## Therefore, a directory with the path where the NCBI taxonomy dump
 ## is located must be provided
-nodes.create <- function(dbloc, taxdir, root.taxa = c(33090, 4751, 33208), file.name='nodes.tsv', cores=3) {
-    db <- .db(dbloc)
+nodes.create <- function(taxdir, root.taxa = c(33090, 4751, 33208), file.name='nodes.tsv') {
 
     ## Get data from NCBI taxonomy dump
     if (! exists('ncbi.nodes'))
