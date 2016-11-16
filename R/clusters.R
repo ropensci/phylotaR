@@ -46,14 +46,13 @@ source('query-local.R')
 ##  PRIMARY KEY ("uid")
 ##);
 
-clusters.ci_gi.seqs.create <- function(root.taxon=c(33090, 4751, 33208),
+clusters.ci_gi.seqs.create <- function(root.taxon, nodesfile,
                                        files=list(clusters='clusters.tsv', ci_gi='ci_gi.tsv', seqs='seqs.tsv'),
-                                       max.seqs=25000, informative=FALSE) {
-
-    cluster.entries <- data.frame()
-    seq.entries <- data.frame()
-    ci_gi.entries <- data.frame()
-
+                                       max.seqs=20000, informative=FALSE) {
+    
+    ## load nodes table    
+    nodes <- read.table(nodesfile, header=T)
+    
     ## load clusters that are already calculated, if any
     clusters.file <- files[['clusters']]
     ci_gi.file <- files[['ci_gi']]
@@ -66,7 +65,6 @@ clusters.ci_gi.seqs.create <- function(root.taxon=c(33090, 4751, 33208),
     ## get all nodes that will be processed:
     ## all nodes for which all children contain < max.seqs sequences
     taxa.to.process <- vector()
-
     queue <- root.taxon
     while(length(queue) > 0) {
 
@@ -81,12 +79,13 @@ clusters.ci_gi.seqs.create <- function(root.taxon=c(33090, 4751, 33208),
             }
         }
 
-        ## get number of sequences to determine if it is manageable to calculate clusters
-        num.seqs <- .local.num.seqs.for.taxid(currentid)
+        ## get number of sequences to determine if it is manageable to calculate clusters        
+        num.seqs <- .num.seqs.for.taxid(currentid) ## could use 'local' function as well
         cat("Number of seqs for taxid ", currentid, ":", num.seqs,  "\n")
+
         if ( num.seqs > max.seqs) {
             cat("Too many seqs; retreiving children \n")
-            queue <- c(queue, .children(currentid))
+            queue <- c(queue, .children(currentid, nodes))
         }
         else if (num.seqs == 0) {
             cat("No sequences for taxid ", currentid, "\n")
@@ -96,14 +95,15 @@ clusters.ci_gi.seqs.create <- function(root.taxon=c(33090, 4751, 33208),
             taxa.to.process <- c(taxa.to.process, currentid)
         }
     }
+    
     foreach (i=seq_along(taxa.to.process), .verbose=T) %dopar% {
-    ##for (i in seq_along(taxa.to.process)) {
+        ##for (i in seq_along(taxa.to.process)) {
         taxid <- taxa.to.process[i]
         cat("Processing taxid ", taxid, " # ", i, " / ", length(taxa.to.process), "\n")
         ## generate data frames with entries for seqs, clusters, and ci_gi
         seqs <- .seqs.for.taxid(taxid)
         seqdf <- .make.seq.entries(seqs)
-        clusters <- .make.clusters(taxid, seqs, informative=informative)
+        clusters <- .make.clusters(taxid, nodes, seqs, informative=informative)
         cldf <- .make.cluster.entries(clusters)
         cigidf <- .make.ci_gi.entries(clusters)
 
@@ -113,10 +113,9 @@ clusters.ci_gi.seqs.create <- function(root.taxon=c(33090, 4751, 33208),
         write.table(cigidf, file=ci_gi.file, append=file.exists(ci_gi.file), quote=F, sep="\t", row.names=F, col.names=!file.exists(ci_gi.file))
         cat("Finished processing taxid ", taxid, " # ", i, " / ", length(taxa.to.process), "\n")
     }
-    return (list(clusters=cluster.entries, seqs=seq.entries, ci_gi=ci_gi.entries))
 }
 
-.make.clusters <- function(taxon, seqs=NULL, parent=NULL, blast.results=NULL, recursive=TRUE, informative=FALSE) {
+.make.clusters <- function(taxon, nodes, seqs=NULL, parent=NULL, blast.results=NULL, recursive=TRUE, informative=FALSE) {
 
     cat("Making clusters for taxid ", taxon, "\n")
     ## retreive sequences if not done so before
@@ -137,7 +136,7 @@ clusters.ci_gi.seqs.create <- function(root.taxon=c(33090, 4751, 33208),
     }
     if (length(gis)==1) {
         singleton <- list(list(gis=gis, seed_gi=gis))
-        singleton <- .add.cluster.info(singleton, taxon, seqs)
+        singleton <- .add.cluster.info(singleton, nodes, taxon, seqs)
         return(singleton)
     }
 
@@ -176,15 +175,15 @@ clusters.ci_gi.seqs.create <- function(root.taxon=c(33090, 4751, 33208),
     }
 
     ## make dataframe with fields as in PhyLoTa database
-    clusters <- .add.cluster.info(clusters, taxon, seqs)
+    clusters <- .add.cluster.info(clusters, nodes, taxon, seqs)
     cat("Generated ", length(clusters), "clusters\n")
 
     ## retrieve clusters for child taxa
     if (recursive) {
-        for (ch in .children(taxon)) {
+        for (ch in .children(taxon, nodes)) {
             cat("Processing child ", ch, "\n")
             ## calculate clusters for child taxon
-            child.clusters <- .make.clusters(ch, seqs, taxon, filtered.blast.results)
+            child.clusters <- .make.clusters(ch, nodes, seqs, taxon, filtered.blast.results)
             ## two parameters can only be calculated if we have cluster info on multiple taxonomic levels:
             ##  n_child, the number of child clusters, ci_anc, the parent cluster.
             ##  Since we are dealing with single-likeage clusters, we can identify the parent cluster of a
@@ -222,7 +221,7 @@ clusters.ci_gi.seqs.create <- function(root.taxon=c(33090, 4751, 33208),
 }
 
 ## input: List of clusters
-.add.cluster.info <- function(clusters, taxid, seqs) {
+.add.cluster.info <- function(clusters, nodes, taxid, seqs) {
 
     ## we will take the column names in the database as names in the list
     for (i in 1:length(clusters)) {
@@ -230,7 +229,7 @@ clusters.ci_gi.seqs.create <- function(root.taxon=c(33090, 4751, 33208),
         cl.seqs <- lapply(cl$gis, function(gi)seqs[[as.character(gi)]])
         cl$ti_root <- taxid
         cl$ci <- i-1
-        cl$cl_type <- ifelse(length(.children(taxid)) > 0, 'subtree', 'node')
+        cl$cl_type <- ifelse(length(.children(taxid, nodes)) > 0, 'subtree', 'node')
         cl$n_gi <- length(cl$gis)
         ## all taxon ids for gis in cluster
         cl$tis <- sapply(cl.seqs, '[[', 'ti')
@@ -240,7 +239,7 @@ clusters.ci_gi.seqs.create <- function(root.taxon=c(33090, 4751, 33208),
         cl$MinLength <- min(l)
         cl$MaxLength <- max(l)
         ## get number of genera
-        cl$n_gen <- length(unique(sapply(cl$tis, .genus.for.taxid)))
+        cl$n_gen <- length(unique(sapply(cl$tis, .genus.for.taxid, nodes)))
         ## n_child and ci_anc will be set (or incremented) later, when multiple hierarchies are calculated
         cl$n_child <- 0
         cl$ci_anc <- NA
@@ -280,19 +279,12 @@ cluster.blast.results <- function(blast.results, informative=T) {
     return (cluster.list)
 }
 
-.children <- function(taxid) {
-    db <- .db()
-    query <- paste('select ti from nodes where ti_anc =', taxid)
-    l <- dbGetQuery(db, query)
-    return(l[[1]])
+.children <- function(taxid, nodes) {
+    nodes[nodes[,'ti_anc']==taxid,'ti']
 }
 
-.genus.for.taxid <- function(taxid) {
-    ##cat("Retreiving genus for taxid ", taxid, "\n")
-    db <- .db()
-    query <- paste('select ti_genus from nodes where ti=', taxid)
-    l <- dbGetQuery(db, query)
-    return(l[[1]])
+.genus.for.taxid <- function(taxid, nodes) {
+    nodes[nodes[,'ti_anc']==taxid,'ti_genus']
 }
 
 ##.genera.for.taxids <- function(taxids) {

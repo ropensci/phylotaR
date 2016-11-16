@@ -13,3 +13,20 @@ library("RSQLite")
     }
     return(db)        
 }
+
+
+## DB queries
+.children <- function(taxid) {
+    db <- .db()
+    query <- paste('select ti from nodes where ti_anc =', taxid)
+    l <- dbGetQuery(db, query)
+    return(l[[1]])
+}
+
+.genus.for.taxid <- function(taxid) {
+    ##cat("Retreiving genus for taxid ", taxid, "\n")
+    db <- .db()
+    query <- paste('select ti_genus from nodes where ti=', taxid)
+    l <- dbGetQuery(db, query)
+    return(l[[1]])
+}
