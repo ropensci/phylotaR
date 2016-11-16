@@ -51,9 +51,9 @@ nodes.create <- function(taxdir, root.taxa = c(33090, 4751, 33208), file.name='n
         ncbi.nodes <<- getnodes(taxdir)
     if (! exists('ncbi.names'))
         ncbi.names <<- getnames(taxdir)
-
+    
     set <- get.manageable.node.set(root.taxa, ncbi.nodes, max.descendants=10000, timeout=10,
-                                   nodesfile=ifelse(file.exists(file.name), file.name, NULL ))
+                                   nodesfile=file.name)
     ids.to.process <- set$manageable.nodes
     ids.not.processed <- set$rejected.nodes
 
@@ -84,15 +84,16 @@ nodes.create <- function(taxdir, root.taxa = c(33090, 4751, 33208), file.name='n
         else {
             start <- .init.nodes.df()
         }
+
         n <- .add.stats(tax, start, recursive=TRUE)
         ids.to.write <- n$ti[which(!n$ti %in% start$ti)]
-        ids.to.write <- c(ids.to.write, tax)
+        stopifnot(tax %in% ids.to.write)
         ## only return rows which were not written to file before
         subset <-n[match(ids.to.write, n$ti), ]
         .write.row(subset, ncbi.names, file.name)
         cat("Finished processing taxid ", tax, " # ", i, " / ", length(ids.to.process), "\n")
     }
-
+    
     ## Add the top nodes non-recursively. This has to be in reversed order to make sure a parent is not
     ## inserted before it's children, since we need the info from the children. Therefore, this must not
     ## happen in parallel!
@@ -116,14 +117,14 @@ nodes.create <- function(taxdir, root.taxa = c(33090, 4751, 33208), file.name='n
 
 ## Given a root taxon, returns a set of nodes that only have up to a maximum
 ## number of descendant nodes
-get.manageable.node.set <- function(root.taxa, ncbi.nodes, max.descendants=10000, timeout=10, nodesfile=NULL) {
+get.manageable.node.set <- function(root.taxa, ncbi.nodes, max.descendants=10000, timeout=10, nodesfile="") {
     queue <- root.taxa
     manageable.nodes <- vector()
     num.descendants <- vector()
     rejected.nodes <- vector()
 
     nodes.written <- data.frame()
-    if (! is.null(nodesfile)) {
+    if (file.exists(nodesfile)) {
         nodes.written <- read.table(nodesfile, header=T)
     }
     ##nodes.written <- ifelse(is.null(nodesfile), data.frame(), read.table(nodesfile, header=T))
