@@ -228,7 +228,7 @@ get.manageable.node.set <- function(root.taxa, ncbi.nodes, max.descendants=10000
 
 ## Recursive function to add number of sequences for each taxon to table as produced by getnodes().
 ## We set sequence counts for 'node' and 'subtree', if a node is of rank species or lower. For subtree,
-## this includes all desendants. We also distinguish between model (>=20000 seqs per node) and nonmodel organisms.
+## this includes all desendants. We also distinguish between model (>=1000 seqs per node) and nonmodel organisms.
 .add.stats <- function(taxid, nodes, recursive=FALSE) {
 
     if (taxid %in% nodes$ti) {
@@ -265,7 +265,7 @@ get.manageable.node.set <- function(root.taxa, ncbi.nodes, max.descendants=10000
         curr.num.seqs <- .num.seqs.for.taxid(taxid)
         n_gi_node <- curr.num.seqs
         stats['n_gi_node'] <- curr.num.seqs
-        if (curr.num.seqs >= 20000) {
+        if (curr.num.seqs >= 10000) {
             n_gi_sub_model <- curr.num.seqs
             stats['n_gi_sub_model'] <- curr.num.seqs
         } else {
@@ -274,7 +274,7 @@ get.manageable.node.set <- function(root.taxa, ncbi.nodes, max.descendants=10000
         }
         if (rank == 'species') {
             stats['n_sp_desc'] <- 1
-            if (curr.num.seqs >= 20000) {
+            if (curr.num.seqs >= 10000) {
                 stats['n_sp_model'] <- 1
             }
         }
@@ -339,7 +339,7 @@ get.manageable.node.set <- function(root.taxa, ncbi.nodes, max.descendants=10000
         curr.num.seqs <- .num.seqs.for.taxid(taxid)
         n_gi_node <- curr.num.seqs
         stats['n_gi_node'] <- curr.num.seqs
-        if (curr.num.seqs >= 20000) {
+        if (curr.num.seqs >= 10000) {
             n_gi_sub_model <- curr.num.seqs
             stats['n_gi_sub_model'] <- curr.num.seqs
         } else {
@@ -348,7 +348,7 @@ get.manageable.node.set <- function(root.taxa, ncbi.nodes, max.descendants=10000
         }
         if (rank == 'species') {
             stats['n_sp_desc'] <- 1
-            if (curr.num.seqs >= 20000) {
+            if (curr.num.seqs >= 10000) {
                 stats['n_sp_model'] <- 1
             }
         }

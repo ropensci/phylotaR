@@ -80,14 +80,15 @@ clusters.ci_gi.seqs.create <- function(root.taxon, nodesfile,
         }
 
         ## get number of sequences to determine if it is manageable to calculate clusters        
-        num.seqs <- .num.seqs.for.taxid(currentid) ## could use 'local' function as well
-        cat("Number of seqs for taxid ", currentid, ":", num.seqs,  "\n")
+        num.nonmodel.seqs <- nodes[match(currentid, nodes$ti),'n_gi_sub_nonmodel']
+        
+        cat("Number of non-model seqs for taxid ", currentid, ":", num.nonmodel.seqs,  "\n")
 
-        if ( num.seqs > max.seqs) {
+        if ( num.nonmodel.seqs > max.seqs) {
             cat("Too many seqs; retreiving children \n")
             queue <- c(queue, .children(currentid, nodes))
         }
-        else if (num.seqs == 0) {
+        else if (num.nonmodel.seqs == 0) {
             cat("No sequences for taxid ", currentid, "\n")
         }
         else {
@@ -96,12 +97,16 @@ clusters.ci_gi.seqs.create <- function(root.taxon, nodesfile,
         }
     }
     
-    foreach (i=seq_along(taxa.to.process), .verbose=T) %dopar% {
-        ##for (i in seq_along(taxa.to.process)) {
+##    foreach (i=seq_along(taxa.to.process), .verbose=T) %dopar% {
+    for (i in seq_along(taxa.to.process)) {
         taxid <- taxa.to.process[i]
         cat("Processing taxid ", taxid, " # ", i, " / ", length(taxa.to.process), "\n")
         ## generate data frames with entries for seqs, clusters, and ci_gi
-        seqs <- .seqs.for.taxid(taxid)
+        
+        leaves <- .leaves.with.seqs(taxid, nodes)                
+        cat("Getting sequences for", length(leaves), "terminal child taxa of taxid ", taxid, " :\n", paste(leaves, collapse="\n"), "\n")
+        seqs <- unlist(lapply(leaves, .seqs.for.taxid), recursive=FALSE)
+        
         seqdf <- .make.seq.entries(seqs)
         clusters <- .make.clusters(taxid, nodes, seqs, informative=informative)
         cldf <- .make.cluster.entries(clusters)
@@ -115,6 +120,24 @@ clusters.ci_gi.seqs.create <- function(root.taxon, nodesfile,
     }
 }
 
+.leaves.with.seqs <- function(taxid, nodes, max.seqs=10000) {
+    queue <- taxid
+    result <- numeric()
+    while (length(queue) > 0) {
+        currentid <- head(queue, 1)
+        queue <- tail(queue, length(queue)-1)
+        children <- .children(currentid, nodes)
+        if (length(children) > 0) {
+            child.nodes <- nodes[match(children, nodes$ti),]        
+            ## Get nodes that have n_gi_node seqs but less than max.seqs
+            leaves <- child.nodes[child.nodes$n_gi_node > 0 & child.nodes$n_gi_node < max.seqs ,'ti']        
+            result <- c(result, leaves)
+            queue <- c(queue, children)
+        }
+    }
+    return(result)
+}
+
 .make.clusters <- function(taxon, nodes, seqs=NULL, parent=NULL, blast.results=NULL, recursive=TRUE, informative=FALSE) {
 
     cat("Making clusters for taxid ", taxon, "\n")
@@ -123,12 +146,17 @@ clusters.ci_gi.seqs.create <- function(root.taxon, nodesfile,
     filtered.blast.results <- data.frame()
     if (is.null(seqs)) {
         cat("Retrieving sequences for taxon ", taxon, "\n")
-        seqs <- .seqs.for.taxid(taxon)
+        ## get the leaves that have sequences, but less sequences than model organisms
+        leaves <- .leaves.with.seqs(taxon, nodes)        
+        seqs <- unlist(lapply(leaves, .seqs.for.taxid), recursive=FALSE)
         gis <- names(seqs)
     }
     else {
         gis <- .gis.for.taxid(taxon)
     }
+    ## gis will also contain the ones of model orgenisms, therefore only  take the ones that are given in our sequences
+    seqs <- seqs[gis[which(gis %in% names(seqs))]]
+    gis <- names(seqs)
 
     ## Handle empty and singleton clusters
     if (length(gis)==0) {
@@ -140,7 +168,7 @@ clusters.ci_gi.seqs.create <- function(root.taxon, nodesfile,
         return(singleton)
     }
 
-    seqs <- seqs[gis]
+
     ## if we have not yet blasted the sequences, do so
     if (is.null(blast.results)) {
         cat("Performing all vs all BLAST for", length(seqs), "sequences\n")
