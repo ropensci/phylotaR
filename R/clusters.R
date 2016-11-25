@@ -138,7 +138,7 @@ clusters.ci_gi.seqs.create <- function(root.taxon, nodesfile,
     return(result)
 }
 
-.make.clusters <- function(taxon, nodes, seqs=NULL, parent=NULL, blast.results=NULL, recursive=TRUE, informative=FALSE) {
+.make.clusters <- function(taxon, nodes, seqs=NULL, blast.results=NULL, recursive=TRUE, informative=FALSE) {
 
     cat("Making clusters for taxid ", taxon, "\n")
     ## retreive sequences if not done so before
@@ -167,7 +167,6 @@ clusters.ci_gi.seqs.create <- function(root.taxon, nodesfile,
         singleton <- .add.cluster.info(singleton, nodes, taxon, seqs)
         return(singleton)
     }
-
 
     ## if we have not yet blasted the sequences, do so
     if (is.null(blast.results)) {
@@ -210,29 +209,59 @@ clusters.ci_gi.seqs.create <- function(root.taxon, nodesfile,
     if (recursive) {
         for (ch in .children(taxon, nodes)) {
             cat("Processing child ", ch, "\n")
-            ## calculate clusters for child taxon
-            child.clusters <- .make.clusters(ch, nodes, seqs, taxon, filtered.blast.results)
-            ## two parameters can only be calculated if we have cluster info on multiple taxonomic levels:
-            ##  n_child, the number of child clusters, ci_anc, the parent cluster.
-            ##  Since we are dealing with single-likeage clusters, we can identify the parent cluster of a
-            ##  cluster if at least one gi of both clusters is the same.
-            child.clusters <- lapply(child.clusters, function(cc) {
-                ## indices of the parent clusters that contain a gi of the child clusters
-                ## If a gi is in two clusters (e.g. parent and grandparent), take the lower one, by taking
-                ## the higher index
-                idx <- max(which(sapply(clusters, function(c) any(cc$gis %in% c$gis))))
-                ## set parent cluster to child cluster
-                cc$ci_anc <- clusters[[idx]]$ci
-                ## update child count of parent clusters
-                clusters[[idx]]$n_child <- clusters[[idx]]$n_child + 1
-                cc
-            })
-            ## append child clusters to result cluster list
-            clusters <- c(clusters, child.clusters)
+            
+            ## child could be a model organism. In this case we don't have sequences and
+            ## a separate blast search has to be conducted.
+            if ( nodes[match(ch, nodes$ti),'n_gi_node'] > 10000 ) {
+                clusters <- .process.model.organism(ch, clusters, nodes, seqs)
+            } 
+            else {
+                ## calculate clusters for child taxon
+                child.clusters <- .make.clusters(ch, nodes, seqs, filtered.blast.results)
+                ## two parameters can only be calculated if we have cluster info on multiple taxonomic levels:
+                ##  n_child, the number of child clusters, ci_anc, the parent cluster.
+                ##  Since we are dealing with single-likeage clusters, we can identify the parent cluster of a
+                ##  cluster if at least one gi of both clusters is the same.
+                child.clusters <- lapply(child.clusters, function(cc) {
+                    ## indices of the parent clusters that contain a gi of the child clusters
+                    ## If a gi is in two clusters (e.g. parent and grandparent), take the lower one, by taking
+                    ## the higher index
+                    idx <- max(which(sapply(clusters, function(c) any(cc$gis %in% c$gis))))
+                    ## set parent cluster to child cluster
+                    cc$ci_anc <- clusters[[idx]]$ci
+                    ## update child count of parent clusters
+                    clusters[[idx]]$n_child <- clusters[[idx]]$n_child + 1
+                    cc
+                })
+                ## append child clusters to result cluster list
+                clusters <- c(clusters, child.clusters)
+            }
         }
     }
     cat("Finished making ", length(clusters), " clusters for taxid ", taxon, "\n")
     return(clusters)
+}
+
+.process.model.organism <- function(taxid, clusters, nodes, seqs) {
+
+
+    cluster.df <- .make.cluster.entries(clusters)
+    ci_gi.df <- .make.ci_gi.entries(clusters)
+    ## Retreive sequences for taxid. If there are too many, pick random ones
+    
+    ## Make blast db for all clusters of parent node
+    ## pick the first parent for which we have cluster data
+    parent <- taxid
+    while( (! is.na(parent)) && (! parent %in% ci_gi.df$ti) ) {
+        parent <- nodes[match(parent, nodes$ti), 'ti_anc']
+    }
+    ci_gi.subset <- ci_gi.df[which(ci_gi.df$ti==parent),]
+
+    ## iterate over all clusters for parent node
+#    for (clustid in unique(ci_gi.subset$clustid)) {
+        
+#    }
+    
 }
 
 ## returns a data frame with columns matchine the fields in PhyLoTA's cluster table
