@@ -49,10 +49,9 @@ source('query-local.R')
 clusters.ci_gi.seqs.create <- function(root.taxon, nodesfile,
                                        files=list(clusters='clusters.tsv', ci_gi='ci_gi.tsv', seqs='seqs.tsv'),
                                        max.seqs=20000, informative=FALSE) {
-    
-    ## load nodes table    
+
+    ## load nodes table
     nodes <- read.table(nodesfile, header=T)
-    
     ## load clusters that are already calculated, if any
     clusters.file <- files[['clusters']]
     ci_gi.file <- files[['ci_gi']]
@@ -79,9 +78,9 @@ clusters.ci_gi.seqs.create <- function(root.taxon, nodesfile,
             }
         }
 
-        ## get number of sequences to determine if it is manageable to calculate clusters        
+        ## get number of sequences to determine if it is manageable to calculate clusters
         num.nonmodel.seqs <- nodes[match(currentid, nodes$ti),'n_gi_sub_nonmodel']
-        
+
         cat("Number of non-model seqs for taxid ", currentid, ":", num.nonmodel.seqs,  "\n")
 
         if ( num.nonmodel.seqs > max.seqs) {
@@ -96,17 +95,24 @@ clusters.ci_gi.seqs.create <- function(root.taxon, nodesfile,
             taxa.to.process <- c(taxa.to.process, currentid)
         }
     }
-    
+
 ##    foreach (i=seq_along(taxa.to.process), .verbose=T) %dopar% {
     for (i in seq_along(taxa.to.process)) {
         taxid <- taxa.to.process[i]
         cat("Processing taxid ", taxid, " # ", i, " / ", length(taxa.to.process), "\n")
         ## generate data frames with entries for seqs, clusters, and ci_gi
-        
-        leaves <- .leaves.with.seqs(taxid, nodes)                
-        cat("Getting sequences for", length(leaves), "terminal child taxa of taxid ", taxid, " :\n", paste(leaves, collapse="\n"), "\n")
-        seqs <- unlist(lapply(leaves, .seqs.for.taxid), recursive=FALSE)
-        
+
+        ## get all leave taxa for which sequences will be retrieved.
+        ## Caution!! A species can have more sequences than the sum of the sequences of its subspecies!
+        ## Therefore if the rank of the focal taxon is 'species', its sequences have to be retrieved as well.
+        leaves <- .leaves.with.seqs(taxid, nodes, max.seqs=max.seqs)
+        target.taxa = leaves
+        if (nodes$rank[match(taxid, nodes$ti)] == "species") {
+            target.taxa = c(target.taxa, taxid)
+        }
+        cat("Getting sequences for", length(target.taxa), "target taxa in ", taxid, " :\n", paste(target.taxa, collapse="\n"), "\n")
+        seqs <- unlist(lapply(target.taxa, .seqs.for.taxid), recursive=FALSE)
+
         seqdf <- .make.seq.entries(seqs)
         clusters <- .make.clusters(taxid, nodes, seqs, informative=informative)
         cldf <- .make.cluster.entries(clusters)
@@ -128,9 +134,9 @@ clusters.ci_gi.seqs.create <- function(root.taxon, nodesfile,
         queue <- tail(queue, length(queue)-1)
         children <- .children(currentid, nodes)
         if (length(children) > 0) {
-            child.nodes <- nodes[match(children, nodes$ti),]        
+            child.nodes <- nodes[match(children, nodes$ti),]
             ## Get nodes that have n_gi_node seqs but less than max.seqs
-            leaves <- child.nodes[child.nodes$n_gi_node > 0 & child.nodes$n_gi_node < max.seqs ,'ti']        
+            leaves <- child.nodes[child.nodes$n_gi_node > 0 & child.nodes$n_gi_node < max.seqs ,'ti']
             result <- c(result, leaves)
             queue <- c(queue, children)
         }
@@ -147,16 +153,13 @@ clusters.ci_gi.seqs.create <- function(root.taxon, nodesfile,
     if (is.null(seqs)) {
         cat("Retrieving sequences for taxon ", taxon, "\n")
         ## get the leaves that have sequences, but less sequences than model organisms
-        leaves <- .leaves.with.seqs(taxon, nodes)        
+        leaves <- .leaves.with.seqs(taxon, nodes)
         seqs <- unlist(lapply(leaves, .seqs.for.taxid), recursive=FALSE)
         gis <- names(seqs)
     }
     else {
         gis <- .gis.for.taxid(taxon)
     }
-    ## gis will also contain the ones of model orgenisms, therefore only  take the ones that are given in our sequences
-    seqs <- seqs[gis[which(gis %in% names(seqs))]]
-    gis <- names(seqs)
 
     ## Handle empty and singleton clusters
     if (length(gis)==0) {
@@ -167,6 +170,10 @@ clusters.ci_gi.seqs.create <- function(root.taxon, nodesfile,
         singleton <- .add.cluster.info(singleton, nodes, taxon, seqs)
         return(singleton)
     }
+
+    ## gis will also contain the ones of model orgenisms, therefore only  take the ones that are given in our sequences
+    seqs <- seqs[gis[which(gis %in% names(seqs))]]
+    gis <- names(seqs)
 
     ## if we have not yet blasted the sequences, do so
     if (is.null(blast.results)) {
@@ -209,12 +216,14 @@ clusters.ci_gi.seqs.create <- function(root.taxon, nodesfile,
     if (recursive) {
         for (ch in .children(taxon, nodes)) {
             cat("Processing child ", ch, "\n")
-            
+
             ## child could be a model organism. In this case we don't have sequences and
             ## a separate blast search has to be conducted.
             if ( nodes[match(ch, nodes$ti),'n_gi_node'] > 10000 ) {
-                clusters <- .process.model.organism(ch, clusters, nodes, seqs)
-            } 
+                ## return(list())
+                next
+                ##  clusters <- .process.model.organism(ch, clusters, nodes, seqs)
+            }
             else {
                 ## calculate clusters for child taxon
                 child.clusters <- .make.clusters(ch, nodes, seqs, filtered.blast.results)
@@ -242,13 +251,15 @@ clusters.ci_gi.seqs.create <- function(root.taxon, nodesfile,
     return(clusters)
 }
 
+
+## TODO: Finish model organisms!!!
 .process.model.organism <- function(taxid, clusters, nodes, seqs) {
 
 
     cluster.df <- .make.cluster.entries(clusters)
     ci_gi.df <- .make.ci_gi.entries(clusters)
     ## Retreive sequences for taxid. If there are too many, pick random ones
-    
+
     ## Make blast db for all clusters of parent node
     ## pick the first parent for which we have cluster data
     parent <- taxid
@@ -259,9 +270,9 @@ clusters.ci_gi.seqs.create <- function(root.taxon, nodesfile,
 
     ## iterate over all clusters for parent node
 #    for (clustid in unique(ci_gi.subset$clustid)) {
-        
+
 #    }
-    
+
 }
 
 ## returns a data frame with columns matchine the fields in PhyLoTA's cluster table

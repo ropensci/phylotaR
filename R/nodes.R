@@ -44,14 +44,14 @@ remote.nodes.create <- function(root.taxa = c(33090, 4751, 33208), file.name='no
 ## The table is created from the 'nodes' table in the NCBI taxonomy
 ## Therefore, a directory with the path where the NCBI taxonomy dump
 ## is located must be provided
-nodes.create <- function(taxdir, root.taxa = c(33090, 4751, 33208), file.name='nodes.tsv') {
+nodes.create <- function(taxdir, root.taxa = c(33090, 4751, 33208), file.name='nodes.tsv', model.threshold=10000) {
 
     ## Get data from NCBI taxonomy dump
     if (! exists('ncbi.nodes'))
         ncbi.nodes <<- getnodes(taxdir)
     if (! exists('ncbi.names'))
         ncbi.names <<- getnames(taxdir)
-    
+
     set <- get.manageable.node.set(root.taxa, ncbi.nodes, max.descendants=10000, timeout=10,
                                    nodesfile=file.name)
     ids.to.process <- set$manageable.nodes
@@ -85,7 +85,7 @@ nodes.create <- function(taxdir, root.taxa = c(33090, 4751, 33208), file.name='n
             start <- .init.nodes.df()
         }
 
-        n <- .add.stats(tax, start, recursive=TRUE)
+        n <- .add.stats(tax, start, recursive=TRUE, model.threshold)
         ids.to.write <- n$ti[which(!n$ti %in% start$ti)]
         stopifnot(tax %in% ids.to.write)
         ## only return rows which were not written to file before
@@ -93,7 +93,7 @@ nodes.create <- function(taxdir, root.taxa = c(33090, 4751, 33208), file.name='n
         .write.row(subset, ncbi.names, file.name)
         cat("Finished processing taxid ", tax, " # ", i, " / ", length(ids.to.process), "\n")
     }
-    
+
     ## Add the top nodes non-recursively. This has to be in reversed order to make sure a parent is not
     ## inserted before it's children, since we need the info from the children. Therefore, this must not
     ## happen in parallel!
@@ -108,7 +108,7 @@ nodes.create <- function(taxdir, root.taxa = c(33090, 4751, 33208), file.name='n
                                           'n_genera')]
 
         cat("Processing taxid ", tax, " # ", i, " / ", length(ids.not.processed), "\n")
-        n <- .add.stats(tax, nodes.written, recursive=FALSE)
+        n <- .add.stats(tax, nodes.written, recursive=FALSE, model.threshold)
         .write.row(n[match(tax, n$ti),], ncbi.names, file.name)
         cat("Finished processing taxid ", tax, " # ", i, " / ", length(ids.not.processed), "\n")
     }
@@ -228,8 +228,8 @@ get.manageable.node.set <- function(root.taxa, ncbi.nodes, max.descendants=10000
 
 ## Recursive function to add number of sequences for each taxon to table as produced by getnodes().
 ## We set sequence counts for 'node' and 'subtree', if a node is of rank species or lower. For subtree,
-## this includes all desendants. We also distinguish between model (>=1000 seqs per node) and nonmodel organisms.
-.add.stats <- function(taxid, nodes, recursive=FALSE) {
+## this includes all desendants. We also distinguish between model (>=XXX seqs per node) and nonmodel organisms.
+.add.stats <- function(taxid, nodes, recursive=FALSE, model.threshold) {
 
     if (taxid %in% nodes$ti) {
         cat("Stats for node", taxid, "already there. Skipping \n")
@@ -265,7 +265,7 @@ get.manageable.node.set <- function(root.taxa, ncbi.nodes, max.descendants=10000
         curr.num.seqs <- .num.seqs.for.taxid(taxid)
         n_gi_node <- curr.num.seqs
         stats['n_gi_node'] <- curr.num.seqs
-        if (curr.num.seqs >= 10000) {
+        if (curr.num.seqs >= model.threshold) {
             n_gi_sub_model <- curr.num.seqs
             stats['n_gi_sub_model'] <- curr.num.seqs
         } else {
@@ -290,26 +290,27 @@ get.manageable.node.set <- function(root.taxa, ncbi.nodes, max.descendants=10000
 
         if (recursive == TRUE) {
             ## call function recursively for children
-            nodes <- .add.stats(child, nodes, recursive=TRUE)
+            nodes <- .add.stats(child, nodes, recursive=TRUE, model.threshold)
         }
 
         ## increase number of genera, if children are genera
         if (getrank(child, nodes=ncbi.nodes) == 'genus') {
             stats['n_genera'] <- stats['n_genera'] + 1
         }
-        
+
         ## compile columns for which counts are added from the child nodes
         cols <- c('n_leaf_desc', 'n_otu_desc', 'n_sp_desc', 'n_sp_model', 'n_genera')
-                
+
         ## only add subtree sequence counts if we have a higher-level node
         if (! rank %in% node.ranks) {
             cols <- c(cols, 'n_gi_sub_model', 'n_gi_sub_nonmodel')
         }
 
         ## add the counts
-        stats[cols] <- stats[cols] + nodes[which(nodes$ti==child), cols]        
+        stats[cols] <- stats[cols] + nodes[which(nodes$ti==child), cols]
     }
     ## add current node to nodes to be returned
+
     nodes <- rbind(nodes, stats[names(nodes)])
 
     cat("Added stats for taxid ", taxid, "\n")
@@ -324,7 +325,8 @@ get.manageable.node.set <- function(root.taxa, ncbi.nodes, max.descendants=10000
                n_leaf_desc=0, ## also counts itsself, for a leaf it is 1
                n_sp_desc=0, ## also counts itsself, for a species it is 1
                n_sp_model=0,
-               ti_genus=.get.genus(taxid),
+               #Hannes
+               ti_genus=-1,## .get.genus(taxid),
                n_genera=0,
                n_otu_desc=1)
 
@@ -383,7 +385,7 @@ get.manageable.node.set <- function(root.taxa, ncbi.nodes, max.descendants=10000
         stats['n_sp_model'] <- stats['n_sp_model'] + nodes[which(nodes$uid==child),'n_sp_model']
         stats['n_genera'] <- stats['n_genera'] + nodes[which(nodes$uid==child),'n_genera']
     }
-    
+
     ## add stats to data frame
     for (n in names(stats)) {
         nodes[which(nodes$uid==taxid),n] <- stats[n]
@@ -394,8 +396,8 @@ get.manageable.node.set <- function(root.taxa, ncbi.nodes, max.descendants=10000
 }
 
 .get.genus <- function(taxid, ncbi.nodes) {
-    
-    ## if rank is already higher than genus, do not search for it, 
+
+    ## if rank is already higher than genus, do not search for it,
     lower.ranks <- c('genus', 'subgenus', 'species group',
                      'species subgroup', 'species',
                      'subspecies','varietas', 'forma')
@@ -407,19 +409,19 @@ get.manageable.node.set <- function(root.taxa, ncbi.nodes, max.descendants=10000
     if (! current.rank  %in% lower.ranks) {
         return(NA)
     }
-    
+
     node <- taxid
     while (current.rank != 'genus') {
         node <- CHNOSZ::parent(node, nodes=ncbi.nodes)
         current.rank <- getrank(node, nodes=ncbi.nodes)
-        
+
         ## some hybrids between genera can have s subfamily as a parent...
         if (current.rank %in% higher.ranks) {
             break
         }
-        
+
     }
-    return(node)    
+    return(node)
 }
 
 descendants <- function(id, nodes) {

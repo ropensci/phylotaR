@@ -36,7 +36,7 @@ require('rentrez')
 #' gis <- .gis.for.taxid(10149) ## get gis for capybara
 .gis.for.taxid <- function(taxid, max.len=25000) {
     args <- list(db='nucleotide',
-                 term=paste0('txid', taxid, '[Organism:exp]', '1:', max.len, '[SLEN]'),
+                 term=paste0('txid', taxid, '[Organism:noexp]', '1:', max.len, '[SLEN]'),
                  use_history=T,
                  retmax=1e9-1)
     search <- .safe.ncbi.query(entrez_search, args)
@@ -52,7 +52,7 @@ require('rentrez')
 #' seqs <- .seqs.for.taxid(10149) ## get gis for capybara
 .seqs.for.taxid <- function(taxid, max.len=25000) {
     args <- list(db='nucleotide',
-                 term=paste0('txid', taxid, '[Organism:exp]', '1:', max.len, '[SLEN]'),
+                 term=paste0('txid', taxid, '[Organism:noexp]', '1:', max.len, '[SLEN]'),
                  use_history=T,
                  retmax=1e9-1)
     search <- .safe.ncbi.query(entrez_search, args)
@@ -123,7 +123,7 @@ require('rentrez')
 #' @return numeric
 .num.seqs.for.taxid <- function(taxid, max.len=25000) {
     args <- list(db='nucleotide',
-                 term=paste0('txid', taxid, '[Organism:exp]', '1:', max.len, '[SLEN]'),
+                 term=paste0('txid', taxid, '[Organism:noexp]', '1:', max.len, '[SLEN]'),
                  use_history=T,
                  retmax=1e9-1)
     search <- .safe.ncbi.query(entrez_search, args)
