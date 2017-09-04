@@ -70,8 +70,8 @@ nodes.create <- function(taxdir, root.taxa = c(33090, 4751, 33208), file.name='n
     #}
 
     cat("Adding ", length(ids.to.process), " nodes recursively, in parallel \n")
-##  for (i in seq_along(ids.to.process)) {
-    foreach (i=seq_along(ids.to.process)) %dopar% {
+    for (i in seq_along(ids.to.process)) {
+##    foreach (i=seq_along(ids.to.process)) %dopar% {
         tax <- ids.to.process[i]
         cat("Recursively processing taxid ", tax, " # ", i, " / ", length(ids.to.process), "\n")
         start <- data.frame()
@@ -149,7 +149,7 @@ get.manageable.node.set <- function(root.taxa, ncbi.nodes, max.descendants=10000
         if (is.null(n.desc) || n.desc > max.descendants) {
             queue <- c(queue, children(id, ncbi.nodes))
             rejected.nodes <- c(rejected.nodes, id)
-            cat("Taxon ", id, " has too many descendants or timeout reached. Processing child taxa.\n")
+            cat("Taxon ", id, " has too many descendants or timeout reached counting descendants. Processing child taxa.\n")
         }
         else {
             manageable.nodes <- c(manageable.nodes, id)
