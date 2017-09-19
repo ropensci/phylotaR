@@ -20,18 +20,22 @@ library(foreach)
 library(doMC)
 registerDoMC(3)
 
-ncbi.names <<- getnames(taxdir)
+##ncbi.names <<- getnames(taxdir)
 
 ## root <- "Mammalia"
-root <- "Carnivora"
-root.taxa <- ncbi.names$id[which(ncbi.names$name == root)]
-cat("Taxid(s) to analyse : ", root.taxa)
+##root <- "Felidae"
+##root.taxa <- ncbi.names$id[which(ncbi.names$name == root)]
+##cat("Taxid(s) to analyse : ", root.taxa)
+
+source('cl.R')
+nodes <- read.table('nodes-felidae.tsv', header=T)
+cl <- cluster(9681, nodes)
 
 ##remote.nodes.create(root.taxa=root.taxa, file.name='nodes-panthera.tsv')
-nodes.create(taxdir, root.taxa=root.taxa, file.name='nodes-mammalia.tsv', model.threshold=50000)
+##nodes.create(taxdir, root.taxa=root.taxa, file.name='nodes-felidae.tsv', model.threshold=10000)
 
 ##.db(dbname)
-##cl <- clusters.ci_gi.seqs.create(root.taxa, 'nodes-panthera.tsv',
-##                                 files=list(clusters='dbfiles-panthera-clusters.tsv',
-##                                     ci_gi='dbfiles-panthera-ci_gi.tsv',
-##                                    seqs='dbfiles-panthera-seqs.tsv'), max.seqs=130000)
+##cl <- clusters.ci_gi.seqs.create(root.taxa, 'nodes-felinae.tsv',
+##                                 files=list(clusters='dbfiles-felinae-clusters.tsv',
+##                                     ci_gi='dbfiles-felinae-ci_gi.tsv',
+##                                    seqs='dbfiles-felinae-seqs.tsv'), max.seqs=10000)
