@@ -1,8 +1,9 @@
-require('plyr')
+require('data.table')
 
 make.blast.db <- function(seqs, dbfile='blastdb.fa', dir='.') {
 
     if (length(seqs) < 2) stop('Need more than 2 sequences')
+    cat("Making blast database for ", length(seqs), " sequences\n")
 
     file <- file.path(dir, dbfile)
     file.create(file)
@@ -45,7 +46,8 @@ blast.all.vs.all <- function(dbname='blastdb.fa', evalue.cutoff=1.0e-10, outfile
 filter.blast.results <- function(blast.results, seqs, min.coverage=0.51) {
 
     ## collapse HSPs such that we end up with unique query-subject pairs
-    result.subset <- ddply(blast.results, c("query.id", "subject.id"), function(x)colSums(x['alignment.length']))
+    ##result.subset <- ddply(blast.results, c("query.id", "subject.id"), function(x)colSums(x['alignment.length']))
+    result.subset <- setDT(blast.results)[, .(alignment.length = sum(alignment.length)), .(query.id, subject.id)]
 
     ## adjust query and subject lengths for collapsed rows
     result.subset['query.length'] <- sapply(result.subset$query.id, function(id){seqs[[as.character(id)]]$length})
