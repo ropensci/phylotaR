@@ -274,7 +274,7 @@ get.manageable.node.set <- function(root.taxa, ncbi.nodes, max.descendants=10000
         }
         if (rank == 'species') {
             stats['n_sp_desc'] <- 1
-            if (curr.num.seqs >= 10000) {
+            if (curr.num.seqs >= model.threshold) {
                 stats['n_sp_model'] <- 1
             }
         }
