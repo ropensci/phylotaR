@@ -1,5 +1,6 @@
 ## functions for remote access to NCBI databases: Genbank and NCBI taxonomy
 require('rentrez')
+require('XML')
 
 #' Provides a safer way to use 'rentrez' queries by retrying
 #' a query in case of no success.
@@ -30,13 +31,17 @@ require('rentrez')
 #' Given a taxon ID, get a vector with the Ganbank GI entries for this taxid
 #' from the remote NCBI server.
 #' @param taxid NCBI taxon identifier
+#' @param direct Whether to download all 'directly' linked
+#' sequences ([Organism:noexp] in Genbank search) or all 'subtree' sequences ([Organism:exp])
 #' @param max.len Maximum length of sequence to be included in GI list
-#' @return vector with GIs
+#' #' @return vector with GIs
 #' @examples
 #' gis <- .gis.for.taxid(10149) ## get gis for capybara
-.gis.for.taxid <- function(taxid, max.len=25000) {
+.gis.for.taxid <- function(taxid, direct=FALSE, max.len=25000) {
+
+    org.term <- ifelse(direct, '[Organism:noexp]', '[Organism:exp]' )
     args <- list(db='nucleotide',
-                 term=paste0('txid', taxid, '[Organism:noexp]', '1:', max.len, '[SLEN]'),
+                 term=paste0('txid', taxid, org.term, '1:', max.len, '[SLEN]'),
                  use_history=T,
                  retmax=1e9-1)
     search <- .safe.ncbi.query(entrez_search, args)
@@ -44,27 +49,55 @@ require('rentrez')
     return(search$ids)
 }
 
+.rank.for.taxid <- function(taxid) {
+    ret <- NULL
+    args <- list(id=taxid,
+                 db="taxonomy",
+                 rettype="xml",
+                 parsed=T)
+    res <- .safe.ncbi.query(entrez_fetch, args)
+    l <- xmlToList(res)
+    if (typeof(l) == "list") {
+        ret <- l[[1]]$Rank
+    }
+    return(ret)
+}
+
 #' Given a taxon ID, quieries NCBI for sequences that match the taxid.
 #' @param taxid NCBI taxon identifier
+#' @param direct Whether to download all 'directly' linked
+#' sequences ([Organism:noexp] in Genbank search) or all 'subtree' sequences ([Organism:exp])
 #' @param max.len Maximum length of sequence to be included in GI list
-#' @return list of lists containing sequence objects
+#' @param max.seqs Take a random subset of max.seqs if the number of seqs exceeds it.
+#' Only makes sense when direct=TRUE
+#' #' @return list of lists containing sequence objects
 #' @examples
 #' seqs <- .seqs.for.taxid(10149) ## get gis for capybara
-.seqs.for.taxid <- function(taxid, max.len=25000) {
+.seqs.for.taxid <- function(taxid, direct=FALSE, max.len=25000, max.seqs=100000) {
+    org.term <- ifelse(direct, '[Organism:noexp]', '[Organism:exp]' )
+
+    allseqs <- numeric()
+
     args <- list(db='nucleotide',
-                 term=paste0('txid', taxid, '[Organism:noexp]', '1:', max.len, '[SLEN]'),
+                 term=paste0('txid', taxid, org.term, '1:', max.len, '[SLEN]'),
                  use_history=T,
+                 ## XXX Without 1e9-1 one could save time... but are the hits random???
                  retmax=1e9-1)
     search <- .safe.ncbi.query(entrez_search, args)
     gis <- search$ids;
     if (length(gis) < 1) {
         return(list())
     }
+    ## If the maximum amount of sequences is exceeded, randomly pick max.seqs gis
+    if (direct && length(gis) > max.seqs) {
+        cat("Choosing", max.seqs, "random sequences from", length(gis), "available\n")
+        gis <- gis[sample(1:max.seqs, replace=F)]
+    }
     cat("Going to retrieve ", length(gis), " sequences for taxid ", taxid, "\n")
-    allseqs <- numeric()
+
     ## Fetch sequences in increments
     increment <- 500
-    for (seq.idx in seq(0, length(gis), increment)) {
+    for (seq.idx in seq(0, length(gis)-1, increment)) {
         ## Get FASTA strings for IDs in the specified segment
         cat("Retreiving seqs ", seq.idx+1, " to ",
             ifelse(seq.idx+increment<length(gis), seq.idx+increment, length(gis)),
@@ -121,11 +154,12 @@ require('rentrez')
 #' @param taxid NCBI taxon identifier
 #' @param max.len Maximum length of sequence to be included in count
 #' @return numeric
-.num.seqs.for.taxid <- function(taxid, max.len=25000) {
+.num.seqs.for.taxid <- function(taxid, direct=FALSE, max.len=25000) {
+    org.term <- ifelse(direct, '[Organism:noexp]', '[Organism:exp]' )
     args <- list(db='nucleotide',
-                 term=paste0('txid', taxid, '[Organism:noexp]', '1:', max.len, '[SLEN]'),
+                 term=paste0('txid', taxid, org.term, '1:', max.len, '[SLEN]'),
                  use_history=T,
-                 retmax=1e9-1)
+                 retmax=1)
     search <- .safe.ncbi.query(entrez_search, args)
     return(search$count)
 }
