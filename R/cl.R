@@ -85,7 +85,7 @@ cluster <- function(taxon, nodes, seqs=NULL, blast.results=NULL, informative=FAL
     ## get subtree counts. If that is smaller than max.seqs.per.spec, we can take that number
     subtree.count <- .num.seqs.for.taxid(taxid, direct=FALSE, max.len=max.len)
     if (subtree.count <= max.seqs.per.spec) {
-        cat(subtree.count, "seqs for taxon", taxid, ", less than maximum of ", max.seqs.per.spec)
+        cat(subtree.count, "seqs for taxon", taxid, ", less than maximum of ", max.seqs.per.spec, " ")
         cat("sequences. Retreiving sequences for whole subtree\n")
         seqs <- .seqs.for.taxid(taxid, direct=FALSE, max.len=max.len, max.seqs=max.seqs.per.spec)
         return (seqs)
