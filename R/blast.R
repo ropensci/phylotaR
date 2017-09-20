@@ -31,10 +31,10 @@ blast.all.vs.all <- function(dbname='blastdb.fa', evalue.cutoff=1.0e-10, outfile
 
     ## Determine outformat. TODO: We don't really need all these columns...
     outfmt <- "'6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore qcovs qcovhsp'"
-    
+
     ## DUST filtering is enabled by default in blastn, disable
     ## Also only allow same-strand matches
-        
+
     cmd <- paste('blastn -query', dbname, '-db', dbname, '-outfmt', outfmt, '-dust no -strand plus -evalue', evalue.cutoff, '-out', outfile)
     system(cmd) == 0 || stop('Command ', cmd, 'did not return 0')
     if (! file.exists(outfile)) {
@@ -53,25 +53,34 @@ filter.blast.results <- function(blast.results, seqs, min.coverage=0.51) {
 
     ## ( result.subset$q.end - result.subset$q.start) / result.subset$query.length * 100
     ## ( result.subset$s.end - result.subset$s.start) / result.subset$subject.length * 100
-    
-    ## collapse HSPs such that we end up with unique query-subject pairs
+
+
     ##result.subset <- ddply(blast.results, c("query.id", "subject.id"), function(x)colSums(x['alignment.length']))
     ##result.subset <- setDT(blast.results)[, .(alignment.length = sum(alignment.length)), .(query.id, subject.id)]
 
     ## first filter out HSPs with lower than min.coverage
     blast.dt <- data.table(blast.results)
    ## blast.dt <- blast.dt[qcovhsp/100 > min.coverage,]
-    
-    ## query-subject pairs with min coverage:
-    blast.dt[qcovs/100 < min.coverage]    
-    
-    ## remove both, query-subject and subject-query pair!!
-    ## Otherwise, we will end up with clusters with uneven sequences!!
 
-    
+    ## query-subject pairs with min coverage:
+    remove.pairs <- blast.dt[qcovs/100 < min.coverage, .(query.id, subject.id)]
+    remove.indices <- c()
+    for (i in 1:nrow(remove.pairs)) {
+        n1 <- remove.pairs[i, query.id]
+        n2 <- remove.pairs[i, subject.id]
+        remove.indices <- c(remove.indices, blast.dt[(query.id == n1 & subject.id == n2) | (query.id == n2 & subject.id == n1), which=T])
+    }
+    filtered.blast.dt <- blast.dt[! remove.indices,]
+
+    ## remove both, query-subject and subject-query pair of low coverage hits!!
+    ## Otherwise, we will end up with clusters with uneven sequences!!
+    recover()
+
+
+    ## collapse HSPs such that we end up with unique query-subject pairs
     result.subset <- setkey(blast.dt[qcovs/100 > min.coverage,], query.id, subject.id)[, .(alignment.length = sum(alignment.length)), .(query.id, subject.id)]
     result.subset2 <- setkey(blast.dt[qcovhsp/100 > min.coverage,], query.id, subject.id)[, .(alignment.length = sum(alignment.length)), .(query.id, subject.id)]
-    
+
     ##result.subset <- setkey(setDT(blast.results), query.id, subject.id)[, .(alignment.length = sum(alignment.length)), .(query.id, subject.id)]
     result.subset <- as.data.frame(result.subset)
     result.subset2 <- as.data.frame(result.subset2)
@@ -87,12 +96,12 @@ filter.blast.results <- function(blast.results, seqs, min.coverage=0.51) {
 
     g <- graph.data.frame(result.subset[,c("query.id", "subject.id")], directed=F)
     g2 <- graph.data.frame(result.subset2[,c("query.id", "subject.id")], directed=F)
-    
+
     ##hsp
-    
-    
+
+
 ##    seqs[as.character(result.subset$query.id)]
-    
+
     ##result.subset['query.length'] <- unname(sapply(seqs[as.character(result.subset$query.id)], function(x)x$length))
     ##result.subset['subject.length'] <- unname(sapply(seqs[as.character(result.subset$subject.id)], function(x)x$length))
 
