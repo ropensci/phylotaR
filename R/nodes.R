@@ -70,8 +70,8 @@ nodes.create <- function(taxdir, root.taxa = c(33090, 4751, 33208), file.name='n
     #}
 
     cat("Adding ", length(ids.to.process), " nodes recursively, in parallel \n")
-    for (i in seq_along(ids.to.process)) {
-##    foreach (i=seq_along(ids.to.process)) %dopar% {
+##    for (i in seq_along(ids.to.process)) {
+    foreach (i=seq_along(ids.to.process)) %dopar% {
         tax <- ids.to.process[i]
         cat("Recursively processing taxid ", tax, " # ", i, " / ", length(ids.to.process), "\n")
         start <- data.frame()
