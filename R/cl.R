@@ -25,7 +25,7 @@ clusters.ci_gi.seqs.create <- function(root.taxon, nodesfile,
 
         ## if sequence count is smaller than MAX.BLAST.SEQS, add it to the nodes to process, otherwise get children
         if (num.seqs == 0) {
-            cat("No sequences for taxid", currentid, "\n")
+            cat("No sequences for taxid", current.taxon, "\n")
         }
         else if (num.seqs <= MAX.BLAST.SEQS) {
             cat("Will process taxon", current.taxon, "\n")
@@ -37,8 +37,8 @@ clusters.ci_gi.seqs.create <- function(root.taxon, nodesfile,
         }
     }
 
-    foreach (i=seq_along(taxa.to.process), .verbose=T) %dopar% {
-    ## for (i in seq_along(taxa.to.process)) {
+    ##foreach (i=seq_along(taxa.to.process), .verbose=T) %dopar% {
+    for (i in seq_along(taxa.to.process)) {
         taxid <- taxa.to.process[i]
         cat("Processing taxid ", taxid, " # ", i, " / ", length(taxa.to.process), "\n")
 
