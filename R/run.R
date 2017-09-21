@@ -3,6 +3,9 @@
 source('nodes.R')
 source('clusters.R')
 source('ci_gi.R')
+source('cl.R')
+library(foreach)
+library(doMC)
 
 options(error=recover)
 
@@ -13,12 +16,12 @@ options(error=recover)
 dbname <- 'phylota.sqlite'
 taxdir <- '/home/hettling/taxdump'##'/Users/hettling/ftp.ncbi.nih.gov/pub/taxonomy'
 
-## make accession2taxid table
-#accession2taxid.create(dbname, taxdir, overwrite=T)
+MODEL.THRESHOLD <<- 3000 ## 10000
+MAX.BLAST.SEQS <<- 10000 ## 100000
+MAX.SEQUENCE.LENGTH <<- 25000
+CORES <<- 4
 
-library(foreach)
-library(doMC)
-registerDoMC(3)
+registerDoMC(CORES)
 
 ##ncbi.names <<- getnames(taxdir)
 
@@ -31,10 +34,14 @@ registerDoMC(3)
 #root.taxa <- 9681
 #nodes.create(taxdir, root.taxa=root.taxa, file.name='nodes-felidae.tsv', model.threshold=10000)
 
-source('cl.R')
-nodes <- read.table('nodes-felidae.tsv', header=T)
-##cl <- cluster(9681, nodes)
-cl <- cluster(37028, nodes)
+clusters.ci_gi.seqs.create(9681, 'nodes-felidae.tsv', files=list(clusters='dbfiles-felidae-clusters.tsv',
+                                                          ci_gi='dbfiles-felidae-ci_gi.tsv',
+                                                          seqs='dbfiles-felidae-seqs.tsv'))
+
+
+
+## cl <- cluster(9681, nodes)
+##cl <- cluster(37028, nodes)
 
 
 
