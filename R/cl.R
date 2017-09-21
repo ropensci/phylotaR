@@ -1,5 +1,64 @@
 
 
+clusters.ci_gi.seqs.create <- function(root.taxon, nodesfile,
+                                       files=list(clusters='clusters.tsv', ci_gi='ci_gi.tsv', seqs='seqs.tsv'),
+                                       informative=FALSE) {
+    ## load nodes table
+    nodes <- read.table(nodesfile, header=T)
+    ## load clusters that are already calculated, if any
+    clusters.file <- files[['clusters']]
+    ci_gi.file <- files[['ci_gi']]
+    seqs.file <- files[['seqs']]
+
+    ## get all nodes that will be processed:
+    ## all nodes for which all children contain < MAX.BLAST.SEQS sequences
+    taxa.to.process <- vector()
+    queue <- root.taxon
+    while(length(queue) > 0) {
+        current.taxon <- head(queue, 1)
+        queue <- tail(queue, length(queue)-1)
+
+        ## get number of sequences to determine if it is manageable to calculate clusters
+        ## TODO: We should get the counts from the nodes table!!!
+        num.seqs <- .rec.num.seqs(current.taxon, nodes, max.len=MAX.SEQUENCE.LENGTH, max.seqs.per.spec=MODEL.THRESHOLD)
+        cat("Number of sequences for taxon", current.taxon, ": ", num.seqs, "\n")
+
+        ## if sequence count is smaller than MAX.BLAST.SEQS, add it to the nodes to process, otherwise get children
+        if (num.seqs == 0) {
+            cat("No sequences for taxid", currentid, "\n")
+        }
+        else if (num.seqs <= MAX.BLAST.SEQS) {
+            cat("Will process taxon", current.taxon, "\n")
+            taxa.to.process <- c(taxa.to.process, current.taxon)
+        }
+        else {
+            cat("Too many seqs to blast for taxid", current.taxon, ", retrieveing children\n")
+            queue <- c(queue, .children(current.taxon, nodes))
+        }
+    }
+
+    foreach (i=seq_along(taxa.to.process), .verbose=T) %dopar% {
+    ## for (i in seq_along(taxa.to.process)) {
+        taxid <- taxa.to.process[i]
+        cat("Processing taxid ", taxid, " # ", i, " / ", length(taxa.to.process), "\n")
+
+        ## Get the sequences
+        seqs <- .rec.retreive.seqs(taxid, nodes, max.len=MAX.SEQUENCE.LENGTH, max.seqs.per.spec=MODEL.THRESHOLD)
+        seqdf <- .make.seq.entries(seqs)
+        clusters <- .make.clusters(taxid, nodes, seqs, informative=informative)
+        cldf <- .make.cluster.entries(clusters)
+        cigidf <- .make.ci_gi.entries(clusters)
+
+        ## Write all data to file
+        cat("Taxid", taxid, ": writing", nrow(cldf), "clusters,", nrow(seqdf), "sequences,", nrow(cigidf), "to file\n")
+        write.table(cldf, file=clusters.file, append=file.exists(clusters.file), quote=F, sep="\t", row.names=F, col.names=!file.exists(clusters.file))
+        write.table(seqdf, file=seqs.file, append=file.exists(seqs.file), quote=F, sep="\t", row.names=F, col.names=!file.exists(seqs.file))
+        write.table(cigidf, file=ci_gi.file, append=file.exists(ci_gi.file), quote=F, sep="\t", row.names=F, col.names=!file.exists(ci_gi.file))
+        cat("Finished processing taxid ", taxid, " # ", i, " / ", length(taxa.to.process), "\n")
+    }
+}
+
+
 cluster <- function(taxon, nodes, seqs=NULL, blast.results=NULL, informative=FALSE) {
 
     ## Retrieve sequences, if not already done
@@ -19,7 +78,7 @@ cluster <- function(taxon, nodes, seqs=NULL, blast.results=NULL, informative=FAL
         ## For rank 'species' it is a special case: sequences should not include the 'subtree'
         ## sequences, only the 'direct' sequences. Otherwise the sequences of subspecies would
         ## be included while they shouldn't.
-        gis <- .gis.for.taxon(taxon, direct=(rank=='species'))
+        gis <- .gis.for.taxid(taxon, direct=(rank=='species'))
         current.seqs <- seqs[gis]
     }
 
