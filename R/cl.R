@@ -37,15 +37,15 @@ clusters.ci_gi.seqs.create <- function(root.taxon, nodesfile,
         }
     }
 
-    ##foreach (i=seq_along(taxa.to.process), .verbose=T) %dopar% {
-    for (i in seq_along(taxa.to.process)) {
+    foreach (i=seq_along(taxa.to.process), .verbose=T) %dopar% {
+    ##for (i in seq_along(taxa.to.process)) {
         taxid <- taxa.to.process[i]
         cat("Processing taxid ", taxid, " # ", i, " / ", length(taxa.to.process), "\n")
 
         ## Get the sequences
         seqs <- .rec.retreive.seqs(taxid, nodes, max.len=MAX.SEQUENCE.LENGTH, max.seqs.per.spec=MODEL.THRESHOLD)
         seqdf <- .make.seq.entries(seqs)
-        clusters <- .make.clusters(taxid, nodes, seqs, informative=informative)
+        clusters <- cluster(taxid, nodes, seqs, informative=informative)
         cldf <- .make.cluster.entries(clusters)
         cigidf <- .make.ci_gi.entries(clusters)
 
