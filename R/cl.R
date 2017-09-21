@@ -52,7 +52,7 @@ cluster <- function(taxon, nodes, seqs=NULL, blast.results=NULL, informative=FAL
         cat("Processing child taxon of ", taxon, " ", ch, "\n")
 
         ## calculate clusters for child taxon
-        child.clusters <- .make.clusters(ch, nodes, seqs, current.blast.results)
+        child.clusters <- cluster(ch, nodes, seqs, current.blast.results)
         ## two numbers can only be calculated if we have cluster info on multiple taxonomic levels:
         ##  n_child, the number of child clusters, and ci_anc, the parent cluster.
         ##  Since we are dealing with single-likeage clusters, we can identify the parent cluster of a
