@@ -48,78 +48,25 @@ blast.all.vs.all <- function(dbname='blastdb.fa', evalue.cutoff=1.0e-10, outfile
 }
 
 filter.blast.results <- function(blast.results, seqs, min.coverage=0.51) {
-
-    ## recover()
-
-    ## ( result.subset$q.end - result.subset$q.start) / result.subset$query.length * 100
-    ## ( result.subset$s.end - result.subset$s.start) / result.subset$subject.length * 100
-
-
-    ##result.subset <- ddply(blast.results, c("query.id", "subject.id"), function(x)colSums(x['alignment.length']))
-    ##result.subset <- setDT(blast.results)[, .(alignment.length = sum(alignment.length)), .(query.id, subject.id)]
-
-    ## first filter out HSPs with lower than min.coverage
+    
     blast.dt <- data.table(blast.results)
-   ## blast.dt <- blast.dt[qcovhsp/100 > min.coverage,]
 
-    ## query-subject pairs with min coverage:
-    remove.pairs <- blast.dt[qcovs/100 < min.coverage, .(query.id, subject.id)]
-    remove.indices <- c()
-    for (i in 1:nrow(remove.pairs)) {
-        n1 <- remove.pairs[i, query.id]
-        n2 <- remove.pairs[i, subject.id]
-        remove.indices <- c(remove.indices, blast.dt[(query.id == n1 & subject.id == n2) | (query.id == n2 & subject.id == n1), which=T])
-    }
-    filtered.blast.dt <- blast.dt[! remove.indices,]
-
-    ## remove both, query-subject and subject-query pair of low coverage hits!!
-    ## Otherwise, we will end up with clusters with uneven sequences!!
-    recover()
-
-
-    ## collapse HSPs such that we end up with unique query-subject pairs
-    result.subset <- setkey(blast.dt[qcovs/100 > min.coverage,], query.id, subject.id)[, .(alignment.length = sum(alignment.length)), .(query.id, subject.id)]
-    result.subset2 <- setkey(blast.dt[qcovhsp/100 > min.coverage,], query.id, subject.id)[, .(alignment.length = sum(alignment.length)), .(query.id, subject.id)]
-
-    ##result.subset <- setkey(setDT(blast.results), query.id, subject.id)[, .(alignment.length = sum(alignment.length)), .(query.id, subject.id)]
-    result.subset <- as.data.frame(result.subset)
-    result.subset2 <- as.data.frame(result.subset2)
-    ## adjust query and subject lengths for collapsed rows
-    ## result.subset['query.length'] <- sapply(result.subset$query.id, function(id){seqs[[as.character(id)]]$length})
-    ## result.subset['subject.length'] <- sapply(result.subset$subject.id, function(id){seqs[[as.character(id)]]$length})
-    seqs.dt <- rbindlist(seqs)
-    result.subset['query.length'] <- seqs.dt[match(result.subset$query.id, seqs.dt$gi),length]
-    result.subset['subject.length'] <- seqs.dt[match(result.subset$subject.id, seqs.dt$gi),length]
-
-    result.subset2['query.length'] <- seqs.dt[match(result.subset2$query.id, seqs.dt$gi),length]
-    result.subset2['subject.length'] <- seqs.dt[match(result.subset2$subject.id, seqs.dt$gi),length]
-
-    g <- graph.data.frame(result.subset[,c("query.id", "subject.id")], directed=F)
-    g2 <- graph.data.frame(result.subset2[,c("query.id", "subject.id")], directed=F)
-
-    ##hsp
-
-
-##    seqs[as.character(result.subset$query.id)]
-
-    ##result.subset['query.length'] <- unname(sapply(seqs[as.character(result.subset$query.id)], function(x)x$length))
-    ##result.subset['subject.length'] <- unname(sapply(seqs[as.character(result.subset$subject.id)], function(x)x$length))
-
-
-    ## calculate how much overlap there is between hits
-    ##coverages <- apply(result.subset, 1, function(x)x['alignment.length'] / max(x['query.length'], x['subject.length']))
-
-    ## we will discard all hits where the overlapping region is smaller
-    ## than 0.51 (default) times of the length of both query and hit
-
-    coverages <- result.subset[,'alignment.length'] /  pmax(result.subset[,'query.length'], result.subset[,'subject.length'])
-    num.discarded.hits <- sum(coverages < min.coverage)
-    cat("Discarding ", num.discarded.hits, " BLAST hits due to insufficient coverage\n")
-
-    ## keep only the gis for which there is enough overlapping hits
-    result.subset <- result.subset[which(coverages >= min.coverage),]
-
-    return (result.subset)
+    ## First filter out HSPs with lower than min.coverage
+    ## Get query-subject pairs with too low coverage
+    ## Remove both, query-subject and subject-query pair of low coverage hits!!
+    ## Otherwise, we will end up with clusters with uneven sequence lengths!
+    ## TODO does it make a difference to filter for qcovhsp ??
+    remove.dt <- blast.dt[qcovs/100 < min.coverage, .(query.id, subject.id)][, rbind(.SD, rev(.SD), use.names = FALSE)]
+    blast.dt.filtered <- blast.dt[!remove.dt, on=names(remove.dt)]
+    cat("Removed", nrow(blast.dt) - nrow(blast.dt.filtered), "of the", nrow(blast.dt), "BLAST hits due to insufficient coverage\n")
+    
+    ## XXX Don't need to collapse when doing single-linkeage clustering!!
+    ## collapse HSPs such that we end up with unique query-subject pairs 
+    ## TODO The xx is a hack.. how do I collapse by two column values and only get the column back??
+    ## result.subset <- setkey(blast.dt.filtered, query.id, subject.id)[, .(xx=0),.(query.id, subject.id)]    
+    result <- as.data.frame(blast.dt.filtered[,.(query.id, subject.id)])
+    
+    return (result)
 }
 
 
