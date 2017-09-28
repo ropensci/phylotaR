@@ -46,9 +46,9 @@ source('query-local.R')
 ##  PRIMARY KEY ("uid")
 ##);
 
-clusters.ci_gi.seqs.create <- function(root.taxon, nodesfile,
+clusters.ci_gi.seqs.create.old <- function(root.taxon, nodesfile,
                                        files=list(clusters='clusters.tsv', ci_gi='ci_gi.tsv', seqs='seqs.tsv'),
-                                       max.seqs=20000, informative=FALSE) {
+                                       max.seqs=10000, informative=FALSE) {
 
     ## load nodes table
     nodes <- read.table(nodesfile, header=T)
@@ -158,7 +158,14 @@ clusters.ci_gi.seqs.create <- function(root.taxon, nodesfile,
         gis <- names(seqs)
     }
     else {
-        gis <- .gis.for.taxid(taxon)
+
+        ## XXX If the taxon has higher level than species, the 'subtree' sequences must be retreived.
+        ## If the level is species, we need the 'direct' seqs for that species excluding the ones
+        ## for the subspecies.
+        ## If taxon is a subspecies or varietas, forma, etc., we can get the subtree seqs.
+
+         gis <- .gis.for.taxid(taxon)
+        ##gis <- names(seqs)
     }
 
     ## Handle empty and singleton clusters
@@ -172,8 +179,8 @@ clusters.ci_gi.seqs.create <- function(root.taxon, nodesfile,
     }
 
     ## gis will also contain the ones of model orgenisms, therefore only  take the ones that are given in our sequences
-    seqs <- seqs[gis[which(gis %in% names(seqs))]]
-    gis <- names(seqs)
+    #seqs <- seqs[gis[which(gis %in% names(seqs))]]
+    #gis <- names(seqs)
 
     ## if we have not yet blasted the sequences, do so
     if (is.null(blast.results)) {
@@ -220,6 +227,7 @@ clusters.ci_gi.seqs.create <- function(root.taxon, nodesfile,
             ## child could be a model organism. In this case we don't have sequences and
             ## a separate blast search has to be conducted.
             if ( nodes[match(ch, nodes$ti),'n_gi_node'] > 10000 ) {
+                recover()
                 ## return(list())
                 next
                 ##  clusters <- .process.model.organism(ch, clusters, nodes, seqs)
@@ -227,12 +235,12 @@ clusters.ci_gi.seqs.create <- function(root.taxon, nodesfile,
             else {
                 ## calculate clusters for child taxon
                 child.clusters <- .make.clusters(ch, nodes, seqs, filtered.blast.results)
-                ## two parameters can only be calculated if we have cluster info on multiple taxonomic levels:
-                ##  n_child, the number of child clusters, ci_anc, the parent cluster.
+                ## two numbers can only be calculated if we have cluster info on multiple taxonomic levels:
+                ##  n_child, the number of child clusters, and ci_anc, the parent cluster.
                 ##  Since we are dealing with single-likeage clusters, we can identify the parent cluster of a
                 ##  cluster if at least one gi of both clusters is the same.
                 child.clusters <- lapply(child.clusters, function(cc) {
-                    ## indices of the parent clusters that contain a gi of the child clusters
+                    ## Get the indices of the parent clusters that contain a gi of the child clusters
                     ## If a gi is in two clusters (e.g. parent and grandparent), take the lower one, by taking
                     ## the higher index
                     idx <- max(which(sapply(clusters, function(c) any(cc$gis %in% c$gis))))
@@ -289,15 +297,14 @@ clusters.ci_gi.seqs.create <- function(root.taxon, nodesfile,
 }
 
 ## input: List of clusters
-.add.cluster.info <- function(clusters, nodes, taxid, seqs) {
-
-    ## we will take the column names in the database as names in the list
+.add.cluster.info <- function(clusters, nodes, taxid, seqs, direct=FALSE) {
+     ## we will take the column names in the database as names in the list
     for (i in 1:length(clusters)) {
         cl <- clusters[[i]]
         cl.seqs <- lapply(cl$gis, function(gi)seqs[[as.character(gi)]])
         cl$ti_root <- taxid
         cl$ci <- i-1
-        cl$cl_type <- ifelse(length(.children(taxid, nodes)) > 0, 'subtree', 'node')
+        cl$cl_type <- ifelse(direct, 'node', 'subtree')
         cl$n_gi <- length(cl$gis)
         ## all taxon ids for gis in cluster
         cl$tis <- sapply(cl.seqs, '[[', 'ti')

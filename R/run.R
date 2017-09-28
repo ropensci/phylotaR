@@ -19,6 +19,7 @@ taxdir <- '/home/hettling/taxdump'##'/Users/hettling/ftp.ncbi.nih.gov/pub/taxono
 MODEL.THRESHOLD <<- 3000 ## 10000
 MAX.BLAST.SEQS <<- 10000 ## 100000
 MAX.SEQUENCE.LENGTH <<- 25000
+SEQS.CACHE.DIR <<- "./sequences/"
 CORES <<- 4
 
 registerDoMC(CORES)
@@ -34,9 +35,9 @@ registerDoMC(CORES)
 #root.taxa <- 9681
 #nodes.create(taxdir, root.taxa=root.taxa, file.name='nodes-felidae.tsv', model.threshold=10000)
 
-clusters.ci_gi.seqs.create(9681, 'nodes-felidae.tsv', files=list(clusters='dbfiles-felidae-clusters.tsv',
-                                                          ci_gi='dbfiles-felidae-ci_gi.tsv',
-                                                          seqs='dbfiles-felidae-seqs.tsv'))
+clusters.ci_gi.seqs.create(338152, 'nodes-felidae.tsv', files=list(clusters='dbfiles-felinae-clusters.tsv',
+                                                          ci_gi='dbfiles-felinae-ci_gi.tsv',
+                                                          seqs='dbfiles-felinae-seqs.tsv'))
 
 
 

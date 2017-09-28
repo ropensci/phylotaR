@@ -129,7 +129,7 @@ require('XML')
                         ti=sm$taxid,
                         acc=sm$caption,
                         acc_vers=sm$accessionversion,
-                        length=nchar(se),
+                        length=sm$slen,
                         ##TODO: Division not in summary object, how to get?
                         division=NA,
                         acc_date=sm$createdate,

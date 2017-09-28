@@ -5,6 +5,7 @@ clusters.ci_gi.seqs.create <- function(root.taxon, nodesfile,
                                        informative=FALSE) {
     ## load nodes table
     nodes <- read.table(nodesfile, header=T)
+
     ## load clusters that are already calculated, if any
     clusters.file <- files[['clusters']]
     ci_gi.file <- files[['ci_gi']]
@@ -32,18 +33,25 @@ clusters.ci_gi.seqs.create <- function(root.taxon, nodesfile,
             taxa.to.process <- c(taxa.to.process, current.taxon)
         }
         else {
-            cat("Too many seqs to blast for taxid", current.taxon, ", retrieveing children\n")
+            cat("Too many seqs to blast for taxid", current.taxon, "... retrieving children\n")
             queue <- c(queue, .children(current.taxon, nodes))
         }
     }
 
-    foreach (i=seq_along(taxa.to.process), .verbose=T) %dopar% {
-    ##for (i in seq_along(taxa.to.process)) {
+    ##foreach (i=seq_along(taxa.to.process), .verbose=T) %dopar% {
+    for (i in seq_along(taxa.to.process)) {
         taxid <- taxa.to.process[i]
         cat("Processing taxid ", taxid, " # ", i, " / ", length(taxa.to.process), "\n")
 
-        ## Get the sequences
-        seqs <- .rec.retreive.seqs(taxid, nodes, max.len=MAX.SEQUENCE.LENGTH, max.seqs.per.spec=MODEL.THRESHOLD)
+        ## Check if we can cache sequences for this taxon
+        seqs <- .read.seqs.from.fasta(taxid, SEQS.CACHE.DIR, MODEL.THRESHOLD)
+
+        ## Get the sequences if they could not be read from file
+        if (length(seqs)==0) {
+            seqs <- .rec.retreive.seqs(taxid, nodes, max.len=MAX.SEQUENCE.LENGTH, max.seqs.per.spec=MODEL.THRESHOLD)
+            .write.seqs.to.fasta(seqs, taxid, SEQS.CACHE.DIR, MODEL.THRESHOLD)
+        }
+
         seqdf <- .make.seq.entries(seqs)
         clusters <- cluster(taxid, nodes, seqs, informative=informative)
         cldf <- .make.cluster.entries(clusters)
@@ -58,90 +66,163 @@ clusters.ci_gi.seqs.create <- function(root.taxon, nodesfile,
     }
 }
 
+## input : List of sequences
+## filename is {taxon}-max-{threshold}.fa
+.write.seqs.to.fasta <- function(seqs, taxon, dir, threshold=NA) {
+    fastastr <- ""
 
-cluster <- function(taxon, nodes, seqs=NULL, blast.results=NULL, informative=FALSE) {
+    ## assemble fasta string
+    for (s in seqs) {
+        ## defline will consist of all attributes but 'seq' separated by "|". Example:
+        ## gi=1104556983|ti=61454|acc=KX265095|acc_vers=KX265095.1 ...
+        attributes <- names(s)[!grepl("seq", names(s))]
+        defline <- paste(">", paste(paste(attributes, s[attributes], sep="="), collapse="|"))
+        ## append to fasta string
+        fastastr <- paste0(fastastr, defline, "\n", s$seq, "\n")
+    }
+    ## write to file
+    filename <- paste0(dir, "/", taxon, "-max-", threshold, ".fa")
+    cat("Writing sequences for taxon", taxon, "to file", filename, "\n")
+    if (! file.exists(dir)) {
+        dir.create(dir)
+    }
+    cat(fastastr, file=filename)
+}
 
-    ## Retrieve sequences, if not already done
-    current.seqs <- list()
+.read.seqs.from.fasta <- function(taxon, dir, threshold=NA) {
+    all.seqs <- list()
 
-    ## get species rank
+    ## get filename and read in fasta
+    filename <- paste0(dir, "/", taxon, "-max-", threshold, ".fa")
+
+    ## check if file exists
+    if (! file.exists(filename)) {
+        return(all.seqs)
+    }
+
+    cat("Reading sequences for taxid", taxon, "from file", filename, "\n")
+
+    ## each line in file is an item in the vector
+    vec <- scan(filename, what=character(), sep="\n")
+    deflines <- vec[seq(1, length(vec), by=2)]
+    seqstrs <- vec[seq(2, length(vec), by=2)]
+
+    ## parse sequence info from deflines
+    deflines <- sub("^> ", "", deflines)
+    ll <- lapply(deflines, function(d)strsplit(d, "\\|")[[1]])
+
+    attributes <- c("gi", "ti", "acc", "acc_vers", "length", "division", "acc_date", "gbrel", "def")
+
+    for (i in seq_along(ll)) {
+        ## TODO: This is a bit dirty, works only if there is no "|" character in defline!
+        values <- unname(sapply(attributes, function(x){ gsub(paste0(".*?", x, "=(.*?)\\|.*"), "\\1", paste0(deflines[i], "|"))}))
+        seq <- list()
+        seq[attributes] <- values
+        seq$seq <- seqstrs[[i]]
+        all.seqs[[i]] <- seq
+    }
+    names(all.seqs) = lapply(all.seqs, `[[`, "gi")
+    return (all.seqs)
+}
+
+cluster <- function(taxon, nodes, seqs, blast.results=NULL, direct=FALSE, informative=FALSE) {
+    ## list with clusters to be returned
+    all.clusters <- list()
+
     rank <- as.character(nodes$rank[match(taxon, nodes$ti)])
-    cat ("Processing taxid", taxon, "of rank", rank, "\n")
+    cat ("Processing taxid", taxon, "of rank", rank, "attempting to make", ifelse(direct, "direct", "subtree"), "clusters\n")
 
-    if (is.null(seqs)) {
-        seqs <- .rec.retreive.seqs(taxon, nodes, max.len=25000, max.seqs.per.spec=10000)
-        current.seqs <- seqs
+    ## Taxa can have "direct" sequence links up to some certain level, e.g. genus. This means that no sequnces of the children
+    ## of the taxon are included. These clusters will be stored separately
+    ## as "node" clusters. In genbank, one searches for direct links using keyword 'noexp' and 'exp' for subtree links.
+    ## Below, we also calulate the direct ('node') clusters for the taxon of interest
+    if (! direct) {
+
+        ## In NCBI, subtree search on terminals (taxa without children) gives the direct sequences.
+        ## Therefore, we have to exclude terminals from direct cluster calculation, because their
+        ## clusters are already calculated in the 'subtree' (direct=false) mode!
+        if (length(.children(taxon, nodes)) > 0) {
+            all.clusters <- c(all.clusters, cluster(taxon, nodes, seqs, blast.results, TRUE, informative))
+        }
+    }
+    ## get GIs for taxon
+    taxids <- c()
+    if (direct) {
+        taxids <- taxon
     }
     else {
-        ## get GIs for taxon
-
-        ## For rank 'species' it is a special case: sequences should not include the 'subtree'
-        ## sequences, only the 'direct' sequences. Otherwise the sequences of subspecies would
-        ## be included while they shouldn't.
-        gis <- .gis.for.taxid(taxon, direct=(rank=='species'))
-        current.seqs <- seqs[gis]
+        taxids <- .get.subtree.taxids(taxon, nodes)
     }
+    all.tis <- sapply(seqs, '[[', 'ti')
+    gis <- names(seqs[which(all.tis %in% taxids)])
+    cat("Found", length(gis), ifelse(direct, "direct", "subtree"), "gis for taxid", taxon, "\n")
+
+    if (length(gis) == 0) {
+        cat("No sequences for taxid", taxon, ",cannot make clusters\n")
+        return(all.clusters)
+    }
+    current.seqs <- seqs[gis[gis %in% names(seqs)]]
 
     ## Get blast results if not already calculated
     current.blast.results <- list()
-
     if (is.null(blast.results)) {
-        current.blast.results <- .get.blast.results(taxon, seqs)
+        current.blast.results <- .get.blast.results(taxon, current.seqs)
     }
     else {
         ##  reduce blast results such that include only the gis for the current taxon
         cat("Using BLAST results from parent cluster\n")
         current.blast.results <- blast.results[which(blast.results$subject.id %in% gis),]
         current.blast.results <- current.blast.results[which(current.blast.results$query.id %in% gis),]
-
     }
 
     ## Sequence clusters are stored in a list of lists, named by gi
     ## Get top-level clusters
     cat("Clustering BLAST results for taxid", taxon, "\n")
-    clusters <- cluster.blast.results(current.blast.results, informative=informative)
+    raw.clusters <- cluster.blast.results(current.blast.results, informative=informative)
     cat("Finished clustering BLAST results for taxid", taxon, "\n")
 
     ## make dataframe with fields as in PhyLoTa database
-    clusters <- .add.cluster.info(clusters, nodes, taxon, seqs)
+    clusters <- .add.cluster.info(raw.clusters, nodes, taxon, seqs, direct=direct)
     cat("Generated ", length(clusters), "clusters\n")
+    all.clusters <- c(all.clusters, clusters)
 
-    ## iterate over taxon's children to retrieve clusters
-    for (ch in .children(taxon, nodes)) {
-        cat("Processing child taxon of ", taxon, " ", ch, "\n")
+    ## If we do not calculate a direct cluster here, iterate over taxon's children to retrieve clusters
+    if (! direct) {
+        for (ch in .children(taxon, nodes)) {
+            cat("Processing child taxon of ", taxon, " ", ch, "\n")
 
-        ## calculate clusters for child taxon
-        child.clusters <- cluster(ch, nodes, seqs, current.blast.results)
-        ## two numbers can only be calculated if we have cluster info on multiple taxonomic levels:
-        ##  n_child, the number of child clusters, and ci_anc, the parent cluster.
-        ##  Since we are dealing with single-likeage clusters, we can identify the parent cluster of a
-        ##  cluster if at least one gi of both clusters is the same.
-        child.clusters <- lapply(child.clusters, function(cc) {
-            ## Get the indices of the parent clusters that contain a gi of the child clusters
-            ## If a gi is in two clusters (e.g. parent and grandparent), take the lower one, by taking
-            ## the higher index
-            idx <- max(which(sapply(clusters, function(c) any(cc$gis %in% c$gis))))
-            ## set parent cluster to child cluster
-            cc$ci_anc <- clusters[[idx]]$ci
-            ## update child count of parent clusters
-            clusters[[idx]]$n_child <- clusters[[idx]]$n_child + 1
-                    cc
-        })
-        ## append child clusters to result cluster list
-        clusters <- c(clusters, child.clusters)
+            ## calculate clusters for child taxon
+            child.clusters <- cluster(ch, nodes, seqs, blast.results)
+            ## two numbers can only be calculated if we have cluster info on multiple taxonomic levels:
+            ##  n_child, the number of child clusters, and ci_anc, the parent cluster.
+            ##  Since we are dealing with single-likeage clusters, we can identify the parent cluster of a
+            ##  cluster if at least one gi of both clusters is the same.
+            child.clusters <- lapply(child.clusters, function(cc) {
+                ## Get the indices of the parent clusters that contain a gi of the child clusters
+                ## If a gi is in two clusters (e.g. parent and grandparent), take the lower one, by taking
+                ## the higher index
+                idx <- max(which(sapply(clusters, function(c) any(cc$gis %in% c$gis))))
+                ## set parent cluster to child cluster
+                cc$ci_anc <- clusters[[idx]]$ci
+                ## update child count of parent clusters
+                clusters[[idx]]$n_child <- clusters[[idx]]$n_child + 1
+                cc
+            })
+            ## append child clusters to result cluster list
+            all.clusters <- c(all.clusters, child.clusters)
+        }
     }
-
-    return(clusters)
+    return(all.clusters)
 }
 
-.rec.retreive.seqs <- function(taxid, nodes, max.len=25000, max.seqs.per.spec=100000) {
-    ## if rank is species or below, retreive the sequences, and retreive the
-    ## sequences of children. Make sure to retreive the 'direct link' sequenes
+
+
+.rec.retreive.seqs <- function(taxid, nodes, max.len=25000, max.seqs.per.spec=10000) {
     cat("Attempting to retrieve sequences for taxid", taxid, "\n")
     seqs <- list()
-    node.ranks <- c('species', 'subspecies', 'varietas', 'forma')
+    ##node.ranks <- c('species', 'subspecies', 'varietas', 'forma')
 
-    ## get subtree counts. If that is smaller than max.seqs.per.spec, we can take that number
+    ## get subtree counts. If that is smaller than max.seqs.per.spec, we are done and these are the sequences
     subtree.count <- .num.seqs.for.taxid(taxid, direct=FALSE, max.len=max.len)
     if (subtree.count <= max.seqs.per.spec) {
         cat(subtree.count, "seqs for taxon", taxid, ", less than maximum of ", max.seqs.per.spec, " ")
@@ -150,13 +231,8 @@ cluster <- function(taxon, nodes, seqs=NULL, blast.results=NULL, informative=FAL
         return (seqs)
     }
 
-    current.rank <- .rank.for.taxid(taxid)
-    cat("Rank : ", current.rank, "\n")
-    if (current.rank %in% node.ranks) {
-        ## retreive sequences
-        current.seqs <- .seqs.for.taxid(taxid, direct=TRUE, max.len=max.len, max.seqs=max.seqs.per.spec)
-        seqs <- c(seqs, current.seqs)
-    }
+    ## First retreive direct sequence of focal taxon, then the ones of the children
+    seqs <- c(seqs, .seqs.for.taxid(taxid, direct=TRUE, max.len=max.len, max.seqs=max.seqs.per.spec))
     for (ch in .children(taxid, nodes)) {
         seqs <- c(seqs, .rec.retreive.seqs(ch, nodes, max.len, max.seqs.per.spec))
     }
@@ -208,4 +284,13 @@ cluster <- function(taxon, nodes, seqs=NULL, blast.results=NULL, informative=FAL
     filtered.blast.results <- filter.blast.results(blast.results, seqs)
 
     return(filtered.blast.results)
+}
+
+.get.subtree.taxids <- function(taxid, nodes) {
+    children <- .children(taxid, nodes)
+    result <- c(taxid)
+    for (ch in children) {
+        result <- c(result, .get.subtree.taxids(ch, nodes))
+    }
+    return(result)
 }
