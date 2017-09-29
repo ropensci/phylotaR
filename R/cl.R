@@ -52,13 +52,15 @@ clusters.ci_gi.seqs.create <- function(root.taxon, nodesfile,
             .write.seqs.to.fasta(seqs, taxid, SEQS.CACHE.DIR, MODEL.THRESHOLD)
         }
 
-        seqdf <- .make.seq.entries(seqs)
+        cat("Making sequence dataframe\n")
+        seqdf <- do.call(rbind, lapply(seqs, as.data.frame))
+        cat("Done making sequence dataframe\n")
         clusters <- cluster(taxid, nodes, seqs, informative=informative)
         cldf <- .make.cluster.entries(clusters)
         cigidf <- .make.ci_gi.entries(clusters)
-
+        
         ## Write all data to file
-        cat("Taxid", taxid, ": writing", nrow(cldf), "clusters,", nrow(seqdf), "sequences,", nrow(cigidf), "to file\n")
+        cat("Taxid", taxid, ": writing", nrow(cldf), "clusters,", nrow(seqdf), "sequences,", nrow(cigidf), "ci_gi entries to file\n")
         write.table(cldf, file=clusters.file, append=file.exists(clusters.file), quote=F, sep="\t", row.names=F, col.names=!file.exists(clusters.file))
         write.table(seqdf, file=seqs.file, append=file.exists(seqs.file), quote=F, sep="\t", row.names=F, col.names=!file.exists(seqs.file))
         write.table(cigidf, file=ci_gi.file, append=file.exists(ci_gi.file), quote=F, sep="\t", row.names=F, col.names=!file.exists(ci_gi.file))
@@ -307,3 +309,6 @@ cluster <- function(taxon, nodes, seqs, blast.results=NULL, direct=FALSE, inform
     }
     return(result)
 }
+
+
+
