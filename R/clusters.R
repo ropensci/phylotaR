@@ -293,7 +293,9 @@ clusters.ci_gi.seqs.create.old <- function(root.taxon, nodesfile,
 }
 
 .make.seq.entries <- function(seqs) {
+    cat("Making sequence dataframe\n")
     do.call(rbind, lapply(seqs, as.data.frame))
+    cat("Done making sequence dataframe\n")
 }
 
 ## input: List of clusters

@@ -82,7 +82,7 @@ clusters.ci_gi.seqs.create <- function(root.taxon, nodesfile,
     }
     ## write to file
     filename <- paste0(dir, "/", taxon, "-max-", threshold, ".fa")
-    cat("Writing sequences for taxon", taxon, "to file", filename, "\n")
+    cat("Writing", length(seqs), "sequences for taxon", taxon, "to file", filename, "\n")
     if (! file.exists(dir)) {
         dir.create(dir)
     }
@@ -122,6 +122,7 @@ clusters.ci_gi.seqs.create <- function(root.taxon, nodesfile,
         all.seqs[[i]] <- seq
     }
     names(all.seqs) = lapply(all.seqs, `[[`, "gi")
+    cat("Read", length(all.seqs), "sequences for taxid" , taxon, "from file", filename, "\n")
     return (all.seqs)
 }
 
@@ -166,7 +167,15 @@ cluster <- function(taxon, nodes, seqs, blast.results=NULL, direct=FALSE, inform
     ## Get blast results if not already calculated
     current.blast.results <- list()
     if (is.null(blast.results)) {
+        cat("Current BLAST result is NULL from parent, performing BLAST\n")
         current.blast.results <- .get.blast.results(taxon, current.seqs)
+
+        ## exit function if still no blast results
+        ## TODO: Can we do this more elegant?
+        if (is.null(current.blast.results)) {
+            cat("Current BLAST result is NULL after blasting\n")
+            return(all.clusters)
+        }
     }
     else {
         ##  reduce blast results such that include only the gis for the current taxon
@@ -279,6 +288,10 @@ cluster <- function(taxon, nodes, seqs, blast.results=NULL, direct=FALSE, inform
     outfile <- paste0('taxon-', taxon, '-blastout.txt')
     make.blast.db(seqs, dbfile=dbfile, dir=dir)
     blast.results <- blast.all.vs.all(dbfile, outfile=outfile, dir=dir)
+    ## TODO: Not so elegant
+    if (is.null(blast.results)) {
+        return(NULL)
+    }
     cat("Number of BLAST results ", nrow(blast.results), "\n")
     cat("Filtering BLAST results\n")
     filtered.blast.results <- filter.blast.results(blast.results, seqs)
