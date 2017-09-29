@@ -201,7 +201,7 @@ cluster <- function(taxon, nodes, seqs, blast.results=NULL, direct=FALSE, inform
             cat("Processing child taxon of ", taxon, " ", ch, "\n")
 
             ## calculate clusters for child taxon
-            child.clusters <- cluster(ch, nodes, seqs, blast.results)
+            child.clusters <- cluster(ch, nodes, seqs, current.blast.results)
             ## two numbers can only be calculated if we have cluster info on multiple taxonomic levels:
             ##  n_child, the number of child clusters, and ci_anc, the parent cluster.
             ##  Since we are dealing with single-likeage clusters, we can identify the parent cluster of a
@@ -277,7 +277,7 @@ cluster <- function(taxon, nodes, seqs, blast.results=NULL, direct=FALSE, inform
 }
 
 .get.blast.results <- function(taxon, seqs) {
-    cat("Performing all vs all BLAST for", length(seqs), "sequences\n")
+    cat("BLAST all vs all for", length(seqs), "sequences\n")
     ## make unique name for BLAST files
     ## TODO: Change this to tempdir later
     dir = './blast'
