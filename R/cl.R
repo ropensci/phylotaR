@@ -20,15 +20,13 @@ clusters.ci_gi.seqs.create <- function(root.taxon, nodesfile,
         queue <- tail(queue, length(queue)-1)
 
         ## get number of sequences to determine if it is manageable to calculate clusters
-        ## TODO: We should get the counts from the nodes table!!!
+        ## TODO: We should get the counts from the nodes table!!!        
+        cat("Counting species for taxon", current.taxon, "\n")
         num.seqs <- .rec.num.seqs(current.taxon, nodes, max.len=MAX.SEQUENCE.LENGTH, max.seqs.per.spec=MODEL.THRESHOLD)
         cat("Number of sequences for taxon", current.taxon, ": ", num.seqs, "\n")
 
         ## if sequence count is smaller than MAX.BLAST.SEQS, add it to the nodes to process, otherwise get children
-        if (num.seqs == 0) {
-            cat("No sequences for taxid", current.taxon, "\n")
-        }
-        else if (num.seqs <= MAX.BLAST.SEQS) {
+        if (num.seqs <= MAX.BLAST.SEQS) {
             cat("Will process taxon", current.taxon, "\n")
             taxa.to.process <- c(taxa.to.process, current.taxon)
         }
@@ -161,7 +159,7 @@ cluster <- function(taxon, nodes, seqs, blast.results=NULL, direct=FALSE, inform
     cat("Found", length(gis), ifelse(direct, "direct", "subtree"), "gis for taxid", taxon, "\n")
 
     if (length(gis) == 0) {
-        cat("No sequences for taxid", taxon, ",cannot make clusters\n")
+        cat("No", ifelse(direct, "direct", "subtree"), "sequences for taxid", taxon, ",cannot make clusters\n")
         return(all.clusters)
     }
     current.seqs <- seqs[gis[gis %in% names(seqs)]]
@@ -251,7 +249,6 @@ cluster <- function(taxon, nodes, seqs, blast.results=NULL, direct=FALSE, inform
 }
 
 .rec.num.seqs <- function(taxid, nodes, max.len=25000, max.seqs.per.spec=100000) {
-    cat("Retreiving sequence counts for taxid", taxid, "\n")
     count <- 0
 
     ## get subtree counts. If that is smaller than max.seqs.per.spec, we don't need to
