@@ -20,15 +20,13 @@ clusters.ci_gi.seqs.create <- function(root.taxon, nodesfile,
         queue <- tail(queue, length(queue)-1)
 
         ## get number of sequences to determine if it is manageable to calculate clusters
-        ## TODO: We should get the counts from the nodes table!!!
+        ## TODO: We should get the counts from the nodes table!!!        
+        cat("Counting species for taxon", current.taxon, "\n")
         num.seqs <- .rec.num.seqs(current.taxon, nodes, max.len=MAX.SEQUENCE.LENGTH, max.seqs.per.spec=MODEL.THRESHOLD)
         cat("Number of sequences for taxon", current.taxon, ": ", num.seqs, "\n")
 
         ## if sequence count is smaller than MAX.BLAST.SEQS, add it to the nodes to process, otherwise get children
-        if (num.seqs == 0) {
-            cat("No sequences for taxid", current.taxon, "\n")
-        }
-        else if (num.seqs <= MAX.BLAST.SEQS) {
+        if (num.seqs <= MAX.BLAST.SEQS) {
             cat("Will process taxon", current.taxon, "\n")
             taxa.to.process <- c(taxa.to.process, current.taxon)
         }
@@ -38,8 +36,8 @@ clusters.ci_gi.seqs.create <- function(root.taxon, nodesfile,
         }
     }
 
-    ##foreach (i=seq_along(taxa.to.process), .verbose=T) %dopar% {
-    for (i in seq_along(taxa.to.process)) {
+    foreach (i=seq_along(taxa.to.process), .verbose=T) %dopar% {
+    ##for (i in seq_along(taxa.to.process)) {
         taxid <- taxa.to.process[i]
         cat("Processing taxid ", taxid, " # ", i, " / ", length(taxa.to.process), "\n")
 
@@ -48,7 +46,7 @@ clusters.ci_gi.seqs.create <- function(root.taxon, nodesfile,
 
         ## Get the sequences if they could not be read from file
         if (length(seqs)==0) {
-            seqs <- .rec.retreive.seqs(taxid, nodes, max.len=MAX.SEQUENCE.LENGTH, max.seqs.per.spec=MODEL.THRESHOLD)
+            seqs <- .rec.retrieve.seqs(taxid, nodes, max.len=MAX.SEQUENCE.LENGTH, max.seqs.per.spec=MODEL.THRESHOLD)
             .write.seqs.to.fasta(seqs, taxid, SEQS.CACHE.DIR, MODEL.THRESHOLD)
         }
 
@@ -161,7 +159,7 @@ cluster <- function(taxon, nodes, seqs, blast.results=NULL, direct=FALSE, inform
     cat("Found", length(gis), ifelse(direct, "direct", "subtree"), "gis for taxid", taxon, "\n")
 
     if (length(gis) == 0) {
-        cat("No sequences for taxid", taxon, ",cannot make clusters\n")
+        cat("No", ifelse(direct, "direct", "subtree"), "sequences for taxid", taxon, ",cannot make clusters\n")
         return(all.clusters)
     }
     current.seqs <- seqs[gis[gis %in% names(seqs)]]
@@ -228,7 +226,7 @@ cluster <- function(taxon, nodes, seqs, blast.results=NULL, direct=FALSE, inform
 
 
 
-.rec.retreive.seqs <- function(taxid, nodes, max.len=25000, max.seqs.per.spec=10000) {
+.rec.retrieve.seqs <- function(taxid, nodes, max.len=25000, max.seqs.per.spec=10000) {
     cat("Attempting to retrieve sequences for taxid", taxid, "\n")
     seqs <- list()
     ##node.ranks <- c('species', 'subspecies', 'varietas', 'forma')
@@ -242,36 +240,33 @@ cluster <- function(taxon, nodes, seqs, blast.results=NULL, direct=FALSE, inform
         return (seqs)
     }
 
-    ## First retreive direct sequence of focal taxon, then the ones of the children
+    ## First retrieve direct sequence of focal taxon, then the ones of the children
     seqs <- c(seqs, .seqs.for.taxid(taxid, direct=TRUE, max.len=max.len, max.seqs=max.seqs.per.spec))
     for (ch in .children(taxid, nodes)) {
-        seqs <- c(seqs, .rec.retreive.seqs(ch, nodes, max.len, max.seqs.per.spec))
+        seqs <- c(seqs, .rec.retrieve.seqs(ch, nodes, max.len, max.seqs.per.spec))
     }
     return(seqs)
 }
 
 .rec.num.seqs <- function(taxid, nodes, max.len=25000, max.seqs.per.spec=100000) {
-    cat("Retreiving sequence counts for taxid", taxid, "\n")
     count <- 0
 
-    ## get subtree counts. If that is smaller than max.seqs.per.spec, we can take that number
+    ## get subtree counts. If that is smaller than max.seqs.per.spec, we don't need to
+    ##  traverse the taxonomy tree
     subtree.count <- .num.seqs.for.taxid(taxid, direct=FALSE, max.len=max.len)
     if (subtree.count <= max.seqs.per.spec) {
         return (subtree.count)
     }
 
-    ## if it is more sequences, we have to get the children's counts
-    node.ranks <- c('species', 'subspecies', 'varietas', 'forma')
-    current.rank <- .rank.for.taxid(taxid)
-    if (current.rank %in% node.ranks) {
-        ## retreive sequence counts
-        c <- .num.seqs.for.taxid(taxid, direct=TRUE, max.len=max.len)
-        ## if exceeded maximum amount per spec (or lower), return the count that will be retreived
-        if (c > max.seqs.per.spec) {
-            c <- max.seqs.per.spec
-        }
-        count <- count + c
+    ## retrieve sequence counts
+    c <- .num.seqs.for.taxid(taxid, direct=TRUE, max.len=max.len)
+    
+    ## if exceeded maximum amount per spec (or lower), return the count that will be retrieved
+    if (c > max.seqs.per.spec) {
+        c <- max.seqs.per.spec
     }
+    count <- count + c
+    
     for (ch in .children(taxid, nodes)) {
         count <- count + .rec.num.seqs(ch, nodes, max.len, max.seqs.per.spec)
     }
