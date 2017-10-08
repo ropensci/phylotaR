@@ -44,7 +44,7 @@ remote.nodes.create <- function(root.taxa = c(33090, 4751, 33208), file.name='no
 ## The table is created from the 'nodes' table in the NCBI taxonomy
 ## Therefore, a directory with the path where the NCBI taxonomy dump
 ## is located must be provided
-nodes.create <- function(taxdir, root.taxa = c(33090, 4751, 33208), file.name='nodes.tsv', model.threshold=10000) {
+nodes.create <- function(taxdir, root.taxa = c(33090, 4751, 33208), file.name='nodes.tsv') {
 
     ## Get data from NCBI taxonomy dump
     if (! exists('ncbi.nodes'))
@@ -70,9 +70,10 @@ nodes.create <- function(taxdir, root.taxa = c(33090, 4751, 33208), file.name='n
     #}
 
     cat("Adding ", length(ids.to.process), " nodes recursively, in parallel \n")
-##    for (i in seq_along(ids.to.process)) {
-    foreach (i=seq_along(ids.to.process)) %dopar% {
+    for (i in seq_along(ids.to.process)) {
+##    foreach (i=seq_along(ids.to.process)) %dopar% {
         tax <- ids.to.process[i]
+
         cat("Recursively processing taxid ", tax, " # ", i, " / ", length(ids.to.process), "\n")
         start <- data.frame()
         if (file.exists(file.name)) {
@@ -85,7 +86,7 @@ nodes.create <- function(taxdir, root.taxa = c(33090, 4751, 33208), file.name='n
             start <- .init.nodes.df()
         }
 
-        n <- .add.stats(tax, start, recursive=TRUE, model.threshold)
+        n <- .add.stats(tax, start, recursive=TRUE)
         ids.to.write <- n$ti[which(!n$ti %in% start$ti)]
         stopifnot(tax %in% ids.to.write)
         ## only return rows which were not written to file before
@@ -108,7 +109,7 @@ nodes.create <- function(taxdir, root.taxa = c(33090, 4751, 33208), file.name='n
                                           'n_genera')]
 
         cat("Processing taxid ", tax, " # ", i, " / ", length(ids.not.processed), "\n")
-        n <- .add.stats(tax, nodes.written, recursive=FALSE, model.threshold)
+        n <- .add.stats(tax, nodes.written, recursive=FALSE)
         .write.row(n[match(tax, n$ti),], ncbi.names, file.name)
         cat("Finished processing taxid ", tax, " # ", i, " / ", length(ids.not.processed), "\n")
     }
@@ -228,9 +229,8 @@ get.manageable.node.set <- function(root.taxa, ncbi.nodes, max.descendants=10000
 
 ## Recursive function to add number of sequences for each taxon to table as produced by getnodes().
 ## We set sequence counts for 'node' and 'subtree', if a node is of rank species or lower. For subtree,
-## this includes all desendants. We also distinguish between model (>=XXX seqs per node) and nonmodel organisms.
-.add.stats <- function(taxid, nodes, recursive=FALSE, model.threshold) {
-
+## this includes all descendants. We also distinguish between model (>=XXX seqs per node) and nonmodel organisms.
+.add.stats <- function(taxid, nodes, recursive=FALSE) {
     if (taxid %in% nodes$ti) {
         cat("Stats for node", taxid, "already there. Skipping \n")
         return(nodes)
@@ -256,25 +256,25 @@ get.manageable.node.set <- function(root.taxa, ncbi.nodes, max.descendants=10000
     ## Ranks for which we directly get the species count;
     ## for ranks above this, we will get the sum of their children.
     ## For taxa with these ranks, there will also be a 'n_gi_node'
-    node.ranks <- c('species', 'subspecies', 'varietas', 'forma')
+    ## XXX We don't assume to have direct seqs for ranks higher than subfamily!
+    node.ranks <- c('subfamily', 'tribe', 'subtribe', 'genus', 'species', 'subspecies', 'varietas', 'forma')
 
     ## Recursion anchor
     rank <- getrank(taxid, nodes=ncbi.nodes)
 
     if (rank %in% node.ranks) {
-        curr.num.seqs <- .num.seqs.for.taxid(taxid)
-        n_gi_node <- curr.num.seqs
-        stats['n_gi_node'] <- curr.num.seqs
-        if (curr.num.seqs >= model.threshold) {
-            n_gi_sub_model <- curr.num.seqs
-            stats['n_gi_sub_model'] <- curr.num.seqs
+        num.direct.seqs <- .num.seqs.for.taxid(taxid, direct=TRUE, max.len=MAX.SEQUENCE.LENGTH)
+        num.subtree.seqs <- .num.seqs.for.taxid(taxid, direct=FALSE, max.len=MAX.SEQUENCE.LENGTH)
+
+        stats['n_gi_node'] <- num.direct.seqs
+        if (num.subtree.seqs >= MODEL.THRESHOLD) {
+            stats['n_gi_sub_model'] <- num.subtree.seqs
         } else {
-            n_gi_sub_nonmodel <- curr.num.seqs
-            stats['n_gi_sub_nonmodel'] <- curr.num.seqs
+            stats['n_gi_sub_nonmodel'] <- num.subtree.seqs
         }
         if (rank == 'species') {
             stats['n_sp_desc'] <- 1
-            if (curr.num.seqs >= model.threshold) {
+            if (num.subtree.seqs + num.direct.seqs >= MODEL.THRESHOLD) {
                 stats['n_sp_model'] <- 1
             }
         }
@@ -290,7 +290,7 @@ get.manageable.node.set <- function(root.taxa, ncbi.nodes, max.descendants=10000
 
         if (recursive == TRUE) {
             ## call function recursively for children
-            nodes <- .add.stats(child, nodes, recursive=TRUE, model.threshold)
+            nodes <- .add.stats(child, nodes, recursive=TRUE)
         }
 
         ## increase number of genera, if children are genera
@@ -310,7 +310,6 @@ get.manageable.node.set <- function(root.taxa, ncbi.nodes, max.descendants=10000
         stats[cols] <- stats[cols] + nodes[which(nodes$ti==child), cols]
     }
     ## add current node to nodes to be returned
-
     nodes <- rbind(nodes, stats[names(nodes)])
 
     cat("Added stats for taxid ", taxid, "\n")
