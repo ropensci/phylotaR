@@ -92,6 +92,7 @@ nodes.create <- function(taxdir, root.taxa = c(33090, 4751, 33208), file.name='n
         ## only return rows which were not written to file before
         subset <-n[match(ids.to.write, n$ti), ]
         .write.row(subset, ncbi.names, file.name)
+
         cat("Finished processing taxid ", tax, " # ", i, " / ", length(ids.to.process), "\n")
     }
 
@@ -237,57 +238,52 @@ get.manageable.node.set <- function(root.taxa, ncbi.nodes, max.descendants=10000
     }
 
     cat("Going to add species counts for taxid ", taxid, "\n")
-    ## create node vector storing all relevant info
-    nodeinfo <- ncbi.nodes[match(taxid, ncbi.nodes$id),]
 
-    stats <- data.frame(ti=taxid,
-                        ti_anc=nodeinfo$parent,
-                        rank=nodeinfo$rank,
-                        n_gi_node=0,
-                        n_gi_sub_model=0,
-                        n_gi_sub_nonmodel=0,
-                        n_leaf_desc=0, ## also counts itsself, for a leaf it is 1
-                        n_sp_desc=0, ## also counts itsself, for a species it is 1
-                        n_sp_model=0,
-                        ti_genus=.get.genus(taxid, ncbi.nodes),
-                        n_genera=0,
-                        n_otu_desc=1)
-
-    ## Ranks for which we directly get the species count;
-    ## for ranks above this, we will get the sum of their children.
-    ## For taxa with these ranks, there will also be a 'n_gi_node'
-    ## XXX We don't assume to have direct seqs for ranks higher than subfamily!
-    node.ranks <- c('subfamily', 'tribe', 'subtribe', 'genus', 'species', 'subspecies', 'varietas', 'forma')
-
-    ## Recursion anchor
     rank <- getrank(taxid, nodes=ncbi.nodes)
+    parent <- CHNOSZ::parent(taxid, nodes=ncbi.nodes)
 
-    if (rank %in% node.ranks) {
-        num.direct.seqs <- .num.seqs.for.taxid(taxid, direct=TRUE, max.len=MAX.SEQUENCE.LENGTH)
-        num.subtree.seqs <- .num.seqs.for.taxid(taxid, direct=FALSE, max.len=MAX.SEQUENCE.LENGTH)
+    ## This dataframe (always 1 rows) will hold all counts for the taxon
+    stats <- data.frame(ti=taxid,
+              ti_anc=parent,
+              rank=rank,
+              n_gi_node=0,
+              n_gi_sub_model=0,
+              n_gi_sub_nonmodel=0,
+              n_leaf_desc=0, ## also counts itsself, for a leaf it is 1
+              n_sp_desc=0, ## also counts itsself, for a species it is 1
+              n_sp_model=0,
+              ti_genus=.get.genus(taxid, ncbi.nodes),
+              n_genera=0,
+              n_otu_desc=1)
 
-        stats['n_gi_node'] <- num.direct.seqs
-        if (num.subtree.seqs >= MODEL.THRESHOLD) {
-            stats['n_gi_sub_model'] <- num.subtree.seqs
-        } else {
-            stats['n_gi_sub_nonmodel'] <- num.subtree.seqs
-        }
-        if (rank == 'species') {
-            stats['n_sp_desc'] <- 1
-            if (num.subtree.seqs + num.direct.seqs >= MODEL.THRESHOLD) {
-                stats['n_sp_model'] <- 1
-            }
-        }
+    ## XXX: in phylota, a terminal will have n_spec_desc=1
+    if (rank == 'species') {
+        stats['n_sp_desc'] <- 1
     }
 
+    num.direct.seqs <- .num.seqs.for.taxid(taxid, direct=TRUE, max.len=MAX.SEQUENCE.LENGTH)
+    stats['n_gi_node'] <- num.direct.seqs
+
     ch <- children(taxid, ncbi.nodes)
-    if (length(ch)==0) {
+
+    if (length(ch) == 0) {
         stats['n_leaf_desc'] <- stats['n_leaf_desc'] + 1
+    }
+
+    ## XXX very phylota specific: If a e.g. species has no subspecies,
+    ## the subtree count is set to the direct count!
+    ## TODO: I don't know if this should be (as here) also for higher-level
+    ## taxa as genera etc. Will be difficult to find out from phylota
+    ## and it won't matter too much I guess...
+    if (num.direct.seqs > MODEL.THRESHOLD) {
+        stats['n_gi_sub_model'] <- num.direct.seqs
+    }
+    else {
+        stats['n_gi_sub_nonmodel'] <- num.direct.seqs
     }
 
     ## add counts from children
     for (child in ch) {
-
         if (recursive == TRUE) {
             ## call function recursively for children
             nodes <- .add.stats(child, nodes, recursive=TRUE)
@@ -301,14 +297,23 @@ get.manageable.node.set <- function(root.taxa, ncbi.nodes, max.descendants=10000
         ## compile columns for which counts are added from the child nodes
         cols <- c('n_leaf_desc', 'n_otu_desc', 'n_sp_desc', 'n_sp_model', 'n_genera')
 
-        ## only add subtree sequence counts if we have a higher-level node
-        if (! rank %in% node.ranks) {
-            cols <- c(cols, 'n_gi_sub_model', 'n_gi_sub_nonmodel')
+        ## add counts for  n_gi_sub_nonmodel and n_gi_sub_model
+        ## don't have to add n_gi_node because it is saved in n_gi_subtree for the children!
+        current.childnode <- nodes[which(nodes[,'ti']==child),]
+        if (current.childnode['n_gi_node'] > MODEL.THRESHOLD) {
+            stats['n_gi_sub_model'] <- stats['n_gi_sub_model'] + current.childnode['n_gi_sub_model']
+            stats['n_sp_model'] <- stats['n_sp_model'] + 1
+        }
+        else {
+            cat("TAXID", taxid, "adding seqs : ", as.numeric(current.childnode["n_gi_sub_nonmodel"]), "\n")
+            stats['n_gi_sub_nonmodel'] <- stats['n_gi_sub_nonmodel'] + current.childnode["n_gi_sub_nonmodel"]
         }
 
         ## add the counts
         stats[cols] <- stats[cols] + nodes[which(nodes$ti==child), cols]
+        stopifnot(dim(stats)[1]==1)
     }
+
     ## add current node to nodes to be returned
     nodes <- rbind(nodes, stats[names(nodes)])
 
