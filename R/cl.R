@@ -20,9 +20,12 @@ clusters.ci_gi.seqs.create <- function(root.taxon, nodesfile,
         queue <- tail(queue, length(queue)-1)
 
         ## get number of sequences to determine if it is manageable to calculate clusters
-        ## TODO: We should get the counts from the nodes table!!!        
+        ## TODO: We should get the counts from the nodes table!!!
         cat("Counting species for taxon", current.taxon, "\n")
-        num.seqs <- .rec.num.seqs(current.taxon, nodes, max.len=MAX.SEQUENCE.LENGTH, max.seqs.per.spec=MODEL.THRESHOLD)
+        num.nonmodel.seqs <- nodes[match(current.taxon, nodes$ti),'n_gi_sub_nonmodel']
+        num.model.seqs <- nodes[match(current.taxon, nodes$ti),'n_sp_model'] * MODEL.THRESHOLD
+        num.seqs <- num.nonmodel.seqs + num.model.seqs
+
         cat("Number of sequences for taxon", current.taxon, ": ", num.seqs, "\n")
 
         ## if sequence count is smaller than MAX.BLAST.SEQS, add it to the nodes to process, otherwise get children
@@ -56,7 +59,7 @@ clusters.ci_gi.seqs.create <- function(root.taxon, nodesfile,
         clusters <- cluster(taxid, nodes, seqs, informative=informative)
         cldf <- .make.cluster.entries(clusters)
         cigidf <- .make.ci_gi.entries(clusters)
-        
+
         ## Write all data to file
         cat("Taxid", taxid, ": writing", nrow(cldf), "clusters,", nrow(seqdf), "sequences,", nrow(cigidf), "ci_gi entries to file\n")
         write.table(cldf, file=clusters.file, append=file.exists(clusters.file), quote=F, sep="\t", row.names=F, col.names=!file.exists(clusters.file))
@@ -248,6 +251,7 @@ cluster <- function(taxon, nodes, seqs, blast.results=NULL, direct=FALSE, inform
     return(seqs)
 }
 
+## TODO: Can this function be deleted?
 .rec.num.seqs <- function(taxid, nodes, max.len=25000, max.seqs.per.spec=100000) {
     count <- 0
 
@@ -260,13 +264,13 @@ cluster <- function(taxon, nodes, seqs, blast.results=NULL, direct=FALSE, inform
 
     ## retrieve sequence counts
     c <- .num.seqs.for.taxid(taxid, direct=TRUE, max.len=max.len)
-    
+
     ## if exceeded maximum amount per spec (or lower), return the count that will be retrieved
     if (c > max.seqs.per.spec) {
         c <- max.seqs.per.spec
     }
     count <- count + c
-    
+
     for (ch in .children(taxid, nodes)) {
         count <- count + .rec.num.seqs(ch, nodes, max.len, max.seqs.per.spec)
     }

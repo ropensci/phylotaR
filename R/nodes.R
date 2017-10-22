@@ -277,6 +277,7 @@ get.manageable.node.set <- function(root.taxa, ncbi.nodes, max.descendants=10000
     ## and it won't matter too much I guess...
     if (num.direct.seqs > MODEL.THRESHOLD) {
         stats['n_gi_sub_model'] <- num.direct.seqs
+        stats['n_sp_model'] <- stats['n_sp_model'] + 1
     }
     else {
         stats['n_gi_sub_nonmodel'] <- num.direct.seqs
@@ -300,14 +301,8 @@ get.manageable.node.set <- function(root.taxa, ncbi.nodes, max.descendants=10000
         ## add counts for  n_gi_sub_nonmodel and n_gi_sub_model
         ## don't have to add n_gi_node because it is saved in n_gi_subtree for the children!
         current.childnode <- nodes[which(nodes[,'ti']==child),]
-        if (current.childnode['n_gi_node'] > MODEL.THRESHOLD) {
-            stats['n_gi_sub_model'] <- stats['n_gi_sub_model'] + current.childnode['n_gi_sub_model']
-            stats['n_sp_model'] <- stats['n_sp_model'] + 1
-        }
-        else {
-            cat("TAXID", taxid, "adding seqs : ", as.numeric(current.childnode["n_gi_sub_nonmodel"]), "\n")
-            stats['n_gi_sub_nonmodel'] <- stats['n_gi_sub_nonmodel'] + current.childnode["n_gi_sub_nonmodel"]
-        }
+        stats['n_gi_sub_model'] <- stats['n_gi_sub_model'] + current.childnode['n_gi_sub_model']
+        stats['n_gi_sub_nonmodel'] <- stats['n_gi_sub_nonmodel'] + current.childnode["n_gi_sub_nonmodel"]
 
         ## add the counts
         stats[cols] <- stats[cols] + nodes[which(nodes$ti==child), cols]
