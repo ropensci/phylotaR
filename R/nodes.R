@@ -1,9 +1,6 @@
 ## script to populate the phylota 'nodes' table
 ## Dependency: Table 'accession2taxid'
 
-library("CHNOSZ")
-library('rentrez')
-source('db.R')
 source('ncbi-remote.R')
 
 ## Schema in phylota database:

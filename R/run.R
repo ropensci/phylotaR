@@ -1,10 +1,15 @@
-## script to make the phylota tables
-source('nodes.R')
-source('clusters.R')
-source('ci_gi.R')
-source('cl.R')
+source("blast.R")
+source("ci_gi.R")
+source("cl.R")
+source("ncbi-remote.R")
+source("nodes.R")
+
 library(foreach)
 library(doMC)
+library(igraph)
+library(CHNOSZ)
+library(rentrez)
+library(data.table)
 
 set.seed(111)
 
@@ -28,10 +33,11 @@ CORES <<- 4
 
 registerDoMC(CORES)
 
-## Do analysis for Felidae family
-taxid <- 9681
-nodes.create(taxid, taxdir=taxdir, file.name='dbfiles-felidae-nodes.tsv')
+## Do analysis for Bromeliaceae family
+taxid <- 4613
+## nodes.create(taxid, taxdir=taxdir, file.name='dbfiles-bromeliaceae-nodes.tsv')
 
-clusters.ci_gi.seqs.create(338152, 'dbfiles-felidae-nodes.tsv', files=list(clusters='dbfiles-felidae-clusters.tsv',
-                                                            ci_gi='dbfiles-felidae-ci_gi.tsv',
-                                                            seqs='dbfiles-felidae-seqs.tsv'))
+clusters.ci_gi.seqs.create(15123, 'dbfiles-bromeliaceae-nodes.tsv',
+                           files=list(clusters='dbfiles-bromeliaceae-clusters.tsv',
+                                      ci_gi='dbfiles-bromeliaceae-ci_gi.tsv',
+                                      seqs='dbfiles-bromeliaceae-seqs.tsv'))

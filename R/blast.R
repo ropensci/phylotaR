@@ -1,4 +1,3 @@
-require('data.table')
 
 ## TODO: maybe need unique filename, maybe add if it is a direct or subtree cluster to calculate
 make.blast.db <- function(seqs, dbfile='blastdb.fa', dir='.') {
