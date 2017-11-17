@@ -1,7 +1,8 @@
 ## script to populate the phylota 'nodes' table
 ## Dependency: Table 'accession2taxid'
 
-source('ncbi-remote.R')
+# CIRCULAR
+# source('ncbi-remote.R')
 
 ## Schema in phylota database:
 ## CREATE TABLE "nodes_194" (
@@ -28,6 +29,13 @@ source('ncbi-remote.R')
 ##  PRIMARY KEY ("ti")
 ##);
 
+#' @name remote.nodes.create
+#' @title Create remote nodes
+#' @description TODO
+#' @details
+#' @export
+#' @examples
+#' # TODO
 remote.nodes.create <- function(root.taxa = c(33090, 4751, 33208), file.name='nodes.tsv') {
     require('taxize')
     nodes <- do.call(rbind, lapply(root.taxa, ncbi_get_taxon_summary))
@@ -38,6 +46,14 @@ remote.nodes.create <- function(root.taxa = c(33090, 4751, 33208), file.name='no
     }
 }
 
+
+#' @name nodes.create
+#' @title Create nodes
+#' @description TODO
+#' @details
+#' @export
+#' @examples
+#' # TODO
 ## The table is created from the 'nodes' table in the NCBI taxonomy
 ## Therefore, a directory with the path where the NCBI taxonomy dump
 ## is located must be provided
@@ -114,6 +130,13 @@ nodes.create <- function(taxdir, root.taxa = c(33090, 4751, 33208), file.name='n
 }
 
 
+#' @name get.manageable.node.set
+#' @title Get manageable node set
+#' @description TODO
+#' @details
+#' @export
+#' @examples
+#' # TODO
 ## Given a root taxon, returns a set of nodes that only have up to a maximum
 ## number of descendant nodes
 get.manageable.node.set <- function(root.taxa, ncbi.nodes, max.descendants=10000, timeout=10, nodesfile="") {
@@ -420,6 +443,13 @@ get.manageable.node.set <- function(root.taxa, ncbi.nodes, max.descendants=10000
     return(node)
 }
 
+#' @name descendants
+#' @title Return descendants
+#' @description TODO
+#' @details
+#' @export
+#' @examples
+#' # TODO
 descendants <- function(id, nodes) {
     queue <- id
     result <- numeric()
@@ -433,6 +463,13 @@ descendants <- function(id, nodes) {
     return(result)
 }
 
+#' @name num.descendants
+#' @title Count descendants
+#' @description TODO
+#' @details
+#' @export
+#' @examples
+#' # TODO
 num.descendants <- function(id, nodes) {
     queue <- id
     result <- 0
@@ -446,6 +483,13 @@ num.descendants <- function(id, nodes) {
     return(result-1)
 }
 
+#' @name children
+#' @title Return children
+#' @description TODO
+#' @details
+#' @export
+#' @examples
+#' # TODO
 children <- function(id, nodes) {
     return(nodes$id[which(nodes$parent==id)])
 }

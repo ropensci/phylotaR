@@ -1,5 +1,6 @@
-source('blast.R')
-source('ncbi-remote.R')
+# CIRCULAR REF
+#source('blast.R')
+#source('ncbi-remote.R')
 
 ## Schema in phylota database:
 ## CREATE TABLE "clusters_194" (
@@ -39,6 +40,13 @@ source('ncbi-remote.R')
 ##  PRIMARY KEY ("uid")
 ##);
 
+#' @name clusters.ci_gi.seqs.create
+#' @title Clusters CI GI Sequences
+#' @description TODO
+#' @details
+#' @export
+#' @examples
+#' # TODO
 clusters.ci_gi.seqs.create <- function(root.taxon, nodesfile,
                                        files=list(clusters='clusters.tsv', ci_gi='ci_gi.tsv', seqs='seqs.tsv'),
                                        informative=FALSE) {
@@ -168,6 +176,13 @@ clusters.ci_gi.seqs.create <- function(root.taxon, nodesfile,
     return (all.seqs)
 }
 
+#' @name Cluster
+#' @title Cluster
+#' @description TODO
+#' @details
+#' @export
+#' @examples
+#' # TODO
 cluster <- function(taxon, nodes, seqs, blast.results=NULL, direct=FALSE, informative=FALSE) {
     ## list with clusters to be returned
     all.clusters <- list()
@@ -339,6 +354,13 @@ cluster <- function(taxon, nodes, seqs, blast.results=NULL, direct=FALSE, inform
     return(filtered.blast.results)
 }
 
+#' @name cluster.blast.results
+#' @title Cluster BLAST Results
+#' @description TODO
+#' @details
+#' @export
+#' @examples
+#' # TODO
 cluster.blast.results <- function(blast.results, informative=T) {
     g <- graph.data.frame(blast.results[,c("query.id", "subject.id")], directed=F)
     clusters <- clusters(g)

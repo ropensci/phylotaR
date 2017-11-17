@@ -1,0 +1,24 @@
+Package: phylotaR
+Type: Package
+Title: Automated phylogenetic sequence cluster identification from GenBank
+Version: 0.1
+Date: 2017-11-17
+Author: Hannes Hettling, Rutger Vos, Alexander Zika, Dominic J. Bennett, Alexandre Antonelli
+Maintainer: D.J. Bennett <dominic.john.bennett@gmail.com>
+Description: PhyLoTa identifies orthologous sequence clusters from data readily available in GenBank. This is an R implementation of this process.
+License: GPL-2
+Depends:
+    R (>= 3.4.2),
+    methods
+Imports:
+    foreach,
+    doMC,
+    igraph,
+    CHNOSZ,
+    rentrez,
+    data.table,
+    RSQLite,
+    XML
+Suggests:
+    testthat
+RoxygenNote: 6.0.1

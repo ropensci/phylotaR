@@ -1,4 +1,10 @@
-
+#' @name make.blast.db
+#' @title Make BLAST database
+#' @description TODO
+#' @details
+#' @export
+#' @examples
+#' # TODO
 ## TODO: maybe need unique filename, maybe add if it is a direct or subtree cluster to calculate
 make.blast.db <- function(seqs, dbfile='blastdb.fa', dir='.') {
 
@@ -24,6 +30,13 @@ make.blast.db <- function(seqs, dbfile='blastdb.fa', dir='.') {
     return (file)
 }
 
+#' @name blast.all.vs.all
+#' @title BLAST all vs all
+#' @description TODO
+#' @details
+#' @export
+#' @examples
+#' # TODO
 ## TODO: maybe need unique filename, maybe add if it is a direct or subtree cluster to calculate
 blast.all.vs.all <- function(dbname='blastdb.fa', evalue.cutoff=1.0e-10, outfile='blastout.txt', dir='.') {
 
@@ -56,6 +69,13 @@ blast.all.vs.all <- function(dbname='blastdb.fa', evalue.cutoff=1.0e-10, outfile
     return (blast.results)
 }
 
+#' @name filter.blast.results
+#' @title Filter BLAST results
+#' @description TODO
+#' @details
+#' @export
+#' @examples
+#' # TODO
 filter.blast.results <- function(blast.results, seqs, min.coverage=0.51) {
 
     blast.dt <- data.table(blast.results)
