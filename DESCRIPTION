@@ -18,6 +18,8 @@ Imports:
     rentrez,
     data.table,
     RSQLite,
+    DBI,
+    taxize,
     XML
 Suggests:
     testthat

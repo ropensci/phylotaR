@@ -1,5 +1,3 @@
-library("RSQLite")
-
 ## function to get a singleton global database object
 .db <- function(dbloc = NULL) {
     if (exists('db') && dbIsValid(db)){
@@ -19,7 +17,7 @@ library("RSQLite")
 .children <- function(taxid) {
     db <- .db()
     query <- paste('select ti from nodes where ti_anc =', taxid)
-    l <- dbGetQuery(db, query)
+    l <- DBI::dbGetQuery(db, query)
     return(l[[1]])
 }
 
@@ -27,6 +25,6 @@ library("RSQLite")
     ##cat("Retreiving genus for taxid ", taxid, "\n")
     db <- .db()
     query <- paste('select ti_genus from nodes where ti=', taxid)
-    l <- dbGetQuery(db, query)
+    l <- DBI::dbGetQuery(db, query)
     return(l[[1]])
 }

@@ -26,7 +26,7 @@ mkPrmtrs <- function(ncbi_execs,
                  mx_blst_sqs=mx_blst_sqs,
                  mx_sq_lngth=mx_sq_lngth,
                  sq_cch_dr=sq_cch_dr,
-                 cores=cores, blst_dr=blst_dr)
+                 cores=cores)
   prmtrs <- c(prmtrs, ncbi_execs)
   if(cores > 1) {
     doMC::registerDoMC(cores)

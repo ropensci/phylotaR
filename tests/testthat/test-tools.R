@@ -13,5 +13,5 @@ test_that('setUpNcbiTools() works', {
 test_that('mkPrmtrs() works', {
   # simple simple test
   prmtrs <- mkPrmtrs(ncbi_execs=c('', ''))
-  expect_true(length(prmtrs) == 8)
+  expect_true(length(prmtrs) == 7)
 })

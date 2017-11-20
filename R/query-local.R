@@ -2,7 +2,8 @@
 
 .local.num.seqs.for.taxid <- function(taxid) {
     db <- .db()
-    query <- paste('select n_gi_sub_nonmodel, n_gi_sub_model from nodes where ti =', taxid)
-    l <- dbGetQuery(db, query)
+    query <- paste('select n_gi_sub_nonmodel, n_gi_sub_model from nodes where ti =',
+                   taxid)
+    l <- DBI::dbGetQuery(db, query)
     return(sum(as.numeric(l[1,])))
 }
