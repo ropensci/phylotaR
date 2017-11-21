@@ -4,7 +4,7 @@
 \alias{cluster.blast.results}
 \title{Cluster BLAST Results}
 \usage{
-cluster.blast.results(blast.results, informative = T)
+cluster.blast.results(blast.results, informative = TRUE)
 }
 \description{
 TODO

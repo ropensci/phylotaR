@@ -3,3 +3,9 @@
 .RData
 .Ruserdata
 *.Rproj
+
+# data files
+*.fa
+*.tsv
+blast/
+.~*

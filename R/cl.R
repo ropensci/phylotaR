@@ -69,7 +69,8 @@ clusters.ci_gi.seqs.create <- function(root.taxon, nodesfile,
         current.taxon <- head(queue, 1)
         queue <- tail(queue, length(queue)-1)
 
-        ## get number of sequences to determine if it is manageable to calculate clusters
+        ## get number of sequences to determine if it is manageable to
+        # calculate clusters
         ## TODO: We should get the counts from the nodes table!!!
         cat("Counting species for taxon", current.taxon, "\n")
         num.nonmodel.seqs <- nodes[match(current.taxon, nodes$ti),
@@ -90,18 +91,18 @@ clusters.ci_gi.seqs.create <- function(root.taxon, nodesfile,
         else {
             cat("Too many seqs to blast for taxid", current.taxon,
                 "... retrieving children\n")
-            queue <- c(queue, .children(current.taxon, nodes))
+            queue <- c(queue, .childrenCL(current.taxon, nodes))
         }
     }
 
-    foreach (i=seq_along(taxa.to.process), .verbose=TRUE) %dopar% {
-    ##for (i in seq_along(taxa.to.process)) {
+    ##foreach (i=seq_along(taxa.to.process), .verbose=TRUE) %dopar% {
+    for (i in seq_along(taxa.to.process)) {
         taxid <- taxa.to.process[i]
         cat("Processing taxid ", taxid, " # ", i, " / ",
             length(taxa.to.process), "\n")
 
         ## Check if we can cache sequences for this taxon
-        seqs <- .read.seqs.from.fasta(taxid, prmtrs[['sq_cch_dr']],
+        seqs <- phylotaR:::.read.seqs.from.fasta(taxid, prmtrs[['sq_cch_dr']],
                                       prmtrs[['mdl_thrshld']])
 
         ## Get the sequences if they could not be read from file
@@ -116,9 +117,10 @@ clusters.ci_gi.seqs.create <- function(root.taxon, nodesfile,
         cat("Making sequence dataframe\n")
         seqdf <- do.call(rbind, lapply(seqs, as.data.frame))
         cat("Done making sequence dataframe\n")
-        clusters <- cluster(taxid, nodes, seqs, informative=informative)
-        cldf <- .make.cluster.entries(clusters)
-        cigidf <- .make.ci_gi.entries(clusters)
+        clusters <- cluster(taxon=taxid, nodes=nodes, seq=seqs,
+                            informative=informative, prmtrs=prmtrs)
+        cldf <- phylotaR:::.make.cluster.entries(clusters)
+        cigidf <- phylotaR:::.make.ci_gi.entries(clusters)
 
         ## Write all data to file
         cat("Taxid", taxid, ": writing", nrow(cldf), "clusters,",
@@ -213,7 +215,7 @@ clusters.ci_gi.seqs.create <- function(root.taxon, nodesfile,
 #' @examples
 #' # TODO
 cluster <- function(taxon, nodes, seqs, blast.results=NULL,
-                    direct=FALSE, informative=FALSE) {
+                    direct=FALSE, informative=FALSE, prmtrs=prmtrs) {
     ## list with clusters to be returned
     all.clusters <- list()
 
@@ -235,10 +237,14 @@ cluster <- function(taxon, nodes, seqs, blast.results=NULL,
         ## Therefore, we have to exclude terminals from direct cluster calculation,
         # because their
         ## clusters are already calculated in the 'subtree' (direct=false) mode!
-        if (length(.children(taxon, nodes)) > 0) {
-            all.clusters <- c(all.clusters, cluster(taxon, nodes, seqs,
-                                                    blast.results, TRUE,
-                                                    informative))
+        if (length(.childrenCL(taxon, nodes)) > 0) {
+            all.clusters <- c(all.clusters, cluster(taxon=taxon,
+                                                    nodes=nodes,
+                                                    seqs=seqs,
+                                                    blast.results=blast.results,
+                                                    direct=TRUE,
+                                                    informative=informative,
+                                                    prmtrs=prmtrs))
         }
     }
     ## get GIs for taxon
@@ -247,7 +253,7 @@ cluster <- function(taxon, nodes, seqs, blast.results=NULL,
         taxids <- taxon
     }
     else {
-        taxids <- .get.subtree.taxids(taxon, nodes)
+        taxids <- phylotaR:::.get.subtree.taxids(taxon, nodes)
     }
     all.tis <- sapply(seqs, '[[', 'ti')
     gis <- names(seqs[which(all.tis %in% taxids)])
@@ -265,7 +271,9 @@ cluster <- function(taxon, nodes, seqs, blast.results=NULL,
     current.blast.results <- list()
     if (is.null(blast.results)) {
         cat("Current BLAST result is NULL from parent, performing BLAST\n")
-        current.blast.results <- .get.blast.results(taxon, current.seqs)
+        current.blast.results <- phylotaR:::.get.blast.results(taxon,
+                                                    current.seqs,
+                                                    prmtrs=prmtrs)
 
         ## exit function if still no blast results
         ## TODO: Can we do this more elegantly?
@@ -273,8 +281,7 @@ cluster <- function(taxon, nodes, seqs, blast.results=NULL,
             cat("Current BLAST result is NULL after blasting\n")
             return(all.clusters)
         }
-    }
-    else {
+    } else {
         ##  reduce blast results such that include only the gis for
         # the current taxon
         cat("Using BLAST results from parent cluster\n")
@@ -292,7 +299,7 @@ cluster <- function(taxon, nodes, seqs, blast.results=NULL,
     cat("Finished clustering BLAST results for taxid", taxon, "\n")
 
     ## make dataframe with fields as in PhyLoTa database
-    clusters <- .add.cluster.info(raw.clusters, nodes, taxon, seqs,
+    clusters <- phylotaR:::.add.cluster.info(raw.clusters, nodes, taxon, seqs,
                                   direct=direct)
     cat("Generated ", length(clusters), "clusters\n")
     all.clusters <- c(all.clusters, clusters)
@@ -300,11 +307,12 @@ cluster <- function(taxon, nodes, seqs, blast.results=NULL,
     ## If we do not calculate a direct cluster here, iterate over
     # taxon's children to retrieve clusters
     if (! direct) {
-        for (ch in .children(taxon, nodes)) {
+        for (ch in phylotaR:::.childrenCL(taxon, nodes)) {
             cat("Processing child taxon of ", taxon, " ", ch, "\n")
 
             ## calculate clusters for child taxon
-            child.clusters <- cluster(ch, nodes, seqs, current.blast.results)
+            child.clusters <- cluster(ch, nodes, seqs, current.blast.results,
+                                      prmtrs=prmtrs)
             ## two numbers can only be calculated if we have cluster
             # info on multiple taxonomic levels:
             ##  n_child, the number of child clusters, and ci_anc,
@@ -358,7 +366,7 @@ cluster <- function(taxon, nodes, seqs, blast.results=NULL,
      # then the ones of the children
     seqs <- c(seqs, .seqs.for.taxid(taxid, direct=TRUE,
                                     max.len=max.len, max.seqs=max.seqs.per.spec))
-    for (ch in .children(taxid, nodes)) {
+    for (ch in .childrenCL(taxid, nodes)) {
         seqs <- c(seqs, .rec.retrieve.seqs(ch, nodes, max.len,
                                            max.seqs.per.spec))
     }
@@ -390,14 +398,14 @@ cluster <- function(taxon, nodes, seqs, blast.results=NULL,
     }
     count <- count + c
 
-    for (ch in .children(taxid, nodes)) {
+    for (ch in .childrenCL(taxid, nodes)) {
         count <- count + .rec.num.seqs(ch, nodes, max.len,
                                        max.seqs.per.spec)
     }
     return(count)
 }
 
-.get.blast.results <- function(taxon, seqs) {
+.get.blast.results <- function(taxon, seqs, prmtrs=prmtrs) {
     cat("BLAST all vs all for", length(seqs), "sequences\n")
     ## make unique name for BLAST files
     ## TODO: Change this to tempdir later
@@ -407,16 +415,19 @@ cluster <- function(taxon, nodes, seqs, blast.results=NULL,
     }
     dbfile <- paste0('taxon-', taxon, '-db.fa')
     outfile <- paste0('taxon-', taxon, '-blastout.txt')
-    make.blast.db(seqs, dbfile=dbfile, dir=dir)
+    make.blast.db(seqs, dbfile=dbfile, dir=dir, prmtrs=prmtrs)
     blast.results <- blast.all.vs.all(dbfile,
-                                      outfile=outfile, dir=dir)
+                                      outfile=outfile, dir=dir,
+                                      prmtrs=prmtrs)
     ## TODO: Not so elegant
     if (is.null(blast.results)) {
         return(NULL)
     }
     cat("Number of BLAST results ", nrow(blast.results), "\n")
     cat("Filtering BLAST results\n")
-    filtered.blast.results <- filter.blast.results(blast.results, seqs)
+    # TODO: can't get this to work, it uses some functions of unknown origin
+    #filtered.blast.results <- filter.blast.results(blast.results, seqs)
+    filtered.blast.results <- blast.results
 
     return(filtered.blast.results)
 }
@@ -429,9 +440,9 @@ cluster <- function(taxon, nodes, seqs, blast.results=NULL,
 #' @examples
 #' # TODO
 cluster.blast.results <- function(blast.results, informative=TRUE) {
-    g <- graph.data.frame(blast.results[,c("query.id", "subject.id")],
+    g <- igraph::graph.data.frame(blast.results[,c("query.id", "subject.id")],
                           directed=FALSE)
-    clusters <- clusters(g)
+    clusters <- igraph::clusters(g)
 
     ## filter for phylogenetically informative clusters
     if (informative) {
@@ -450,10 +461,10 @@ cluster.blast.results <- function(blast.results, informative=TRUE) {
     ## the most hits with the other members in the cluster;
     # i.e. the most connected
     ## node in the graph
-    degrees <- degree(g)
+    degrees <- igraph::degree(g)
     ## get seed gis and as field to clusters
     cluster.list <- lapply(cluster.list, function(cl){
-        idx <- order(degrees[cl$gis], decreasing=T)[1]
+        idx <- order(degrees[cl$gis], decreasing=TRUE)[1]
         ## index of most connected component
         cl$seed_gi <- cl$gis[idx]
         cl
@@ -480,7 +491,7 @@ cluster.blast.results <- function(blast.results, informative=TRUE) {
         cl$MinLength <- min(l)
         cl$MaxLength <- max(l)
         ## get number of genera
-        cl$n_gen <- length(unique(sapply(cl$tis, .genus.for.taxid,
+        cl$n_gen <- length(unique(sapply(cl$tis, .genus.for.taxidCL,
                                          nodes)))
         ## n_child and ci_anc will be set (or incremented) later,
         # when multiple hierarchies are calculated
@@ -508,19 +519,20 @@ cluster.blast.results <- function(blast.results, informative=TRUE) {
 }
 
 .get.subtree.taxids <- function(taxid, nodes) {
-    children <- .children(taxid, nodes)
+    children <- .childrenCL(taxid, nodes)
     result <- c(taxid)
     for (ch in children) {
-        result <- c(result, .get.subtree.taxids(ch, nodes))
+        result <- c(result, .get.subtree.taxids(taxid=ch,
+                                                nodes=nodes))
     }
     return(result)
 }
 
-.children <- function(taxid, nodes) {
+.childrenCL <- function(taxid, nodes) {
     nodes[nodes[,'ti_anc']==taxid,'ti']
 }
 
-.genus.for.taxid <- function(taxid, nodes) {
+.genus.for.taxidCL <- function(taxid, nodes) {
     nodes[nodes[,'ti_anc']==taxid,'ti_genus']
 }
 

@@ -88,30 +88,28 @@ blast.all.vs.all <- function(dbname='blastdb.fa', evalue.cutoff=1.0e-10,
 #' @examples
 #' # TODO
 filter.blast.results <- function(blast.results, seqs, min.coverage=0.51) {
+  # TODO remove the plyr dependency '.'
+  blast.dt <- data.table::data.table(blast.results)
 
-    blast.dt <- data.table(blast.results)
+  ## First filter out HSPs with lower than min.coverage
+  ## Get query-subject pairs with too low coverage
+  ## Remove both, query-subject and subject-query pair of low coverage hits!!
+  ## Otherwise, we will end up with clusters with uneven sequence lengths!
+  ## TODO does it make a difference to filter for qcovhsp ??
+  remove.dt <- blast.dt[qcovs/100 < min.coverage, .(query.id, subject.id)][, rbind(.SD, rev(.SD),
+                                                           use.names=FALSE)]
+  blast.dt.filtered <- blast.dt[!remove.dt, on=names(remove.dt)]
+  cat("Removed", nrow(blast.dt) - nrow(blast.dt.filtered),
+      "of the", nrow(blast.dt), "BLAST hits due to insufficient coverage\n")
 
-    ## First filter out HSPs with lower than min.coverage
-    ## Get query-subject pairs with too low coverage
-    ## Remove both, query-subject and subject-query pair of low coverage hits!!
-    ## Otherwise, we will end up with clusters with uneven sequence lengths!
-    ## TODO does it make a difference to filter for qcovhsp ??
-    remove.dt <- blast.dt[qcovs/100 < min.coverage,
-                          .(query.id, subject.id)][, rbind(.SD, rev(.SD),
-                                                           use.names = FALSE)]
-    blast.dt.filtered <- blast.dt[!remove.dt, on=names(remove.dt)]
-    cat("Removed", nrow(blast.dt) - nrow(blast.dt.filtered),
-        "of the", nrow(blast.dt), "BLAST hits due to insufficient coverage\n")
-
-    ## XXX Don't need to collapse when doing single-linkeage clustering!!
-    ## collapse HSPs such that we end up with unique query-subject pairs
-    ## TODO The xx is a hack.. how do I collapse by two column values and
-    ## only get the column back??
-    ## result.subset <- setkey(blast.dt.filtered, query.id,
-    ## subject.id)[, .(xx=0),.(query.id, subject.id)]
-    result <- as.data.frame(blast.dt.filtered[,.(query.id, subject.id)])
-
-    return (result)
+  ## XXX Don't need to collapse when doing single-linkeage clustering!!
+  ## collapse HSPs such that we end up with unique query-subject pairs
+  ## TODO The xx is a hack.. how do I collapse by two column values and
+  ## only get the column back??
+  ## result.subset <- setkey(blast.dt.filtered, query.id,
+  ## subject.id)[, .(xx=0),.(query.id, subject.id)]
+  result <- as.data.frame(blast.dt.filtered[,.(query.id, subject.id)])
+  return (result)
 }
 
 

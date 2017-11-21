@@ -9,9 +9,10 @@ Description: PhyLoTa identifies orthologous sequence clusters from data readily 
 License: GPL-2
 Depends:
     R (>= 3.4.2),
-    methods
+    methods,
+    plyr,
+    foreach
 Imports:
-    foreach,
     doMC,
     igraph,
     CHNOSZ,

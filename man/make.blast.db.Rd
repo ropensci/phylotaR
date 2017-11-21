@@ -4,7 +4,7 @@
 \alias{make.blast.db}
 \title{Make BLAST database}
 \usage{
-make.blast.db(seqs, dbfile = "blastdb.fa", dir = ".")
+make.blast.db(seqs, dbfile = "blastdb.fa", dir = ".", prmtrs = prmtrs)
 }
 \description{
 TODO

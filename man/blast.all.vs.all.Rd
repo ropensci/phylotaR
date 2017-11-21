@@ -5,7 +5,7 @@
 \title{BLAST all vs all}
 \usage{
 blast.all.vs.all(dbname = "blastdb.fa", evalue.cutoff = 1e-10,
-  outfile = "blastout.txt", dir = ".")
+  outfile = "blastout.txt", dir = ".", prmtrs = prmtrs)
 }
 \description{
 TODO

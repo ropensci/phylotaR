@@ -4,7 +4,7 @@
 \alias{get.manageable.node.set}
 \title{Get manageable node set}
 \usage{
-get.manageable.node.set(root.taxa, ncbi.nodes, max.descendants = 10000,
+get.manageable.node.set(root.taxa, nodes, max.descendants = 10000,
   timeout = 10, nodesfile = "")
 }
 \description{

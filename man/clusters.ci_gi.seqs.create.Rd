@@ -6,7 +6,7 @@
 \usage{
 clusters.ci_gi.seqs.create(root.taxon, nodesfile, files = list(clusters =
   "clusters.tsv", ci_gi = "ci_gi.tsv", seqs = "seqs.tsv"),
-  informative = FALSE)
+  informative = FALSE, prmtrs = prmtrs)
 }
 \description{
 TODO
