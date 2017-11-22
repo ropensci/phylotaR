@@ -6,7 +6,7 @@
 \title{Cluster}
 \usage{
 cluster(taxon, nodes, seqs, blast.results = NULL, direct = FALSE,
-  informative = FALSE)
+  informative = FALSE, prmtrs = prmtrs)
 }
 \description{
 TODO
