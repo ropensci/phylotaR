@@ -24,11 +24,13 @@ setUpPrmtrs <- function(wd, ncbi_execs,
                         mx_blst_sqs=10000,
                         mx_sq_lngth=25000,
                         sq_cch_dr="sequences",
+                        verbose=FALSE,
                         cores=1) {
   prmtrs <- list(mdl_thrshld=mdl_thrshld,
                  mx_blst_sqs=mx_blst_sqs,
                  mx_sq_lngth=mx_sq_lngth,
                  sq_cch_dr=sq_cch_dr,
+                 verbose=verbose,
                  cores=cores)
   if(sum(names(ncbi_execs) %in%
          c('mkblstdb', 'blstn')) == 2) {
