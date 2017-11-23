@@ -1,4 +1,5 @@
 # Control cache-ing of data through the same functions
+# TODO: create progress.RData
 
 #' @name setUpCch
 #' @title Set-up a cache
@@ -37,6 +38,50 @@ ldPrmtrs <- function(wd) {
     stop('Cache does not exist.')
   }
   prmtrs
+}
+
+#' @name chkObj
+#' @title Check if an object exists
+#' @description Check if an object exists in the cache.
+#' @param wd Working directory
+#' @param nm Object name
+#' @export
+chkObj <- function(wd, nm) {
+  fl <- file.path(wd, 'cache', paste0(nm, '.RData'))
+  file.exists(fl)
+}
+
+#' @name ldObj
+#' @title Load a named object from the cache
+#' @description Loads an object from the cache
+#' as stored by \code{svObj}
+#' @param wd Working directory
+#' @param nm Object name
+#' @export
+ldObj <- function(wd, nm) {
+  fl <- file.path(wd, 'cache', paste0(nm, '.RData'))
+  if(!file.exists(fl)) {
+    stop(paste0('File [', nm, '] in [',
+                wd, '] cache.'))
+  }
+  readRDS(file=fl)
+}
+
+#' @name svObj
+#' @title Aave a named object in the cache
+#' @description Save an object in the cache
+#' that can be loaded by \code{ldObj}
+#' @param wd Working directory
+#' @param obj Object
+#' @param nm Object name
+#' @export
+svObj <- function(wd, obj, nm) {
+  d <- file.path(wd, 'cache')
+  if(!file.exists(d)) {
+    dir.create(d)
+  }
+  fl <- file.path(wd, 'cache', paste0(nm, '.RData'))
+  saveRDS(object=obj, file=fl)
 }
 
 #' @name rmCch

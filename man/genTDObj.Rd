@@ -4,11 +4,17 @@
 \alias{genTDObj}
 \title{Generate R object from NCBI taxonomy dump}
 \usage{
-genTDObj()
+genTDObj(wd)
+}
+\arguments{
+\item{wd}{Working directory}
 }
 \description{
 Generates an interrogable R object
 from the NCBI taxonomy dump using the \code{CHNOSZ}
-library. The returned object if a list of taxonomic nodes
+library. The returned object is a list of taxonomic nodes
 and names.
+}
+\details{
+Object will be cached.
 }

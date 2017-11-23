@@ -33,4 +33,26 @@ test_that('rmCch() works', {
                                      'prmtrs.RData')))
   cleanUp()
 })
+test_that('chkObj() works', {
+  expect_false(chkObj(wd='.', nm='mylovelyobj'))
+  svObj(wd='.', nm='mylovelyobj',
+        obj=list('interestingthings'))
+  expect_true(chkObj(wd='.', nm='mylovelyobj'))
+  cleanUp()
+})
+test_that('svObj() works', {
+  svObj(wd='.', nm='mylovelyobj',
+        obj=list('interestingthings'))
+  expect_true(file.exists(file.path('cache',
+                                    'mylovelyobj.RData')))
+  cleanUp()
+})
+test_that('ldObj() works', {
+  expect_error(ldObj(wd='.', nm='mylovelyobj'))
+  svObj(wd='.', nm='mylovelyobj',
+        obj=list('interestingthings'))
+  obj <- ldObj(wd='.', nm='mylovelyobj')
+  expect_true(obj[[1]] == 'interestingthings')
+  cleanUp()
+})
 cleanUp()

@@ -5,8 +5,5 @@ library(testthat)
 # RUNNING
 context('Testing \'taxise\'')
 test_that('genTDObj() works', {
-  
-})
-test_that('mkPrmtrs() works', {
-  
+  # TODO: stub in a small NCBI taxdmp
 })

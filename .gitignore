@@ -9,3 +9,4 @@
 *.tsv
 blast/
 .~*
+cache/
