@@ -30,4 +30,10 @@ test_that('genTDObj() works', {
   expect_true(two == 2)
   cleanUp()
 })
+test_that('nDscndnts() works', {
+  # stub
+})
+test_that('getMngblIds() works', {
+  # stub
+})
 cleanUp()
