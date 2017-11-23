@@ -4,12 +4,14 @@
 \alias{setUpPrmtrs}
 \title{Return run parameters}
 \usage{
-setUpPrmtrs(wd, ncbi_execs, mdl_thrshld = 3000, mx_blst_sqs = 10000,
+setUpPrmtrs(wd, txid, ncbi_execs, mdl_thrshld = 3000, mx_blst_sqs = 10000,
   mx_sq_lngth = 25000, sq_cch_dr = "sequences", verbose = FALSE,
   cores = 1)
 }
 \arguments{
 \item{wd}{Working directory}
+
+\item{txid}{Root taxonomic ID(s), vector or numeric}
 
 \item{ncbi_execs}{File directories for NCBI tools, see \code{setUpNcbiTools()}}
 

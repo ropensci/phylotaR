@@ -1,3 +1,7 @@
+# TODO:
+# create pseudo-nodes.dmp for testing purposes
+# this would provide better testing
+
 # LIBS
 library(phylotaR)
 library(testthat)
@@ -30,10 +34,46 @@ test_that('genTDObj() works', {
   expect_true(two == 2)
   cleanUp()
 })
+test_that('getKids() works', {
+  tdobj <- genTDObj(data_dr)
+  td_nds <- tdobj[['nds']]
+  # nodes.dmp is only a sample
+  # can only use id with known parent
+  pull <- td_nds[ ,'id'] %in% td_nds[ ,'parent']
+  rid <- sample(td_nds[pull, 'id'], 1)
+  kids <- getKids(rid, td_nds)
+  expect_true(length(kids) >= 1)
+  cleanUp()
+})
 test_that('nDscndnts() works', {
-  # stub
+  tdobj <- genTDObj(data_dr)
+  td_nds <- tdobj[['nds']]
+  # nodes.dmp is only a sample
+  # can only use id with known parent
+  pull <- td_nds[ ,'id'] %in% td_nds[ ,'parent']
+  rid <- sample(td_nds[pull, 'id'], 1)
+  kids <- getKids(rid, td_nds)
+  n <- nDscndnts(rid, td_nds)
+  expect_true(n >= length(kids))
+  # expect no kids
+  rid <- sample(td_nds[!pull, 'id'], 1)
+  n <- nDscndnts(rid, td_nds)
+  expect_true(n == 0)
+  cleanUp()
 })
 test_that('getMngblIds() works', {
-  # stub
+  tdobj <- genTDObj(data_dr)
+  td_nds <- tdobj[['nds']]
+  td_nds <- td_nds[-1, ] # remove top, it is SELF-REFERENTIAL!
+  pull <- td_nds[ ,'id'] %in% td_nds[ ,'parent']
+  wdsndnts <- sample(td_nds[pull, 'id'], 10)
+  wodsndnts <- sample(td_nds[!pull, 'id'], 10)
+  res <- getMngblIds(txid=c(wdsndnts, wodsndnts),
+                     td_nds=td_nds,
+                     mx_dscndnts=10000,
+                     tmout=10, verbose=FALSE)
+  ns <- res[['ndscndnts']]
+  expect_equal(ns > 0, rep(c(TRUE, FALSE), each=10))
+  cleanUp()
 })
 cleanUp()

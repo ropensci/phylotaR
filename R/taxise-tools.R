@@ -12,6 +12,9 @@
 genTDObj <- function(wd) {
   if(!chkObj(wd, 'tdobj')) {
     cat('Reading from taxonomy dump ....\n')
+    if(!file.exists(file.path(wd, 'NCBI'))) {
+      stop('No NCBI folder in `wd`.')
+    }
     nds <- CHNOSZ::getnodes(file.path(wd, 'NCBI'))
     nms <- CHNOSZ::getnames(file.path(wd, 'NCBI'))
     tdobj <- list('nds'=nds,
@@ -57,10 +60,10 @@ getMngblIds <- function(txid, td_nds,
   while(length(queue) > 0) {
     id <- head(queue, 1)
     queue <- tail(queue, length(queue)-1)
-    n <- .evlTmLmt(nDscndnts(id, td_nodes),
+    n <- .evlTmLmt(nDscndnts(id, td_nds),
                    cpu=tmout)
     if (is.null(n) || n > mx_dscndnts) {
-      queue <- c(queue, children(id, td_nodes))
+      queue <- c(queue, children(id, td_nds))
       rjctd_ids <- c(rjctd_ids, id)
       .cp(v=verbose, "Taxon [", id,
           "] has too many descendants or tmout 
@@ -85,18 +88,29 @@ processed [", tot, "]")
 #' @description Count the number of children
 #' descending from a node in the NCBI taxonomy
 #' dump.
+#' @param id Taxonomic ID
+#' @param td_nds NCBI taxonomic nodes
 #' @export
-nDscndnts <- function(id, nodes) {
-  # TODO: this needs adapted to work sequentially
+nDscndnts <- function(id, td_nds) {
   queue <- id
-  result <- 0
+  res <- 0
   while (length(queue) > 0) {
-    result <- result + length(queue)
-    newqueue <- foreach(i=seq_along(queue),
+    res <- res + length(queue)
+    newqueue <- suppressWarnings(foreach(i=seq_along(queue),
                         .combine=c) %dopar% {
-                          children(queue[i], nodes)
-                          }
+                          getKids(queue[i], td_nds)
+                          })
     queue <- newqueue
   }
-  return(result-1)
+  return(res-1)
+}
+
+#' @name getKids
+#' @title Return descendent IDs
+#' @description Return vector of descendent IDs
+#' from NCBI taxonomic node
+#' @export
+# @Hannes: eqv of children()
+getKids <- function(id, td_nds) {
+  td_nds$id[which(td_nds$parent==id)]
 }

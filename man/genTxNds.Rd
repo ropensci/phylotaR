@@ -4,7 +4,7 @@
 \alias{genTxNds}
 \title{Extract and filter NCBI taxonomy}
 \usage{
-genTxNds(wd, txid)
+genTxNds(wd)
 }
 \arguments{
 \item{wd}{Working directory}

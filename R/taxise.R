@@ -16,9 +16,10 @@
 #' @details Object will be cached.
 #' @export
 # @Hannes: this is functional eqv to create.nodes
-genTxNds <- function(wd, txid) {
+genTxNds <- function(wd) {
   # Get params
   prmtrs <- ldPrmtrs(wd)
+  txid <- prmtrs[['txid']]
   mx_dscndnts <- prmtrs[['mx_dscndnts']]
   tmout <- prmtrs[['tmout']]
   verbose <- prmtrs[['verbose']]
@@ -29,5 +30,6 @@ genTxNds <- function(wd, txid) {
                         mx_dscndnts=mx_dscndnts,
                         tmout=tmout,
                         verbose=verbose)
+  
 }
 

@@ -14,6 +14,7 @@ Depends:
     foreach
 Imports:
     doMC,
+    doSNOW,
     igraph,
     CHNOSZ,
     rentrez,

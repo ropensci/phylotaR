@@ -5,9 +5,14 @@
 \alias{nDscndnts}
 \title{Count descendants}
 \usage{
-nDscndnts(id, nodes)
+nDscndnts(id, td_nds)
 
-nDscndnts(id, nodes)
+nDscndnts(id, td_nds)
+}
+\arguments{
+\item{id}{Taxonomic ID}
+
+\item{td_nds}{NCBI taxonomic nodes}
 }
 \description{
 TODO

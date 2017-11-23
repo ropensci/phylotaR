@@ -19,11 +19,13 @@ test_that('setUpNcbiTools() works', {
   expect_error(setUpNcbiTools(dr='.'))
 })
 test_that('setUpPrmtrs() works', {
-  expect_error(setUpPrmtrs(wd='.', ncbi_execs=c('', '')))
+  expect_error(setUpPrmtrs(wd='.', txid=9606,
+                           ncbi_execs=c('', '')))
   ncbi_execs <- list('mkblstdb'=NA,
                      'blstn'=NA)
-  setUpPrmtrs(wd='.', ncbi_execs=ncbi_execs)
+  setUpPrmtrs(wd='.', txid=9606,
+              ncbi_execs=ncbi_execs)
   prmtrs <- ldPrmtrs(wd='.')
-  expect_true(length(prmtrs) == 8)
+  expect_true(length(prmtrs) == 9)
 })
 cleanUp()

@@ -1,10 +1,11 @@
 # Set working directory
-wd <- '/home/dom/Desktop/testing_phylota'
+wd <- '/home/dom/Desktop/testing_phylotaR'
 # FYI: requires NCBI taxonomy dmp to be in a folder
 # called NCBI/
 # Set up execs and parameters
 ncbi_execs <- setUpNcbiTools(d='/home/dom/Programs/ncbi-blast-2.7.1+/bin')
-setUpPrmtrs(wd=wd,
+txid <- 9479
+setUpPrmtrs(wd=wd, txid=txid,
             ncbi_execs=ncbi_execs,
             mdl_thrshld=3000,
             mx_blst_sqs=10000,
