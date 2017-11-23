@@ -7,6 +7,8 @@
 #' @param wd Working directory
 #' @param txid Root taxonomic ID(s), vector or numeric
 #' @param ncbi_execs File directories for NCBI tools, see \code{setUpNcbiTools()}
+#' @param mx_dscndnts Maximum number of descendants per taxonomic node, numeric
+#' @param tmout Timeout in seconds, numeric.
 #' @param mdl_thrshld Maximum number of sequences per species
 #' @param mx_blst_sqs Maximum number of sequences to blast in a single run;
 #' @param mx_sq_lngth Maximum characters in one sequence
@@ -21,6 +23,8 @@
 #' @seealso
 #' \link{setUpNcbiTools}
 setUpPrmtrs <- function(wd, txid, ncbi_execs,
+                        mx_dscndnts=10000,
+                        tmout=100,
                         mdl_thrshld=3000,
                         mx_blst_sqs=10000,
                         mx_sq_lngth=25000,
@@ -31,6 +35,8 @@ setUpPrmtrs <- function(wd, txid, ncbi_execs,
     stop('Invalid `wd`. [', wd, '] does not exit.\n')
   }
   prmtrs <- list(txid=txid,
+                 mx_dscndnts=mx_dscndnts,
+                 tmout=tmout,
                  mdl_thrshld=mdl_thrshld,
                  mx_blst_sqs=mx_blst_sqs,
                  mx_sq_lngth=mx_sq_lngth,

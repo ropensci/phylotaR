@@ -26,6 +26,6 @@ test_that('setUpPrmtrs() works', {
   setUpPrmtrs(wd='.', txid=9606,
               ncbi_execs=ncbi_execs)
   prmtrs <- ldPrmtrs(wd='.')
-  expect_true(length(prmtrs) == 9)
+  expect_true(length(prmtrs) == 11)
 })
 cleanUp()
