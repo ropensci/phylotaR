@@ -1,0 +1,14 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+*.Rproj
+
+# data files
+*.fa
+*.tsv
+blast/
+.~*
+cache/
+results/
+
