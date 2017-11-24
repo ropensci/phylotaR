@@ -7,6 +7,9 @@ Author: Hannes Hettling, Rutger Vos, Alexander Zika, Dominic J. Bennett, Alexand
 Maintainer: D.J. Bennett <dominic.john.bennett@gmail.com>
 Description: PhyLoTa identifies orthologous sequence clusters from data readily available in GenBank. This is an R implementation of this process.
 License: GPL-2
+URL: https://github.com/AntonelliLab/phylotaR#readme
+BugReports: https://github.com/AntonelliLab/phylotaR/issues
+SystemRequirements: BLAST+ (>2.7.1)
 Depends:
     R (>= 3.4.2),
     methods,

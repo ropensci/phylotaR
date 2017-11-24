@@ -1,3 +1,7 @@
+# 24 Nov. 2017
+# This script will not work,
+# awaiting update of all funcs.
+
 library(phylotaR)
 
 set.seed(111)
