@@ -1,2 +1,2 @@
 library(testthat)
-test_check("treeman")
+test_check("phylotaR")
