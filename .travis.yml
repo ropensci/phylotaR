@@ -1,0 +1,18 @@
+language: r
+
+warnings_are_errors: false
+sudo: required
+
+r_binary_packages:
+ - plyr
+ - testthat
+r_github_packages:
+  - jimhester/covr
+
+after_success:
+  - Rscript -e 'covr::coveralls()'
+
+notifications:
+  email:
+    on_success: change
+on_failure: always
