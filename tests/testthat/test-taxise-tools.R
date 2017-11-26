@@ -18,6 +18,9 @@ cleanUp <- function() {
   if(file.exists(cch_dr)) {
     unlink(cch_dr, recursive=TRUE)
   }
+  if(file.exists('test_writeTax.tsv')) {
+    file.remove('test_writeTax.tsv')
+  }
 }
 
 # DATA
@@ -97,6 +100,24 @@ test_that('getStats() works', {
              verbose=FALSE, recursive=TRUE)
     )
   expect_true(nrow(res) > 1)
+})
+test_that('writeTax() works', {
+  phylt_nds <- data.frame('ti'=sample(td_nds[['id']], 1),
+                          'ti_anc'=NA,
+                          'rank'=NA,
+                          'n_gi_node'=NA,
+                          'n_gi_sub_nonmodel'=NA,
+                          'n_gi_sub_model'=NA,
+                          'n_sp_desc'=NA,
+                          'n_sp_model'=NA,
+                          'n_leaf_desc'=NA,
+                          'n_otu_desc'=NA,
+                          'ti_genus'=NA,
+                          'n_genera'=NA)
+  writeTax(phylt_nds=phylt_nds, td_nms=td_nms,
+           fl='test_writeTax.tsv', verbose=FALSE)
+  expect_true(file.exists('test_writeTax.tsv'))
+  cleanUp()
 })
 test_that('genPhylotaNds() works', {
   txids <- td_nds[['id']]
