@@ -1,6 +1,7 @@
 # TODO:
 # create pseudo-nodes.dmp for testing purposes
 # this would provide better testing
+# e.g. identify all mammals in nodes.dmp
 
 # LIBS
 library(phylotaR)
@@ -24,6 +25,12 @@ cleanUp <- function() {
   }
 }
 
+# DATA
+data('tdobj')
+td_nds <- tdobj[['nds']]
+td_nms <- tdobj[['nms']]
+rm(tdobj)
+
 # RUNNING
 context('Testing \'taxise\'')
 cleanUp()
@@ -35,21 +42,12 @@ test_that('genTDObj() works', {
   cleanUp()
 })
 test_that('getKids() works', {
-  tdobj <- genTDObj(data_dr)
-  td_nds <- tdobj[['nds']]
-  # nodes.dmp is only a sample
-  # can only use id with known parent
   pull <- td_nds[ ,'id'] %in% td_nds[ ,'parent']
   rid <- sample(td_nds[pull, 'id'], 1)
   kids <- getKids(rid, td_nds)
   expect_true(length(kids) >= 1)
-  cleanUp()
 })
 test_that('nDscndnts() works', {
-  tdobj <- genTDObj(data_dr)
-  td_nds <- tdobj[['nds']]
-  # nodes.dmp is only a sample
-  # can only use id with known parent
   pull <- td_nds[ ,'id'] %in% td_nds[ ,'parent']
   rid <- sample(td_nds[pull, 'id'], 1)
   kids <- getKids(rid, td_nds)
@@ -59,12 +57,15 @@ test_that('nDscndnts() works', {
   rid <- sample(td_nds[!pull, 'id'], 1)
   n <- nDscndnts(rid, td_nds)
   expect_true(n == 0)
-  cleanUp()
+})
+test_that('getGenus() works', {
+  rid <- sample(td_nds[['id']][-1], 1)
+  res <- getGenus(txid=rid, td_nds=td_nds)
+  if(!is.na(res)) {
+    expect_true(CHNOSZ::getrank(res, nodes=td_nds) == 'genus')
+  }
 })
 test_that('getMngblIds() works', {
-  tdobj <- genTDObj(data_dr)
-  td_nds <- tdobj[['nds']]
-  td_nds <- td_nds[-1, ] # remove top, it is SELF-REFERENTIAL!
   pull <- td_nds[ ,'id'] %in% td_nds[ ,'parent']
   wdsndnts <- sample(td_nds[pull, 'id'], 10)
   wodsndnts <- sample(td_nds[!pull, 'id'], 10)
@@ -74,6 +75,32 @@ test_that('getMngblIds() works', {
                      tmout=10, verbose=FALSE)
   ns <- res[['ndscndnts']]
   expect_equal(ns > 0, rep(c(TRUE, FALSE), each=10))
-  cleanUp()
+})
+test_that('getStats() works', {
+  phylt_nds <- data.frame('ti'=NA,
+                          'ti_anc'=NA,
+                          'rank'=NA,
+                          'n_gi_node'=NA,
+                          'n_gi_sub_nonmodel'=NA,
+                          'n_gi_sub_model'=NA,
+                          'n_sp_desc'=NA,
+                          'n_sp_model'=NA,
+                          'n_leaf_desc'=NA,
+                          'n_otu_desc'=NA,
+                          'ti_genus'=NA,
+                          'n_genera'=NA)
+  rid <- sample(td_nds[['id']][-1], 1)
+  res <- with_mock(
+    `phylotaR::nSqs`=function(txid,
+                              direct,
+                              mx_len,
+                              verbose){
+      500},
+    getStats(txid=rid, phylt_nds=phylt_nds,
+             mx_sq_lngth=2000, mdl_thrshld=2000,
+             td_nds=td_nds, td_nms=td_nms,
+             verbose=TRUE, recursive=TRUE)
+    )
+  expect_true(nrow(res) > 1)
 })
 cleanUp()
