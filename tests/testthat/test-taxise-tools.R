@@ -94,8 +94,28 @@ test_that('getStats() works', {
     getStats(txid=rid, phylt_nds=phylt_nds,
              mx_sq_lngth=2000, mdl_thrshld=2000,
              td_nds=td_nds, td_nms=td_nms,
-             verbose=TRUE, recursive=TRUE)
+             verbose=FALSE, recursive=TRUE)
     )
   expect_true(nrow(res) > 1)
+})
+test_that('genPhylotaNds() works', {
+  txids <- td_nds[['id']]
+  nid_sets <- getMngblIds(txid=txids,
+                          td_nds=td_nds,
+                          mx_dscndnts=100,
+                          tmout=10, verbose=FALSE)
+  res <- with_mock(
+    `phylotaR::nSqs`=function(txid,
+                              direct,
+                              mx_len,
+                              verbose){
+      500},
+    genPhylotaNds(nid_sets=nid_sets,
+                  mx_sq_lngth=2000,
+                  mdl_thrshld=2000,
+                  td_nds=td_nds,
+                  td_nms=td_nms,
+                  verbose=FALSE)
+  )
 })
 cleanUp()
