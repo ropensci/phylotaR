@@ -1,8 +1,3 @@
-# TODO:
-# create pseudo-nodes.dmp for testing purposes
-# this would provide better testing
-# e.g. identify all mammals in nodes.dmp
-
 # LIBS
 library(phylotaR)
 library(testthat)
