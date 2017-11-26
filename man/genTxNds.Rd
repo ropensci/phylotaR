@@ -8,8 +8,6 @@ genTxNds(wd)
 }
 \arguments{
 \item{wd}{Working directory}
-
-\item{txid}{Root taxonomic NCBI ID}
 }
 \description{
 Look up NCBI taxonomy and generate

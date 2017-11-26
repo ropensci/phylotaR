@@ -26,5 +26,7 @@ setUpPrmtrs(wd=wd, txid=txid,
             mx_sq_lngth=25000,
             verbose=TRUE,
             cores=2)
+# Generate taxonomic 'nodes'
+genTxNds(wd)
 
 
