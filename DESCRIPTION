@@ -22,7 +22,6 @@ Imports:
     CHNOSZ,
     rentrez,
     data.table,
-    RSQLite,
     DBI,
     taxize,
     XML
