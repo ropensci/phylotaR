@@ -40,7 +40,7 @@ genTxNds <- function(wd) {
                              td_nms=tdobj[['nms']],
                              verbose=verbose)
   cat('Writing out....\n')
-  writeTax(phylt_nds=phylta_nds, td_nms=tdobj[['nms']],
+  writeTax(phylt_nds=phylt_nds, td_nms=tdobj[['nms']],
            fl=file.path(wd, paste0('dbfiles-taxonomy-', txid, '.tsv')),
            verbose=verbose)
   cat('Done.\n')
