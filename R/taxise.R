@@ -34,11 +34,11 @@ genTxNds <- function(wd) {
                           verbose=verbose)
   cat('Initiating PhyLoTa nodes....\n')
   phylt_nds <- genPhylotaNds(nid_sets=nid_sets,
-                              mx_sq_lngth=mx_sq_lngth,
-                              mdl_thrshld=mdl_thrshld,
-                              td_nds=tdobj[['nds']],
-                              td_nms=tdobj[['nms']],
-                              verbose=verbose)
+                             mx_sq_lngth=mx_sq_lngth,
+                             mdl_thrshld=mdl_thrshld,
+                             td_nds=tdobj[['nds']],
+                             td_nms=tdobj[['nms']],
+                             verbose=verbose)
   cat('Writing out....\n')
   writeTax(phylt_nds=phylta_nds, td_nms=tdobj[['nms']],
            fl=file.path(wd, paste0('dbfiles-taxonomy-', txid, '.tsv')),

@@ -1,29 +1,19 @@
-# 24 Nov. 2017
-# This script will not work,
-# awaiting update of all funcs.
-
 library(phylotaR)
 
-set.seed(111)
-
-#options(error=recover)
-
-# Please don't use global variables
-# They're very hard to track and I can't incorporate them in an R package.
-ncbi_execs <- setUpNcbiTools(dr='/home/dom/Programs/ncbi-blast-2.7.1+/bin')
-prmtrs <- mkPrmtrs(ncbi_execs=ncbi_execs, cores=2)
-## Download file ftp://ftp.ncbi.nlm.nih.gov/pub/taxonomy/taxdump.tar.gz,
-## unzip and specify directory where file 'nodes.dmp' is located
-# always best to use file.path -- OS independent
-taxdir <- '/home/dom/Desktop/testing_phylotaR'
-
-## Do analysis for Bromeliaceae family
-taxid <- 4613
-nodes.create(root.taxa=taxid, taxdir=taxdir,
-             file.name='dbfiles-bromeliaceae-nodes.tsv')
-
-clusters.ci_gi.seqs.create(15123, 'dbfiles-bromeliaceae-nodes.tsv',
-                           files=list(clusters='dbfiles-bromeliaceae-clusters.tsv',
-                                      ci_gi='dbfiles-bromeliaceae-ci_gi.tsv',
-                                      seqs='dbfiles-bromeliaceae-seqs.tsv'),
-                           informative=FALSE, prmtrs=prmtrs)
+# Set working directory
+wd <- '/home/dom/Desktop/testing_phylotaR/brom'
+# Test if NCBI tools are present
+ncbi_execs <- setUpNcbiTools(d='/home/dom/Programs/ncbi-blast-2.7.1+/bin')
+# Select a txid, here Platyrrhini
+txid <- 4613
+setUpPrmtrs(wd=wd, txid=txid,
+            ncbi_execs=ncbi_execs,
+            mx_dscndnts=10000,
+            tmout=100,
+            mdl_thrshld=3000,
+            mx_blst_sqs=10000,
+            mx_sq_lngth=25000,
+            verbose=TRUE,
+            cores=2)
+# Generate taxonomic 'nodes'
+genTxNds(wd)

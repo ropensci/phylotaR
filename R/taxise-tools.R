@@ -208,7 +208,7 @@ getMngblIds <- function(txid, td_nds,
     n <- .evlTmLmt(nDscndnts(id, td_nds),
                    cpu=tmout)
     if (is.null(n) || n > mx_dscndnts) {
-      queue <- c(queue, children(id, td_nds))
+      queue <- c(queue, getKids(id, td_nds))
       rjctd_ids <- c(rjctd_ids, id)
       .cp(v=verbose, "Taxon [", id,
           "] has too many descendants or tmout 

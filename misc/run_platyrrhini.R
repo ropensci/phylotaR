@@ -12,7 +12,7 @@
 # I'm working on R ways to automate these steps
 
 # Set working directory
-wd <- '/home/dom/Desktop/testing_phylotaR'
+wd <- '/home/dom/Desktop/testing_phylotaR/platy'
 # Test if NCBI tools are present
 ncbi_execs <- setUpNcbiTools(d='/home/dom/Programs/ncbi-blast-2.7.1+/bin')
 # Select a txid, here Platyrrhini
