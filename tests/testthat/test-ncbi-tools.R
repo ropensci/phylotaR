@@ -97,14 +97,14 @@ test_that('nSqs', {
   )
   expect_true(grepl(':noexp', res[['term']]))
 })
-test_that('dwnldSqs', {
+test_that('dwnldFrmNCBI', {
   # n determines the number of available seqs.
   n <- 0
   res <- with_mock(
     `rentrez::entrez_search`=mckEntrezSearch,
     `rentrez::entrez_fetch`=mckEntrezFetch,
     `rentrez::entrez_summary`=mckEntrezSummary,
-    dwnldSqs(txid=1, direct=FALSE, mx_lngth=25000,
+    dwnldFrmNCBI(txid=1, direct=FALSE, mx_lngth=25000,
              mx_sqs=100000, verbose=FALSE)
   )
   expect_true(class(res) == 'list')
@@ -114,7 +114,7 @@ test_that('dwnldSqs', {
     `rentrez::entrez_search`=mckEntrezSearch,
     `rentrez::entrez_fetch`=mckEntrezFetch,
     `rentrez::entrez_summary`=mckEntrezSummary,
-    dwnldSqs(txid=1, direct=FALSE, mx_lngth=25000,
+    dwnldFrmNCBI(txid=1, direct=FALSE, mx_lngth=25000,
              mx_sqs=100000, verbose=FALSE)
   )
   expect_true(length(res) == 1)
@@ -123,7 +123,7 @@ test_that('dwnldSqs', {
     `rentrez::entrez_search`=mckEntrezSearch,
     `rentrez::entrez_fetch`=mckEntrezFetch,
     `rentrez::entrez_summary`=mckEntrezSummary,
-    dwnldSqs(txid=1, direct=FALSE, mx_lngth=25000,
+    dwnldFrmNCBI(txid=1, direct=FALSE, mx_lngth=25000,
              mx_sqs=100000, verbose=FALSE)
   )
   expect_true(length(res) == 100)
@@ -132,7 +132,7 @@ test_that('dwnldSqs', {
     `rentrez::entrez_search`=mckEntrezSearch,
     `rentrez::entrez_fetch`=mckEntrezFetch,
     `rentrez::entrez_summary`=mckEntrezSummary,
-    dwnldSqs(txid=1, direct=FALSE, mx_lngth=25000,
+    dwnldFrmNCBI(txid=1, direct=FALSE, mx_lngth=25000,
              mx_sqs=100000, verbose=FALSE)
   )
   expect_true(length(res) == 1000)

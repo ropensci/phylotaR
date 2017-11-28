@@ -1,5 +1,3 @@
-# Control cache-ing of data through the same functions
-# TODO: create progress.RData
 
 #' @name setUpCch
 #' @title Set-up a cache
@@ -61,7 +59,7 @@ chkObj <- function(wd, nm) {
 ldObj <- function(wd, nm) {
   fl <- file.path(wd, 'cache', paste0(nm, '.RData'))
   if(!file.exists(fl)) {
-    stop(paste0('File [', nm, '] in [',
+    stop(paste0('No [', nm, '] in [',
                 wd, '] cache.'))
   }
   readRDS(file=fl)
@@ -94,4 +92,51 @@ rmCch <- function(wd) {
   if(file.exists(d)) {
     unlink(d, recursive=TRUE)
   }
+}
+
+#' @name svSqs
+#' @title Save sequences to cache
+#' @description Saves sequences downloaded \code{getSqs}
+#' and converted to data.frame.
+#' @param wd Working directory
+#' @param txid Taxonomic ID, numeric
+#' @param sqdf Sequence data.frame
+#' @details Used within the \code{dwnld} function. Saves
+#' sequence data by txid in cache.
+#' @export
+svSqs <- function(wd=wd, txid=txid, sqdf=sqdf) {
+  # TODO: avoid overwriting
+  d <- file.path(wd, 'cache')
+  if(!file.exists(d)) {
+    stop('Cache does not exist.')
+  }
+  d <- file.path(d, 'sqs')
+  if(!file.exists(d)) {
+    dir.create(d)
+  }
+  fl <- file.path(d, paste0(txid, '.RData'))
+  saveRDS(object=sqdf, file=fl)
+}
+
+#' @name ldSqs
+#' @title Load sequences from cache
+#' @description Load sequences downloaded by
+#' \code{dwnld} function.
+#' @param wd Working directory
+#' @param txid Taxonomic ID, numeric
+#' @export
+ldSqs <- function(wd=wd, txid=txid, sqdf=sqdf) {
+  d <- file.path(wd, 'cache')
+  if(!file.exists(d)) {
+    stop('Cache does not exist.')
+  }
+  d <- file.path(d, 'sqs')
+  if(!file.exists(d)) {
+    stop('`sqs` not in cache. Have you run the download stage?')
+  }
+  fl <- file.path(d, paste0(txid, '.RData'))
+  if(!file.exists(fl)) {
+    stop(paste0('[', txid, '] not in `sqs` of cache.'))
+  }
+  readRDS(file=fl)
 }

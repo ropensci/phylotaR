@@ -53,7 +53,7 @@ nSqs <- function(txid, direct=FALSE,
   res[['count']]
 }
 
-#' @title dwnldSqs
+#' @title dwnldFrmNCBI
 #' @description Given a taxon ID, queries NCBI
 #' for sequences that match the taxid.
 #' @param txid NCBI taxon identifier
@@ -66,10 +66,9 @@ nSqs <- function(txid, direct=FALSE,
 #' Only makes sense when direct=TRUE
 #' @return list of lists containing sequence objects
 #' @export
-dwnldSqs <- function(txid, direct=FALSE,
-                     mx_lngth=25000,
-                     mx_sqs=100000,
-                     verbose=FALSE) {
+dwnldFrmNCBI <- function(txid, direct=FALSE,
+                         mx_lngth=25000, mx_sqs=100000,
+                         verbose=FALSE) {
   # test w/ golden moles 9389
   org_trm <- ifelse(direct, '[Organism:noexp]',
                      '[Organism:exp]')
@@ -140,7 +139,7 @@ dwnldSqs <- function(txid, direct=FALSE,
       sm <- summaries[[i]]
       se <- seqstrs[[i]]
       seq <- list(gi=sm$uid,
-                  ti=sm$txid,
+                  ti=sm$taxid,
                   acc=sm$caption,
                   acc_vers=sm$accessionversion,
                   length=sm$slen,
