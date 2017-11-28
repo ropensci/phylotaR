@@ -7,6 +7,7 @@
 }
 
 .cp <- function(v, ...) {
+  # TODO: add levels arg
   # Custom print
   if(v) {
     cat(..., '\n', sep='')

@@ -1,7 +1,5 @@
 # 24 Nov 2017
 # Current status: .dmp to manageable IDs
-# I'm testing the pipeline with monkeys
-# I like monkeys
 
 # Set up
 # Before running the pipeline you need to
@@ -27,6 +25,10 @@ setUpPrmtrs(wd=wd, txid=txid,
             verbose=TRUE,
             cores=2)
 # Generate taxonomic 'nodes'
-genTxNds(wd)
+stageTaxise(wd)
+# Download sequences
+stageDownload(wd)
+# Generate clusters
+stageCluster(wd)
 
 
