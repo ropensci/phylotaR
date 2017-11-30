@@ -73,6 +73,7 @@ blstN <- function(dbfl, outfl, wd, eval_ctoff=1.0e-10,
     .cp(v=verbose, "No BLAST output, returning NULL")
     return(NULL)
   }
+  blst_rs <- read.table(outfl)
   colnames(blst_rs) <- c('query.id', 'subject.id', 'identity',
                          'alignment.length', 'mismatches',
                          'gap.opens', 'q.start', 'q.end',
