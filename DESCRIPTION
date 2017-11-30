@@ -13,7 +13,6 @@ SystemRequirements: BLAST+ (>2.7.1)
 Depends:
     R (>= 3.4.2),
     methods,
-    plyr,
     foreach
 Imports:
     doMC,
@@ -21,7 +20,6 @@ Imports:
     igraph,
     CHNOSZ,
     rentrez,
-    data.table,
     DBI,
     taxize,
     XML
