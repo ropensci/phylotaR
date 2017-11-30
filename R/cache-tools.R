@@ -104,7 +104,7 @@ rmCch <- function(wd) {
 #' @details Used within the \code{dwnld} function. Saves
 #' sequence data by txid in cache.
 #' @export
-svSqs <- function(wd=wd, txid=txid, sqdf=sqdf) {
+svSqs <- function(wd=wd, txid=txid, sqs=sqs) {
   # TODO: avoid overwriting
   d <- file.path(wd, 'cache')
   if(!file.exists(d)) {
@@ -115,7 +115,7 @@ svSqs <- function(wd=wd, txid=txid, sqdf=sqdf) {
     dir.create(d)
   }
   fl <- file.path(d, paste0(txid, '.RData'))
-  saveRDS(object=sqdf, file=fl)
+  saveRDS(object=sqs, file=fl)
 }
 
 #' @name ldSqs
@@ -125,7 +125,7 @@ svSqs <- function(wd=wd, txid=txid, sqdf=sqdf) {
 #' @param wd Working directory
 #' @param txid Taxonomic ID, numeric
 #' @export
-ldSqs <- function(wd=wd, txid=txid, sqdf=sqdf) {
+ldSqs <- function(wd=wd, txid=txid) {
   d <- file.path(wd, 'cache')
   if(!file.exists(d)) {
     stop('Cache does not exist.')

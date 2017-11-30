@@ -58,8 +58,9 @@ dwnld <- function(wd, txids, phylt_nds, mdl_thrshld,
                         mx_len=mx_sq_lngth,
                         mdl_thrshld=mdl_thrshld,
                         verbose=verbose)
-    sqdf <- do.call(rbind, lapply(sqs, as.data.frame))
-    svSqs(wd=wd, txid=txid, sqdf=sqdf)
+    svSqs(wd=wd, txid=txid, sqs=sqs)
+    # Move this sqdf to separate function
+    #sqdf <- do.call(rbind, lapply(sqs, as.data.frame))
   }
 }
 

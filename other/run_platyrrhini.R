@@ -25,10 +25,10 @@ setUpPrmtrs(wd=wd, txid=txid,
             verbose=TRUE,
             cores=2)
 # Generate taxonomic 'nodes'
-stageTaxise(wd)
+runTaxise(wd)
 # Download sequences
-stageDownload(wd)
+runDownload(wd)
 # Generate clusters
-stageCluster(wd)
+runClusters(wd)
 
 

@@ -4,7 +4,7 @@
 \alias{ldSqs}
 \title{Load sequences from cache}
 \usage{
-ldSqs(wd = wd, txid = txid, sqdf = sqdf)
+ldSqs(wd = wd, txid = txid)
 }
 \arguments{
 \item{wd}{Working directory}

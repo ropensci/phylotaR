@@ -21,24 +21,39 @@ mckMkBlstDB <- function(sqs, dbfl, wd,
 
 # RUNNING
 context('Testing \'cluster-tools\'')
-test_that('getSeqs() works', {
+test_that('clstrPhylt() works', {
   
 })
-test_that('clstrIds() works', {
+test_that('clstrCiGi() works', {
+  
+})
+test_that('clstrSqs() works', {
+  
+})
+test_that('calcClstrs() works', {
   
 })
 test_that('clstrBlstRs() works', {
   # TODO: not sure how to test this well
-  clstrBlstRs(blst_rs, infrmtv = TRUE)
-  clstrBlstRs(blst_rs, infrmtv = FALSE)
+  clstrBlstRs(blst_rs, infrmtv=TRUE)
+  clstrBlstRs(blst_rs, infrmtv=FALSE)
+})
+test_that('addClstrInf() works', {
+  # TODO: not sure how to test this well, either
+  clstrs <- clstrBlstRs(blst_rs, infrmtv=TRUE)
+  res <- addClstrInf(clstrs=clstrs, phylt_nds=phylt_nds,
+              txid=9479, sqs=sqs, drct = FALSE)
+  expect_true(length(clstrs) == length(res))
 })
 test_that('getADs() works', {
   # all nodes should descend from Platyrrhini
   txids <- getADs(txid=9479, phylt_nds=phylt_nds)
   expect_true(length(txids) == (nrow(phylt_nds) - 1))
 })
-test_that('writeClstr() works', {
-  
+test_that('getGnsFrmPhyltNds() works', {
+  rnd <- sample(phylt_nds[['ti_anc']], 1)
+  res <- getGnsFrmPhyltNds(txid=rnd, phylt_nds=phylt_nds)
+  expect_true(res %in% phylt_nds[['ti_genus']])
 })
 test_that('blstSqs() works', {
   res <- with_mock(
