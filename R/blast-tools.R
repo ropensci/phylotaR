@@ -32,7 +32,7 @@ mkBlstDB <- function(sqs, dbfl, wd, verbose=FALSE) {
     stop('Command [', cmd, '] did not produce output files [',
          paste(fnames), ']')
   }
-  fl
+  NULL
 }
 
 #' @name blstN

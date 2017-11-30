@@ -4,7 +4,7 @@
 \alias{blstSqs}
 \title{BLAST All vs All}
 \usage{
-blstSqs(txid, typ, sqs, wd)
+blstSqs(txid, typ, sqs, wd, verbose = FALSE)
 }
 \arguments{
 \item{txid}{Taxonomic node ID, numeric}
@@ -14,6 +14,8 @@ blstSqs(txid, typ, sqs, wd)
 \item{sqs}{Sequences}
 
 \item{wd}{Working directory}
+
+\item{verbose}{Verbose? T/F}
 }
 \description{
 Return blast results from

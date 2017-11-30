@@ -33,8 +33,6 @@ test_that('mkBlstDB() works', {
     mkBlstDB(sqs=sqs, dbfl='testdb', wd=data_d,
              verbose=FALSE)
   )
-  expect_true(res == file.path(data_d, 'blast',
-                               'testdb'))
 })
 test_that('blstN() works', {
   res <- with_mock(

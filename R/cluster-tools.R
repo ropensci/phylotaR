@@ -64,7 +64,7 @@ clstr <- function(wd, txid, sqs, phylt_nds,
   if(is.null(blst_rs)) {
     .cp(v=verbose, "Current BLAST result is NULL from parent, performing BLAST")
     # TODO
-    txids_blst_rs <- .get.blast.results(txid, sqs_prt)
+    txids_blst_rs <- blstSqs(wd=wd, txid=txid, typ=clstr_typ, sqs=sqs_prt)
     # TODO: Can we do this more elegantly?
     if(is.null(txids_blst_rs)) {
       cat("Current BLAST result is NULL after blasting\n")
@@ -166,21 +166,23 @@ getADs <- function(txid, phylt_nds) {
 #' @param typ Cluster type, 'direct' or 'subtree'
 #' @param sqs Sequences
 #' @param wd Working directory
+#' @param verbose Verbose? T/F
 #' @export
-blstSqs <- function(txid, typ, sqs, wd) {
+blstSqs <- function(txid, typ, sqs, wd, verbose=FALSE) {
   .cp(v=verbose, "BLAST all vs all for [",
       length(sqs), "] sequences")
   dbfl <- paste0('taxon-', txid, '-typ-', typ,
                  '-db.fa')
   outfl <- paste0('taxon-', txid, '-typ-', typ,
                   '-blastout.txt')
-  mkBlstDB(sqs, dbfl=dbfl, wd=wd)
-  blst_rs <- blstN(dbfl=dbfl, outfl=otfl, wd=wd)
+  mkBlstDB(sqs, dbfl=dbfl, wd=wd, verbose=verbose)
+  blst_rs <- blstN(dbfl=dbfl, outfl=otfl, wd=wd,
+                   verbose=verbose)
   # TODO: Not so elegant
   if(is.null(blst_rs)) {
     return(NULL)
   }
   .cp(v=verbose, "Number of BLAST results [", nrow(blst_rs), "]")
   .cp(v=verbose, "Filtering BLAST results")
-  fltrBlstRs(blst_rs=blst_rs, sqs=sqs)
+  fltrBlstRs(blst_rs=blst_rs, min_cvrg=0.51, verbose=verbose)
 }
