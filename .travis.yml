@@ -4,7 +4,14 @@ warnings_are_errors: false
 sudo: required
 
 r_binary_packages:
- - plyr
+ - foreach
+ - doMC
+ - doSNOW
+ - rentrez
+ - taxize
+ - XML
+ - CHNOSZ
+ - igraph
  - testthat
 r_github_packages:
   - jimhester/covr

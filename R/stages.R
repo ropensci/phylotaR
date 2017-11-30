@@ -84,4 +84,6 @@ runClusters <- function(wd) {
   verbose <- prmtrs[['verbose']]
   # Get PhyLoTa nodes
   phylt_nds <- ldObj(wd=wd, nm='phylt_nds')
+  # Load sequences
+  # cluster
 }
