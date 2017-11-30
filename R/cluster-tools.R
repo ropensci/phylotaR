@@ -32,7 +32,8 @@ calcClstrs <- function(wd, txid, phylt_nds, verbose=FALSE) {
   root_txid <- txid
   # load sequences
   sq_fls <- list.files(file.path(wd, 'cache', 'sqs'))
-  for(sq_fl in sq_fls) {
+  for(i in seq_along(sq_fls)) {
+    sq_fl <- sq_fls[i]
     # TODO: use the cache tool
     sqs <- readRDS(file=file.path(file.path(wd, 'cache',
                                             'sqs', sq_fl)))
@@ -46,7 +47,7 @@ calcClstrs <- function(wd, txid, phylt_nds, verbose=FALSE) {
     cigidf <- clstrCiGi(clstrs=clstrs)
     # output
     .cp(v=verbose, "Taxid [", txid, "]: writing [", nrow(cldf),
-        "] clusters, [", nrow(seqdf), "] sequences, [",
+        "] clusters, [", length(sqs), "] sequences, [",
         nrow(cigidf), "] ci_gi entries to file")
     # TODO move these to sep. func
     clstrs_fl <- file.path(wd, paste0('dbfiles-', root_txid,
@@ -58,9 +59,9 @@ calcClstrs <- function(wd, txid, phylt_nds, verbose=FALSE) {
     write.table(cldf, file=clstrs_fl, append=file.exists(clstrs_fl),
                 quote=FALSE, sep="\t", row.names=FALSE,
                 col.names=!file.exists(clstrs_fl))
-    write.table(seqdf, file=sqs_fl, append=file.exists(sqs_fl),
-                quote=FALSE, sep="\t", row.names=FALSE,
-                col.names=!file.exists(sqs_fl))
+    # write.table(seqdf, file=sqs_fl, append=file.exists(sqs_fl),
+    #             quote=FALSE, sep="\t", row.names=FALSE,
+    #             col.names=!file.exists(sqs_fl))
     write.table(cigidf, file=ci_gi_fl, append=file.exists(ci_gi_fl),
                 quote=FALSE, sep="\t", row.names=FALSE,
                 col.names=!file.exists(ci_gi_fl))
@@ -78,6 +79,7 @@ calcClstrs <- function(wd, txid, phylt_nds, verbose=FALSE) {
 clstrSqs <- function(wd, txid, sqs, phylt_nds,
                      drct=FALSE, infrmtv=FALSE,
                      blst_rs=NULL, verbose=FALSE) {
+  all_clstrs <- list()
   clstr_typ <- ifelse(drct, "direct", "subtree")
   rnks <- as.character(phylt_nds[['rank']])
   rnk <- as.character(rnks[match(txid, phylt_nds[['ti']])])
@@ -86,9 +88,12 @@ clstrSqs <- function(wd, txid, sqs, phylt_nds,
   if(!drct) {
     dds <- getDDFrmPhyltNds(txid=txid, phylt_nds=phylt_nds)
     if(length(dds) > 0) {
-      all_clstrs <- clstrSqs(wd, txid, phylt_nds=phylt_nds,
-                             sqs=sqs, drct=TRUE, infrmtv=infrmtv,
-                             blst_rs=blst_rs, verbose=verbose)
+      all_clstrs <- c(all_clstrs, clstrSqs(wd, txid,
+                                           phylt_nds=phylt_nds,
+                                           sqs=sqs, drct=TRUE,
+                                           infrmtv=infrmtv,
+                                           blst_rs=blst_rs,
+                                           verbose=verbose))
     }
   }
   if(drct) {
@@ -100,8 +105,10 @@ clstrSqs <- function(wd, txid, sqs, phylt_nds,
   sq_txids <- names(sqs[which(all_sq_txids %in% txids)])
   .cp(v=verbose, "Found [", length(sq_txids), '] [',
       clstr_typ, "] GIs for taxid [", txid, "]")
-  if(length(sq_txids) == 0) {
-    .cp(v=verbose, "No [", clstr_typ, "] sequences for taxid [",
+  # @Hannes: you have a max seqs, why not a min?
+  if(length(sq_txids) < 3) {
+    .cp(v=verbose, "Insufficient [", clstr_typ,
+        "] sequences for taxid [",
         txid, "], cannot make clusters")
     return(all_clstrs)
   }
@@ -118,8 +125,8 @@ clstrSqs <- function(wd, txid, sqs, phylt_nds,
   } else {
     txids_blst_rs <- list()
     .cp(v=verbose, "Using BLAST results from parent cluster")
-    txids_blst_rs <- blst_rs[which(blst_rs$subject.id %in% gis),]
-    txids_blst_rs <- txids_blst_rs[which(txids_blst_rs$query.id %in% gis),]
+    txids_blst_rs <- blst_rs[which(blst_rs$subject.id %in% sq_txids),]
+    txids_blst_rs <- txids_blst_rs[which(txids_blst_rs$query.id %in% sq_txids),]
   }
   # Sq clusters are stored in a list of lists, named by gi
   # Get top-level clusters
