@@ -7,7 +7,6 @@ data("phylt_nds")
 data('sqs')
 data('blst_rs')
 
-
 # FUNCTIONS
 # stubs
 mckBlstN <- function(dbfl, outfl, wd,
@@ -28,8 +27,10 @@ test_that('getSeqs() works', {
 test_that('clstrIds() works', {
   
 })
-test_that('fltrIds() works', {
-  
+test_that('clstrBlstRs() works', {
+  # TODO: not sure how to test this well
+  clstrBlstRs(blst_rs, infrmtv = TRUE)
+  clstrBlstRs(blst_rs, infrmtv = FALSE)
 })
 test_that('getADs() works', {
   # all nodes should descend from Platyrrhini

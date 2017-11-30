@@ -63,11 +63,11 @@ clstr <- function(wd, txid, sqs, phylt_nds,
   txids_blst_rs <- list()
   if(is.null(blst_rs)) {
     .cp(v=verbose, "Current BLAST result is NULL from parent, performing BLAST")
-    # TODO
-    txids_blst_rs <- blstSqs(wd=wd, txid=txid, typ=clstr_typ, sqs=sqs_prt)
+    txids_blst_rs <- blstSqs(wd=wd, txid=txid, typ=clstr_typ, sqs=sqs_prt,
+                             verbose=verbose)
     # TODO: Can we do this more elegantly?
     if(is.null(txids_blst_rs)) {
-      cat("Current BLAST result is NULL after blasting\n")
+      .cp(v=verbose, "Current BLAST result is NULL after blasting")
       return(all_clstrs)
     }
   } else {
@@ -79,13 +79,13 @@ clstr <- function(wd, txid, sqs, phylt_nds,
   # Get top-level clusters
   .cp(v=verbose, "Clustering BLAST results for taxid [", txid, "]")
   # TODO
-  raw.clusters <- cluster.blast.results(current.blast.results,
-                                        informative=informative)
+  raw_clstrs <- cluster.blast.results(txids_blst_rs,
+                                      informative=informative)
   .cp(v=verbose, "Finished clustering BLAST results for taxid [",
       txid, "]")
   # make dataframe with fields as in PhyLoTa database
   # TODO
-  clstrs <- .add.cluster.info(raw.clusters, nodes, txid, seqs,
+  clstrs <- .add.cluster.info(raw_clstrs, nodes, txid, seqs,
                               direct=direct)
   .cp(v=verbose, "Generated [", length(clstrs),
       "] clusters")
@@ -98,7 +98,7 @@ clstr <- function(wd, txid, sqs, phylt_nds,
       .cp(v=verbose, "Processing child taxon of [", txid,
           "] [", dd, "]")
       # TODO
-      dd_clstrs <- clstr(dd, nodes, seqs, current.blast.results)
+      dd_clstrs <- clstr(dd, nodes, seqs, txids_blst_rs)
       # TODO: break this up. Too nested.
       dd_clstrs <- lapply(dd_clstrs, function(cc) {
         idx <- max(which(sapply(clstrs, function(c) any(
@@ -176,7 +176,7 @@ blstSqs <- function(txid, typ, sqs, wd, verbose=FALSE) {
   outfl <- paste0('taxon-', txid, '-typ-', typ,
                   '-blastout.txt')
   mkBlstDB(sqs, dbfl=dbfl, wd=wd, verbose=verbose)
-  blst_rs <- blstN(dbfl=dbfl, outfl=otfl, wd=wd,
+  blst_rs <- blstN(dbfl=dbfl, outfl=outfl, wd=wd,
                    verbose=verbose)
   # TODO: Not so elegant
   if(is.null(blst_rs)) {
@@ -185,4 +185,44 @@ blstSqs <- function(txid, typ, sqs, wd, verbose=FALSE) {
   .cp(v=verbose, "Number of BLAST results [", nrow(blst_rs), "]")
   .cp(v=verbose, "Filtering BLAST results")
   fltrBlstRs(blst_rs=blst_rs, min_cvrg=0.51, verbose=verbose)
+}
+
+
+#' @name clstrBlstRs
+#' @title Cluster BLAST Results
+#' @description TODO
+#' @param blst_rs BLAST results
+#' @param infrmtv Informative? T/F
+#' @export
+clstrBlstRs <- function(blst_rs, infrmtv=TRUE) {
+  g <- igraph::graph.data.frame(blst_rs[ ,c("query.id",
+                                            "subject.id")],
+                                directed=FALSE)
+  clstrs <- igraph::clusters(g)
+  # filter for phylogenetically informative clusters
+  if(infrmtv) {
+    clstrs <- clstrs$membership[which(
+      clstrs$membership %in% which(clstrs$csize > 2))]
+  } else {
+    clstrs <- clstrs$membership
+  }
+  # we will return a list, one entry with sequence IDs
+  #  for each cluster
+  clstr_lst <- lapply(unique(clstrs), function(x) {
+    list(gis=sort(names(clstrs)[which(clstrs==x)]))
+  })
+  # Get the seed gi, we will chose it to be the sequence
+  # in the cluster that has
+  # the most hits with the other members in the cluster;
+  # i.e. the most connected
+  # node in the graph
+  degrees <- igraph::degree(g)
+  # get seed gis and as field to clusters
+  clstr_lst <- lapply(clstr_lst, function(cl){
+    idx <- order(degrees[cl[['gis']]], decreasing=TRUE)[1]
+    # index of most connected component
+    cl[['seed_gi']] <- cl[['gis']][idx]
+    cl
+  })
+  clstr_lst
 }
