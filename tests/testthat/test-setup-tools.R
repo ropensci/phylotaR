@@ -8,15 +8,41 @@ cleanUp <- function() {
     unlink('cache', recursive=TRUE)
   }
 }
+# stub
+mckSystem <- function(cmd, intern, ignore.stderr) {
+  if(grepl('makeblastdb', cmd)) {
+    res <- c("makeblastdb: 2.7.1+",
+             " Package: blast 2.7.1, build Oct 18 2017 19:57:24")
+  }
+  if(grepl('blastn', cmd)) {
+    res <- c("blastn: 2.7.1+", 
+             " Package: blast 2.7.1, build Oct 18 2017 19:57:24")
+  }
+  if(grepl('wrngvrsn', cmd)) {
+    res <- res <- c("blastn: 2.6.1+", 
+                    " Package: blast 2.6.1, build Oct 18 2017 19:57:24")
+  }
+  res
+}
 
 # RUNNING
 # pretty lame tests.... any better ideas would be appreciated
 context('Testing \'tools\'')
 cleanUp()
 test_that('setUpNcbiTools() works', {
-  # can't really test if BLAST tools are installed
-  # instead just test whether the tools fail
-  expect_error(setUpNcbiTools(dr='.'))
+  # test with fake system
+  res <- with_mock(
+    `base::system`=mckSystem,
+    setUpNcbiTools(d='.')
+  )
+  expect_true(length(res) == 2)
+  # make sure wrong versions are flagged
+  res <- with_mock(
+    `base::system`=mckSystem,
+    expect_error(setUpNcbiTools(d='wrngvrsn'))
+  )
+  # make sure wrong dirs are flagged
+  expect_error(setUpNcbiTools(d='.'))
 })
 test_that('setUpPrmtrs() works', {
   expect_error(setUpPrmtrs(wd='.', txid=9606,
