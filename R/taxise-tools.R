@@ -1,3 +1,44 @@
+#' @name dwnldTD
+#' @title Download NCBI taxonomy dump
+#' @description Download and unpack NCBI
+#' taxonomy dump.
+#' @param wd Working directory
+#' @param tdpth Taxonomy dump path
+#' @details If \code{tdpth} is left NULL, downloads
+#' the taxdump.tar.gz. Otherwise, manually download
+#' the file and provide path.
+#' \url{ftp://ftp.ncbi.nlm.nih.gov/pub/taxonomy/taxdump.tar.gz}
+#' @export
+dwnldTD <- function(wd, tdpth=NULL) {
+  txdr <- file.path(wd, 'taxonomy')
+  if(!file.exists(txdr)) {
+    dir.create(txdr)
+  }
+  if(is.null(tdpth)) {
+    cat('Downloading NCBI taxdump.tar.gz ....\n')
+    flpth <- file.path(txdr, 'taxdump.tar.gz')
+    url <- 'ftp://ftp.ncbi.nlm.nih.gov/pub/taxonomy/taxdump.tar.gz'
+    res <- curl::curl_fetch_disk(url=url, path=flpth)
+    if(!file.exists(res[['content']])) {
+      stop('Download failed. Curl status code [',
+           res[['status_code']],']')
+    }
+    cat('Done.\n')
+  } else {
+    flpth <- tdpth
+    if(!file.exists(flpth)) {
+      stop('[', flpth, '] does not exist.')
+    }
+  }
+  untar(tarfile=flpth, files=c('nodes.dmp', 'names.dmp'),
+        exdir='taxonomy')
+  expflpths <- c(file.path(txdr, 'nodes.dmp'),
+                 file.path(txdr, 'names.dmp'))
+  if(!all(file.exists(expflpths))) {
+    stop('Failed to unpack [', flpth,']')
+  }
+}
+
 #' @name genTDObj
 #' @title Generate R object from NCBI taxonomy dump
 #' @description Generates an interrogable R object
@@ -12,11 +53,11 @@
 genTDObj <- function(wd) {
   if(!chkObj(wd, 'tdobj')) {
     cat('Reading from taxonomy dump ....\n')
-    if(!file.exists(file.path(wd, 'NCBI'))) {
-      stop('No NCBI folder in `wd`.')
+    if(!file.exists(file.path(wd, 'taxonomy'))) {
+      stop('No taxonomy folder in `wd`.')
     }
-    nds <- CHNOSZ::getnodes(file.path(wd, 'NCBI'))
-    nms <- CHNOSZ::getnames(file.path(wd, 'NCBI'))
+    nds <- CHNOSZ::getnodes(file.path(wd, 'taxonomy'))
+    nms <- CHNOSZ::getnames(file.path(wd, 'taxonomy'))
     tdobj <- list('nds'=nds,
                   'nms'=nms)
     svObj(wd=wd, obj=tdobj, nm='tdobj')
@@ -85,7 +126,8 @@ genPhylotaNds <- function(nid_sets, mx_sq_lngth, mdl_thrshld,
     .cp(v=verbose, "Finished processing txid [", txid,
         "] [", i, "/", length(nids), "\n")
   }
-  phylt_nds
+  # rm first row
+  phylt_nds[-1, ]
 }
 
 #' @name getStats

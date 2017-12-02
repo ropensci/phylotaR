@@ -12,6 +12,7 @@ if(grepl('testthat', wd)) {
                        'data')
 }
 cch_dr <- file.path(data_dr, 'cache')
+txdmpfl <- file.path(data_dr, 'taxonomy', 'taxdump.tar.gz')
 
 # FUNCTIONS
 cleanUp <- function() {
@@ -21,6 +22,9 @@ cleanUp <- function() {
   if(file.exists('test_writeTax.tsv')) {
     file.remove('test_writeTax.tsv')
   }
+  if(file.exists(txdmpfl)) {
+    file.remove(txdmpfl)
+  }
 }
 
 # DATA
@@ -29,9 +33,61 @@ td_nds <- tdobj[['nds']]
 td_nms <- tdobj[['nms']]
 rm(tdobj)
 
+# FUNCTIONS
+mckCurlFail <- function(url, path) {
+  list('content'='non-existent-file',
+       'status_code'='FAILED')
+}
+mckCurl <- function(url, path) {
+  list('content'=file.path(data_dr, 'taxonomy',
+                           'taxdump.tar.gz'),
+              'status_code'=226)
+}
+mckUntar <- function(tarfile, files, exdir) {
+  NULL
+}
+
 # RUNNING
 context('Testing \'taxise\'')
 cleanUp()
+test_that('dwnldTD() works', {
+  file.create(txdmpfl)
+  # pass download
+  with_mock(
+    `utils::untar`=mckUntar,
+    `curl::curl_fetch_disk`=mckCurl,
+    dwnldTD(wd=data_dr, tdpth=NULL)
+  )
+  # pass reading from file
+  with_mock(
+    `utils::untar`=mckUntar,
+    `curl::curl_fetch_disk`=mckCurl,
+    dwnldTD(wd=data_dr, tdpth=txdmpfl)
+  )
+  # fail to read from file
+  with_mock(
+    `utils::untar`=mckUntar,
+    `curl::curl_fetch_disk`=mckCurl,
+    expect_error(dwnldTD(wd=data_dr,
+                         tdpth='non-existent-file'))
+  )
+  # fail to unpack
+  with_mock(
+    `utils::untar`=mckUntar,
+    `curl::curl_fetch_disk`=mckCurl,
+    expect_warning(
+      expect_error(
+        dwnldTD(wd='non-existent-dir',
+                         tdpth=NULL)))
+  )
+  # fail to download
+  with_mock(
+    `utils::untar`=mckUntar,
+    `curl::curl_fetch_disk`=mckCurlFail,
+    expect_error(dwnldTD(wd=data_dr, tdpth=NULL))
+  )
+  cleanUp()
+})
 test_that('genTDObj() works', {
   tdobj <- genTDObj(data_dr)
   tdobj <- genTDObj(data_dr)

@@ -17,10 +17,12 @@ runTaxise <- function(wd) {
   mx_dscndnts <- prmtrs[['mx_dscndnts']]
   mx_sq_lngth <- prmtrs[['mx_sq_lngth']]
   mdl_thrshld <- prmtrs[['mdl_thrshld']]
+  tdpth <- prmtrs[['tdpth']]
   tmout <- prmtrs[['tmout']]
   verbose <- prmtrs[['verbose']]
   # Run
-  tdobj <- genTDObj(wd)
+  dwnldTD(wd=wd, tdpth=tdpth)
+  tdobj <- genTDObj(wd=wd)
   cat('Processing IDs....\n')
   nid_sets <- getMngblIds(txid=txid,
                           td_nds=tdobj[['nds']],
