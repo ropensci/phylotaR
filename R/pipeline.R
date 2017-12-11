@@ -1,30 +1,82 @@
-# This file holds the pipeline functions
 
-#' @name runPhylota
-#' @title Run the entire PhyLoTa pipeline
+#' @name setUp
+#' @title Set-up parameters
+#' @description 
+#' @param wd Working directory
+#' @param txid Root taxonomic ID(s), vector or numeric
+#' @param ncbi_dr Directory to NCBI BLAST tools, default '.'
+#' @param ... Additional parameters
+#' @export
+#' @seealso \code{\link{setUp}}
+setUp <- function(wd, txid, ncbi_dr='.', ...) {
+  ncbi_execs <- setUpNcbiTools(d=ncbi_dr)
+  setUpPrmtrs(wd=wd, txid=txid,
+              ncbi_execs=ncbi_execs, ...)
+}
+
+#' @name run
+#' @title Run PhyLoTa pipeline
 #' @description Run the entire PhyLoTa pipeline.
 #' All generated files will be stored in the wd.
 #' The process can be stopped at anytime and 
-#' restarted with \code{rstrtPhylota}.
+#' restarted with \code{restart}.
+#' \code{nstages} must be a numeric value representing
+#' the number of stages that will be run. Stages are run
+#' in the following order:  1 - taxise, 2 - download,
+#' 3 - cluster and 4 - align.
+#' For example, specifying \code{nstages} = 3, will run
+#' taxise, download and cluster.
+#' Stages can also be run individually, see linked
+#' functions below.
 #' @param wd Working directory
-#' @param txid Root taxonomic ID
-#' @details All objects and data will be cached.
+#' @param nstages number of stages to run
 #' @export
-#' @seealso \code{\link{rstrtPhylota}}
-runPhylota <- function(wd, txid) {
-  # TODO
-  # Taxonomy steps
-  #  - genTxNds
-  # Cluser steps
+#' @seealso \code{\link{restart}}, \code{\link{runTaxise}},
+#' \code{\link{runDownload}}, \code{\link{runClusters}},
+#' \code{\link{runAlign}}
+run <- function(wd, nstages=4) {
+  # TODO: save progress
+  if(nstages < 1) {
+    stop('`nstages` is less than 1.')
+  }
+  if(nstages > 4) {
+    stop('`nstages` is greater than 4.')
+  }
+  if(nstages >= 1) {
+    # Generate taxonomic 'nodes'
+    runTaxise(wd)
+  }
+  if(nstages >= 2) {
+    # Download sequences
+    runDownload(wd)
+  }
+  if(nstages >= 3) {
+    # Generate clusters
+    runClusters(wd)
+  }
+  if(nstages == 4) {
+    # Generate alignments
+    runAlign(wd)
+  }
 }
 
-#' @name rstrtPhylota
+#' @name restart
 #' @title Restart a PhyLoTa pipeline run
 #' @description Restarts the running of a pipeline
-#' as started with \code{runPhylota}.
+#' as started with \code{run}.
 #' @param wd Working directory
 #' @export
-#' @seealso \code{\link{runPhylota}}
-rstrtPhylota <- function(wd) {
+#' @seealso \code{\link{run}}
+restart <- function(wd) {
+  # TODO
+}
+
+#' @name reset
+#' @title Reset a PhyLoTa pipeline run
+#' @description Resets the pipeline to a specified stage.
+#' @param wd Working directory
+#' @export
+#' @seealso \code{\link{run}}
+reset <- function(wd) {
   # TODO
 }

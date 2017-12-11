@@ -4,9 +4,10 @@
 \alias{setUpPrmtrs}
 \title{Return run parameters}
 \usage{
-setUpPrmtrs(wd, txid, ncbi_execs, mx_dscndnts = 10000, tmout = 100,
-  mdl_thrshld = 3000, mx_blst_sqs = 10000, mx_sq_lngth = 25000,
-  sq_cch_dr = "sequences", verbose = FALSE, cores = 1)
+setUpPrmtrs(wd, txid, ncbi_execs, tdpth = NULL, mx_dscndnts = 10000,
+  tmout = 100, mdl_thrshld = 3000, mx_blst_sqs = 10000,
+  mx_sq_lngth = 25000, sq_cch_dr = "sequences", verbose = FALSE,
+  cores = 1)
 }
 \arguments{
 \item{wd}{Working directory}
@@ -14,6 +15,8 @@ setUpPrmtrs(wd, txid, ncbi_execs, mx_dscndnts = 10000, tmout = 100,
 \item{txid}{Root taxonomic ID(s), vector or numeric}
 
 \item{ncbi_execs}{File directories for NCBI tools, see \code{setUpNcbiTools()}}
+
+\item{tdpth}{NCBI taxdump.tar.gz}
 
 \item{mx_dscndnts}{Maximum number of descendants per taxonomic node, numeric}
 

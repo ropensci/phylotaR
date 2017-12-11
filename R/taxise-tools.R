@@ -31,7 +31,7 @@ dwnldTD <- function(wd, tdpth=NULL) {
     }
   }
   untar(tarfile=flpth, files=c('nodes.dmp', 'names.dmp'),
-        exdir='taxonomy')
+        exdir=txdr)
   expflpths <- c(file.path(txdr, 'nodes.dmp'),
                  file.path(txdr, 'names.dmp'))
   if(!all(file.exists(expflpths))) {

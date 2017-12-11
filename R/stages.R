@@ -90,3 +90,14 @@ runClusters <- function(wd) {
   calcClstrs(wd=wd, txid=txid, phylt_nds=phylt_nds,
              verbose=verbose)
 }
+
+#' @name runAlign
+#' @title Align clusters
+#' @description Run external alignment software
+#' on identified clusters.
+#' @param wd Working directory
+#' @details Object will be cached.
+#' @export
+runAlign <- function(wd) {
+  # TODO
+}
