@@ -4,7 +4,8 @@
 \alias{genPhylotaNds}
 \title{Generate taxonomic nodes in PhyLoTa format}
 \usage{
-genPhylotaNds(nid_sets, mx_sq_lngth, mdl_thrshld, td_nds, td_nms, verbose)
+genPhylotaNds(wd, nid_sets, mx_sq_lngth, mdl_thrshld, td_nds, td_nms,
+  verbose = FALSE)
 }
 \arguments{
 \item{nid_sets}{Taxonomic processable and unprocessable

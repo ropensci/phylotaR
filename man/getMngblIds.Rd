@@ -4,7 +4,7 @@
 \alias{getMngblIds}
 \title{Identify manageable taxonomic node IDs}
 \usage{
-getMngblIds(txid, td_nds, mx_dscndnts = 10000, tmout = 10,
+getMngblIds(wd, txid, td_nds, mx_dscndnts = 10000, tmout = 10,
   verbose = FALSE)
 }
 \arguments{

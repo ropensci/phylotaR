@@ -4,7 +4,7 @@
 \alias{setUp}
 \title{Set-up parameters}
 \usage{
-setUp(wd, txid, ncbi_dr = ".", ...)
+setUp(wd, txid, ncbi_dr = ".", verbose = FALSE, ...)
 }
 \arguments{
 \item{wd}{Working directory}
@@ -12,6 +12,8 @@ setUp(wd, txid, ncbi_dr = ".", ...)
 \item{txid}{Root taxonomic ID(s), vector or numeric}
 
 \item{ncbi_dr}{Directory to NCBI BLAST tools, default '.'}
+
+\item{verbose}{Verbose, T/F}
 
 \item{...}{Additional parameters}
 }

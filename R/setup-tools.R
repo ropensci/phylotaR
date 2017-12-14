@@ -1,5 +1,4 @@
 
-
 #' @name setUpPrmtrs
 #' @title Return run parameters
 #' @description Provide parameters for a pipeline run
@@ -33,7 +32,7 @@ setUpPrmtrs <- function(wd, txid, ncbi_execs,
                         verbose=FALSE,
                         cores=1) {
   if(!file.exists(wd)) {
-    stop('Invalid `wd`. [', wd, '] does not exit.\n')
+    stop('Invalid `wd`. [', wd, '] does not exist.\n')
   }
   prmtrs <- list(txid=txid, tdpth=tdpth,
                  mx_dscndnts=mx_dscndnts,
@@ -61,6 +60,16 @@ setUpPrmtrs <- function(wd, txid, ncbi_execs,
       warning('Unknown OS. Unable to use `foreach` parallelisation.')
     }
   }
+  # log parameters
+  msg <- paste0('Setting up pipeline in [',
+                wd, '] with the following parameters:')
+  .log(lvl=1, v=verbose, wd=wd, msg)
+  mxnchrs <- max(sapply(names(prmtrs), nchar)) + 3
+  for(prmtr in names(prmtrs)) {
+    spcr <- paste0(rep(' ', mxnchrs - nchar(prmtr)), collapse='')
+    prmtr_msg <- paste0(prmtr, spcr, '[', prmtrs[[prmtr]], ']')
+    .log(lvl=2, v=verbose, wd=wd, prmtr_msg)
+  }
   setUpCch(wd=wd, prmtrs=prmtrs)
 }
 
@@ -69,21 +78,25 @@ setUpPrmtrs <- function(wd, txid, ncbi_execs,
 #' @description Ensures NCBI BLAST executables are installed on the 
 #' system. Tests version number of BLAST tools.
 #' @param d Directory to NCBI BLAST tools
+#' @param wd Working directory
+#' @param verbose Verbose, T/F
 #' @details BLAST tools must be version >2.7.1.
 #' @export
 #' @seealso
 #' \link{setUpPrmtrs}
-setUpNcbiTools <- function(d) {
+setUpNcbiTools <- function(d, verbose, wd) {
+  .log(lvl=1, v=verbose, wd=wd, 'Checking for valid NCBI BLAST+ Tools ...')
   sccdd <- TRUE
   mkblstdb <- file.path(d, 'makeblastdb')
   blstn <- file.path(d, 'blastn')
   for(ech in c(mkblstdb, blstn)) {
     cmd <- paste0(ech, ' -version')
-    res <- try(system(cmd, intern = TRUE, ignore.stderr=TRUE),
+    res <- try(system(cmd, intern=TRUE, ignore.stderr=TRUE),
                silent=TRUE)
     if(grepl('error', res[[1]], ignore.case=TRUE)) {
       tst <- FALSE
-      cat('Invalid path: [', ech, '] \n', sep='')
+      .log(lvl=2, v=verbose, wd=wd, 'Invalid path: [',
+           ech, ']')
       sccdd <- FALSE
     } else {
       # test version
@@ -92,15 +105,18 @@ setUpNcbiTools <- function(d) {
       vrsn <- as.numeric(strsplit(vrsn, '\\.')[[1]])
       tst <- vrsn[1] >= 2 & vrsn[2] >= 7 & vrsn[3] >= 1
       if(tst) {
-        cat('Found: [', res[1], '] \n', sep='')
+        .log(lvl=2, v=verbose, wd=wd, 'Found: [', res[1], ']')
       } else {
-        cat('Incorrect version: [', res[1], '] \n', sep='')
+        .log(lvl=2, v=verbose, wd=wd, 'Incorrect version: [',
+             res[1], ']')
         sccdd <- FALSE
       }
     }
   }
   if(!sccdd) {
-    stop('Unable to find correct versions of NCBI BLAST tools\n')
+    msg <- 'Unable to find correct versions of NCBI BLAST+ tools'
+    .log(lvl=1, v=verbose, wd=wd, paste0('Error:', msg))
+    stop(msg)
   }
   ncbi_execs <- list('mkblstdb'=mkblstdb,
                      'blstn'=blstn)

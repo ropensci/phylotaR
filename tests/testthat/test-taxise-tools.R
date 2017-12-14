@@ -22,6 +22,9 @@ cleanUp <- function() {
   if(file.exists('test_writeTax.tsv')) {
     file.remove('test_writeTax.tsv')
   }
+  if(file.exists('log.txt')) {
+    file.remove('log.txt')
+  }
   if(file.exists(txdmpfl)) {
     file.remove(txdmpfl)
   }
@@ -78,7 +81,7 @@ test_that('dwnldTD() works', {
     expect_warning(
       expect_error(
         dwnldTD(wd='non-existent-dir',
-                         tdpth=NULL)))
+                tdpth=NULL)))
   )
   # fail to download
   with_mock(
@@ -89,8 +92,8 @@ test_that('dwnldTD() works', {
   cleanUp()
 })
 test_that('genTDObj() works', {
-  tdobj <- genTDObj(data_dr)
-  tdobj <- genTDObj(data_dr)
+  tdobj <- genTDObj(wd=data_dr)
+  tdobj <- genTDObj(wd=data_dr)
   two <- sum(names(tdobj) %in% c('nds', 'nms'))
   expect_true(two == 2)
   cleanUp()
@@ -126,7 +129,8 @@ test_that('getMngblIds() works', {
   res <- getMngblIds(txid=c(wdsndnts, wodsndnts),
                      td_nds=td_nds,
                      mx_dscndnts=10000,
-                     tmout=10, verbose=FALSE)
+                     tmout=10, verbose=FALSE,
+                     wd=NULL)
   ns <- res[['ndscndnts']]
   expect_equal(ns > 0, rep(c(TRUE, FALSE), each=10))
 })
@@ -150,7 +154,7 @@ test_that('getStats() works', {
                               mx_len,
                               verbose){
       500},
-    getStats(txid=rid, phylt_nds=phylt_nds,
+    getStats(wd=NULL, txid=rid, phylt_nds=phylt_nds,
              mx_sq_lngth=2000, mdl_thrshld=2000,
              td_nds=td_nds, td_nms=td_nms,
              verbose=FALSE, recursive=TRUE)
@@ -170,14 +174,14 @@ test_that('writeTax() works', {
                           'n_otu_desc'=NA,
                           'ti_genus'=NA,
                           'n_genera'=NA)
-  writeTax(phylt_nds=phylt_nds, td_nms=td_nms,
+  writeTax(wd=NULL, phylt_nds=phylt_nds, td_nms=td_nms,
            fl='test_writeTax.tsv', verbose=FALSE)
   expect_true(file.exists('test_writeTax.tsv'))
   cleanUp()
 })
 test_that('genPhylotaNds() works', {
   txids <- td_nds[['id']]
-  nid_sets <- getMngblIds(txid=txids,
+  nid_sets <- getMngblIds(wd=NULL, txid=txids,
                           td_nds=td_nds,
                           mx_dscndnts=100,
                           tmout=10, verbose=FALSE)
@@ -187,7 +191,7 @@ test_that('genPhylotaNds() works', {
                               mx_len,
                               verbose){
       500},
-    genPhylotaNds(nid_sets=nid_sets,
+    genPhylotaNds(wd=NULL, nid_sets=nid_sets,
                   mx_sq_lngth=2000,
                   mdl_thrshld=2000,
                   td_nds=td_nds,

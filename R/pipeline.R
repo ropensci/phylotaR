@@ -5,13 +5,26 @@
 #' @param wd Working directory
 #' @param txid Root taxonomic ID(s), vector or numeric
 #' @param ncbi_dr Directory to NCBI BLAST tools, default '.'
+#' @param verbose Verbose, T/F
 #' @param ... Additional parameters
 #' @export
 #' @seealso \code{\link{setUp}}
-setUp <- function(wd, txid, ncbi_dr='.', ...) {
-  ncbi_execs <- setUpNcbiTools(d=ncbi_dr)
+setUp <- function(wd, txid, ncbi_dr='.', verbose=FALSE,
+                  ...) {
+  # header log
+  msg <- paste0('phylotaR: Implementation of PhyLoTa in R [v',
+                packageVersion('phylotaR'), ']')
+  brdr <- paste0(rep('-', nchar(msg)), collapse='')
+  msg <- paste0(brdr, '\n', msg, '\n', brdr)
+  .log(v=verbose, wd=wd, lvl=1, msg)
+  # set up
+  ncbi_execs <- setUpNcbiTools(d=ncbi_dr,
+                               verbose=verbose,
+                               wd=wd)
   setUpPrmtrs(wd=wd, txid=txid,
               ncbi_execs=ncbi_execs, ...)
+  # end
+  .log(v=verbose, wd=wd, lvl=1, brdr)
 }
 
 #' @name run
@@ -36,6 +49,13 @@ setUp <- function(wd, txid, ncbi_dr='.', ...) {
 #' \code{\link{runAlign}}
 run <- function(wd, nstages=4) {
   # TODO: save progress
+  # header log
+  verbose <- ldPrmtrs(wd)[['verbose']]
+  msg <- paste0('Running pipeline on [', .Platform$OS.type, '] at [',
+                Sys.time(), ']')
+  brdr <- paste0(rep('-', nchar(msg)), collapse='')
+  msg <- paste0(brdr, '\n', msg, '\n', brdr)
+  .log(v=verbose, wd=wd, lvl=1, msg)
   if(nstages < 1) {
     stop('`nstages` is less than 1.')
   }
@@ -58,6 +78,11 @@ run <- function(wd, nstages=4) {
     # Generate alignments
     runAlign(wd)
   }
+  # footer log
+  msg <- paste0('\nCompleted pipeline on at [', Sys.time(), ']')
+  brdr <- paste0(rep('-', nchar(msg)), collapse='')
+  msg <- paste0(brdr, '\n', msg, '\n', brdr)
+  .log(v=verbose, wd=wd, lvl=1, msg)
 }
 
 #' @name restart

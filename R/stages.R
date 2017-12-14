@@ -20,29 +20,34 @@ runTaxise <- function(wd) {
   tdpth <- prmtrs[['tdpth']]
   tmout <- prmtrs[['tmout']]
   verbose <- prmtrs[['verbose']]
+  # stage print
+  msg <- paste0('Starting stage TAXISE: [', Sys.time(), ']')
+  .stgLog(v=verbose, wd=wd, msg=msg)
   # Run
-  dwnldTD(wd=wd, tdpth=tdpth)
-  tdobj <- genTDObj(wd=wd)
-  cat('Processing IDs....\n')
+  dwnldTD(wd=wd, tdpth=tdpth, verbose=verbose)
+  tdobj <- genTDObj(wd=wd, verbose=verbose)
+  .log(lvl=1, v=verbose, wd=wd, 'Processing IDs ...')
   nid_sets <- getMngblIds(txid=txid,
                           td_nds=tdobj[['nds']],
                           mx_dscndnts=mx_dscndnts,
                           tmout=tmout,
                           verbose=verbose)
-  cat('Initiating PhyLoTa nodes....\n')
-  phylt_nds <- genPhylotaNds(nid_sets=nid_sets,
+  .log(lvl=1, v=verbose, wd=wd, 'Initiating PhyLoTa nodes ...')
+  phylt_nds <- genPhylotaNds(wd=wd, nid_sets=nid_sets,
                              mx_sq_lngth=mx_sq_lngth,
                              mdl_thrshld=mdl_thrshld,
                              td_nds=tdobj[['nds']],
                              td_nms=tdobj[['nms']],
                              verbose=verbose)
-  cat('Writing out....\n')
+  .log(lvl=1, v=verbose, wd=wd, 'Writing out ...')
   svObj(wd=wd, obj=phylt_nds, nm='phylt_nds')
   writeTax(phylt_nds=phylt_nds, td_nms=tdobj[['nms']],
            fl=file.path(wd, paste0('dbfiles-taxonomy-',
                                    txid, '.tsv')),
            verbose=verbose)
-  cat('Done.\n')
+  # stage print
+  msg <- paste0('Completed stage TAXISE: [', Sys.time(), ']')
+  .stgLog(v=verbose, wd=wd, msg=msg)
 }
 
 #' @name runDownload

@@ -4,7 +4,7 @@
 \alias{genTDObj}
 \title{Generate R object from NCBI taxonomy dump}
 \usage{
-genTDObj(wd)
+genTDObj(wd, verbose = FALSE)
 }
 \arguments{
 \item{wd}{Working directory}

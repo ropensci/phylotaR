@@ -9,13 +9,14 @@
 #' the file and provide path.
 #' \url{ftp://ftp.ncbi.nlm.nih.gov/pub/taxonomy/taxdump.tar.gz}
 #' @export
-dwnldTD <- function(wd, tdpth=NULL) {
+dwnldTD <- function(wd, verbose=FALSE, tdpth=NULL) {
   txdr <- file.path(wd, 'taxonomy')
   if(!file.exists(txdr)) {
     dir.create(txdr)
   }
   if(is.null(tdpth)) {
-    cat('Downloading NCBI taxdump.tar.gz ....\n')
+    .log(lvl=1, v=verbose, wd=wd,
+         'Downloading NCBI taxdump.tar.gz ...')
     flpth <- file.path(txdr, 'taxdump.tar.gz')
     url <- 'ftp://ftp.ncbi.nlm.nih.gov/pub/taxonomy/taxdump.tar.gz'
     res <- curl::curl_fetch_disk(url=url, path=flpth)
@@ -23,7 +24,7 @@ dwnldTD <- function(wd, tdpth=NULL) {
       stop('Download failed. Curl status code [',
            res[['status_code']],']')
     }
-    cat('Done.\n')
+    .log(lvl=1, v=verbose, wd=wd, 'Done.')
   } else {
     flpth <- tdpth
     if(!file.exists(flpth)) {
@@ -50,9 +51,10 @@ dwnldTD <- function(wd, tdpth=NULL) {
 #' @export
 # @Hannes, instead of global env vars, I'm using the cache tools
 # to save progress along the way.
-genTDObj <- function(wd) {
+genTDObj <- function(wd, verbose=FALSE) {
   if(!chkObj(wd, 'tdobj')) {
-    cat('Reading from taxonomy dump ....\n')
+    .log(lvl=1, v=verbose, wd=wd,
+         'Reading from taxonomy dump ...')
     if(!file.exists(file.path(wd, 'taxonomy'))) {
       stop('No taxonomy folder in `wd`.')
     }
@@ -61,7 +63,7 @@ genTDObj <- function(wd) {
     tdobj <- list('nds'=nds,
                   'nms'=nms)
     svObj(wd=wd, obj=tdobj, nm='tdobj')
-    cat('Done.')
+    .log(lvl=1, v=verbose, wd=wd, 'Done.')
   } else {
     tdobj <- ldObj(wd, 'tdobj')
   }
@@ -77,8 +79,10 @@ genTDObj <- function(wd) {
 #' @details
 #' @export
 # @Hannes: this is functional eqv to bulk of nodes.create
-genPhylotaNds <- function(nid_sets, mx_sq_lngth, mdl_thrshld,
-                          td_nds, td_nms, verbose) {
+genPhylotaNds <- function(wd, nid_sets, mx_sq_lngth,
+                          mdl_thrshld,
+                          td_nds, td_nms,
+                          verbose=FALSE) {
   phylt_nds <- data.frame('ti'=NA,
                           'ti_anc'=NA,
                           'rank'=NA,
@@ -92,19 +96,19 @@ genPhylotaNds <- function(nid_sets, mx_sq_lngth, mdl_thrshld,
                           'ti_genus'=NA,
                           'n_genera'=NA)
   nids <- nid_sets[['mngbl_ids']]
-  .cp(v=verbose, "Adding [", length(nids),
+  .log(wd=wd, lvl=1, v=verbose, "Adding [", length(nids),
       "] nodes recursively, in parallel")
   for(i in seq_along(nids)) {
     txid <- nids[i]
-    .cp(v=verbose, "Recursively processing txid [",
-        txid, "] [", i, "/", length(nids), "]")
-    phylt_nds <- getStats(txid=txid, phylt_nds=phylt_nds,
+    .log(wd=wd, lvl=2, v=verbose, "Recursively processing txid [",
+         txid, "] [", i, "/", length(nids), "]")
+    phylt_nds <- getStats(wd=wd, txid=txid, phylt_nds=phylt_nds,
                           mx_sq_lngth=mx_sq_lngth,
                           mdl_thrshld=mdl_thrshld,
                           td_nds=td_nds, td_nms=td_nms,
                           verbose=verbose, recursive=TRUE)
-    .cp(v=verbose, "Finished processing txid [", txid,
-        "] [", i, "/", length(nids), "]")
+    .log(wd=wd, lvl=1, v=verbose, "Finished processing txid [",
+         txid, "] [", i, "/", length(nids), "]")
   }
   ## Add the top nodes non-recursively. This has to be in reversed
   # order to make sure a parent is not
@@ -112,19 +116,19 @@ genPhylotaNds <- function(nid_sets, mx_sq_lngth, mdl_thrshld,
   # the children. Therefore, this must not
   ## happen in parallel!
   nids <- nid_sets[['rjctd_ids']]
-  .cp(v=verbose, "Adding [", length(nids),
-      "] top-level nodes non-recursively, sequentially")
+  .log(wd=wd, lvl=1, v=verbose, "Adding [", length(nids),
+       "] top-level nodes non-recursively, sequentially")
   for (i in seq_along(nids)) {
     txid <- rev(nids)[i] # TODO: how do we know that this will ensure spp?
-    .cp(v=verbose, "Processing txid [", txid, "] [",
-        i, "/", length(nids), "]")
-    n <- getStats(txid=txid, phylt_nds=phylt_nds,
+    .log(wd=wd, lvl=2, v=verbose, "Processing txid [",
+         txid, "] [", i, "/", length(nids), "]")
+    n <- getStats(wd=wd, txid=txid, phylt_nds=phylt_nds,
                   mx_sq_lngth=mx_sq_lngth,
                   mdl_thrshld=mdl_thrshld,
                   td_nds=td_nds, td_nms=td_nms,
                   verbose=verbose, recursive=FALSE)
-    .cp(v=verbose, "Finished processing txid [", txid,
-        "] [", i, "/", length(nids), "\n")
+    .log(wd=wd, lvl=1, v=verbose, "Finished processing txid [",
+         txid, "] [", i, "/", length(nids), "]")
   }
   # rm first row
   phylt_nds[-1, ]
@@ -144,13 +148,13 @@ genPhylotaNds <- function(nid_sets, mx_sq_lngth, mdl_thrshld,
 #' @details Returns an updated \code{phylt_nds}.
 #' @export
 # @Hannes: this is functional eqv to get.stats
-getStats <- function(txid, phylt_nds,
+getStats <- function(wd, txid, phylt_nds,
                      td_nds, td_nms,
                      mx_sq_lngth,
                      mdl_thrshld,
                      verbose=FALSE,
                      recursive=FALSE) {
-  .cp(v=verbose, "Adding species counts for txid [",
+  .log(lvl=3, v=verbose, wd=wd, "Adding species counts for txid [",
       txid, "]")
   rank <- CHNOSZ::getrank(txid, nodes=td_nds)
   parent <- CHNOSZ::parent(txid, nodes=td_nds)
@@ -186,7 +190,8 @@ getStats <- function(txid, phylt_nds,
   }
   for(kid in kids) {
     if(recursive) {
-      phylt_nds <- getStats(txid=kid, phylt_nds=phylt_nds,
+      phylt_nds <- getStats(wd=wd, txid=kid,
+                            phylt_nds=phylt_nds,
                             mx_sq_lngth=mx_sq_lngth,
                             mdl_thrshld=mdl_thrshld,
                             td_nds=td_nds, td_nms=td_nms,
@@ -210,7 +215,7 @@ getStats <- function(txid, phylt_nds,
       which(phylt_nds$ti==kid)[1], cols]
     stopifnot(dim(stats)[1]==1)
   }
-  .cp(v=verbose, "Added stats for txid [", txid, "]")
+  .log(lvl=3, v=verbose, wd=wd, "Added stats for txid [", txid, "]")
   rbind(phylt_nds, stats[names(phylt_nds)])
 }
 
@@ -235,7 +240,7 @@ getStats <- function(txid, phylt_nds,
 # @Hannes: this is functional eqv to get.manageable.node.set
 # @Hannes: why do we need the timeout? Surely, mx_dscndnts
 # is sufficient?
-getMngblIds <- function(txid, td_nds,
+getMngblIds <- function(wd, txid, td_nds,
                         mx_dscndnts=10000,
                         tmout=10,
                         verbose=FALSE) {
@@ -252,18 +257,18 @@ getMngblIds <- function(txid, td_nds,
     if (is.null(n) || n > mx_dscndnts) {
       queue <- c(queue, getKids(id, td_nds))
       rjctd_ids <- c(rjctd_ids, id)
-      .cp(v=verbose, "Taxon [", id,
+      .log(lvl=1, v=verbose, wd=wd, "Taxon [", id,
           "] has too many descendants or tmout 
 reached counting descendants. Processing child taxa.")
     } else {
       mngbl_ids <- c(mngbl_ids, id)
       ndscndnts <- c(ndscndnts, n)
-      .cp(v=verbose, "Taxon [", id,
+      .log(lvl=1, v=verbose, wd=wd, "Taxon [", id,
           "] has maneagable number of descendants [",
           n, '].')
       tot <- tot + n
-      .cp(v=verbose, "Current number of nodes to be
-processed [", tot, "]")
+      .log(lvl=1, v=verbose, wd=wd,
+           "Current number of nodes to be processed [", tot, "]")
     }
   }
   # @Hannes: why have ndscendnts and not use them?
@@ -349,7 +354,7 @@ getGenus <- function(txid, td_nds) {
 #' @param fl Filepath
 #' @param verbose Verbose? T/F
 #' @export
-writeTax <- function(phylt_nds, td_nms, fl, verbose) {
+writeTax <- function(wd, phylt_nds, td_nms, fl, verbose) {
   taxon_name<- as.character(td_nms[match(phylt_nds[['ti']], td_nms[['id']]),
                                    "name"])
   commons <- td_nms[grep('common', td_nms[['type']]),]
@@ -381,5 +386,5 @@ writeTax <- function(phylt_nds, td_nms, fl, verbose) {
   )
   write.table(res, file=fl, sep="\t", row.names=FALSE,
               col.names=TRUE)
-  .cp(v=verbose, "Wrote [", nrow(res), "] nodes to file")
+  .log(lvl=1, v=verbose, wd=wd, "Wrote [", nrow(res), "] nodes to file")
 }

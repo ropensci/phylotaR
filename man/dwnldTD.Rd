@@ -4,7 +4,7 @@
 \alias{dwnldTD}
 \title{Download NCBI taxonomy dump}
 \usage{
-dwnldTD(wd, tdpth = NULL)
+dwnldTD(wd, verbose = FALSE, tdpth = NULL)
 }
 \arguments{
 \item{wd}{Working directory}

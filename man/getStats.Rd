@@ -4,7 +4,7 @@
 \alias{getStats}
 \title{Generate PhyLoTa statistics for txid}
 \usage{
-getStats(txid, phylt_nds, td_nds, td_nms, mx_sq_lngth, mdl_thrshld,
+getStats(wd, txid, phylt_nds, td_nds, td_nms, mx_sq_lngth, mdl_thrshld,
   verbose = FALSE, recursive = FALSE)
 }
 \arguments{
