@@ -4,7 +4,7 @@
 \alias{warn}
 \title{Write warning message to log}
 \usage{
-warn(wd, v, ...)
+warn(wd, ...)
 }
 \arguments{
 \item{wd}{Working directory}

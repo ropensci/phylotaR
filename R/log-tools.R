@@ -34,9 +34,10 @@ error <- function(wd, ...) {
 #' @param wd Working directory
 #' @param ... Message elements for concatenating
 #' @export
-warn <- function(wd, v, ...) {
+warn <- function(wd, ...) {
   msg <- paste0('Warning: ', ..., '\n')
-  .log(v=v, wd=wd, msg=msg)
+  .log(v=FALSE, wd=wd, msg=msg)
+  warning(paste0(msg, ' -- see log.txt'))
 }
 
 # hidden log function
