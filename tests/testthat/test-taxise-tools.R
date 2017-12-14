@@ -57,26 +57,26 @@ test_that('dwnldTD() works', {
   file.create(txdmpfl)
   # pass download
   with_mock(
-    `utils::untar`=mckUntar,
+    `phylotaR:::.untar`=mckUntar,
     `curl::curl_fetch_disk`=mckCurl,
     dwnldTD(wd=data_dr, tdpth=NULL)
   )
   # pass reading from file
   with_mock(
-    `utils::untar`=mckUntar,
+    `phylotaR:::.untar`=mckUntar,
     `curl::curl_fetch_disk`=mckCurl,
     dwnldTD(wd=data_dr, tdpth=txdmpfl)
   )
   # fail to read from file
   with_mock(
-    `utils::untar`=mckUntar,
+    `phylotaR:::.untar`=mckUntar,
     `curl::curl_fetch_disk`=mckCurl,
     expect_error(dwnldTD(wd=data_dr,
                          tdpth='non-existent-file'))
   )
   # fail to unpack
   with_mock(
-    `utils::untar`=mckUntar,
+    `phylotaR:::.untar`=mckUntar,
     `curl::curl_fetch_disk`=mckCurl,
     expect_warning(
       expect_error(
@@ -85,7 +85,7 @@ test_that('dwnldTD() works', {
   )
   # fail to download
   with_mock(
-    `utils::untar`=mckUntar,
+    `phylotaR:::.untar`=mckUntar,
     `curl::curl_fetch_disk`=mckCurlFail,
     expect_error(dwnldTD(wd=data_dr, tdpth=NULL))
   )
@@ -198,5 +198,6 @@ test_that('genPhylotaNds() works', {
                   td_nms=td_nms,
                   verbose=FALSE)
   )
+  expect_true('data.frame' %in% is(res))
 })
 cleanUp()

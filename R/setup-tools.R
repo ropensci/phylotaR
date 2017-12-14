@@ -63,12 +63,12 @@ setUpPrmtrs <- function(wd, txid, ncbi_execs,
   # log parameters
   msg <- paste0('Setting up pipeline in [',
                 wd, '] with the following parameters:')
-  .log(lvl=1, v=verbose, wd=wd, msg)
+  info(lvl=1, v=verbose, wd=wd, msg)
   mxnchrs <- max(sapply(names(prmtrs), nchar)) + 3
   for(prmtr in names(prmtrs)) {
     spcr <- paste0(rep(' ', mxnchrs - nchar(prmtr)), collapse='')
     prmtr_msg <- paste0(prmtr, spcr, '[', prmtrs[[prmtr]], ']')
-    .log(lvl=2, v=verbose, wd=wd, prmtr_msg)
+    info(lvl=2, v=verbose, wd=wd, prmtr_msg)
   }
   setUpCch(wd=wd, prmtrs=prmtrs)
 }
@@ -85,17 +85,17 @@ setUpPrmtrs <- function(wd, txid, ncbi_execs,
 #' @seealso
 #' \link{setUpPrmtrs}
 setUpNcbiTools <- function(d, verbose, wd) {
-  .log(lvl=1, v=verbose, wd=wd, 'Checking for valid NCBI BLAST+ Tools ...')
+  info(lvl=1, v=verbose, wd=wd, 'Checking for valid NCBI BLAST+ Tools ...')
   sccdd <- TRUE
   mkblstdb <- file.path(d, 'makeblastdb')
   blstn <- file.path(d, 'blastn')
   for(ech in c(mkblstdb, blstn)) {
     cmd <- paste0(ech, ' -version')
-    res <- try(system(cmd, intern=TRUE, ignore.stderr=TRUE),
+    res <- try(.system(cmd, intern=TRUE, ignore.stderr=TRUE),
                silent=TRUE)
     if(grepl('error', res[[1]], ignore.case=TRUE)) {
       tst <- FALSE
-      .log(lvl=2, v=verbose, wd=wd, 'Invalid path: [',
+      info(lvl=2, v=verbose, wd=wd, 'Invalid path: [',
            ech, ']')
       sccdd <- FALSE
     } else {
@@ -105,9 +105,9 @@ setUpNcbiTools <- function(d, verbose, wd) {
       vrsn <- as.numeric(strsplit(vrsn, '\\.')[[1]])
       tst <- vrsn[1] >= 2 & vrsn[2] >= 7 & vrsn[3] >= 1
       if(tst) {
-        .log(lvl=2, v=verbose, wd=wd, 'Found: [', res[1], ']')
+        info(lvl=2, v=verbose, wd=wd, 'Found: [', res[1], ']')
       } else {
-        .log(lvl=2, v=verbose, wd=wd, 'Incorrect version: [',
+        info(lvl=2, v=verbose, wd=wd, 'Incorrect version: [',
              res[1], ']')
         sccdd <- FALSE
       }
@@ -115,8 +115,7 @@ setUpNcbiTools <- function(d, verbose, wd) {
   }
   if(!sccdd) {
     msg <- 'Unable to find correct versions of NCBI BLAST+ tools'
-    .log(lvl=1, v=verbose, wd=wd, paste0('Error:', msg))
-    stop(msg)
+    error(wd, msg)
   }
   ncbi_execs <- list('mkblstdb'=mkblstdb,
                      'blstn'=blstn)

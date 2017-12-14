@@ -29,20 +29,19 @@ mckSystem <- function(cmd, intern, ignore.stderr) {
 }
 
 # RUNNING
-# pretty lame tests.... any better ideas would be appreciated
 context('Testing \'setup-tools\'')
 cleanUp()
 test_that('setUpNcbiTools() works', {
   # test with fake system
   res <- with_mock(
-    `base::system`=mckSystem,
+    `phylotaR:::.system`=mckSystem,
     setUpNcbiTools(d='.',
                    verbose=FALSE, wd=NULL)
   )
   expect_true(length(res) == 2)
   # make sure wrong versions are flagged
   res <- with_mock(
-    `base::system`=mckSystem,
+    `phylotaR:::.system`=mckSystem,
     expect_error(setUpNcbiTools(d='wrngvrsn',
                                 verbose=FALSE,
                                 wd=NULL))

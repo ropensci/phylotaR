@@ -55,7 +55,7 @@ run <- function(wd, nstages=4) {
                 Sys.time(), ']')
   brdr <- paste0(rep('-', nchar(msg)), collapse='')
   msg <- paste0(brdr, '\n', msg, '\n', brdr)
-  .log(v=verbose, wd=wd, lvl=1, msg)
+  info(v=verbose, wd=wd, lvl=1, msg)
   if(nstages < 1) {
     stop('`nstages` is less than 1.')
   }
@@ -82,7 +82,7 @@ run <- function(wd, nstages=4) {
   msg <- paste0('\nCompleted pipeline on at [', Sys.time(), ']')
   brdr <- paste0(rep('-', nchar(msg)), collapse='')
   msg <- paste0(brdr, '\n', msg, '\n', brdr)
-  .log(v=verbose, wd=wd, lvl=1, msg)
+  info(v=verbose, wd=wd, lvl=1, msg)
 }
 
 #' @name restart

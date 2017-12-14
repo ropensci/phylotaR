@@ -15,7 +15,7 @@ dwnldTD <- function(wd, verbose=FALSE, tdpth=NULL) {
     dir.create(txdr)
   }
   if(is.null(tdpth)) {
-    .log(lvl=1, v=verbose, wd=wd,
+    info(lvl=1, v=verbose, wd=wd,
          'Downloading NCBI taxdump.tar.gz ...')
     flpth <- file.path(txdr, 'taxdump.tar.gz')
     url <- 'ftp://ftp.ncbi.nlm.nih.gov/pub/taxonomy/taxdump.tar.gz'
@@ -24,15 +24,15 @@ dwnldTD <- function(wd, verbose=FALSE, tdpth=NULL) {
       stop('Download failed. Curl status code [',
            res[['status_code']],']')
     }
-    .log(lvl=1, v=verbose, wd=wd, 'Done.')
+    info(lvl=1, v=verbose, wd=wd, 'Done.')
   } else {
     flpth <- tdpth
     if(!file.exists(flpth)) {
       stop('[', flpth, '] does not exist.')
     }
   }
-  untar(tarfile=flpth, files=c('nodes.dmp', 'names.dmp'),
-        exdir=txdr)
+  .untar(tarfile=flpth, files=c('nodes.dmp', 'names.dmp'),
+         exdir=txdr)
   expflpths <- c(file.path(txdr, 'nodes.dmp'),
                  file.path(txdr, 'names.dmp'))
   if(!all(file.exists(expflpths))) {
@@ -53,7 +53,7 @@ dwnldTD <- function(wd, verbose=FALSE, tdpth=NULL) {
 # to save progress along the way.
 genTDObj <- function(wd, verbose=FALSE) {
   if(!chkObj(wd, 'tdobj')) {
-    .log(lvl=1, v=verbose, wd=wd,
+    info(lvl=1, v=verbose, wd=wd,
          'Reading from taxonomy dump ...')
     if(!file.exists(file.path(wd, 'taxonomy'))) {
       stop('No taxonomy folder in `wd`.')
@@ -63,7 +63,7 @@ genTDObj <- function(wd, verbose=FALSE) {
     tdobj <- list('nds'=nds,
                   'nms'=nms)
     svObj(wd=wd, obj=tdobj, nm='tdobj')
-    .log(lvl=1, v=verbose, wd=wd, 'Done.')
+    info(lvl=1, v=verbose, wd=wd, 'Done.')
   } else {
     tdobj <- ldObj(wd, 'tdobj')
   }
@@ -96,18 +96,18 @@ genPhylotaNds <- function(wd, nid_sets, mx_sq_lngth,
                           'ti_genus'=NA,
                           'n_genera'=NA)
   nids <- nid_sets[['mngbl_ids']]
-  .log(wd=wd, lvl=1, v=verbose, "Adding [", length(nids),
-      "] nodes recursively, in parallel")
+  info(wd=wd, lvl=1, v=verbose, "Adding [", length(nids),
+       "] nodes recursively, in parallel")
   for(i in seq_along(nids)) {
     txid <- nids[i]
-    .log(wd=wd, lvl=2, v=verbose, "Recursively processing txid [",
+    info(wd=wd, lvl=2, v=verbose, "Recursively processing txid [",
          txid, "] [", i, "/", length(nids), "]")
     phylt_nds <- getStats(wd=wd, txid=txid, phylt_nds=phylt_nds,
                           mx_sq_lngth=mx_sq_lngth,
                           mdl_thrshld=mdl_thrshld,
                           td_nds=td_nds, td_nms=td_nms,
                           verbose=verbose, recursive=TRUE)
-    .log(wd=wd, lvl=1, v=verbose, "Finished processing txid [",
+    info(wd=wd, lvl=1, v=verbose, "Finished processing txid [",
          txid, "] [", i, "/", length(nids), "]")
   }
   ## Add the top nodes non-recursively. This has to be in reversed
@@ -116,18 +116,18 @@ genPhylotaNds <- function(wd, nid_sets, mx_sq_lngth,
   # the children. Therefore, this must not
   ## happen in parallel!
   nids <- nid_sets[['rjctd_ids']]
-  .log(wd=wd, lvl=1, v=verbose, "Adding [", length(nids),
+  info(wd=wd, lvl=1, v=verbose, "Adding [", length(nids),
        "] top-level nodes non-recursively, sequentially")
   for (i in seq_along(nids)) {
     txid <- rev(nids)[i] # TODO: how do we know that this will ensure spp?
-    .log(wd=wd, lvl=2, v=verbose, "Processing txid [",
+    info(wd=wd, lvl=2, v=verbose, "Processing txid [",
          txid, "] [", i, "/", length(nids), "]")
     n <- getStats(wd=wd, txid=txid, phylt_nds=phylt_nds,
                   mx_sq_lngth=mx_sq_lngth,
                   mdl_thrshld=mdl_thrshld,
                   td_nds=td_nds, td_nms=td_nms,
                   verbose=verbose, recursive=FALSE)
-    .log(wd=wd, lvl=1, v=verbose, "Finished processing txid [",
+    info(wd=wd, lvl=1, v=verbose, "Finished processing txid [",
          txid, "] [", i, "/", length(nids), "]")
   }
   # rm first row
@@ -154,8 +154,8 @@ getStats <- function(wd, txid, phylt_nds,
                      mdl_thrshld,
                      verbose=FALSE,
                      recursive=FALSE) {
-  .log(lvl=3, v=verbose, wd=wd, "Adding species counts for txid [",
-      txid, "]")
+  info(lvl=3, v=verbose, wd=wd, "Adding species counts for txid [",
+       txid, "]")
   rank <- CHNOSZ::getrank(txid, nodes=td_nds)
   parent <- CHNOSZ::parent(txid, nodes=td_nds)
   genus <- getGenus(txid, td_nds)
@@ -215,7 +215,7 @@ getStats <- function(wd, txid, phylt_nds,
       which(phylt_nds$ti==kid)[1], cols]
     stopifnot(dim(stats)[1]==1)
   }
-  .log(lvl=3, v=verbose, wd=wd, "Added stats for txid [", txid, "]")
+  info(lvl=3, v=verbose, wd=wd, "Added stats for txid [", txid, "]")
   rbind(phylt_nds, stats[names(phylt_nds)])
 }
 
@@ -257,17 +257,17 @@ getMngblIds <- function(wd, txid, td_nds,
     if (is.null(n) || n > mx_dscndnts) {
       queue <- c(queue, getKids(id, td_nds))
       rjctd_ids <- c(rjctd_ids, id)
-      .log(lvl=1, v=verbose, wd=wd, "Taxon [", id,
+      info(lvl=1, v=verbose, wd=wd, "Taxon [", id,
           "] has too many descendants or tmout 
 reached counting descendants. Processing child taxa.")
     } else {
       mngbl_ids <- c(mngbl_ids, id)
       ndscndnts <- c(ndscndnts, n)
-      .log(lvl=1, v=verbose, wd=wd, "Taxon [", id,
+      info(lvl=1, v=verbose, wd=wd, "Taxon [", id,
           "] has maneagable number of descendants [",
           n, '].')
       tot <- tot + n
-      .log(lvl=1, v=verbose, wd=wd,
+      info(lvl=1, v=verbose, wd=wd,
            "Current number of nodes to be processed [", tot, "]")
     }
   }
@@ -386,5 +386,5 @@ writeTax <- function(wd, phylt_nds, td_nms, fl, verbose) {
   )
   write.table(res, file=fl, sep="\t", row.names=FALSE,
               col.names=TRUE)
-  .log(lvl=1, v=verbose, wd=wd, "Wrote [", nrow(res), "] nodes to file")
+  info(lvl=1, v=verbose, wd=wd, "Wrote [", nrow(res), "] nodes to file")
 }

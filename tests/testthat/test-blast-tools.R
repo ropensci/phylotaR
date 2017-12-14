@@ -29,15 +29,16 @@ context('Testing \'blast-tools\'')
 test_that('mkBlstDB() works', {
   res <- with_mock(
     `phylotaR::ldPrmtrs`=mckLdPrmtrs,
-    `base::system`=mckSystem,
+    `phylotaR:::.system`=mckSystem,
     mkBlstDB(sqs=sqs, dbfl='testdb', wd=data_d,
              verbose=FALSE)
   )
+  expect_null(res)
 })
 test_that('blstN() works', {
   res <- with_mock(
     `phylotaR::ldPrmtrs`=mckLdPrmtrs,
-    `base::system`=mckSystem,
+    `phylotaR:::.system`=mckSystem,
     blstN(dbfl='testdb', outfl='testblstn', wd=data_d)
   )
   nms <- colnames(res)
