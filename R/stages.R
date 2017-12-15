@@ -20,7 +20,8 @@ runTaxise <- function(wd) {
   dwnldTD(ps=ps)
   tdobj <- genTDObj(ps=ps)
   info(lvl=1, ps=ps, 'Processing IDs ...')
-  nid_sets <- getMngblIds(td_nds=tdobj[['nds']], ps=ps)
+  nid_sets <- getMngblIds(txid=ps[['txid']], td_nds=tdobj[['nds']],
+                          ps=ps)
   info(lvl=1, ps=ps, 'Initiating PhyLoTa nodes ...')
   phylt_nds <- genPhylotaNds(nid_sets=nid_sets,
                              td_nds=tdobj[['nds']],

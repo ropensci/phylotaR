@@ -75,7 +75,7 @@ setUpPrmtrs <- function(wd, txid, ncbi_execs,
 #' @seealso
 #' \link{setUpPrmtrs}
 setUpNcbiTools <- function(d, v, wd) {
-  .log(v=v, wd=wd, 'Checking for valid NCBI BLAST+ Tools ...')
+  .log(v=v, wd=wd, 'Checking for valid NCBI BLAST+ Tools ...\n')
   sccdd <- TRUE
   mkblstdb <- file.path(d, 'makeblastdb')
   blstn <- file.path(d, 'blastn')
@@ -85,7 +85,7 @@ setUpNcbiTools <- function(d, v, wd) {
                silent=TRUE)
     if(grepl('error', res[[1]], ignore.case=TRUE)) {
       tst <- FALSE
-      .log(v=v, wd=wd, paste0('Invalid path: [', ech, ']'))
+      .log(v=v, wd=wd, paste0('Invalid path: [', ech, ']\n'))
       sccdd <- FALSE
     } else {
       # test version
@@ -94,15 +94,15 @@ setUpNcbiTools <- function(d, v, wd) {
       vrsn <- as.numeric(strsplit(vrsn, '\\.')[[1]])
       tst <- vrsn[1] >= 2 & vrsn[2] >= 7 & vrsn[3] >= 1
       if(tst) {
-        .log(v=v, wd=wd, paste0('Found: [', res[1], ']'))
+        .log(v=v, wd=wd, paste0('Found: [', res[1], ']\n'))
       } else {
-        .log(v=v, wd=wd, paste0('Incorrect version: [', res[1], ']'))
+        .log(v=v, wd=wd, paste0('Incorrect version: [', res[1], ']\n'))
         sccdd <- FALSE
       }
     }
   }
   if(!sccdd) {
-    msg <- 'Unable to find correct versions of NCBI BLAST+ tools'
+    msg <- 'Unable to find correct versions of NCBI BLAST+ tools\n'
     .log(v=v, wd=wd, paste0('Error:', msg))
     stop(msg)
   }

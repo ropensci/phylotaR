@@ -15,15 +15,15 @@ setUp <- function(wd, txid, ncbi_dr='.', v=FALSE,
   msg <- paste0('phylotaR: Implementation of PhyLoTa in R [v',
                 packageVersion('phylotaR'), ']')
   brdr <- paste0(rep('-', nchar(msg)), collapse='')
-  msg <- paste0(brdr, '\n', msg, '\n', brdr)
-  .log(v=v, wd=wd, lvl=1, msg)
+  msg <- paste0(brdr, '\n', msg, '\n', brdr, '\n')
+  .log(v=v, wd=wd, msg)
   # set up
   ncbi_execs <- setUpNcbiTools(d=ncbi_dr, v=v,
                                wd=wd)
   setUpPrmtrs(wd=wd, txid=txid,
               ncbi_execs=ncbi_execs, ...)
   # end
-  .log(v=v, wd=wd, lvl=1, brdr)
+  .log(v=v, wd=wd, brdr)
 }
 
 #' @name run
@@ -47,6 +47,24 @@ setUp <- function(wd, txid, ncbi_dr='.', v=FALSE,
 #' \code{\link{runDownload}}, \code{\link{runClusters}},
 #' \code{\link{runAlign}}
 run <- function(wd, nstages=4) {
+  .run <- function() {
+    if(nstages >= 1) {
+      # Generate taxonomic 'nodes'
+      runTaxise(wd)
+    }
+    if(nstages >= 2) {
+      # Download sequences
+      runDownload(wd)
+    }
+    if(nstages >= 3) {
+      # Generate clusters
+      runClusters(wd)
+    }
+    if(nstages == 4) {
+      # Generate alignments
+      runAlign(wd)
+    }
+  }
   # TODO: save progress
   # header log
   msg <- paste0('Running pipeline on [', .Platform$OS.type,
@@ -55,29 +73,22 @@ run <- function(wd, nstages=4) {
   msg <- paste0(brdr, '\n', msg, '\n', brdr)
   info(ps=ps, lvl=1, msg)
   if(nstages < 1) {
-    stop('`nstages` is less than 1.')
+    error(ps=ps, '`nstages` is less than 1.')
   }
   if(nstages > 4) {
-    stop('`nstages` is greater than 4.')
+    error(ps=ps, '`nstages` is greater than 4.')
   }
-  if(nstages >= 1) {
-    # Generate taxonomic 'nodes'
-    runTaxise(wd)
-  }
-  if(nstages >= 2) {
-    # Download sequences
-    runDownload(wd)
-  }
-  if(nstages >= 3) {
-    # Generate clusters
-    runClusters(wd)
-  }
-  if(nstages == 4) {
-    # Generate alignments
-    runAlign(wd)
+  errmsg <- try(.run(), silent=TRUE)
+  if(is(errmsg) == 'try-error') {
+    # unexpected pipeline error
+    .log(v=ps[['v']], wd=ps[['wd']], traceback())
+    msg <- paste0('Unexpected ', errmsg[[1]],
+                  ' Contact package maintainer for help.')
+    .log(v=ps[['v']], wd=ps[['wd']], msg)
+    stop(msg)
   }
   # footer log
-  msg <- paste0('\nCompleted pipeline on at [', Sys.time(), ']')
+  msg <- paste0('Completed pipeline at [', Sys.time(), ']')
   brdr <- paste0(rep('-', nchar(msg)), collapse='')
   msg <- paste0(brdr, '\n', msg, '\n', brdr)
   info(ps=ps, lvl=1, msg)

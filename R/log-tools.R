@@ -41,10 +41,10 @@ warn <- function(ps, ...) {
 }
 
 # hidden log function
-.stgMsg <- function(v, wd, msg) {
+.stgMsg <- function(ps, msg) {
   brdr <- paste0(rep('-', nchar(msg)), collapse='')
   msg <- paste0(brdr, '\n', msg, '\n', brdr)
-  info(v=v, wd=wd, lvl=1, msg)
+  info(ps=ps, lvl=1, msg)
 }
 .log <- function(v, wd, msg) {
   if(v) {
