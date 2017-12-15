@@ -4,16 +4,16 @@
 \alias{dwnld}
 \title{Download sequences for txids}
 \usage{
-dwnld(wd, txids, phylt_nds, mdl_thrshld, mx_sq_lngth, verbose)
+dwnld(txids, phylt_nds, ps)
 }
 \arguments{
 \item{txids}{Taxonomic node IDs, numeric vector}
 
 \item{phylt_nds}{PhyLoTa data.frame}
 
-\item{mdl_thrshld}{Maximum number of sequences per txid}
+\item{ps[['mdlt']]}{Maximum number of sequences per txid}
 
-\item{mx_sq_lngth}{Maximum sequence length}
+\item{ps[['mxsql']]}{Maximum sequence length}
 
 \item{verbose}{Verbose? T/F}
 }

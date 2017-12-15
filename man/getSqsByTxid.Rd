@@ -4,19 +4,14 @@
 \alias{getSqsByTxid}
 \title{Hierarchically get sequences for a txid}
 \usage{
-getSqsByTxid(wd, txid, phylt_nds, mx_len = 25000, mdl_thrshld = 10000,
-  verbose = FALSE)
+getSqsByTxid(txid, phylt_nds, ps)
 }
 \arguments{
 \item{txid}{Taxonomic node ID, numeric}
 
 \item{phylt_nds}{PhyLoTa data.frame}
 
-\item{mx_len}{Maximum sequence length}
-
 \item{verbose}{Verbose? T/F}
-
-\item{mdl_threshold}{Maximum sequences per species}
 }
 \description{
 Looks up and downloads sequences for a

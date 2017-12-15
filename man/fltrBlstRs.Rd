@@ -4,7 +4,7 @@
 \alias{fltrBlstRs}
 \title{Filter BLAST results}
 \usage{
-fltrBlstRs(blst_rs, min_cvrg = 0.51, verbose = FALSE)
+fltrBlstRs(blst_rs, ps)
 }
 \arguments{
 \item{blst_rs}{BLAST results}

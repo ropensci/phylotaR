@@ -13,14 +13,18 @@ if(grepl('testthat', wd)) {
   data_d <- file.path('tests', 'testthat',
                        'data')
 }
+ps <- list('wd'=data_d, 'mkblstdb'='', 'blstn'='',
+           'tdpth'=NULL, 'mxd'=10000, 'tmout'=100,
+           'mdlt'=3000, 'mxsqs'=10000, 'mxsql'=25000,
+           'mxretry'=100, 'mxeval'=1.0e-10,
+           'mncvrg'=0.49, 'v'=FALSE, 'ncps'=1)
 
 # FUNCTIONS
 # stubs
-mckLdPrmtrs <- function(wd) {
-  list('mkblstdb'='',
-       'blstn'='')
-}
 mckSystem <- function(cmd) {
+  0
+}
+.system <- function(cmd) {
   0
 }
 
@@ -28,18 +32,15 @@ mckSystem <- function(cmd) {
 context('Testing \'blast-tools\'')
 test_that('mkBlstDB() works', {
   res <- with_mock(
-    `phylotaR::ldPrmtrs`=mckLdPrmtrs,
     `phylotaR:::.system`=mckSystem,
-    mkBlstDB(sqs=sqs, dbfl='testdb', wd=data_d,
-             verbose=FALSE)
+    mkBlstDB(sqs=sqs, dbfl='testdb', ps=ps)
   )
   expect_null(res)
 })
 test_that('blstN() works', {
   res <- with_mock(
-    `phylotaR::ldPrmtrs`=mckLdPrmtrs,
     `phylotaR:::.system`=mckSystem,
-    blstN(dbfl='testdb', outfl='testblstn', wd=data_d)
+    blstN(dbfl='testdb', outfl='testblstn', ps=ps)
   )
   nms <- colnames(res)
   expect_true(all(nms %in% names(blst_rs)))
@@ -47,7 +48,7 @@ test_that('blstN() works', {
 test_that('fltrBlstRs() works', {
   rnd <- sample(1:nrow(blst_rs), 1)
   blst_rs[rnd, 'qcovs'] <- 0.1
-  res <- fltrBlstRs(blst_rs=blst_rs, min_cvrg=0.49)
+  res <- fltrBlstRs(blst_rs=blst_rs, ps=ps)
   expect_true(nrow(res) < nrow(blst_rs))
   # make sure rnd and its sq/qs pair is not present
   frst <- blst_rs[rnd, 'query.id'] == res[['query.id']] &

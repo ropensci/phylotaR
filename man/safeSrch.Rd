@@ -4,7 +4,7 @@
 \alias{safeSrch}
 \title{Safely run rentrez function}
 \usage{
-safeSrch(func, args, fnm, verbose = FALSE, mx_retry = 1000)
+safeSrch(func, args, fnm, ps)
 }
 \arguments{
 \item{func}{rentrez function}
@@ -13,9 +13,7 @@ safeSrch(func, args, fnm, verbose = FALSE, mx_retry = 1000)
 
 \item{fnm}{rentrez function name}
 
-\item{verbose}{Verbose? T/F}
-
-\item{mx_retry}{Maximum number of attempts}
+\item{ps}{Parameters}
 }
 \description{
 Safely run a rentrez function.

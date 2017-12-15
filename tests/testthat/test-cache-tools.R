@@ -13,21 +13,21 @@ cleanUp <- function() {
 context('Testing \'cache-tools\'')
 cleanUp()
 test_that('setUpCch() works', {
-  prmtrs <- list('alovelyparameter'=1)
-  setUpCch(wd='.', prmtrs=prmtrs)
+  ps <- list('alovelyparameter'=1, 'wd'='.')
+  setUpCch(ps=ps)
   expect_true(file.exists(file.path('cache',
                                     'prmtrs.RData')))
-  expect_error(setUpCch(wd='.', prmtrs=prmtrs))
+  expect_error(setUpCch(ps=ps))
   cleanUp()
 })
 test_that('ldPrmtrs() works', {
-  setUpCch(wd='.', prmtrs=list('anotherlovelyparameter'=1))
-  prmtrs <- ldPrmtrs(wd='.')
-  expect_true(names(prmtrs) == 'anotherlovelyparameter')
+  setUpCch(ps=list('anotherlovelyparameter'=1, 'wd'='.'))
+  ps <- ldPrmtrs(wd='.')
+  expect_true('anotherlovelyparameter' %in% names(ps))
   cleanUp()
 })
 test_that('rmCch() works', {
-  setUpCch(wd='.', prmtrs=list('andfinally'=1))
+  setUpCch(ps=list('andfinally'=1, 'wd'='.'))
   rmCch(wd='.')
   expect_false(file.exists(file.path('cache',
                                      'prmtrs.RData')))

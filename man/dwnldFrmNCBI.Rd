@@ -4,19 +4,14 @@
 \alias{dwnldFrmNCBI}
 \title{dwnldFrmNCBI}
 \usage{
-dwnldFrmNCBI(txid, direct = FALSE, mx_lngth = 25000, mx_sqs = 1e+05,
-  verbose = FALSE)
+dwnldFrmNCBI(txid, ps, direct = FALSE)
 }
 \arguments{
 \item{txid}{NCBI taxon identifier}
 
 \item{direct}{Whether to download all 'directly' linked
 sequences ([Organism:noexp] in Genbank search) or all 'subtree'
-sequences ([Organism:exp])}
-
-\item{mx_lngth}{Maximum length of sequence to be included in GI list}
-
-\item{mx_sqs}{Take a random subset of mx_sqs if the number of
+sequences ([Organism:exp])
 seqs exceeds it.
 Only makes sense when direct=TRUE}
 }

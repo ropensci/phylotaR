@@ -6,16 +6,14 @@ library(testthat)
 data("phylt_nds")
 data('sqs')
 data('blst_rs')
+ps <- list('wd'='.', 'v'=FALSE)
 
 # FUNCTIONS
 # stubs
-mckBlstN <- function(dbfl, outfl, wd,
-                     eval_ctoff=1.0e-10,
-                     verbose=FALSE) {
+mckBlstN <- function(dbfl, outfl, ps) {
   blst_rs
 }
-mckMkBlstDB <- function(sqs, dbfl, wd,
-                        verbose=FALSE) {
+mckMkBlstDB <- function(sqs, dbfl, ps) {
   NULL
 }
 
@@ -42,7 +40,7 @@ test_that('addClstrInf() works', {
   # TODO: not sure how to test this well, either
   clstrs <- clstrBlstRs(blst_rs, infrmtv=TRUE)
   res <- addClstrInf(clstrs=clstrs, phylt_nds=phylt_nds,
-              txid=9479, sqs=sqs, drct = FALSE)
+              txid=9479, sqs=sqs, drct=FALSE)
   expect_true(length(clstrs) == length(res))
 })
 test_that('getADs() works', {
@@ -59,7 +57,7 @@ test_that('blstSqs() works', {
   res <- with_mock(
     `phylotaR::blstN`=mckBlstN,
     `phylotaR::mkBlstDB`=mckMkBlstDB,
-    blstSqs(txid=1, typ='direct',
-            sqs=sqs, wd='.', verbose=FALSE)
+    blstSqs(txid=1, typ='direct', sqs=sqs, ps=ps)
   )
+  expect_true('data.frame' %in% is(res))
 })

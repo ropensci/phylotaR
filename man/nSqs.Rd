@@ -4,16 +4,12 @@
 \alias{nSqs}
 \title{Count number of sequences for txid}
 \usage{
-nSqs(txid, direct = FALSE, mx_len = 25000, verbose = FALSE)
+nSqs(txid, ps, direct = FALSE)
 }
 \arguments{
 \item{txid}{Taxonomic ID}
 
 \item{direct}{exp or noexp? T/F}
-
-\item{mx_len}{Maximum number of sequences, numeric.}
-
-\item{verbose}{Verbose? T/F}
 }
 \description{
 Return the number of sequences

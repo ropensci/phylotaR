@@ -28,33 +28,33 @@
 #' @description TODO
 #' @param phylt_nds PhyLoTa nodes data.frame
 #' @export
-calcClstrs <- function(wd, txid, phylt_nds, verbose=FALSE) {
+calcClstrs <- function(txid, phylt_nds, ps) {
   root_txid <- txid
   # load sequences
-  sq_fls <- list.files(file.path(wd, 'cache', 'sqs'))
+  sq_fls <- list.files(file.path(ps[['wd']], 'cache', 'sqs'))
   for(i in seq_along(sq_fls)) {
     sq_fl <- sq_fls[i]
     # TODO: use the cache tool
-    sqs <- readRDS(file=file.path(file.path(wd, 'cache',
+    sqs <- readRDS(file=file.path(file.path(ps[['wd']], 'cache',
                                             'sqs', sq_fl)))
     txid <- as.numeric(sub('\\.RData', '', sq_fl))
     # cluster
-    clstrs <- clstrSqs(wd, txid=txid, sqs=sqs,
+    clstrs <- clstrSqs(txid=txid, sqs=sqs,
                        phylt_nds=phylt_nds,
                        drct=FALSE, infrmtv=FALSE,
-                       blst_rs=NULL, verbose=verbose)
+                       blst_rs=NULL, ps=ps)
     cldf <- clstrPhylt(clstrs=clstrs)
     cigidf <- clstrCiGi(clstrs=clstrs)
     # output
-    .cp(v=verbose, "Taxid [", txid, "]: writing [", nrow(cldf),
+    info(lvl=1, ps=ps, "Taxid [", txid, "]: writing [", nrow(cldf),
         "] clusters, [", length(sqs), "] sequences, [",
         nrow(cigidf), "] ci_gi entries to file")
     # TODO move these to sep. func
-    clstrs_fl <- file.path(wd, paste0('dbfiles-', root_txid,
+    clstrs_fl <- file.path(ps[['wd']], paste0('dbfiles-', root_txid,
                                       '-clusters.tsv'))
-    sqs_fl <- file.path(wd, paste0('dbfiles-', root_txid,
+    sqs_fl <- file.path(ps[['wd']], paste0('dbfiles-', root_txid,
                                    '-seqs.tsv'))
-    ci_gi_fl <- file.path(wd, paste0('dbfiles-', root_txid,
+    ci_gi_fl <- file.path(ps[['wd']], paste0('dbfiles-', root_txid,
                                      '-ci_gi.tsv'))
     write.table(cldf, file=clstrs_fl, append=file.exists(clstrs_fl),
                 quote=FALSE, sep="\t", row.names=FALSE,
@@ -65,7 +65,7 @@ calcClstrs <- function(wd, txid, phylt_nds, verbose=FALSE) {
     write.table(cigidf, file=ci_gi_fl, append=file.exists(ci_gi_fl),
                 quote=FALSE, sep="\t", row.names=FALSE,
                 col.names=!file.exists(ci_gi_fl))
-    .cp(v=verbose, "Finished processing taxid [", txid, "] # [",
+    info(lvl=1, ps=ps, "Finished processing taxid [", txid, "] # [",
         i, "/", length(sq_fls), "]")
   }
 }
@@ -76,24 +76,23 @@ calcClstrs <- function(wd, txid, phylt_nds, verbose=FALSE) {
 #' @param phylt_nds PhyLoTa nodes data.frame
 #' @export
 # TODO: too big, break down
-clstrSqs <- function(wd, txid, sqs, phylt_nds,
+clstrSqs <- function(txid, sqs, phylt_nds, ps,
                      drct=FALSE, infrmtv=FALSE,
-                     blst_rs=NULL, verbose=FALSE) {
+                     blst_rs=NULL) {
   all_clstrs <- list()
   clstr_typ <- ifelse(drct, "direct", "subtree")
   rnks <- as.character(phylt_nds[['rank']])
   rnk <- as.character(rnks[match(txid, phylt_nds[['ti']])])
-  .cp(v=verbose, "Processing taxid [", txid, "] of rank [",
+  info(lvl=1, ps=ps, "Processing taxid [", txid, "] of rank [",
       rnk, "] attempting to make [", clstr_typ, "] clusters")
   if(!drct) {
     dds <- getDDFrmPhyltNds(txid=txid, phylt_nds=phylt_nds)
     if(length(dds) > 0) {
-      all_clstrs <- c(all_clstrs, clstrSqs(wd, txid,
+      all_clstrs <- c(all_clstrs, clstrSqs(txid, ps=ps,
                                            phylt_nds=phylt_nds,
                                            sqs=sqs, drct=TRUE,
                                            infrmtv=infrmtv,
-                                           blst_rs=blst_rs,
-                                           verbose=verbose))
+                                           blst_rs=blst_rs))
     }
   }
   if(drct) {
@@ -103,43 +102,42 @@ clstrSqs <- function(wd, txid, sqs, phylt_nds,
   }
   all_sq_txids <- sapply(sqs, '[[', 'ti')
   sq_txids <- names(sqs[which(all_sq_txids %in% txids)])
-  .cp(v=verbose, "Found [", length(sq_txids), '] [',
+  info(lvl=1, ps=ps, "Found [", length(sq_txids), '] [',
       clstr_typ, "] GIs for taxid [", txid, "]")
   # @Hannes: you have a max seqs, why not a min?
   if(length(sq_txids) < 3) {
-    .cp(v=verbose, "Insufficient [", clstr_typ,
+    info(lvl=1, ps=ps, "Insufficient [", clstr_typ,
         "] sequences for taxid [",
         txid, "], cannot make clusters")
     return(all_clstrs)
   }
   sqs_prt <- sqs[sq_txids[sq_txids %in% names(sqs)]]
   if(is.null(blst_rs)) {
-    .cp(v=verbose, "Current BLAST result is NULL from parent, performing BLAST")
-    txids_blst_rs <- blstSqs(wd=wd, txid=txid, typ=clstr_typ, sqs=sqs_prt,
-                             verbose=verbose)
+    info(lvl=1, ps=ps, "Current BLAST result is NULL from parent, performing BLAST")
+    txids_blst_rs <- blstSqs(txid=txid, typ=clstr_typ, sqs=sqs_prt, ps=ps)
     # TODO: Can we do this more elegantly?
     if(is.null(txids_blst_rs)) {
-      .cp(v=verbose, "Current BLAST result is NULL after blasting")
+      info(lvl=1, ps=ps, "Current BLAST result is NULL after blasting")
       return(all_clstrs)
     }
   } else {
     txids_blst_rs <- list()
-    .cp(v=verbose, "Using BLAST results from parent cluster")
+    info(lvl=1, ps=ps, "Using BLAST results from parent cluster")
     txids_blst_rs <- blst_rs[which(blst_rs$subject.id %in% sq_txids),]
     txids_blst_rs <- txids_blst_rs[which(txids_blst_rs$query.id %in% sq_txids),]
   }
   # Sq clusters are stored in a list of lists, named by gi
   # Get top-level clusters
-  .cp(v=verbose, "Clustering BLAST results for taxid [", txid, "]")
+  info(lvl=1, ps=ps, "Clustering BLAST results for taxid [", txid, "]")
   # TODO
   raw_clstrs <- clstrBlstRs(blst_rs=txids_blst_rs, infrmtv=infrmtv)
-  .cp(v=verbose, "Finished clustering BLAST results for taxid [",
+  info(lvl=1, ps=ps, "Finished clustering BLAST results for taxid [",
       txid, "]")
   # make dataframe with fields as in PhyLoTa database
   # TODO
   clstrs <- addClstrInf(clstrs=raw_clstrs, phylt_nds=phylt_nds,
                         txid=txid, sqs=sqs, drct=drct)
-  .cp(v=verbose, "Generated [", length(clstrs),
+  info(lvl=1, ps=ps, "Generated [", length(clstrs),
       "] clusters")
   all_clstrs <- c(all_clstrs, clstrs)
   # If we do not calculate a direct cluster here, iterate over
@@ -147,11 +145,11 @@ clstrSqs <- function(wd, txid, sqs, phylt_nds,
   if(!drct) {
     dds <- getDDFrmPhyltNds(txid=txid, phylt_nds=phylt_nds)
     for(dd in dds) {
-      .cp(v=verbose, "Processing child taxon of [", txid,
+      info(lvl=1, ps=ps, "Processing child taxon of [", txid,
           "] [", dd, "]")
-      dd_clstrs <- clstrSqs(wd=wd, txid=dd, phylt_nds=phylt_nds, 
+      dd_clstrs <- clstrSqs(txid=dd, phylt_nds=phylt_nds, 
                             sqs=sqs, blst_rs=txids_blst_rs,
-                            infrmtv=infrmtv, verbose=verbose,
+                            infrmtv=infrmtv, ps=ps,
                             drct=FALSE)
       # TODO: break this up. Too nested.
       dd_clstrs <- lapply(dd_clstrs, function(cc) {
@@ -177,10 +175,11 @@ clstrSqs <- function(wd, txid, sqs, phylt_nds,
 #' clustering functions before writing out.
 #' @export
 # TODO
-writeClstr <- function(phylt_nds) {
+writeClstr <- function(phylt_nds, ps) {
   ## Write all data to file
-  cat("Taxid", txid, ": writing", nrow(cldf), "clusters,",
-      nrow(seqdf), "sequences,", nrow(cigidf), "ci_gi entries to file\n")
+  info(lvl=1, ps=ps, "Taxid", txid, ": writing",
+       nrow(cldf), "clusters,", nrow(seqdf), "sequences,",
+       nrow(cigidf), "ci_gi entries to file")
   write.table(cldf, file=clusters.file, append=file.exists(clusters.file),
               quote=FALSE, sep="\t", row.names=FALSE,
               col.names=!file.exists(clusters.file))
@@ -190,8 +189,8 @@ writeClstr <- function(phylt_nds) {
   write.table(cigidf, file=ci_gi.file, append=file.exists(ci_gi.file),
               quote=FALSE, sep="\t", row.names=FALSE,
               col.names=!file.exists(ci_gi.file))
-  cat("Finished processing taxid ", txid, " # ", i, " / ",
-      length(txids), "\n")
+  info(lvl=1, ps=ps, "Finished processing taxid ", txid,
+       " # ", i, " / ", length(txids), "]")
 }
 
 #' @name getADs
@@ -237,23 +236,23 @@ getGnsFrmPhyltNds <- function(txid, phylt_nds) {
 #' @param wd Working directory
 #' @param verbose Verbose? T/F
 #' @export
-blstSqs <- function(txid, typ, sqs, wd, verbose=FALSE) {
-  .cp(v=verbose, "BLAST all vs all for [",
+blstSqs <- function(txid, typ, sqs, ps) {
+  info(lvl=1, ps=ps, "BLAST all vs all for [",
       length(sqs), "] sequences")
   dbfl <- paste0('taxon-', txid, '-typ-', typ,
                  '-db.fa')
   outfl <- paste0('taxon-', txid, '-typ-', typ,
                   '-blastout.txt')
-  mkBlstDB(sqs, dbfl=dbfl, wd=wd, verbose=verbose)
-  blst_rs <- blstN(dbfl=dbfl, outfl=outfl, wd=wd,
-                   verbose=verbose)
+  mkBlstDB(sqs, dbfl=dbfl, ps=ps)
+  blst_rs <- blstN(dbfl=dbfl, outfl=outfl, ps=ps)
   # TODO: Not so elegant
   if(is.null(blst_rs)) {
     return(NULL)
   }
-  .cp(v=verbose, "Number of BLAST results [", nrow(blst_rs), "]")
-  .cp(v=verbose, "Filtering BLAST results")
-  fltrBlstRs(blst_rs=blst_rs, min_cvrg=0.51, verbose=verbose)
+  info(lvl=1, ps=ps, "Number of BLAST results [",
+       nrow(blst_rs), "]")
+  info(lvl=1, ps=ps, "Filtering BLAST results")
+  fltrBlstRs(blst_rs=blst_rs, ps=ps)
 }
 
 

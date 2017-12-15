@@ -49,18 +49,30 @@ setUp <- function(wd, txid, ncbi_dr='.', v=FALSE,
 run <- function(wd, nstages=4) {
   .run <- function() {
     if(nstages >= 1) {
+      if(!ps[['v']]) {
+        cat('... Taxise\n')
+      }
       # Generate taxonomic 'nodes'
       runTaxise(wd)
     }
     if(nstages >= 2) {
+      if(!ps[['v']]) {
+        cat('... Download\n')
+      }
       # Download sequences
       runDownload(wd)
     }
     if(nstages >= 3) {
+      if(!ps[['v']]) {
+        cat('... Cluster\n')
+      }
       # Generate clusters
       runClusters(wd)
     }
     if(nstages == 4) {
+      if(!ps[['v']]) {
+        cat('... Align\n')
+      }
       # Generate alignments
       runAlign(wd)
     }

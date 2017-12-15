@@ -4,7 +4,7 @@
 \alias{blstSqs}
 \title{BLAST All vs All}
 \usage{
-blstSqs(txid, typ, sqs, wd, verbose = FALSE)
+blstSqs(txid, typ, sqs, ps)
 }
 \arguments{
 \item{txid}{Taxonomic node ID, numeric}

@@ -65,18 +65,17 @@ runDownload <- function(wd) {
 #' generated
 #' @export
 runClusters <- function(wd) {
-  # Get params
-  prmtrs <- ldPrmtrs(wd)
-  txid <- prmtrs[['txid']]
-  mdl_thrshld <- prmtrs[['mdl_thrshld']]
-  mx_blst_sqs <- prmtrs[['mx_blst_sqs']]
-  mx_sq_lngth <- prmtrs[['mx_sq_lngth']]
-  verbose <- prmtrs[['verbose']]
+  ps <- ldPrmtrs(wd)
+  # stage print
+  msg <- paste0('Starting stage CLUSTER: [', Sys.time(), ']')
+  .stgMsg(ps=ps, msg=msg)
   # Get PhyLoTa nodes
   phylt_nds <- ldObj(wd=wd, nm='phylt_nds')
   # generate clusters
-  calcClstrs(wd=wd, txid=txid, phylt_nds=phylt_nds,
-             verbose=verbose)
+  calcClstrs(txid=txid, phylt_nds=phylt_nds, ps=ps)
+  # stage print
+  msg <- paste0('Completed stage CLUSTER: [', Sys.time(), ']')
+  .stgMsg(ps=ps, msg=msg)
 }
 
 #' @name runAlign

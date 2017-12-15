@@ -4,8 +4,8 @@
 \alias{clstrSqs}
 \title{Cluster sequences for sequences}
 \usage{
-clstrSqs(wd, txid, sqs, phylt_nds, drct = FALSE, infrmtv = FALSE,
-  blst_rs = NULL, verbose = FALSE)
+clstrSqs(txid, sqs, phylt_nds, ps, drct = FALSE, infrmtv = FALSE,
+  blst_rs = NULL)
 }
 \arguments{
 \item{phylt_nds}{PhyLoTa nodes data.frame}

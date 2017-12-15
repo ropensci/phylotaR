@@ -4,18 +4,12 @@
 \alias{blstN}
 \title{BLAST all vs all}
 \usage{
-blstN(dbfl, outfl, wd, eval_ctoff = 1e-10, verbose = FALSE)
+blstN(dbfl, outfl, ps)
 }
 \arguments{
 \item{dbfl}{Database file}
 
 \item{outfl}{Output file}
-
-\item{wd}{Working directory}
-
-\item{eval_ctoff}{Minimum E-value}
-
-\item{verbose}{Verbose? T/F}
 }
 \description{
 Use \code{blastn} to BLAST all vs all using

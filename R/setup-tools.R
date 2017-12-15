@@ -25,15 +25,16 @@ setUpPrmtrs <- function(wd, txid, ncbi_execs,
                         tdpth=NULL, mxd=10000,
                         tmout=100, mdlt=3000,
                         mxsqs=10000, mxsql=25000,
-                        mxretry=100, v=FALSE, ncps=1) {
+                        mxretry=100, mxeval=1.0e-10,
+                        mncvrg=0.51, v=FALSE, ncps=1) {
   if(!file.exists(wd)) {
     stop(paste0('Invalid `wd`. [', wd, '] does not exist.'))
   }
   ps <- list(txid=txid, tdpth=tdpth, mxd=mxd,
              tmout=tmout, mdlt=mdlt, mxsqs=mxsqs,
              mxsql=mxsql, v=v, ncps=ncps, wd=wd,
-             mxretry=mxretry,
-             lgfl=file.path(wd, 'log.txt'))
+             mxretry=mxretry, mxeval=mxeval,
+             mncvrg=mncvrg, lgfl=file.path(wd, 'log.txt'))
   if(sum(names(ncbi_execs) %in%
          c('mkblstdb', 'blstn')) == 2) {
     ps <- c(ps, ncbi_execs)

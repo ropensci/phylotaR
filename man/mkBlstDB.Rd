@@ -4,14 +4,12 @@
 \alias{mkBlstDB}
 \title{Make a BLAST database}
 \usage{
-mkBlstDB(sqs, dbfl, wd, verbose = FALSE)
+mkBlstDB(sqs, dbfl, ps)
 }
 \arguments{
 \item{sqs}{Sequences}
 
 \item{dbfl}{Outfile for database}
-
-\item{wd}{Working directory}
 }
 \description{
 Generate BLAST database in wd 

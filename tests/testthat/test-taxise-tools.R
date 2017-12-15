@@ -159,8 +159,7 @@ test_that('getStats() works', {
   res <- with_mock(
     `phylotaR::nSqs`=function(txid,
                               direct,
-                              mx_len,
-                              verbose){
+                              ps){
       500},
     getStats(txid=rid, phylt_nds=phylt_nds,
              td_nds=td_nds, td_nms=td_nms,
@@ -193,8 +192,7 @@ test_that('genPhylotaNds() works', {
   res <- with_mock(
     `phylotaR::nSqs`=function(txid,
                               direct,
-                              mx_len,
-                              verbose){
+                              ps){
       500},
     genPhylotaNds(nid_sets=nid_sets,
                   td_nds=td_nds,

@@ -5,7 +5,8 @@
 \title{Return run parameters}
 \usage{
 setUpPrmtrs(wd, txid, ncbi_execs, tdpth = NULL, mxd = 10000, tmout = 100,
-  mdlt = 3000, mxsqs = 10000, mxsql = 25000, v = FALSE, ncps = 1)
+  mdlt = 3000, mxsqs = 10000, mxsql = 25000, mxretry = 100,
+  mxeval = 1e-10, mncvrg = 0.51, v = FALSE, ncps = 1)
 }
 \arguments{
 \item{wd}{Working directory}
