@@ -1,18 +1,18 @@
+# TODO: generate class for these?
 
 #' @name info
 #' @title Write info message to log
 #' @description Inform a user via log.txt of pipeline
 #' progress.
 #' @param lvl Number of message indentations, indicating code depth.
-#' @param v Verbose, T/F.
-#' @param wd Working directory
+#' @param ps Parameters
 #' @param ... Message elements for concatenating
 #' @export
-info <- function(lvl, v, wd, ...) {
+info <- function(lvl, ps, ...) {
   msg <- paste0(..., '\n')
   spcr <- paste0(rep('... ', lvl-1), collapse='')
   msg <- paste0(spcr, msg, collapse='')
-  .log(v=v, wd=wd, msg=msg)
+  .log(v=ps[['v']], wd=ps[['wd']], msg=msg)
 }
 
 #' @name error
@@ -22,21 +22,21 @@ info <- function(lvl, v, wd, ...) {
 #' @param wd Working directory
 #' @param ... Message elements for concatenating
 #' @export
-error <- function(wd, ...) {
+error <- function(ps, ...) {
   msg <- paste0('Error: ', ..., '\n')
-  .log(v=FALSE, wd=wd, msg=msg)
+  .log(v=FALSE, wd=ps[['wd']], msg=msg)
   stop(msg)
 }
 
 #' @name warn
 #' @title Write warning message to log
 #' @description Inform a user if a potential error has occurred in log.txt.
-#' @param wd Working directory
+#' @param ps Parameters
 #' @param ... Message elements for concatenating
 #' @export
-warn <- function(wd, ...) {
+warn <- function(ps, ...) {
   msg <- paste0('Warning: ', ..., '\n')
-  .log(v=FALSE, wd=wd, msg=msg)
+  .log(v=FALSE, wd=ps[['wd']], msg=msg)
   warning(paste0(msg, ' -- see log.txt'))
 }
 

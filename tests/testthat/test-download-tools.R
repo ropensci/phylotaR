@@ -38,7 +38,7 @@ mckDwnldFrmNCBI <- function(txid=txid, direct=FALSE,
 context('Testing \'download-tools\'')
 cleanUp()
 test_that('getSqsByTxid() works', {
-  txids <- fltr(txid=9479, phylt_nds=phylt_nds,
+  txids <- fltr(wd=NULL, txid=9479, phylt_nds=phylt_nds,
                 mdl_thrshld=mdl_thrshld,
                 mx_blst_sqs=10000,
                 verbose=FALSE)
@@ -46,7 +46,7 @@ test_that('getSqsByTxid() works', {
   res <- with_mock(
     `phylotaR::nSqs`=mckNSqs,
     `phylotaR::dwnldFrmNCBI`=mckDwnldFrmNCBI,
-    getSqsByTxid(txid=txid, phylt_nds=phylt_nds,
+    getSqsByTxid(wd=NULL, txid=txid, phylt_nds=phylt_nds,
                  mx_len=25000, mdl_thrshld=mdl_thrshld,
                  verbose=FALSE)
   )

@@ -4,14 +4,12 @@
 \alias{info}
 \title{Write info message to log}
 \usage{
-info(lvl, v, wd, ...)
+info(lvl, ps, ...)
 }
 \arguments{
 \item{lvl}{Number of message indentations, indicating code depth.}
 
-\item{v}{Verbose, T/F.}
-
-\item{wd}{Working directory}
+\item{ps}{Parameters}
 
 \item{...}{Message elements for concatenating}
 }

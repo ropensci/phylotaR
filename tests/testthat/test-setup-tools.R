@@ -35,20 +35,19 @@ test_that('setUpNcbiTools() works', {
   # test with fake system
   res <- with_mock(
     `phylotaR:::.system`=mckSystem,
-    setUpNcbiTools(d='.',
-                   verbose=FALSE, wd=NULL)
+    setUpNcbiTools(d='.', v=FALSE, wd=NULL)
   )
   expect_true(length(res) == 2)
   # make sure wrong versions are flagged
   res <- with_mock(
     `phylotaR:::.system`=mckSystem,
     expect_error(setUpNcbiTools(d='wrngvrsn',
-                                verbose=FALSE,
+                                v=FALSE,
                                 wd=NULL))
   )
   # make sure wrong dirs are flagged
   expect_error(setUpNcbiTools(d='.',
-                              verbose=FALSE,
+                              v=FALSE,
                               wd=NULL))
 })
 test_that('setUpPrmtrs() works', {
@@ -58,7 +57,7 @@ test_that('setUpPrmtrs() works', {
                      'blstn'=NA)
   setUpPrmtrs(wd='.', txid=9606,
               ncbi_execs=ncbi_execs)
-  prmtrs <- ldPrmtrs(wd='.')
-  expect_true(length(prmtrs) == 12)
+  ps <- ldPrmtrs(wd='.')
+  expect_true(length(ps) == 13)
 })
 cleanUp()

@@ -4,12 +4,12 @@
 \alias{setUpNcbiTools}
 \title{Ensures NCBI BLAST tools are installed}
 \usage{
-setUpNcbiTools(d, verbose, wd)
+setUpNcbiTools(d, v, wd)
 }
 \arguments{
 \item{d}{Directory to NCBI BLAST tools}
 
-\item{verbose}{Verbose, T/F}
+\item{v}{v, T/F}
 
 \item{wd}{Working directory}
 }

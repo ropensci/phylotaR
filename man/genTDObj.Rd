@@ -4,10 +4,10 @@
 \alias{genTDObj}
 \title{Generate R object from NCBI taxonomy dump}
 \usage{
-genTDObj(wd, verbose = FALSE)
+genTDObj(ps)
 }
 \arguments{
-\item{wd}{Working directory}
+\item{ps}{Parameters}
 }
 \description{
 Generates an interrogable R object

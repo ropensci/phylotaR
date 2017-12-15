@@ -11,8 +11,9 @@ mkBlstDB <- function(sqs, dbfl, wd, verbose=FALSE) {
     stop('Need more than 2 sequences for BLAST.')
   }
   prmtrs <- ldPrmtrs(wd)
-  .cp(v=verbose, "Making blast database for [",
-      length(sqs), "] sequences")
+  info(lvl=3, v=verbose, wd=wd,
+       "Making blast database for [",
+       length(sqs), "] sequences")
   blst_d <- file.path(wd, 'blast')
   if(!file.exists(blst_d)) {
     dir.create(blst_d)
@@ -66,11 +67,13 @@ blstN <- function(dbfl, outfl, wd, eval_ctoff=1.0e-10,
                '-out', outfl)
   .system(cmd) == 0 || stop(paste0('Command [', cmd, '] did not return 0'))
   if(!file.exists(outfl)) {
-    .cp(v=verbose, "No BLAST output, returning NULL")
+    info(lvl=3, v=verbose, wd=wd,
+         "No BLAST output, returning NULL")
     return(NULL)
   }
   if(file.info(outfl)[['size']]==0) {
-    .cp(v=verbose, "No BLAST output, returning NULL")
+    info(lvl=3, v=verbose, wd=wd,
+         "No BLAST output, returning NULL")
     return(NULL)
   }
   blst_rs <- read.table(outfl)
@@ -111,8 +114,9 @@ fltrBlstRs <- function(blst_rs, min_cvrg=0.51, verbose=FALSE) {
       blst_rs[['subject.id']] == qsids[['query.id']]) | pull
   }
   ndrp <- sum(pull)
-  .cp(v=verbose, "Removed [", ndrp, "/", nrow(blst_rs),
-      "] BLAST hits due to insufficient coverage")
+  info(lvl=3, v=verbose, wd=wd, "Removed [", ndrp, "/",
+       nrow(blst_rs),
+       "] BLAST hits due to insufficient coverage")
   if(sum(pull) > 0) {
     blst_rs <- blst_rs[!pull, ]
   }

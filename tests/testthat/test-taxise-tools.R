@@ -25,6 +25,9 @@ cleanUp <- function() {
   if(file.exists('log.txt')) {
     file.remove('log.txt')
   }
+  if(file.exists(file.path(data_dr, 'log.txt'))) {
+    file.remove(file.path(data_dr, 'log.txt'))
+  }
   if(file.exists(txdmpfl)) {
     file.remove(txdmpfl)
   }
@@ -34,6 +37,8 @@ cleanUp <- function() {
 data('tdobj')
 td_nds <- tdobj[['nds']]
 td_nms <- tdobj[['nms']]
+ps <- list('mxd'=10000, 'tmout'=10, 'v'=FALSE,
+           'wd'=data_dr, 'mxsql'=2000, 'mdlt'=2000)
 rm(tdobj)
 
 # FUNCTIONS
@@ -59,20 +64,23 @@ test_that('dwnldTD() works', {
   with_mock(
     `phylotaR:::.untar`=mckUntar,
     `curl::curl_fetch_disk`=mckCurl,
-    dwnldTD(wd=data_dr, tdpth=NULL)
+    dwnldTD(ps=list('wd'=data_dr, 'tdpth'=NULL,
+                    'v'=FALSE))
   )
   # pass reading from file
   with_mock(
     `phylotaR:::.untar`=mckUntar,
     `curl::curl_fetch_disk`=mckCurl,
-    dwnldTD(wd=data_dr, tdpth=txdmpfl)
+    dwnldTD(ps=list('wd'=data_dr, 'tdpth'=txdmpfl,
+                    'v'=FALSE))
   )
   # fail to read from file
   with_mock(
     `phylotaR:::.untar`=mckUntar,
     `curl::curl_fetch_disk`=mckCurl,
-    expect_error(dwnldTD(wd=data_dr,
-                         tdpth='non-existent-file'))
+    expect_error(dwnldTD(ps=list('wd'=data_dr,
+                                 'tdpth'='non-existent-file',
+                                 'v'=FALSE)))
   )
   # fail to unpack
   with_mock(
@@ -80,20 +88,23 @@ test_that('dwnldTD() works', {
     `curl::curl_fetch_disk`=mckCurl,
     expect_warning(
       expect_error(
-        dwnldTD(wd='non-existent-dir',
-                tdpth=NULL)))
+        dwnldTD(ps=list('wd'='non-existent-dir',
+                        'tdpth'=NULL,
+                        'v'=FALSE))))
   )
   # fail to download
   with_mock(
     `phylotaR:::.untar`=mckUntar,
     `curl::curl_fetch_disk`=mckCurlFail,
-    expect_error(dwnldTD(wd=data_dr, tdpth=NULL))
+    expect_error(dwnldTD(ps=list('wd'=data_dr,
+                                 'tdpth'=NULL,
+                                 'v'=FALSE)))
   )
   cleanUp()
 })
 test_that('genTDObj() works', {
-  tdobj <- genTDObj(wd=data_dr)
-  tdobj <- genTDObj(wd=data_dr)
+  tdobj <- genTDObj(ps=ps)
+  tdobj <- genTDObj(ps=ps)
   two <- sum(names(tdobj) %in% c('nds', 'nms'))
   expect_true(two == 2)
   cleanUp()
@@ -127,10 +138,7 @@ test_that('getMngblIds() works', {
   wdsndnts <- sample(td_nds[pull, 'id'], 10)
   wodsndnts <- sample(td_nds[!pull, 'id'], 10)
   res <- getMngblIds(txid=c(wdsndnts, wodsndnts),
-                     td_nds=td_nds,
-                     mx_dscndnts=10000,
-                     tmout=10, verbose=FALSE,
-                     wd=NULL)
+                     td_nds=td_nds, ps=ps)
   ns <- res[['ndscndnts']]
   expect_equal(ns > 0, rep(c(TRUE, FALSE), each=10))
 })
@@ -154,10 +162,9 @@ test_that('getStats() works', {
                               mx_len,
                               verbose){
       500},
-    getStats(wd=NULL, txid=rid, phylt_nds=phylt_nds,
-             mx_sq_lngth=2000, mdl_thrshld=2000,
+    getStats(txid=rid, phylt_nds=phylt_nds,
              td_nds=td_nds, td_nms=td_nms,
-             verbose=FALSE, recursive=TRUE)
+             ps=ps, rcrsv=TRUE)
     )
   expect_true(nrow(res) > 1)
 })
@@ -174,29 +181,25 @@ test_that('writeTax() works', {
                           'n_otu_desc'=NA,
                           'ti_genus'=NA,
                           'n_genera'=NA)
-  writeTax(wd=NULL, phylt_nds=phylt_nds, td_nms=td_nms,
-           fl='test_writeTax.tsv', verbose=FALSE)
+  writeTax(phylt_nds=phylt_nds, td_nms=td_nms,
+           fl='test_writeTax.tsv', ps=ps)
   expect_true(file.exists('test_writeTax.tsv'))
   cleanUp()
 })
 test_that('genPhylotaNds() works', {
   txids <- td_nds[['id']]
-  nid_sets <- getMngblIds(wd=NULL, txid=txids,
-                          td_nds=td_nds,
-                          mx_dscndnts=100,
-                          tmout=10, verbose=FALSE)
+  nid_sets <- getMngblIds(txid=txids, td_nds=td_nds,
+                          ps=ps)
   res <- with_mock(
     `phylotaR::nSqs`=function(txid,
                               direct,
                               mx_len,
                               verbose){
       500},
-    genPhylotaNds(wd=NULL, nid_sets=nid_sets,
-                  mx_sq_lngth=2000,
-                  mdl_thrshld=2000,
+    genPhylotaNds(nid_sets=nid_sets,
                   td_nds=td_nds,
                   td_nms=td_nms,
-                  verbose=FALSE)
+                  ps=ps)
   )
   expect_true('data.frame' %in% is(res))
 })

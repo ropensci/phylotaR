@@ -4,12 +4,10 @@
 \alias{dwnldTD}
 \title{Download NCBI taxonomy dump}
 \usage{
-dwnldTD(wd, verbose = FALSE, tdpth = NULL)
+dwnldTD(ps)
 }
 \arguments{
-\item{wd}{Working directory}
-
-\item{tdpth}{Taxonomy dump path}
+\item{ps}{Parameters}
 }
 \description{
 Download and unpack NCBI

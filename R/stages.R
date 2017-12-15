@@ -12,42 +12,28 @@
 #' @export
 runTaxise <- function(wd) {
   # Get params
-  prmtrs <- ldPrmtrs(wd)
-  txid <- prmtrs[['txid']]
-  mx_dscndnts <- prmtrs[['mx_dscndnts']]
-  mx_sq_lngth <- prmtrs[['mx_sq_lngth']]
-  mdl_thrshld <- prmtrs[['mdl_thrshld']]
-  tdpth <- prmtrs[['tdpth']]
-  tmout <- prmtrs[['tmout']]
-  verbose <- prmtrs[['verbose']]
+  ps <- ldPrmtrs(wd)
   # stage print
   msg <- paste0('Starting stage TAXISE: [', Sys.time(), ']')
-  .stgMsg(v=verbose, wd=wd, msg=msg)
+  .stgMsg(ps=ps, msg=msg)
   # Run
-  dwnldTD(wd=wd, tdpth=tdpth, verbose=verbose)
-  tdobj <- genTDObj(wd=wd, verbose=verbose)
-  info(lvl=1, v=verbose, wd=wd, 'Processing IDs ...')
-  nid_sets <- getMngblIds(txid=txid,
-                          td_nds=tdobj[['nds']],
-                          mx_dscndnts=mx_dscndnts,
-                          tmout=tmout,
-                          verbose=verbose)
-  info(lvl=1, v=verbose, wd=wd, 'Initiating PhyLoTa nodes ...')
-  phylt_nds <- genPhylotaNds(wd=wd, nid_sets=nid_sets,
-                             mx_sq_lngth=mx_sq_lngth,
-                             mdl_thrshld=mdl_thrshld,
+  dwnldTD(ps=ps)
+  tdobj <- genTDObj(ps=ps)
+  info(lvl=1, ps=ps, 'Processing IDs ...')
+  nid_sets <- getMngblIds(td_nds=tdobj[['nds']], ps=ps)
+  info(lvl=1, ps=ps, 'Initiating PhyLoTa nodes ...')
+  phylt_nds <- genPhylotaNds(nid_sets=nid_sets,
                              td_nds=tdobj[['nds']],
                              td_nms=tdobj[['nms']],
-                             verbose=verbose)
-  info(lvl=1, v=verbose, wd=wd, 'Writing out ...')
+                             ps=ps)
+  info(lvl=1, ps=ps, 'Writing out ...')
   svObj(wd=wd, obj=phylt_nds, nm='phylt_nds')
   writeTax(phylt_nds=phylt_nds, td_nms=tdobj[['nms']],
            fl=file.path(wd, paste0('dbfiles-taxonomy-',
-                                   txid, '.tsv')),
-           verbose=verbose)
+                                   txid, '.tsv')), ps=ps)
   # stage print
   msg <- paste0('Completed stage TAXISE: [', Sys.time(), ']')
-  .stgMsg(v=verbose, wd=wd, msg=msg)
+  .stgMsg(ps=ps, msg=msg)
 }
 
 #' @name runDownload
@@ -56,23 +42,19 @@ runTaxise <- function(wd) {
 #' @export
 runDownload <- function(wd) {
   # Get params
-  prmtrs <- ldPrmtrs(wd)
-  txid <- prmtrs[['txid']]
-  mdl_thrshld <- prmtrs[['mdl_thrshld']]
-  mx_blst_sqs <- prmtrs[['mx_blst_sqs']]
-  mx_sq_lngth <- prmtrs[['mx_sq_lngth']]
-  verbose <- prmtrs[['verbose']]
+  ps <- ldPrmtrs(wd)
+  # stage print
+  msg <- paste0('Starting stage DOWNLOAD: [', Sys.time(), ']')
+  .stgMsg(v=verbose, wd=wd, msg=msg)
   # Get PhyLoTa nodes
   phylt_nds <- ldObj(wd=wd, nm='phylt_nds')
-  # Filter
-  fltrd_ids <- fltr(txid=txid, phylt_nds=phylt_nds,
-                    mdl_thrshld=mdl_thrshld,
-                    mx_blst_sqs=mx_blst_sqs,
-                    verbose=verbose)
-  # Download seqs
-  dwnld(wd=wd, txids=fltrd_ids, phylt_nds=phylt_nds,
-        mdl_thrshld=mdl_thrshld, mx_sq_lngth=mx_sq_lngth,
-        verbose=verbose)
+  info(lvl=1, ps=ps, 'Filtering ...')
+  fltrd_ids <- fltr(phylt_nds=phylt_nds, ps=ps)
+  info(lvl=1, ps=ps, 'Downloading ...')
+  dwnld(phylt_nds=phylt_nds, ps=ps)
+  # stage print
+  msg <- paste0('Completed stage DOWNLOAD: [', Sys.time(), ']')
+  .stgMsg(ps=ps, msg=msg)
 }
 
 #' @name runClusters

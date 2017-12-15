@@ -4,7 +4,7 @@
 \alias{fltr}
 \title{Get all node IDs that will be processed}
 \usage{
-fltr(txid, phylt_nds, mdl_thrshld, mx_blst_sqs, verbose = FALSE)
+fltr(wd, txid, phylt_nds, mdl_thrshld, mx_blst_sqs, verbose = FALSE)
 }
 \description{
 All nodes for which all children

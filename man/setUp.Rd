@@ -4,7 +4,7 @@
 \alias{setUp}
 \title{Set-up parameters}
 \usage{
-setUp(wd, txid, ncbi_dr = ".", verbose = FALSE, ...)
+setUp(wd, txid, ncbi_dr = ".", v = FALSE, ...)
 }
 \arguments{
 \item{wd}{Working directory}
@@ -13,9 +13,9 @@ setUp(wd, txid, ncbi_dr = ".", verbose = FALSE, ...)
 
 \item{ncbi_dr}{Directory to NCBI BLAST tools, default '.'}
 
-\item{verbose}{Verbose, T/F}
-
 \item{...}{Additional parameters}
+
+\item{verbose}{Verbose, T/F}
 }
 \seealso{
 \code{\link{setUp}}

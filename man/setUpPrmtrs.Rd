@@ -4,10 +4,8 @@
 \alias{setUpPrmtrs}
 \title{Return run parameters}
 \usage{
-setUpPrmtrs(wd, txid, ncbi_execs, tdpth = NULL, mx_dscndnts = 10000,
-  tmout = 100, mdl_thrshld = 3000, mx_blst_sqs = 10000,
-  mx_sq_lngth = 25000, sq_cch_dr = "sequences", verbose = FALSE,
-  cores = 1)
+setUpPrmtrs(wd, txid, ncbi_execs, tdpth = NULL, mxd = 10000, tmout = 100,
+  mdlt = 3000, mxsqs = 10000, mxsql = 25000, v = FALSE, ncps = 1)
 }
 \arguments{
 \item{wd}{Working directory}
@@ -18,9 +16,9 @@ setUpPrmtrs(wd, txid, ncbi_execs, tdpth = NULL, mx_dscndnts = 10000,
 
 \item{tdpth}{NCBI taxdump.tar.gz}
 
-\item{mx_dscndnts}{Maximum number of descendants per taxonomic node, numeric}
-
 \item{tmout}{Timeout in seconds, numeric.}
+
+\item{mx_dscndnts}{Maximum number of descendants per taxonomic node, numeric}
 
 \item{mdl_thrshld}{Maximum number of sequences per species}
 

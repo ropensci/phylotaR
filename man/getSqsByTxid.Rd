@@ -4,7 +4,7 @@
 \alias{getSqsByTxid}
 \title{Hierarchically get sequences for a txid}
 \usage{
-getSqsByTxid(txid, phylt_nds, mx_len = 25000, mdl_thrshld = 10000,
+getSqsByTxid(wd, txid, phylt_nds, mx_len = 25000, mdl_thrshld = 10000,
   verbose = FALSE)
 }
 \arguments{

@@ -4,11 +4,10 @@
 \alias{getStats}
 \title{Generate PhyLoTa statistics for txid}
 \usage{
-getStats(wd, txid, phylt_nds, td_nds, td_nms, mx_sq_lngth, mdl_thrshld,
-  verbose = FALSE, recursive = FALSE)
+getStats(txid, phylt_nds, td_nds, td_nms, ps, rcrsv = FALSE)
 }
 \arguments{
-\item{txid}{Root taxonomic ID(s), vector or character}
+\item{txid}{Taxonomic ID}
 
 \item{phylt_nds}{PhyLoTa data.frame}
 
@@ -16,13 +15,9 @@ getStats(wd, txid, phylt_nds, td_nds, td_nms, mx_sq_lngth, mdl_thrshld,
 
 \item{td_nms}{'nms' element from the \code{tdobj}}
 
-\item{mx_sq_lngth}{Maximum number of associated sequences, numeric}
+\item{ps}{Parameters}
 
-\item{verbose}{Print progress to screen? T/F}
-
-\item{recursive}{Add stats for kid nodes recursively? T/F}
-
-\item{mdl_threshold}{Maximum threshold, numeric.}
+\item{rcrsv}{Add stats for kid nodes recursively? T/F}
 }
 \details{
 Returns an updated \code{phylt_nds}.

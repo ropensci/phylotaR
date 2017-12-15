@@ -4,10 +4,10 @@
 \alias{warn}
 \title{Write warning message to log}
 \usage{
-warn(wd, ...)
+warn(ps, ...)
 }
 \arguments{
-\item{wd}{Working directory}
+\item{ps}{Parameters}
 
 \item{...}{Message elements for concatenating}
 }

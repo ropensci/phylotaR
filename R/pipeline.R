@@ -9,22 +9,21 @@
 #' @param ... Additional parameters
 #' @export
 #' @seealso \code{\link{setUp}}
-setUp <- function(wd, txid, ncbi_dr='.', verbose=FALSE,
+setUp <- function(wd, txid, ncbi_dr='.', v=FALSE,
                   ...) {
   # header log
   msg <- paste0('phylotaR: Implementation of PhyLoTa in R [v',
                 packageVersion('phylotaR'), ']')
   brdr <- paste0(rep('-', nchar(msg)), collapse='')
   msg <- paste0(brdr, '\n', msg, '\n', brdr)
-  .log(v=verbose, wd=wd, lvl=1, msg)
+  .log(v=v, wd=wd, lvl=1, msg)
   # set up
-  ncbi_execs <- setUpNcbiTools(d=ncbi_dr,
-                               verbose=verbose,
+  ncbi_execs <- setUpNcbiTools(d=ncbi_dr, v=v,
                                wd=wd)
   setUpPrmtrs(wd=wd, txid=txid,
               ncbi_execs=ncbi_execs, ...)
   # end
-  .log(v=verbose, wd=wd, lvl=1, brdr)
+  .log(v=v, wd=wd, lvl=1, brdr)
 }
 
 #' @name run
@@ -50,12 +49,11 @@ setUp <- function(wd, txid, ncbi_dr='.', verbose=FALSE,
 run <- function(wd, nstages=4) {
   # TODO: save progress
   # header log
-  verbose <- ldPrmtrs(wd)[['verbose']]
-  msg <- paste0('Running pipeline on [', .Platform$OS.type, '] at [',
-                Sys.time(), ']')
+  msg <- paste0('Running pipeline on [', .Platform$OS.type,
+                '] at [', Sys.time(), ']')
   brdr <- paste0(rep('-', nchar(msg)), collapse='')
   msg <- paste0(brdr, '\n', msg, '\n', brdr)
-  info(v=verbose, wd=wd, lvl=1, msg)
+  info(ps=ps, lvl=1, msg)
   if(nstages < 1) {
     stop('`nstages` is less than 1.')
   }
@@ -82,7 +80,7 @@ run <- function(wd, nstages=4) {
   msg <- paste0('\nCompleted pipeline on at [', Sys.time(), ']')
   brdr <- paste0(rep('-', nchar(msg)), collapse='')
   msg <- paste0(brdr, '\n', msg, '\n', brdr)
-  info(v=verbose, wd=wd, lvl=1, msg)
+  info(ps=ps, lvl=1, msg)
 }
 
 #' @name restart

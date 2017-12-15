@@ -4,21 +4,14 @@
 \alias{getMngblIds}
 \title{Identify manageable taxonomic node IDs}
 \usage{
-getMngblIds(wd, txid, td_nds, mx_dscndnts = 10000, tmout = 10,
-  verbose = FALSE)
+getMngblIds(txid, td_nds, ps)
 }
 \arguments{
-\item{txid}{Root taxonomic ID(s), vector or character}
+\item{txid}{Taxomomic IDs}
 
 \item{td_nds}{'nds' element from the \code{tdobj}}
 
-\item{mx_dscndnts}{Maximum number of descendants for
-'manageable' taxonomic node, numeric.}
-
-\item{tmout}{Number of seconds before discarding node,
-numeric.}
-
-\item{verbose}{print progress to screen? T/F}
+\item{ps}{Parameters}
 }
 \description{
 Given a root \code{txid}, return a set of

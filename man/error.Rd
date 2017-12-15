@@ -4,12 +4,12 @@
 \alias{error}
 \title{Write error message to log}
 \usage{
-error(wd, ...)
+error(ps, ...)
 }
 \arguments{
-\item{wd}{Working directory}
-
 \item{...}{Message elements for concatenating}
+
+\item{wd}{Working directory}
 }
 \description{
 Inform a user if an error has occurred in log.txt,
