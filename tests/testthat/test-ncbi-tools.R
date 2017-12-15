@@ -2,6 +2,13 @@
 library(phylotaR)
 library(testthat)
 
+# DATA
+ps <- list(wd=NULL, txid=9607,
+           tdpth=NULL, mxd=10000,
+           tmout=100, mdlt=3000,
+           mxsqs=10000, mxsql=25000,
+           mxretry=2, v=FALSE, ncps=1)
+
 # FUNCTIONS
 randFasta <- function() {
   seq <- sample(c('A', 'T', 'C', 'G'), size=1000,
@@ -59,8 +66,7 @@ test_that('safeSrch() works', {
   res <- safeSrch(func=myfunc,
                   args=args,
                   fnm='print()',
-                  verbose=TRUE,
-                  mx_retry=2)
+                  ps=ps)
   expect_true(res == 1)
   myfunc <- function(...) {
     print(...)
@@ -69,8 +75,7 @@ test_that('safeSrch() works', {
   res <- safeSrch(func=myfunc,
                   args=args,
                   fnm='print()',
-                  verbose=TRUE,
-                  mx_retry=2)
+                  ps=ps)
   expect_null(res)
 })
 test_that('nSqs', {
@@ -78,22 +83,20 @@ test_that('nSqs', {
     `phylotaR::safeSrch`=function(func,
                                   args,
                                   fnm,
-                                  verbose,
-                                  mx_retry){
+                                  ps){
       list('count'=args)
     },
-    nSqs(txid=9606, direct=FALSE)
+    nSqs(txid=9606, direct=FALSE, ps=ps)
   )
   expect_true(grepl(':exp', res[['term']]))
   res <- with_mock(
     `phylotaR::safeSrch`=function(func,
                                   args,
                                   fnm,
-                                  verbose,
-                                  mx_retry){
+                                  ps){
       list('count'=args)
     },
-    nSqs(txid=9606, direct=TRUE)
+    nSqs(txid=9606, direct=TRUE, ps=ps)
   )
   expect_true(grepl(':noexp', res[['term']]))
 })
@@ -104,8 +107,7 @@ test_that('dwnldFrmNCBI', {
     `rentrez::entrez_search`=mckEntrezSearch,
     `rentrez::entrez_fetch`=mckEntrezFetch,
     `rentrez::entrez_summary`=mckEntrezSummary,
-    dwnldFrmNCBI(txid=1, direct=FALSE, mx_lngth=25000,
-             mx_sqs=100000, verbose=FALSE)
+    dwnldFrmNCBI(txid=1, direct=FALSE, ps=ps)
   )
   expect_true(class(res) == 'list')
   expect_true(length(res) == 0)
@@ -114,8 +116,7 @@ test_that('dwnldFrmNCBI', {
     `rentrez::entrez_search`=mckEntrezSearch,
     `rentrez::entrez_fetch`=mckEntrezFetch,
     `rentrez::entrez_summary`=mckEntrezSummary,
-    dwnldFrmNCBI(txid=1, direct=FALSE, mx_lngth=25000,
-             mx_sqs=100000, verbose=FALSE)
+    dwnldFrmNCBI(txid=1, direct=FALSE, ps=ps)
   )
   expect_true(length(res) == 1)
   n <<- 100
@@ -123,8 +124,7 @@ test_that('dwnldFrmNCBI', {
     `rentrez::entrez_search`=mckEntrezSearch,
     `rentrez::entrez_fetch`=mckEntrezFetch,
     `rentrez::entrez_summary`=mckEntrezSummary,
-    dwnldFrmNCBI(txid=1, direct=FALSE, mx_lngth=25000,
-             mx_sqs=100000, verbose=FALSE)
+    dwnldFrmNCBI(txid=1, direct=FALSE, ps=ps)
   )
   expect_true(length(res) == 100)
   n <<- 1000
@@ -132,8 +132,7 @@ test_that('dwnldFrmNCBI', {
     `rentrez::entrez_search`=mckEntrezSearch,
     `rentrez::entrez_fetch`=mckEntrezFetch,
     `rentrez::entrez_summary`=mckEntrezSummary,
-    dwnldFrmNCBI(txid=1, direct=FALSE, mx_lngth=25000,
-             mx_sqs=100000, verbose=FALSE)
+    dwnldFrmNCBI(txid=1, direct=FALSE, ps=ps)
   )
   expect_true(length(res) == 1000)
 })

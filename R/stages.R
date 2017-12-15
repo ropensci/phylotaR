@@ -46,13 +46,13 @@ runDownload <- function(wd) {
   ps <- ldPrmtrs(wd)
   # stage print
   msg <- paste0('Starting stage DOWNLOAD: [', Sys.time(), ']')
-  .stgMsg(v=verbose, wd=wd, msg=msg)
+  .stgMsg(ps=ps, msg=msg)
   # Get PhyLoTa nodes
   phylt_nds <- ldObj(wd=wd, nm='phylt_nds')
   info(lvl=1, ps=ps, 'Filtering ...')
-  fltrd_ids <- fltr(phylt_nds=phylt_nds, ps=ps)
+  fltrd_ids <- fltr(txid=ps[['txid']], phylt_nds=phylt_nds, ps=ps)
   info(lvl=1, ps=ps, 'Downloading ...')
-  dwnld(phylt_nds=phylt_nds, ps=ps)
+  dwnld(txids=ps[['txid']], phylt_nds=phylt_nds, ps=ps)
   # stage print
   msg <- paste0('Completed stage DOWNLOAD: [', Sys.time(), ']')
   .stgMsg(ps=ps, msg=msg)

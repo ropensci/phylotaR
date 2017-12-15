@@ -167,8 +167,7 @@ getStats <- function(txid, phylt_nds, td_nds, td_nms,
   if(rank == 'species') {
     stats['n_sp_desc'] <- 1
   }
-  n_drctsqs <- nSqs(txid, direct=TRUE,
-                    mx_len=ps[['mxsql']], v=v)
+  n_drctsqs <- nSqs(txid, direct=TRUE, ps=ps)
   stats['n_gi_node'] <- n_drctsqs
   kids <- getKids(txid, td_nds=td_nds)
   if(length(kids) == 0) {

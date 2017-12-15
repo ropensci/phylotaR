@@ -23,7 +23,7 @@ setUp <- function(wd, txid, ncbi_dr='.', v=FALSE,
   setUpPrmtrs(wd=wd, txid=txid,
               ncbi_execs=ncbi_execs, ...)
   # end
-  .log(v=v, wd=wd, brdr)
+  .log(v=v, wd=wd, paste0(brdr, '\n'))
 }
 
 #' @name run
@@ -66,6 +66,7 @@ run <- function(wd, nstages=4) {
     }
   }
   # TODO: save progress
+  ps <- ldPrmtrs(wd)
   # header log
   msg <- paste0('Running pipeline on [', .Platform$OS.type,
                 '] at [', Sys.time(), ']')
@@ -79,9 +80,8 @@ run <- function(wd, nstages=4) {
     error(ps=ps, '`nstages` is greater than 4.')
   }
   errmsg <- try(.run(), silent=TRUE)
-  if(is(errmsg) == 'try-error') {
+  if('try-error' %in% is(errmsg)) {
     # unexpected pipeline error
-    .log(v=ps[['v']], wd=ps[['wd']], traceback())
     msg <- paste0('Unexpected ', errmsg[[1]],
                   ' Contact package maintainer for help.')
     .log(v=ps[['v']], wd=ps[['wd']], msg)

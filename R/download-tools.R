@@ -4,35 +4,26 @@
 #' taxonomic ID.
 #' @param txid Taxonomic node ID, numeric
 #' @param phylt_nds PhyLoTa data.frame
-#' @param mx_len Maximum sequence length
-#' @param mdl_threshold Maximum sequences per species
 #' @param verbose Verbose? T/F
 #' @export
-# TODO: make uniform mx_len
-getSqsByTxid <- function(wd, txid, phylt_nds, mx_len=25000,
-                         mdl_thrshld=10000, verbose=FALSE) {
-  info(lvl=2, v=verbose, wd=wd, "Retrieving sequences for taxid [",
+getSqsByTxid <- function(txid, phylt_nds, ps) {
+  info(lvl=2, ps=ps, "Retrieving sequences for taxid [",
        txid, "]")
-  # get subtree counts if that is smaller than mdl_thrshld
-  subtree_count <- nSqs(txid, direct=FALSE,
-                        mx_len=mx_len, verbose=verbose)
-  if(subtree_count <= mdl_thrshld) {
-    info(lvl=3, v=verbose, wd=wd,
+  # get subtree counts if that is smaller than ps[['mdlt']]
+  subtree_count <- nSqs(txid, direct=FALSE, ps=ps)
+  if(subtree_count <= ps[['mdlt']]) {
+    info(lvl=3, ps=ps,
          '[', subtree_count, "] seqs for taxid [",
-        txid, "], less than maximum of [", mdl_thrshld,
+        txid, "], less than maximum of [", ps[['mdlt']],
         "] sequences. Retreiving sequences for whole subtree.")
-    sqs <- dwnldFrmNCBI(txid=txid, direct=FALSE, mx_lngth=mx_len,
-                        mx_sqs=mdl_thrshld, verbose=verbose)
+    sqs <- dwnldFrmNCBI(txid=txid, direct=FALSE, ps=ps)
     return(sqs)
   }
   # 1st direct sqs from focal taxon, then from DDs
-  sqs <- dwnldFrmNCBI(txid=txid, direct=TRUE, mx_lngth=mx_len,
-                      mx_sqs=mdl_thrshld, verbose=verbose)
+  sqs <- dwnldFrmNCBI(txid=txid, direct=TRUE, ps=ps)
   for(dd in getDDFrmPhyltNds(txid, phylt_nds)) {
     sqs <- c(sqs, getSqsByTxid(txid=dd, phylt_nds=phylt_nds,
-                               mx_len=mx_len,
-                               mdl_thrshld=mdl_thrshld,
-                               verbose=verbose))
+                               ps=ps))
   }
   sqs
 }
@@ -43,24 +34,21 @@ getSqsByTxid <- function(wd, txid, phylt_nds, mx_len=25000,
 #' given taxonomic IDs.
 #' @param txids Taxonomic node IDs, numeric vector
 #' @param phylt_nds PhyLoTa data.frame
-#' @param mdl_thrshld Maximum number of sequences per txid
-#' @param mx_sq_lngth Maximum sequence length
+#' @param ps[['mdlt']] Maximum number of sequences per txid
+#' @param ps[['mxsql']] Maximum sequence length
 #' @param verbose Verbose? T/F
 #' @details Sequence downloads are cached.
 #' @export
-dwnld <- function(wd, txids, phylt_nds, mdl_thrshld,
-                  mx_sq_lngth, verbose) {
+dwnld <- function(txids, phylt_nds, ps) {
   # TODO: add overwrite arg
   for(i in seq_along(txids)) {
     txid <- txids[i]
-    info(lvl=2, v=verbose, wd=wd,
+    info(lvl=2, ps=ps,
         "Downloading for taxid [", txid, "]: [", i, "/",
         length(txids), "]")
     sqs <- getSqsByTxid(txid=txid, phylt_nds=phylt_nds,
-                        mx_len=mx_sq_lngth,
-                        mdl_thrshld=mdl_thrshld,
-                        verbose=verbose)
-    svSqs(wd=wd, txid=txid, sqs=sqs)
+                        ps=ps)
+    svSqs(wd=ps[['wd']], txid=txid, sqs=sqs)
     # Move this sqdf to separate function
     #sqdf <- do.call(rbind, lapply(sqs, as.data.frame))
   }
@@ -69,10 +57,9 @@ dwnld <- function(wd, txids, phylt_nds, mdl_thrshld,
 #' @name fltr
 #' @title Get all node IDs that will be processed
 #' @description All nodes for which all children
-#' contain < mx_blst_sqs sequences
+#' contain < mxsqs sequences
 #' @export
-fltr <- function(wd, txid, phylt_nds, mdl_thrshld,
-                 mx_blst_sqs, verbose=FALSE) {
+fltr <- function(txid, phylt_nds, ps) {
   res <- vector()
   queue <- txid
   while(length(queue) > 0) {
@@ -80,24 +67,24 @@ fltr <- function(wd, txid, phylt_nds, mdl_thrshld,
     queue <- tail(queue, length(queue)-1)
     # get number of sequences to determine if it
     # is manageable to calculate clusters
-    info(lvl=3, v=verbose, wd=wd, "Counting species for taxon [",
+    info(lvl=3, ps=ps, "Counting species for taxon [",
         tmp_id, "]")
     nnonmodelsqs <- phylt_nds[match(tmp_id, phylt_nds[['ti']]),
                                'n_gi_sub_nonmodel']
     nmodelsqs <- phylt_nds[match(tmp_id, phylt_nds[['ti']]),
-                            'n_sp_model'] * mdl_thrshld
+                            'n_sp_model'] * ps[['mdlt']]
     nsqs <- nnonmodelsqs + nmodelsqs
-    info(lvl=3, v=verbose, wd=wd, "Number of sequences for taxon [",
+    info(lvl=3, ps=ps, "Number of sequences for taxon [",
         tmp_id, "]: [", nsqs, "]")
-    # if sequence count is smaller than mx_blst_sqs,
+    # if sequence count is smaller than ps[['mxsqs']],
     # add it to the phylt_nds to process
     # otherwise look up direct descendents
-    if(nsqs <= mx_blst_sqs) {
-      info(lvl=3, v=verbose, wd=wd, "Will process taxon [",
+    if(nsqs <= ps[['mxsqs']]) {
+      info(lvl=3, ps=ps, "Will process taxon [",
            tmp_id, "]")
       res <- c(res, tmp_id)
     } else {
-      info(lvl=3, v=verbose, wd=wd, "Too many seqs to blast for taxid [",
+      info(lvl=3, ps=ps, "Too many seqs to blast for taxid [",
           tmp_id, "] ... looking up direct descendents\n")
       queue <- c(queue, getDDFrmPhyltNds(tmp_id, phylt_nds))
     }

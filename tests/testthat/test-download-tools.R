@@ -4,7 +4,11 @@ library(testthat)
 
 # DATA
 data("phylt_nds")
-mdl_thrshld <- 3000
+ps <- list(wd=NULL, txid=9607,
+           tdpth=NULL, mxd=10000,
+           tmout=100, mdlt=3000,
+           mxsqs=10000, mxsql=25000,
+           mxretry=2, v=FALSE, ncps=1)
 
 # FUNCTIONS
 cleanUp <- function() {
@@ -13,15 +17,11 @@ cleanUp <- function() {
   }
 }
 # stub
-mckNSqs <- function(txid, direct=FALSE,
-                    mx_len=mx_len, verbose=verbose) {
+mckNSqs <- function(txid, ps, direct=FALSE) {
   # randomly return either > or < mdl_thrshld
-  sample(c(10, mdl_thrshld + 1), 1)
+  sample(c(10, ps[['mdlt']] + 1), 1)
 }
-mckDwnldFrmNCBI <- function(txid=txid, direct=FALSE,
-                            mx_lngth=mx_len,
-                            mx_sqs=mdl_thrshld,
-                            verbose=verbose) {
+mckDwnldFrmNCBI <- function(txid=txid, ps, direct=FALSE) {
   nsqs <- runif(n=1, min=1, max=10)
   sqs <- list()
   for(i in 1:nsqs) {
@@ -38,29 +38,26 @@ mckDwnldFrmNCBI <- function(txid=txid, direct=FALSE,
 context('Testing \'download-tools\'')
 cleanUp()
 test_that('getSqsByTxid() works', {
-  txids <- fltr(wd=NULL, txid=9479, phylt_nds=phylt_nds,
-                mdl_thrshld=mdl_thrshld,
-                mx_blst_sqs=10000,
-                verbose=FALSE)
+  txids <- fltr(txid=9479, phylt_nds=phylt_nds,
+                ps=ps)
   txid <- sample(txids, 1)
   res <- with_mock(
     `phylotaR::nSqs`=mckNSqs,
     `phylotaR::dwnldFrmNCBI`=mckDwnldFrmNCBI,
-    getSqsByTxid(wd=NULL, txid=txid, phylt_nds=phylt_nds,
-                 mx_len=25000, mdl_thrshld=mdl_thrshld,
-                 verbose=FALSE)
+    getSqsByTxid(txid=txid, phylt_nds=phylt_nds,
+                 ps=ps)
   )
   expect_true(class(res) == 'list')
 })
 test_that('dwnld() works', {
   dir.create('cache')
   txids <- sample(phylt_nds[['ti']], 10)
+  ps[['wd']] <- '.'
   res <- with_mock(
     `phylotaR::nSqs`=mckNSqs,
     `phylotaR::dwnldFrmNCBI`=mckDwnldFrmNCBI,
-    dwnld(wd='.', txids=txids, phylt_nds=phylt_nds,
-          mdl_thrshld=mdl_thrshld, mx_sq_lngth=10000,
-          verbose=FALSE)
+    dwnld(txids=txids, phylt_nds=phylt_nds,
+          ps=ps)
   )
   expect_null(res)
   expect_true(file.exists(file.path('cache', 'sqs',
@@ -70,14 +67,14 @@ test_that('dwnld() works', {
 test_that('fltr() works', {
   # TODO: not sure what the goal of filtr is, hard to test
   txid <- 9479
+  ps[['mdlt']] <- 3000
+  ps[['mxsqs']] <- 10000
   res_1 <- fltr(txid=txid, phylt_nds=phylt_nds,
-                mdl_thrshld=3000,
-                mx_blst_sqs=10000,
-                verbose=FALSE)
+                ps=ps)
+  ps[['mdlt']] <- 30
+  ps[['mxsqs']] <- 100
   res_2 <- fltr(txid=txid, phylt_nds=phylt_nds,
-                mdl_thrshld=30,
-                mx_blst_sqs=100,
-                verbose=FALSE)
+                ps=ps)
   expect_true(length(res_1) < length(res_2))
 })
 test_that('getDDFrmPhyltNds() works', {
