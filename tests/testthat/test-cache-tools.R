@@ -38,6 +38,19 @@ test_that('svPrgrss() works', {
   expect_true(is.na(rdPrgrss(wd='.')))
   cleanUp()
 })
+test_that('rstPrgrss() works', {
+  # create prgrss
+  setUpCch(ps=list('wd'='.'))
+  intPrgrss(wd='.')
+  svPrgrss(wd='.', stg='taxise')
+  svPrgrss(wd='.', stg='download')
+  svPrgrss(wd='.', stg='cluster')
+  svPrgrss(wd='.', stg='align')
+  # reset
+  rstPrgrss(wd='.', stg='download')
+  expect_true(rdPrgrss(wd='.') == 'download')
+  cleanUp()
+})
 test_that('setUpCch() works', {
   ps <- list('alovelyparameter'=1, 'wd'='.')
   setUpCch(ps=ps)

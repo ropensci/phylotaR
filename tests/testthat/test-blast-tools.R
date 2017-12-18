@@ -21,7 +21,7 @@ ps <- list('wd'=data_d, 'mkblstdb'='', 'blstn'='',
 
 # FUNCTIONS
 # stubs
-mckSystem <- function(command, stdout, stderr) {
+mckSystem <- function(command, args, stdout, stderr) {
   0
 }
 

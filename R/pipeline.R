@@ -178,9 +178,45 @@ chckStgs <- function(frm, to) {
 #' @title Reset a PhyLoTa pipeline run
 #' @description Resets the pipeline to a specified stage.
 #' @param wd Working directory
+#' @param stage Name of stage to which the pipeline will be reset
+#' @param hard T/F, delete all cached data?
 #' @export
-#' @seealso \code{\link{run}}
-reset <- function(wd) {
-  # TODO
-  # will have a hard and soft reset
+#' @seealso \code{\link{restart}}, \code{\link{setParameters}}
+reset <- function(wd, stage, hard=FALSE) {
+  if(!stage %in% c('taxise', 'download', 'cluster', 'align')) {
+    stop('Invalid stage name.')
+  }
+  ps <- ldPrmtrs(wd)
+  # TODO: hard/soft
+  rstPrgrss(wd=wd, stg=stage)
+  msg <- paste0('Reset pipeline to [', stage, ']')
+  brdr <- paste0(rep('-', nchar(msg)), collapse='')
+  msg <- paste0(brdr, '\n', msg, '\n', brdr)
+  info(ps=ps, lvl=1, msg)
+}
+
+#' @name setParameters
+#' @title Change parameters in a working directory
+#' @description Reset parameters afater running \code{setUp()}.
+#' @param wd Working directory
+#' @param parameters Parameters to be changed
+#' @param values New values for each parameter
+#' @export
+setParameters <- function(wd, parameters, values) {
+  # TODO: make parameters an object with pre-defined parameter types
+  ps <- ldPrmtrs(wd)
+  for(i in 1:length(parameters)) {
+    ps[[parameters[i]]] <- values[[i]]
+  }
+  svObj(wd=wd, obj=ps, nm='prmtrs')
+  msg <- paste0('The following parameters have been reset:')
+  brdr <- paste0(rep('-', nchar(msg)), collapse='')
+  info(lvl=1, ps=ps, paste0(brdr, '\n', msg))
+  mxnchrs <- max(sapply(parameters, nchar)) + 3
+  for(prmtr in parameters) {
+    spcr <- paste0(rep(' ', mxnchrs - nchar(prmtr)), collapse='')
+    prmtr_msg <- paste0(prmtr, spcr, '[', ps[[prmtr]], ']')
+    info(lvl=2, ps=ps, prmtr_msg)
+  }
+  info(lvl=1, ps=ps, brdr)
 }

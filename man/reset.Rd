@@ -4,14 +4,18 @@
 \alias{reset}
 \title{Reset a PhyLoTa pipeline run}
 \usage{
-reset(wd)
+reset(wd, stage, hard = FALSE)
 }
 \arguments{
 \item{wd}{Working directory}
+
+\item{stage}{Name of stage to which the pipeline will be reset}
+
+\item{hard}{T/F, delete all cached data?}
 }
 \description{
 Resets the pipeline to a specified stage.
 }
 \seealso{
-\code{\link{run}}
+\code{\link{restart}}, \code{\link{setParameters}}
 }

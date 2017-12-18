@@ -25,6 +25,22 @@ svPrgrss <- function(wd, stg) {
   saveRDS(object=prgrss, file=fl)
 }
 
+#' @name rstPrgrss
+#' @title Reset progress
+#' @description Reset progress to an earlier completed stage.
+#' @details For example, resettting the progress to 'download'
+#' mark stages 'download', 'cluster' and 'align' as un-run.
+#' @param wd Working directory
+#' @param stg Stage to which the pipeline will be reset
+#' @export
+rstPrgrss <- function(wd, stg) {
+  fl <- file.path(wd, 'cache', 'progress.RData')
+  prgrss <- readRDS(file=fl)
+  i <- which(names(prgrss) == stg)
+  prgrss[i:length(prgrss)] <- FALSE
+  saveRDS(object=prgrss, file=fl)
+}
+
 #' @name rdPrgrss
 #' @title Read the progress from cache
 #' @description Return the last completed stage using the cache.

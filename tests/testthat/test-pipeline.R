@@ -10,12 +10,12 @@ cleanUp <- function() {
 }
 
 # STUBS
-mckSystem <- function(cmd, intern, ignore.stderr) {
-  if(grepl('makeblastdb', cmd)) {
+mckSystem <- function(command, args, stdout, stderr) {
+  if(grepl('makeblastdb', command)) {
     res <- c("makeblastdb: 2.7.1+",
              " Package: blast 2.7.1, build Oct 18 2017 19:57:24")
   }
-  if(grepl('blastn', cmd)) {
+  if(grepl('blastn', command)) {
     res <- c("blastn: 2.7.1+", 
              " Package: blast 2.7.1, build Oct 18 2017 19:57:24")
   }
@@ -110,5 +110,15 @@ test_that('chckStgs() works', {
   expect_true(res == 'Running stages: align')
 })
 test_that('reset() works', {
-  
+  # TODO
 })
+test_that('setParameters() works', {
+  res <- with_mock(
+    `phylotaR:::.system`=mckSystem,
+    setUp(wd='.', txid=9606)
+  )
+  setParameters(wd='.', parameters='txid', values=0000)
+  expect_true(ldPrmtrs(wd='.')[['txid']] == 0000)
+  cleanUp()
+})
+cleanUp()

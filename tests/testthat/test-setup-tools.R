@@ -12,18 +12,18 @@ cleanUp <- function() {
   }
 }
 # stub
-mckSystem <- function(cmd, intern, ignore.stderr) {
-  if(grepl('makeblastdb', cmd)) {
+mckSystem <- function(command, args, stdout, stderr) {
+  if(grepl('makeblastdb', command)) {
     res <- c("makeblastdb: 2.7.1+",
              " Package: blast 2.7.1, build Oct 18 2017 19:57:24")
   }
-  if(grepl('blastn', cmd)) {
+  if(grepl('blastn', command)) {
     res <- c("blastn: 2.7.1+", 
              " Package: blast 2.7.1, build Oct 18 2017 19:57:24")
   }
-  if(grepl('wrngvrsn', cmd)) {
-    res <- res <- c("blastn: 2.6.1+", 
-                    " Package: blast 2.6.1, build Oct 18 2017 19:57:24")
+  if(grepl('wrngvrsn', command)) {
+    res <- c("blastn: 2.6.1+", 
+             " Package: blast 2.6.1, build Oct 18 2017 19:57:24")
   }
   res
 }
