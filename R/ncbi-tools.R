@@ -13,10 +13,15 @@ safeSrch <- function(func, args, fnm, ps) {
   for(i in 1:ps[['mxretry']]) {
     query <- try(do.call(func, args),
                  silent=TRUE)
-    if(!is(query, "try-error") ) {
+    if(!is(query, "try-error")) {
       res <- query
       break
     } else {
+      # ctrl+c
+      if(grepl('Operation was aborted by an application callback',
+            query[[1]])) {
+        stop(query[[1]])
+      }
       info(lvl=1, ps=ps, "Retry [", i, "] for [", fnm, ']')
     }
   }

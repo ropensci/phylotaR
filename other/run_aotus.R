@@ -10,3 +10,6 @@ txid <- 9504
 file.create(file.path(wd, 'log.txt'))
 setUp(wd=wd, txid=txid, ncbi_dr=ncbi_dr, tdpth=tdpth)
 run(wd=wd, nstages=3)
+
+wd <- '/home/dom/Desktop/testing_phylotaR/aotus'
+restart(wd=wd, nstages=3)

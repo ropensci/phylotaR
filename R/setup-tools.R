@@ -63,6 +63,7 @@ setUpPrmtrs <- function(wd, txid, ncbi_execs,
     info(lvl=2, ps=ps, prmtr_msg)
   }
   setUpCch(ps=ps)
+  intPrgrss(wd=wd)
 }
 
 #' @name setUpNcbiTools

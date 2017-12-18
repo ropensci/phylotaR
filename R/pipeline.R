@@ -67,7 +67,6 @@ runStgs <- function(wd, to, frm, stgs_msg, rstrt=FALSE) {
       if(!ps[['v']]) {
         cat('... Taxise\n')
       }
-      # Generate taxonomic 'nodes'
       runTaxise(wd)
       svPrgrss(wd, 'taxise')
     }
@@ -75,7 +74,6 @@ runStgs <- function(wd, to, frm, stgs_msg, rstrt=FALSE) {
       if(!ps[['v']]) {
         cat('... Download\n')
       }
-      # Download sequences
       runDownload(wd)
       svPrgrss(wd, 'download')
     }
@@ -83,7 +81,6 @@ runStgs <- function(wd, to, frm, stgs_msg, rstrt=FALSE) {
       if(!ps[['v']]) {
         cat('... Cluster\n')
       }
-      # Generate clusters
       runClusters(wd)
       svPrgrss(wd, 'cluster')
     }
@@ -91,7 +88,6 @@ runStgs <- function(wd, to, frm, stgs_msg, rstrt=FALSE) {
       if(!ps[['v']]) {
         cat('... Align\n')
       }
-      # Generate alignments
       runAlign(wd)
       svPrgrss(wd, 'align')
     }
@@ -111,9 +107,18 @@ runStgs <- function(wd, to, frm, stgs_msg, rstrt=FALSE) {
   info(ps=ps, lvl=1, stgs_msg)
   errmsg <- try(.run(), silent=TRUE)
   if('try-error' %in% is(errmsg)) {
+    # ctrl+c
+    if(grepl('Operation was aborted by an application callback',
+             errmsg[[1]])) {
+      msg <- paste0('---- Halted by user [', Sys.time(),
+                    '] ----')
+      .log(v=ps[['v']], wd=ps[['wd']], msg)
+      stop(msg)
+    }
     # unexpected pipeline error
-    msg <- paste0('Unexpected ', errmsg[[1]],
-                  ' Contact package maintainer for help.')
+    msg <- paste0('Unexpected ', errmsg[[1]], '\n',
+                  'Occurred [', Sys.time(), ']\n',
+                  'Contact package maintainer for help.\n')
     .log(v=ps[['v']], wd=ps[['wd']], msg)
     stop(msg)
   }
@@ -143,8 +148,8 @@ restart <- function(wd, nstages=4) {
     stop('Pipeline has already completed [', nstages,
          '] stages. Increase `nstages`.')
   }
-  stgs_msg <- chckStgs(frm=frm, to=to)
-  runStgs(wd=wd, frm=frm, to=nstages, stgs_msg=stgs_msg)
+  stgs_msg <- chckStgs(frm=frm, to=nstages)
+  runStgs(wd=wd, frm=frm, to=nstages, stgs_msg=stgs_msg, rstrt=TRUE)
 }
 
 #' @name chckStgs
