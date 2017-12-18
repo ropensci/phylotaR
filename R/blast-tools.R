@@ -22,7 +22,10 @@ mkBlstDB <- function(sqs, dbfl, ps) {
           file=fl, append=TRUE)
   }
   cmd <- paste(ps[['mkblstdb']], '-in', fl, '-dbtype nucl')
-  .system(cmd) == 0 || stop('Command ', cmd, 'did not return 0')
+  res <- .system(command=cmd, stdout=ps[['lgfl']], stderr=ps[['lgfl']])
+  if(res != 0) {
+    error(paste0('Command [', cmd, '] did not return 0'))
+  }
   # Check success
   extensions <- c('nhr', 'nin', 'nsq')
   fnames <- sapply(extensions, function(e) paste0(fl, '.', e))
@@ -57,7 +60,10 @@ blstN <- function(dbfl, outfl, ps) {
   cmd <- paste(ps[['blstn']], '-query', dbfl, '-db', dbfl, '-outfmt',
                outfmt, '-dust no -strand plus -evalue', ps[['mxeval']],
                '-out', outfl)
-  .system(cmd) == 0 || stop(paste0('Command [', cmd, '] did not return 0'))
+  res <- .system(command=cmd, stdout=ps[['lgfl']], stderr=ps[['lgfl']])
+  if(res != 0) {
+    error(paste0('Command [', cmd, '] did not return 0'))
+  }
   if(!file.exists(outfl)) {
     info(lvl=3, ps=ps, "No BLAST output, returning NULL")
     return(NULL)

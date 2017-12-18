@@ -182,4 +182,5 @@ chckStgs <- function(frm, to) {
 #' @seealso \code{\link{run}}
 reset <- function(wd) {
   # TODO
+  # will have a hard and soft reset
 }
