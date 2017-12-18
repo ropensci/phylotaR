@@ -12,6 +12,32 @@ cleanUp <- function() {
 # RUNNING
 context('Testing \'cache-tools\'')
 cleanUp()
+test_that('intPrgrss() works', {
+  setUpCch(ps=list('wd'='.'))
+  intPrgrss(wd='.')
+  expect_true(file.exists(file.path('cache', 'progress.RData')))
+  cleanUp()
+})
+test_that('rdPrgrss() works', {
+  setUpCch(ps=list('wd'='.'))
+  intPrgrss(wd='.')
+  stg <- rdPrgrss(wd='.')
+  expect_true(stg == 'taxise')
+  cleanUp()
+})
+test_that('svPrgrss() works', {
+  setUpCch(ps=list('wd'='.'))
+  intPrgrss(wd='.')
+  svPrgrss(wd='.', stg='taxise')
+  expect_true(rdPrgrss(wd='.') == 'download')
+  svPrgrss(wd='.', stg='download')
+  expect_true(rdPrgrss(wd='.') == 'cluster')
+  svPrgrss(wd='.', stg='cluster')
+  expect_true(rdPrgrss(wd='.') == 'align')
+  svPrgrss(wd='.', stg='align')
+  expect_true(is.na(rdPrgrss(wd='.')))
+  cleanUp()
+})
 test_that('setUpCch() works', {
   ps <- list('alovelyparameter'=1, 'wd'='.')
   setUpCch(ps=ps)

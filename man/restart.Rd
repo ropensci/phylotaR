@@ -4,10 +4,12 @@
 \alias{restart}
 \title{Restart a PhyLoTa pipeline run}
 \usage{
-restart(wd)
+restart(wd, nstages = 4)
 }
 \arguments{
 \item{wd}{Working directory}
+
+\item{nstages}{Number of total stages to run, max 4.}
 }
 \description{
 Restarts the running of a pipeline

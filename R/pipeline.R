@@ -41,56 +41,74 @@ setUp <- function(wd, txid, ncbi_dr='.', v=FALSE,
 #' Stages can also be run individually, see linked
 #' functions below.
 #' @param wd Working directory
-#' @param nstages number of stages to run
+#' @param nstages Number of total stages to run, max 4.
 #' @export
 #' @seealso \code{\link{restart}}, \code{\link{runTaxise}},
 #' \code{\link{runDownload}}, \code{\link{runClusters}},
 #' \code{\link{runAlign}}
 run <- function(wd, nstages=4) {
+  stgs_msg <- chckStgs(frm=1, to=nstages)
+  runStgs(wd=wd, frm=1, to=nstages, stgs_msg=stgs_msg)
+}
+
+#' @name runStgs
+#' @title Sequentially run each stage
+#' @description Runs stages from \code{frm} to \code{to}.
+#' Records stage progress in cache.
+#' @param wd Working directory
+#' @param to Total number of stages to run
+#' @param frm Starting stage to run from
+#' @param stgs_msg Printout stage message for log
+#' @param rstrt Restarting, T/F
+#' @export
+runStgs <- function(wd, to, frm, stgs_msg, rstrt=FALSE) {
   .run <- function() {
-    if(nstages >= 1) {
+    if(frm <= 1 & to >= 1) {
       if(!ps[['v']]) {
         cat('... Taxise\n')
       }
       # Generate taxonomic 'nodes'
       runTaxise(wd)
+      svPrgrss(wd, 'taxise')
     }
-    if(nstages >= 2) {
+    if(frm <= 2 & to >= 2) {
       if(!ps[['v']]) {
         cat('... Download\n')
       }
       # Download sequences
       runDownload(wd)
+      svPrgrss(wd, 'download')
     }
-    if(nstages >= 3) {
+    if(frm <= 3 & to >= 3) {
       if(!ps[['v']]) {
         cat('... Cluster\n')
       }
       # Generate clusters
       runClusters(wd)
+      svPrgrss(wd, 'cluster')
     }
-    if(nstages == 4) {
+    if(frm <= 4 & to >= 4) {
       if(!ps[['v']]) {
         cat('... Align\n')
       }
       # Generate alignments
       runAlign(wd)
+      svPrgrss(wd, 'align')
     }
   }
-  # TODO: save progress
   ps <- ldPrmtrs(wd)
   # header log
-  msg <- paste0('Running pipeline on [', .Platform$OS.type,
-                '] at [', Sys.time(), ']')
+  if(rstrt) {
+    msg <- paste0('Restarting pipeline on [', .Platform$OS.type,
+                  '] at [', Sys.time(), ']')
+  } else {
+    msg <- paste0('Running pipeline on [', .Platform$OS.type,
+                  '] at [', Sys.time(), ']')
+  }
   brdr <- paste0(rep('-', nchar(msg)), collapse='')
   msg <- paste0(brdr, '\n', msg, '\n', brdr)
   info(ps=ps, lvl=1, msg)
-  if(nstages < 1) {
-    error(ps=ps, '`nstages` is less than 1.')
-  }
-  if(nstages > 4) {
-    error(ps=ps, '`nstages` is greater than 4.')
-  }
+  info(ps=ps, lvl=1, stgs_msg)
   errmsg <- try(.run(), silent=TRUE)
   if('try-error' %in% is(errmsg)) {
     # unexpected pipeline error
@@ -111,10 +129,44 @@ run <- function(wd, nstages=4) {
 #' @description Restarts the running of a pipeline
 #' as started with \code{run}.
 #' @param wd Working directory
+#' @param nstages Number of total stages to run, max 4.
 #' @export
 #' @seealso \code{\link{run}}
-restart <- function(wd) {
-  # TODO
+restart <- function(wd, nstages=4) {
+  stg <- rdPrgrss(wd)
+  if(is.na(stg)) {
+    stop('Pipeline already complete. Use `reset()` to re-run pipeline.')
+  }
+  frm <- which(c('taxise', 'download', 'cluster', 'align')
+                %in% stg)
+  if(frm > nstages) {
+    stop('Pipeline has already completed [', nstages,
+         '] stages. Increase `nstages`.')
+  }
+  stgs_msg <- chckStgs(frm=frm, to=to)
+  runStgs(wd=wd, frm=frm, to=nstages, stgs_msg=stgs_msg)
+}
+
+#' @name chckStgs
+#' @title Check to and frm stage numbers
+#' @description Ensure stage numbers, return stage print message.
+#' @param frm Starting stage
+#' @param to Ending stage
+#' @export
+#' @seealso \code{\link{run}}
+chckStgs <- function(frm, to) {
+  if(to < 1 | frm < 1) {
+    stop('Total stages to run cannot be less than 1.')
+  }
+  if(to > 4 | frm > 4) {
+    stop('Total stages to run cannot be more than 4.')
+  }
+  if(frm > to) {
+    stop('Starting stage must always come before ending stage.')
+  }
+  stgs <- c('taxise', 'download', 'cluster', 'align')
+  stgs_msg <- paste0(stgs[frm:to], collapse = ', ')
+  paste0('Running stages: ', stgs_msg)
 }
 
 #' @name reset

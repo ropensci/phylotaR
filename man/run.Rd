@@ -9,7 +9,7 @@ run(wd, nstages = 4)
 \arguments{
 \item{wd}{Working directory}
 
-\item{nstages}{number of stages to run}
+\item{nstages}{Number of total stages to run, max 4.}
 }
 \description{
 Run the entire PhyLoTa pipeline.

@@ -1,4 +1,41 @@
 
+#' @name intPrgrss
+#' @title Initialise progress list in cache
+#' @description Creates a progress list recording each
+#' stage run in cache
+#' @param wd Working directory
+#' @export
+intPrgrss <- function(wd) {
+  prgrss <- rep(FALSE, 4)
+  names(prgrss) <- c('taxise', 'download',
+                     'cluster', 'align')
+  fl <- file.path(wd, 'cache', 'progress.RData')
+  saveRDS(object=prgrss, file=fl)
+}
+
+#' @name svPrgrss
+#' @title Save current progress
+#' @description Stores the pipeline progress in the cache.
+#' @param wd Working directory
+#' @export
+svPrgrss <- function(wd, stg) {
+  fl <- file.path(wd, 'cache', 'progress.RData')
+  prgrss <- readRDS(file=fl)
+  prgrss[[stg]] <- TRUE
+  saveRDS(object=prgrss, file=fl)
+}
+
+#' @name rdPrgrss
+#' @title Read the progress from cache
+#' @description Return the last completed stage using the cache.
+#' @param wd Working directory
+#' @export
+rdPrgrss <- function(wd) {
+  fl <- file.path(wd, 'cache', 'progress.RData')
+  prgrss <- readRDS(file=fl)
+  names(prgrss)[sum(prgrss) + 1]
+}
+
 #' @name setUpCch
 #' @title Set-up a cache
 #' @description Creates a cache of parameters in the wd.
