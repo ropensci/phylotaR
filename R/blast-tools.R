@@ -21,8 +21,9 @@ mkBlstDB <- function(sqs, dbfl, ps) {
     write(paste0("> ", gi, "\n", sqs[[as.character(gi)]][['seq']]),
           file=fl, append=TRUE)
   }
-  cmd <- paste(ps[['mkblstdb']], '-in', fl, '-dbtype nucl')
-  res <- .system(command=cmd, stdout=ps[['lgfl']], stderr=ps[['lgfl']])
+  args <- c('-in', fl, '-dbtype nucl')
+  res <- .system(command=ps[['mkblstdb']], args=args,
+                 stdout=ps[['lgfl']], stderr=ps[['lgfl']])
   if(res != 0) {
     error(paste0('Command [', cmd, '] did not return 0'))
   }
@@ -57,10 +58,11 @@ blstN <- function(dbfl, outfl, ps) {
   # TODO: We don't really need all these columns...
   outfmt <- "'6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore qcovs qcovhsp'"
   # Disable DUST filtering, limit to same-strang matching
-  cmd <- paste(ps[['blstn']], '-query', dbfl, '-db', dbfl, '-outfmt',
-               outfmt, '-dust no -strand plus -evalue', ps[['mxeval']],
-               '-out', outfl)
-  res <- .system(command=cmd, stdout=ps[['lgfl']], stderr=ps[['lgfl']])
+  args <- c('-query', dbfl, '-db', dbfl, '-outfmt',
+            outfmt, '-dust no -strand plus -evalue', ps[['mxeval']],
+            '-out', outfl)
+  res <- .system(command=ps[['blstn']], args=args, stdout=ps[['lgfl']],
+                 stderr=ps[['lgfl']])
   if(res != 0) {
     error(paste0('Command [', cmd, '] did not return 0'))
   }
