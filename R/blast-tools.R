@@ -23,7 +23,7 @@ mkBlstDB <- function(sqs, dbfl, ps) {
   }
   args <- c('-in', fl, '-dbtype nucl')
   res <- .system(command=ps[['mkblstdb']], args=args,
-                 stdout=ps[['lgfl']], stderr=ps[['lgfl']])
+                 stdout=FALSE, stderr=FALSE)
   if(res != 0) {
     error(paste0('Command [', cmd, '] did not return 0'))
   }
@@ -61,8 +61,8 @@ blstN <- function(dbfl, outfl, ps) {
   args <- c('-query', dbfl, '-db', dbfl, '-outfmt',
             outfmt, '-dust no -strand plus -evalue', ps[['mxeval']],
             '-out', outfl)
-  res <- .system(command=ps[['blstn']], args=args, stdout=ps[['lgfl']],
-                 stderr=ps[['lgfl']])
+  res <- .system(command=ps[['blstn']], args=args, stdout=FALSE,
+                 stderr=FALSE)
   if(res != 0) {
     error(paste0('Command [', cmd, '] did not return 0'))
   }

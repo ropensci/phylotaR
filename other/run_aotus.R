@@ -14,3 +14,6 @@ run(wd=wd, nstages=3)
 # restart
 wd <- '/home/dom/Desktop/testing_phylotaR/aotus'
 restart(wd=wd, nstages=3)
+
+# TODO:
+# create blast log output, otherwise it overwrites the log.txt
