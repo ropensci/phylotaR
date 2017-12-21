@@ -46,28 +46,41 @@ calcClstrs <- function(txid, phylt_nds, ps) {
     cldf <- clstrPhylt(clstrs=clstrs)
     cigidf <- clstrCiGi(clstrs=clstrs)
     # output
-    info(lvl=1, ps=ps, "Taxid [", txid, "]: writing [", nrow(cldf),
-        "] clusters, [", length(sqs), "] sequences, [",
-        nrow(cigidf), "] ci_gi entries to file")
-    # TODO move these to sep. func
-    clstrs_fl <- file.path(ps[['wd']], paste0('dbfiles-', root_txid,
-                                      '-clusters.tsv'))
-    sqs_fl <- file.path(ps[['wd']], paste0('dbfiles-', root_txid,
-                                   '-seqs.tsv'))
-    ci_gi_fl <- file.path(ps[['wd']], paste0('dbfiles-', root_txid,
-                                     '-ci_gi.tsv'))
-    write.table(cldf, file=clstrs_fl, append=file.exists(clstrs_fl),
-                quote=FALSE, sep="\t", row.names=FALSE,
-                col.names=!file.exists(clstrs_fl))
-    # write.table(seqdf, file=sqs_fl, append=file.exists(sqs_fl),
-    #             quote=FALSE, sep="\t", row.names=FALSE,
-    #             col.names=!file.exists(sqs_fl))
-    write.table(cigidf, file=ci_gi_fl, append=file.exists(ci_gi_fl),
-                quote=FALSE, sep="\t", row.names=FALSE,
-                col.names=!file.exists(ci_gi_fl))
+    writeClstr(cldf, cigidf, sqs, ps)
     info(lvl=1, ps=ps, "Finished processing taxid [", txid, "] # [",
         i, "/", length(sq_fls), "]")
   }
+}
+
+#' @name writeClstr
+#' @title Write out PhyLoTa cluster
+#' @description Takes PhyLoTa data.frame and writes
+#' as .tsv
+#' @param phylt_nds PhyLoTa nodes data.frame
+#' @details PhyLoTa data.frame must be informed by
+#' clustering functions before writing out.
+#' @export
+# TODO
+writeClstr <- function(cldf, cigidf, sqs, ps) {
+  clstrs_fl <- file.path(ps[['wd']], paste0('dbfiles-', root_txid,
+                                            '-clusters.tsv'))
+  sqs_fl <- file.path(ps[['wd']], paste0('dbfiles-', root_txid,
+                                         '-seqs.tsv'))
+  ci_gi_fl <- file.path(ps[['wd']], paste0('dbfiles-', root_txid,
+                                           '-ci_gi.tsv'))
+  sqdf <- do.call(rbind, lapply(sqs, as.data.frame))
+  info(lvl=1, ps=ps, "Taxid", txid, ": writing",
+       nrow(cldf), "clusters,", nrow(sqdf), "sequences,",
+       nrow(cigidf), "ci_gi entries to file")
+  write.table(cldf, file=clstrs_fl, append=file.exists(clstrs_fl),
+              quote=FALSE, sep="\t", row.names=FALSE,
+              col.names=!file.exists(clstrs_fl))
+  write.table(sqdf, file=sqs_fl, append=file.exists(sqs_fl),
+              quote=FALSE, sep="\t", row.names=FALSE,
+              col.names=!file.exists(sqs_fl))
+  write.table(cigidf, file=ci_gi_fl, append=file.exists(ci_gi_fl),
+              quote=FALSE, sep="\t", row.names=FALSE,
+              col.names=!file.exists(ci_gi_fl))
 }
 
 #' @name clstrSqs
@@ -164,33 +177,6 @@ clstrSqs <- function(txid, sqs, phylt_nds, ps,
     }
   }
   all_clstrs
-}
-
-#' @name writeClstr
-#' @title Write out PhyLoTa cluster
-#' @description Takes PhyLoTa data.frame and writes
-#' as .tsv
-#' @param phylt_nds PhyLoTa nodes data.frame
-#' @details PhyLoTa data.frame must be informed by
-#' clustering functions before writing out.
-#' @export
-# TODO
-writeClstr <- function(phylt_nds, ps) {
-  ## Write all data to file
-  info(lvl=1, ps=ps, "Taxid", txid, ": writing",
-       nrow(cldf), "clusters,", nrow(seqdf), "sequences,",
-       nrow(cigidf), "ci_gi entries to file")
-  write.table(cldf, file=clusters.file, append=file.exists(clusters.file),
-              quote=FALSE, sep="\t", row.names=FALSE,
-              col.names=!file.exists(clusters.file))
-  write.table(seqdf, file=seqs.file, append=file.exists(seqs.file),
-              quote=FALSE, sep="\t", row.names=FALSE,
-              col.names=!file.exists(seqs.file))
-  write.table(cigidf, file=ci_gi.file, append=file.exists(ci_gi.file),
-              quote=FALSE, sep="\t", row.names=FALSE,
-              col.names=!file.exists(ci_gi.file))
-  info(lvl=1, ps=ps, "Finished processing taxid ", txid,
-       " # ", i, " / ", length(txids), "]")
 }
 
 #' @name getADs

@@ -4,7 +4,7 @@
 \alias{writeClstr}
 \title{Write out PhyLoTa cluster}
 \usage{
-writeClstr(phylt_nds, ps)
+writeClstr(cldf, cigidf, sqs, ps)
 }
 \arguments{
 \item{phylt_nds}{PhyLoTa nodes data.frame}

@@ -7,6 +7,11 @@ data("phylt_nds")
 data('sqs')
 data('blst_rs')
 ps <- list('wd'='.', 'v'=FALSE)
+clstr <- list("gis"=NA, "seed_gi"=NA, "ti_root"=NA, "ci"=NA,
+              "cl_type"=NA, "n_gi"=1, "tis"=NA, "n_ti"=NA,
+              "MinLength"=NA, "MaxLength"=NA, "n_gen"=NA,
+              "n_child"=NA, "ci_anc"=NA, "unique_id"=NA)
+clstrs <- list(clstr, clstr, clstr)
 
 # FUNCTIONS
 # stubs
@@ -20,13 +25,31 @@ mckMkBlstDB <- function(sqs, dbfl, ps) {
 # RUNNING
 context('Testing \'cluster-tools\'')
 test_that('clstrPhylt() works', {
-  
+  phylt_nds <- clstrPhylt(clstrs=clstrs)
+  expect_true(nrow(phylt_nds) == 3)
 })
 test_that('clstrCiGi() works', {
-  
+  cigi <- clstrCiGi(clstrs=clstrs)
+  expect_true(nrow(cigi) == 3)
 })
 test_that('clstrSqs() works', {
-  
+  ps <- list('v'=FALSE)
+  txid <- sample(phylt_nds[['ti']], 1)
+  res <- with_mock(
+    `phylotaR::blstN`=mckBlstN,
+    `phylotaR::mkBlstDB`=mckMkBlstDB,
+    clstrSqs(txid=txid, sqs=sqs, phylt_nds=phylt_nds,
+             ps=ps)
+  )
+  expect_true('list' %in% is(res))
+  res <- with_mock(
+    `phylotaR::blstN`=mckBlstN,
+    `phylotaR::mkBlstDB`=mckMkBlstDB,
+    clstrSqs(txid=9479, sqs=sqs, phylt_nds=phylt_nds,
+             ps=ps)
+  )
+  # using the platyrrhini txid we should get more res
+  expect_true(length(res) > 0)
 })
 test_that('calcClstrs() works', {
   

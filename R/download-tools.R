@@ -49,8 +49,6 @@ dwnld <- function(txids, phylt_nds, ps) {
     sqs <- getSqsByTxid(txid=txid, phylt_nds=phylt_nds,
                         ps=ps)
     svSqs(wd=ps[['wd']], txid=txid, sqs=sqs)
-    # Move this sqdf to separate function
-    #sqdf <- do.call(rbind, lapply(sqs, as.data.frame))
   }
 }
 
