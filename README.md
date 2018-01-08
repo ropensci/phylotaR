@@ -7,5 +7,26 @@ R implementation of the phylota sequence cluster pipeline (http://phylota.net/).
 Currently only devlopment package is available:
 
 ```r
-devtools::install_github('DomBennett/phylotaR')
+devtools::install_github(repo='DomBennett/phylotaR', build_vignettes=TRUE)
 ```
+
+## Running
+
+Once installed, please refer to the tutorial vignette for a guide on how to run the pipeline.
+
+```r
+library(phylotaR)
+vignette("phylotaR")
+```
+
+## License
+
+GPL-2
+
+## Version
+
+Development version 0.1
+
+## Authors
+
+Dom Bennett (maintainer, R package dev), Hannes Hettling (workhouse code dev), Rutger Vos, Alexander Zizka and Alexandre Antonelli
