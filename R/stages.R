@@ -31,7 +31,8 @@ runTaxise <- function(wd) {
   svObj(wd=wd, obj=phylt_nds, nm='phylt_nds')
   writeTax(phylt_nds=phylt_nds, td_nms=tdobj[['nms']],
            fl=file.path(wd, paste0('dbfiles-taxonomy-',
-                                   txid, '.tsv')), ps=ps)
+                                   ps[['txid']], '.tsv')),
+           ps=ps)
   # stage print
   msg <- paste0('Completed stage TAXISE: [', Sys.time(), ']')
   .stgMsg(ps=ps, msg=msg)
@@ -72,7 +73,7 @@ runClusters <- function(wd) {
   # Get PhyLoTa nodes
   phylt_nds <- ldObj(wd=wd, nm='phylt_nds')
   # generate clusters
-  calcClstrs(txid=txid, phylt_nds=phylt_nds, ps=ps)
+  calcClstrs(txid=ps[['txid']], phylt_nds=phylt_nds, ps=ps)
   # stage print
   msg <- paste0('Completed stage CLUSTER: [', Sys.time(), ']')
   .stgMsg(ps=ps, msg=msg)

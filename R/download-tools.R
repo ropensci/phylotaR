@@ -76,7 +76,7 @@ fltr <- function(txid, phylt_nds, ps) {
         tmp_id, "]: [", nsqs, "]")
     # if sequence count is smaller than ps[['mxsqs']],
     # add it to the phylt_nds to process
-    # otherwise look up direct descendents
+    # otherwise look up direct descendants
     if(nsqs <= ps[['mxsqs']]) {
       info(lvl=3, ps=ps, "Will process taxon [",
            tmp_id, "]")
