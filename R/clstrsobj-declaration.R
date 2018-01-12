@@ -5,9 +5,16 @@ chckClstrsObj <- function(object) {
 }
 
 #' @name ClstrsObj-class
+#' @aliases ClstrsObj-method
+#' @param x \code{ClstrsObj} object
+#' @param object \code{ClstrsObj} object
 #' @title ClstrsObj-class
-#' @description Cluster holder
+#' @description Clusters Object contains sequences and clusters information.
+#' @slot sqs All sequences
+#' @slot clstrs All clstrs
 #' @exportClass ClstrsObj
+#' @seealso 
+#' \code{\link{genClstrsObj}}
 setClass('ClstrsObj', representation=representation(
   sqs='list',
   clstrs='list'),
