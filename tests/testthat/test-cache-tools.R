@@ -94,4 +94,25 @@ test_that('ldObj() works', {
   expect_true(obj[[1]] == 'interestingthings')
   cleanUp()
 })
+test_that('svNcbiCch() works', {
+  setUpCch(ps=list('wd'='.'))
+  args <- list('this', 'and', 'that')
+  fnm <- 'rentrezfunction'
+  obj <- 'important_result'
+  exptd <- file.path('cache', 'ncbi',
+                     'rentrezfunction_this_and_that.RData')
+  svNcbiCch(fnm=fnm, args=args, wd='.', obj=obj)
+  expect_true(file.exists(exptd))
+  cleanUp()
+})
+test_that('ldNcbiCch() works', {
+  setUpCch(ps=list('wd'='.'))
+  args <- list('this', 'and', 'that')
+  fnm <- 'rentrezfunction'
+  obj <- 'important_result'
+  svNcbiCch(fnm=fnm, args=args, wd='.', obj=obj)
+  res <- ldNcbiCch(fnm=fnm, args=args, wd='.')
+  expect_equal(obj, res)
+  cleanUp()
+})
 cleanUp()

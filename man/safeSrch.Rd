@@ -18,4 +18,6 @@ safeSrch(func, args, fnm, ps)
 \description{
 Safely run a rentrez function.
 If the query fails, the function will retry.
+All query results are cached. To remove cached data
+use hard reset.
 }

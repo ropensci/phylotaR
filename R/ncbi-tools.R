@@ -2,6 +2,8 @@
 #' @title Safely run rentrez function
 #' @description Safely run a rentrez function.
 #' If the query fails, the function will retry.
+#' All query results are cached. To remove cached data
+#' use hard reset.
 #' @param func rentrez function
 #' @param args rentrez function arguments, list
 #' @param fnm rentrez function name
@@ -9,7 +11,10 @@
 #' @export
 safeSrch <- function(func, args, fnm, ps) {
   # TODO: wait times?
-  res <- NULL
+  res <- ldNcbiCch(fnm=fnm, args=args, wd=ps[['wd']])
+  if(!is.null(res)) {
+    return(res)
+  }
   for(i in 1:ps[['mxretry']]) {
     query <- try(do.call(func, args),
                  silent=TRUE)
@@ -25,6 +30,7 @@ safeSrch <- function(func, args, fnm, ps) {
       info(lvl=1, ps=ps, "Retry [", i, "] for [", fnm, ']')
     }
   }
+  svNcbiCch(fnm=fnm, args=args, wd=ps[['wd']], obj=res)
   res
 }
 

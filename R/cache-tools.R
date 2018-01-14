@@ -71,6 +71,9 @@ setUpCch <- function(ps, ovrwrt=FALSE) {
     }
   }
   dir.create(d)
+  dir.create(file.path(d, 'ncbi'))
+  dir.create(file.path(d, 'sqs'))
+  dir.create(file.path(d, 'blast'))
   saveRDS(object=ps,
           file=file.path(d, 'prmtrs.RData'))
 }
@@ -192,4 +195,35 @@ ldSqs <- function(wd=wd, txid=txid) {
     stop(paste0('[', txid, '] not in `sqs` of cache.'))
   }
   readRDS(file=fl)
+}
+
+#' @name ldNcbiCch
+#' @title Retrieve cached NCBI query
+#' @description Run this function to load cached NCBI queries.
+#' @param fnm NCBI Entrez function name
+#' @param args Args used for function
+#' @param wd Working directory
+#' @export
+ldNcbiCch <- function(fnm, args, wd) {
+  flnm <- paste0(fnm, '_', paste0(args, collapse='_'), '.RData')
+  flpth <- file.path(wd, 'cache', 'ncbi', flnm)
+  if(file.exists(flpth)) {
+    return(readRDS(flpth))
+  }
+  NULL
+}
+
+#' @name svNcbiCch
+#' @title Save NCBI query result to cache
+#' @description Run whenever NCBI queries are made to save
+#' results in cache in case the pipeline is run again.
+#' @param fnm NCBI Entrez function name
+#' @param args Args used for function
+#' @param wd Working directory
+#' @param obj NCBI query result
+#' @export
+svNcbiCch <- function(fnm, args, wd, obj) {
+  flnm <- paste0(fnm, '_', paste0(args, collapse='_'), '.RData')
+  flpth <- file.path(wd, 'cache', 'ncbi', flnm)
+  saveRDS(object=obj, file=flpth)
 }

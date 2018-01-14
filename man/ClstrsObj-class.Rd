@@ -3,6 +3,7 @@
 \docType{class}
 \name{ClstrsObj-class}
 \alias{ClstrsObj-class}
+\alias{ClstrsObj-method}
 \alias{as.character,ClstrsObj-method}
 \alias{show,ClstrsObj-method}
 \alias{print,ClstrsObj-method}
@@ -20,6 +21,22 @@
 
 \S4method{summary}{ClstrsObj}(object)
 }
+\arguments{
+\item{x}{\code{ClstrsObj} object}
+
+\item{object}{\code{ClstrsObj} object}
+}
 \description{
-Cluster holder
+Clusters Object contains sequences and clusters information.
+}
+\section{Slots}{
+
+\describe{
+\item{\code{sqs}}{All sequences}
+
+\item{\code{clstrs}}{All clstrs}
+}}
+
+\seealso{
+\code{\link{genClstrsObj}}
 }

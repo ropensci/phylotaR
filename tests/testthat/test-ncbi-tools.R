@@ -3,7 +3,7 @@ library(phylotaR)
 library(testthat)
 
 # DATA
-ps <- list(wd=NULL, txid=9607,
+ps <- list(wd='.', txid=9607,
            tdpth=NULL, mxd=10000,
            tmout=100, mdlt=3000,
            mxsqs=10000, mxsql=25000,
@@ -20,6 +20,11 @@ randSummary <- function() {
   list(uid=NA, txid=NA, caption=NA,
        accessionversion=NA,
        slen=NA, createdate=NA, title=NA)
+}
+cleanUp <- function() {
+  if(file.exists('cache')) {
+    unlink('cache', recursive=TRUE)
+  }
 }
 # stubs
 mckEntrezSearch <- function(db, term,
@@ -56,8 +61,10 @@ mckEntrezSummary <- function(db, web_history,
 }
 
 # RUNNING
+cleanUp()
 context('Testing \'ncbi-tools\'')
 test_that('safeSrch() works', {
+  setUpCch(ps=ps)
   args <- list('this and that')
   myfunc <- function(...) {
     print(...)
@@ -65,7 +72,7 @@ test_that('safeSrch() works', {
   }
   res <- safeSrch(func=myfunc,
                   args=args,
-                  fnm='print()',
+                  fnm='print',
                   ps=ps)
   expect_true(res == 1)
   myfunc <- function(...) {
@@ -74,11 +81,13 @@ test_that('safeSrch() works', {
   }
   res <- safeSrch(func=myfunc,
                   args=args,
-                  fnm='print()',
+                  fnm='print2',
                   ps=ps)
   expect_null(res)
+  cleanUp()
 })
 test_that('nSqs', {
+  setUpCch(ps=ps)
   res <- with_mock(
     `phylotaR::safeSrch`=function(func,
                                   args,
@@ -99,10 +108,12 @@ test_that('nSqs', {
     nSqs(txid=9606, direct=TRUE, ps=ps)
   )
   expect_true(grepl(':noexp', res[['term']]))
+  cleanUp()
 })
 test_that('dwnldFrmNCBI', {
   # n determines the number of available seqs.
   n <- 0
+  setUpCch(ps=ps)
   res <- with_mock(
     `rentrez::entrez_search`=mckEntrezSearch,
     `rentrez::entrez_fetch`=mckEntrezFetch,
@@ -111,6 +122,8 @@ test_that('dwnldFrmNCBI', {
   )
   expect_true(class(res) == 'list')
   expect_true(length(res) == 0)
+  cleanUp()
+  setUpCch(ps=ps)
   n <<- 1
   res <- with_mock(
     `rentrez::entrez_search`=mckEntrezSearch,
@@ -119,6 +132,8 @@ test_that('dwnldFrmNCBI', {
     dwnldFrmNCBI(txid=1, direct=FALSE, ps=ps)
   )
   expect_true(length(res) == 1)
+  cleanUp()
+  setUpCch(ps=ps)
   n <<- 100
   res <- with_mock(
     `rentrez::entrez_search`=mckEntrezSearch,
@@ -127,6 +142,8 @@ test_that('dwnldFrmNCBI', {
     dwnldFrmNCBI(txid=1, direct=FALSE, ps=ps)
   )
   expect_true(length(res) == 100)
+  cleanUp()
+  setUpCch(ps=ps)
   n <<- 1000
   res <- with_mock(
     `rentrez::entrez_search`=mckEntrezSearch,
@@ -135,4 +152,6 @@ test_that('dwnldFrmNCBI', {
     dwnldFrmNCBI(txid=1, direct=FALSE, ps=ps)
   )
   expect_true(length(res) == 1000)
+  cleanUp()
 })
+cleanUp()
