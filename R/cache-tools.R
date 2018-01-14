@@ -205,8 +205,9 @@ ldSqs <- function(wd=wd, txid=txid) {
 #' @param wd Working directory
 #' @export
 ldNcbiCch <- function(fnm, args, wd) {
-  flnm <- paste0(fnm, '_', paste0(args, collapse='_'), '.RData')
-  flpth <- file.path(wd, 'cache', 'ncbi', flnm)
+  flnm <- paste0(fnm, '_', paste0(args, collapse='_'))
+  flnm <- gsub(pattern="[^a-zA-Z0-9_]", replacement='', x=flnm)
+  flpth <- file.path(wd, 'cache', 'ncbi', paste0(flnm, '.RData'))
   if(file.exists(flpth)) {
     return(readRDS(flpth))
   }
@@ -223,7 +224,59 @@ ldNcbiCch <- function(fnm, args, wd) {
 #' @param obj NCBI query result
 #' @export
 svNcbiCch <- function(fnm, args, wd, obj) {
-  flnm <- paste0(fnm, '_', paste0(args, collapse='_'), '.RData')
-  flpth <- file.path(wd, 'cache', 'ncbi', flnm)
+  flnm <- paste0(fnm, '_', paste0(args, collapse='_'))
+  flnm <- gsub(pattern="[^a-zA-Z0-9_]", replacement='', x=flnm)
+  flpth <- file.path(wd, 'cache', 'ncbi', paste0(flnm, '.RData'))
   saveRDS(object=obj, file=flpth)
+}
+
+#' @name ldBlstCch
+#' @title Load BLAST results from cache
+#' @description Run to load cached BLAST results.
+#' @param sqs Sequences
+#' @param wd Working dir
+#' @param obj BLAST result
+#' @export
+ldBlstCch <- function(sqs, wd) {
+  # fldctnry contains all the IDs of the sequences used in a BLAST
+  fldctnry_pth <- file.path(wd, 'cache', 'blast', 'fldctnry.RData')
+  if(file.exists(fldctnry_pth)) {
+    fldctnry <- readRDS(fldctnry_pth)
+  } else {
+    return(NULL)
+  }
+  sqids <- sapply(sqs, function(x) x[['gi']])
+  names(sqids) <- NULL
+  pull <- sapply(fldctnry, function(x) all(sqids %in% x) & all(x %in% sqids))
+  if(sum(pull) == 0) {
+    return(NULL)
+  }
+  flnm <- paste0(which(pull), '.RData')
+  flpth <- file.path(wd, 'cache', 'blast', flnm)
+  readRDS(file=flpth)
+}
+
+#' @name svBlstCch
+#' @title Save BLAST results to cache
+#' @description Run whenever local BLAST runs are made to save
+#' results in cache in case the pipeline is run again.
+#' @param sqs Sequences
+#' @param wd Working dir
+#' @param obj BLAST result
+#' @export
+svBlstCch <- function(sqs, wd, obj) {
+  # fldctnry contains all the IDs of the sequences used in a BLAST
+  fldctnry_pth <- file.path(wd, 'cache', 'blast', 'fldctnry.RData')
+  if(file.exists(fldctnry_pth)) {
+    fldctnry <- readRDS(fldctnry_pth)
+  } else {
+    fldctnry <- list()
+  }
+  sqids <- sapply(sqs, function(x) x[['gi']])
+  names(sqids) <- NULL
+  fldctnry[[length(fldctnry) + 1]] <- sqids
+  flnm <- paste0(length(fldctnry), '.RData')
+  flpth <- file.path(wd, 'cache', 'blast', flnm)
+  saveRDS(object=obj, file=flpth)
+  saveRDS(object=fldctnry, file=fldctnry_pth)
 }

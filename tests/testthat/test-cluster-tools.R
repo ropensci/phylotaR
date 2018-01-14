@@ -14,6 +14,11 @@ clstr <- list("gis"=NA, "seed_gi"=NA, "ti_root"=NA, "ci"=NA,
 clstrs <- list(clstr, clstr, clstr)
 
 # FUNCTIONS
+cleanUp <- function() {
+  if(file.exists('cache')) {
+    unlink('cache', recursive=TRUE)
+  }
+}
 # stubs
 mckBlstN <- function(dbfl, outfl, ps) {
   blst_rs
@@ -23,17 +28,10 @@ mckMkBlstDB <- function(sqs, dbfl, ps) {
 }
 
 # RUNNING
+cleanUp()
 context('Testing \'cluster-tools\'')
-test_that('clstrPhylt() works', {
-  phylt_nds <- clstrPhylt(clstrs=clstrs)
-  expect_true(nrow(phylt_nds) == 3)
-})
-test_that('clstrCiGi() works', {
-  cigi <- clstrCiGi(clstrs=clstrs)
-  expect_true(nrow(cigi) == 3)
-})
 test_that('clstrSqs() works', {
-  ps <- list('v'=FALSE)
+  setUpCch(ps=ps)
   txid <- sample(phylt_nds[['ti']], 1)
   res <- with_mock(
     `phylotaR::blstN`=mckBlstN,
@@ -50,6 +48,27 @@ test_that('clstrSqs() works', {
   )
   # using the platyrrhini txid we should get more res
   expect_true(length(res) > 0)
+  cleanUp()
+})
+test_that('blstSqs() works', {
+  setUpCch(ps=ps)
+  res <- with_mock(
+    `phylotaR::blstN`=mckBlstN,
+    `phylotaR::mkBlstDB`=mckMkBlstDB,
+    blstSqs(txid=1, typ='direct', sqs=sqs, ps=ps)
+  )
+  expect_true('data.frame' %in% is(res))
+  cleanUp()
+})
+cleanUp()
+# no cache tests
+test_that('clstrPhylt() works', {
+  phylt_nds <- clstrPhylt(clstrs=clstrs)
+  expect_true(nrow(phylt_nds) == 3)
+})
+test_that('clstrCiGi() works', {
+  cigi <- clstrCiGi(clstrs=clstrs)
+  expect_true(nrow(cigi) == 3)
 })
 test_that('calcClstrs() works', {
   
@@ -75,12 +94,4 @@ test_that('getGnsFrmPhyltNds() works', {
   rnd <- sample(phylt_nds[['ti_anc']], 1)
   res <- getGnsFrmPhyltNds(txid=rnd, phylt_nds=phylt_nds)
   expect_true(res %in% phylt_nds[['ti_genus']])
-})
-test_that('blstSqs() works', {
-  res <- with_mock(
-    `phylotaR::blstN`=mckBlstN,
-    `phylotaR::mkBlstDB`=mckMkBlstDB,
-    blstSqs(txid=1, typ='direct', sqs=sqs, ps=ps)
-  )
-  expect_true('data.frame' %in% is(res))
 })

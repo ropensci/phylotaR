@@ -70,7 +70,7 @@ writeClstr <- function(cldf, cigidf, sqs, ps) {
   ci_gi_fl <- file.path(ps[['wd']], paste0('dbfiles-', ps[['txid']],
                                            '-ci_gi.tsv'))
   sqdf <- do.call(rbind, lapply(sqs, as.data.frame))
-  info(lvl=1, ps=ps, "Taxid", txid, ": writing",
+  info(lvl=1, ps=ps, "Taxid", ps[['txid']], ": writing",
        nrow(cldf), "clusters,", nrow(sqdf), "sequences,",
        nrow(cigidf), "ci_gi entries to file")
   write.table(cldf, file=clstrs_fl, append=file.exists(clstrs_fl),
@@ -226,14 +226,21 @@ getGnsFrmPhyltNds <- function(txid, phylt_nds) {
 blstSqs <- function(txid, typ, sqs, ps) {
   info(lvl=1, ps=ps, "BLAST all vs all for [",
       length(sqs), "] sequences")
-  dbfl <- paste0('taxon-', txid, '-typ-', typ,
-                 '-db.fa')
-  outfl <- paste0('taxon-', txid, '-typ-', typ,
-                  '-blastout.txt')
-  mkBlstDB(sqs, dbfl=dbfl, ps=ps)
-  blst_rs <- blstN(dbfl=dbfl, outfl=outfl, ps=ps)
-  # TODO: Not so elegant
+  blst_rs <- ldBlstCch(sqs, wd=ps[['wd']])
   if(is.null(blst_rs)) {
+    dbfl <- paste0('taxon-', txid, '-typ-', typ,
+                   '-db.fa')
+    outfl <- paste0('taxon-', txid, '-typ-', typ,
+                    '-blastout.txt')
+    mkBlstDB(sqs, dbfl=dbfl, ps=ps)
+    blst_rs <- blstN(dbfl=dbfl, outfl=outfl, ps=ps)
+    if(is.null(blst_rs)) {
+      blst_rs <- NA
+    }
+    svBlstCch(sqs, wd=ps[['wd']], obj=blst_rs)
+  }
+  # TODO: Not so elegant
+  if(is.na(blst_rs)) {
     return(NULL)
   }
   info(lvl=1, ps=ps, "Number of BLAST results [",
