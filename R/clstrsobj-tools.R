@@ -13,6 +13,30 @@ genClstrsObj <- function(wd) {
       clstrs=clstrs)
 }
 
+#' @name plotTable
+#' @title Plot table of txid presence by clusters
+#' @description TODO
+#' @param clstrs_obj clstrs_obj
+#' @param clstr_ids IDs of clusters in table
+#' @export
+plotTable <- function(clstrs_obj, clstr_ids) {
+  .pData <- function(clstr_id) {
+    clstr <- clstrs_obj@clstrs[[clstr_id]]
+    value <- factor(as.numeric(txids %in% clstr[['tis']]))
+    data.frame(txid=as.character(txids),
+               clstrid=clstr_id,
+               value=value)
+  }
+  txids <- unique(unlist(sapply(clstrs_obj@clstrs,
+                                function(x) x[['tis']])))
+  p_data <- plyr::mdply(.data=clstr_ids, .fun=.pData)[ ,-1]
+  ggplot2::ggplot(p_data, ggplot2::aes(clstrid, txid)) +
+    ggplot2::geom_tile(aes(fill=value)) + xlab('') + ylab('') +
+    ggplot2::scale_fill_manual(values=c('white', 'black')) +
+    ggplot2::theme(axis.text.x=ggplot2::element_text(angle=90),
+          legend.position='none')
+}
+
 #' @name nTaxa
 #' @title Get n. taxa per cluster
 #' @description TODO
