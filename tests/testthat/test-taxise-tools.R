@@ -32,6 +32,9 @@ cleanUp <- function() {
     file.remove(txdmpfl)
   }
 }
+mckSafeSrch <- function(func, fnm, args, ps) {
+  list()
+}
 
 # DATA
 data('tdobj')
@@ -186,8 +189,10 @@ test_that('writeTax() works', {
   cleanUp()
 })
 test_that('genPhylotaNds() works', {
+  # ps[['v']] <- TRUE
+  setUpCch(ps=ps)
   txids <- td_nds[['id']]
-  nid_sets <- getMngblIds(txid=txids, td_nds=td_nds,
+  nid_sets <- getMngblIds(txid=txids[1:10], td_nds=td_nds,
                           ps=ps)
   res <- with_mock(
     `phylotaR::nSqs`=function(txid,
@@ -200,8 +205,16 @@ test_that('genPhylotaNds() works', {
                   ps=ps)
   )
   expect_true('data.frame' %in% is(res))
+  cleanUp()
 })
 test_that('genTxdct() works', {
-  
+  setUpCch(ps=ps)
+  phylt_nds <- data.frame(ti=rep(NA, 10))
+  res <- with_mock(
+    `phylotaR::safeSrch`=mckSafeSrch,
+    genTxdct(phylt_nds=phylt_nds, ps=ps)
+  )
+  expect_true(length(res) == nrow(phylt_nds))
+  cleanUp()
 })
 cleanUp()

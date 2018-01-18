@@ -35,7 +35,7 @@ runTaxise <- function(wd) {
            ps=ps)
   # TODO: make this optional?
   info(lvl=1, ps=ps, 'Generating taxonomic dictionary ...')
-  txdct <- genTxdct(phylt_nds=phylt_nds)
+  txdct <- genTxdct(phylt_nds=phylt_nds, ps=ps)
   svObj(wd=wd, obj=txdct, nm='txdct')
   # stage print
   msg <- paste0('Completed stage TAXISE: [', Sys.time(), ']')

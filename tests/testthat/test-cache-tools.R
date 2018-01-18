@@ -99,8 +99,7 @@ test_that('svNcbiCch() works', {
   args <- list('this', 'and', 'that')
   fnm <- 'rentrezfunction'
   obj <- 'important_result'
-  exptd <- file.path('cache', 'ncbi',
-                     'rentrezfunction_this_and_that.RData')
+  exptd <- file.path('cache', 'ncbi', '1.RData')
   svNcbiCch(fnm=fnm, args=args, wd='.', obj=obj)
   expect_true(file.exists(exptd))
   cleanUp()

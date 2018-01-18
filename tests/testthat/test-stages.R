@@ -32,13 +32,14 @@ test_that('runTaxise() works', {
     `phylotaR:::getMngblIds`=mckFun,
     `phylotaR:::genPhylotaNds`=mckFun,
     `phylotaR:::writeTax`=mckFun,
+    `phylotaR:::genTxdct`=mckFun,
     setUp(wd='.', txid=9606),
     runTaxise(wd='.')
   )
   lglns <- readLines('log.txt')
   expect_true(grepl('Completed stage', lglns[length(lglns) - 1]))
-  cleanUp()
 })
+cleanUp()
 test_that('runDownload() works', {
   with_mock(
     `phylotaR:::setUpNcbiTools`=mckSetupNcbiTools,
@@ -50,8 +51,8 @@ test_that('runDownload() works', {
   )
   lglns <- readLines('log.txt')
   expect_true(grepl('Completed stage', lglns[length(lglns) - 1]))
-  cleanUp()
 })
+cleanUp()
 test_that('runClusters() works', {
   with_mock(
     `phylotaR:::setUpNcbiTools`=mckSetupNcbiTools,
@@ -62,9 +63,5 @@ test_that('runClusters() works', {
   )
   lglns <- readLines('log.txt')
   expect_true(grepl('Completed stage', lglns[length(lglns) - 1]))
-  cleanUp()
-})
-test_that('runAlign() works', {
-  
 })
 cleanUp()

@@ -205,13 +205,20 @@ ldSqs <- function(wd=wd, txid=txid) {
 #' @param wd Working directory
 #' @export
 ldNcbiCch <- function(fnm, args, wd) {
-  flnm <- paste0(fnm, '_', paste0(args, collapse='_'))
-  flnm <- gsub(pattern="[^a-zA-Z0-9_]", replacement='', x=flnm)
-  flpth <- file.path(wd, 'cache', 'ncbi', paste0(flnm, '.RData'))
-  if(file.exists(flpth)) {
-    return(readRDS(flpth))
+  fldctnry_pth <- file.path(wd, 'cache', 'ncbi', 'fldctnry.RData')
+  if(file.exists(fldctnry_pth)) {
+    fldctnry <- readRDS(fldctnry_pth)
+  } else {
+    return(NULL)
   }
-  NULL
+  id <- paste0(fnm, ' with ', paste0(args, collapse=', '))
+  pull <- fldctnry == id
+  if(sum(pull) == 0) {
+    return(NULL)
+  }
+  flnm <- paste0(which(pull), '.RData')
+  flpth <- file.path(wd, 'cache', 'ncbi', flnm)
+  readRDS(file=flpth)
 }
 
 #' @name svNcbiCch
@@ -224,10 +231,18 @@ ldNcbiCch <- function(fnm, args, wd) {
 #' @param obj NCBI query result
 #' @export
 svNcbiCch <- function(fnm, args, wd, obj) {
-  flnm <- paste0(fnm, '_', paste0(args, collapse='_'))
-  flnm <- gsub(pattern="[^a-zA-Z0-9_]", replacement='', x=flnm)
-  flpth <- file.path(wd, 'cache', 'ncbi', paste0(flnm, '.RData'))
+  fldctnry_pth <- file.path(wd, 'cache', 'ncbi', 'fldctnry.RData')
+  if(file.exists(fldctnry_pth)) {
+    fldctnry <- readRDS(fldctnry_pth)
+  } else {
+    fldctnry <- NULL
+  }
+  id <- paste0(fnm, ' with ', paste0(args, collapse=', '))
+  fldctnry <- c(fldctnry, id)
+  flnm <- paste0(length(fldctnry), '.RData')
+  flpth <- file.path(wd, 'cache', 'ncbi', flnm)
   saveRDS(object=obj, file=flpth)
+  saveRDS(object=fldctnry, file=fldctnry_pth)
 }
 
 #' @name ldBlstCch

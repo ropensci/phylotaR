@@ -32,7 +32,7 @@ calcClstrs <- function(txid, phylt_nds, ps) {
   root_txid <- txid
   # load sequences
   sq_fls <- list.files(file.path(ps[['wd']], 'cache', 'sqs'))
-  for(i in seq_along(sq_fls)) {
+  foreach(i=seq_along(sq_fls)) %dopar% {
     sq_fl <- sq_fls[i]
     # TODO: use the cache tool
     sqs <- readRDS(file=file.path(file.path(ps[['wd']], 'cache',
