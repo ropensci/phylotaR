@@ -4,7 +4,9 @@
 \alias{plotTable}
 \title{Plot table of txid presence by clusters}
 \usage{
-plotTable(clstrs_obj, clstr_ids)
+plotTable(clstrs_obj, clstr_ids = clstrs_obj@clstr_ids,
+  txids = clstrs_obj@txids, clstr_names = clstrs_obj@clstr_ids,
+  txid_names = clstrs_obj@txids)
 }
 \arguments{
 \item{clstrs_obj}{clstrs_obj}

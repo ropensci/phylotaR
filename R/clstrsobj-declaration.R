@@ -10,12 +10,20 @@ chckClstrsObj <- function(object) {
 #' @param object \code{ClstrsObj} object
 #' @title ClstrsObj-class
 #' @description Clusters Object contains sequences and clusters information.
+#' @slot clstr_ids IDs of all clusters in object
+#' @slot txids IDs of all taxa in object
+#' @slot sqids IDs of all sequences in object
+#' @slot txdct Taxonomic dictionary
 #' @slot sqs All sequences
 #' @slot clstrs All clstrs
 #' @exportClass ClstrsObj
 #' @seealso 
 #' \code{\link{genClstrsObj}}
 setClass('ClstrsObj', representation=representation(
+  clstr_ids='vector',
+  txids='vector',
+  sqids='vector',
+  txdct='list',
   sqs='list',
   clstrs='list'),
   validity=chckClstrsObj)

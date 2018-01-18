@@ -9,8 +9,29 @@ genClstrsObj <- function(wd) {
   clstrs_sqs <- ldObj(wd, nm='clstrs_sqs')
   clstrs <- clstrs_sqs[['clstrs']]
   names(clstrs) <- sapply(clstrs, function(x) x[['unique_id']])
+  txids <- unique(unlist(sapply(clstrs, function(x) x[['tis']])))
+  sqids <- unique(unlist(sapply(clstrs, function(x) x[['gis']])))
+  clstr_ids <- names(clstrs)
+  txdct <- ldObj(wd, nm='txdct')
   new('ClstrsObj', sqs=clstrs_sqs[['sqs']],
-      clstrs=clstrs)
+      clstrs=clstrs, txids=txids, sqids=sqids,
+      clstr_ids=clstr_ids, txdct=txdct)
+}
+
+#' @name getTxData
+#' @title Return taxonomic information
+#' @description Return vector of taxonomic data values
+#' using taxonomic IDs from a clsuters object.
+#' @param clstrs_obj clstrs_obj
+#' @param txid Taxonomic ID(s)
+#' @param sltnm Taxonomic data slot name
+#' @export
+getTxData <- function(clstrs_obj, txid,
+                      sltnm='scientificname') {
+  res <- sapply(clstrs_obj@txdct[as.character(txid)],
+         function(x) x[[sltnm]])
+  names(res) <- NULL
+  res
 }
 
 #' @name plotTable
@@ -19,7 +40,10 @@ genClstrsObj <- function(wd) {
 #' @param clstrs_obj clstrs_obj
 #' @param clstr_ids IDs of clusters in table
 #' @export
-plotTable <- function(clstrs_obj, clstr_ids) {
+plotTable <- function(clstrs_obj, clstr_ids=clstrs_obj@clstr_ids,
+                      txids=clstrs_obj@txids,
+                      clstr_names=clstrs_obj@clstr_ids,
+                      txid_names=clstrs_obj@txids) {
   .pData <- function(clstr_id) {
     clstr <- clstrs_obj@clstrs[[clstr_id]]
     value <- factor(as.numeric(txids %in% clstr[['tis']]))
@@ -27,14 +51,26 @@ plotTable <- function(clstrs_obj, clstr_ids) {
                clstrid=clstr_id,
                value=value)
   }
-  txids <- unique(unlist(sapply(clstrs_obj@clstrs,
-                                function(x) x[['tis']])))
   p_data <- plyr::mdply(.data=clstr_ids, .fun=.pData)[ ,-1]
-  ggplot2::ggplot(p_data, ggplot2::aes(clstrid, txid)) +
-    ggplot2::geom_tile(aes(fill=value)) + xlab('') + ylab('') +
+  p_data[['clstrnm']] <- 
+    clstr_names[match(p_data[['clstrid']], clstr_ids)]
+  p_data[['txidnm']] <- 
+    txid_names[match(p_data[['txid']], txids)]
+  # lvls <- clstr_names[match(clstr_ids, names(sort(clstr_id_ord)))]
+  # p_data[['clstrnm']] <- factor(p_data[['clstrnm']],
+  #                               levels=lvls,
+  #                               ordered=TRUE)
+  # names(txid_ord) <- txids
+  # lvls <- txid_names[match(txids, names(sort(txid_ord)))]
+  # p_data[['txidnm']] <- factor(p_data[['txidnm']],
+  #                              levels=lvls,
+  #                              ordered=TRUE)
+  ggplot2::ggplot(p_data, ggplot2::aes(clstrnm, txidnm)) +
+    ggplot2::geom_tile(ggplot2::aes(fill=value)) +
+    ggplot2::xlab('') + ggplot2::ylab('') +
     ggplot2::scale_fill_manual(values=c('white', 'black')) +
-    ggplot2::theme(axis.text.x=ggplot2::element_text(angle=90),
-          legend.position='none')
+    ggplot2::theme_bw() +
+    ggplot2::theme(legend.position='none') 
 }
 
 #' @name nTaxa

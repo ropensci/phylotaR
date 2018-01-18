@@ -32,6 +32,14 @@ Clusters Object contains sequences and clusters information.
 \section{Slots}{
 
 \describe{
+\item{\code{clstr_ids}}{IDs of all clusters in object}
+
+\item{\code{txids}}{IDs of all taxa in object}
+
+\item{\code{sqids}}{IDs of all sequences in object}
+
+\item{\code{txdct}}{Taxonomic dictionary}
+
 \item{\code{sqs}}{All sequences}
 
 \item{\code{clstrs}}{All clstrs}

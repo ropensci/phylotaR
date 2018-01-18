@@ -201,4 +201,7 @@ test_that('genPhylotaNds() works', {
   )
   expect_true('data.frame' %in% is(res))
 })
+test_that('genTxdct() works', {
+  
+})
 cleanUp()
