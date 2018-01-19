@@ -72,6 +72,10 @@ setUpCch <- function(ps, ovrwrt=FALSE) {
   }
   dir.create(d)
   dir.create(file.path(d, 'ncbi'))
+  dir.create(file.path(d, 'ncbi', 'search'))
+  dir.create(file.path(d, 'ncbi', 'fetch'))
+  dir.create(file.path(d, 'ncbi', 'summary'))
+  dir.create(file.path(d, 'ncbi', 'nsqs_search'))
   dir.create(file.path(d, 'sqs'))
   dir.create(file.path(d, 'blast'))
   saveRDS(object=ps,
@@ -205,19 +209,26 @@ ldSqs <- function(wd=wd, txid=txid) {
 #' @param wd Working directory
 #' @export
 ldNcbiCch <- function(fnm, args, wd) {
-  fldctnry_pth <- file.path(wd, 'cache', 'ncbi', 'fldctnry.RData')
+  fldctnry_pth <- file.path(wd, 'cache', 'ncbi', fnm,
+                            'fldctnry.RData')
   if(file.exists(fldctnry_pth)) {
     fldctnry <- readRDS(fldctnry_pth)
   } else {
     return(NULL)
   }
-  id <- paste0(fnm, ' with ', paste0(args, collapse=', '))
-  pull <- fldctnry == id
+  if(fnm == 'search' || fnm == 'nsqs_search') {
+    id <- args[['term']]
+    pull <- sapply(fldctnry, function(x) id == x)
+  } else {
+    id <- args[['id']]
+    pull <- sapply(fldctnry, function(x) all(id %in% x) &
+                     all(x %in% id))
+  }
   if(sum(pull) == 0) {
     return(NULL)
   }
   flnm <- paste0(which(pull), '.RData')
-  flpth <- file.path(wd, 'cache', 'ncbi', flnm)
+  flpth <- file.path(wd, 'cache', 'ncbi', fnm, flnm)
   readRDS(file=flpth)
 }
 
@@ -231,16 +242,21 @@ ldNcbiCch <- function(fnm, args, wd) {
 #' @param obj NCBI query result
 #' @export
 svNcbiCch <- function(fnm, args, wd, obj) {
-  fldctnry_pth <- file.path(wd, 'cache', 'ncbi', 'fldctnry.RData')
+  fldctnry_pth <- file.path(wd, 'cache', 'ncbi', fnm,
+                            'fldctnry.RData')
   if(file.exists(fldctnry_pth)) {
     fldctnry <- readRDS(fldctnry_pth)
   } else {
-    fldctnry <- NULL
+    fldctnry <- list()
   }
-  id <- paste0(fnm, ' with ', paste0(args, collapse=', '))
-  fldctnry <- c(fldctnry, id)
+  if(fnm == 'search' || fnm == 'nsqs_search') {
+    id <- args[['term']]
+  } else {
+    id <- args[['id']]
+  }
+  fldctnry[[length(fldctnry) + 1]] <- id
   flnm <- paste0(length(fldctnry), '.RData')
-  flpth <- file.path(wd, 'cache', 'ncbi', flnm)
+  flpth <- file.path(wd, 'cache', 'ncbi', fnm, flnm)
   saveRDS(object=obj, file=flpth)
   saveRDS(object=fldctnry, file=fldctnry_pth)
 }
@@ -254,7 +270,8 @@ svNcbiCch <- function(fnm, args, wd, obj) {
 #' @export
 ldBlstCch <- function(sqs, wd) {
   # fldctnry contains all the IDs of the sequences used in a BLAST
-  fldctnry_pth <- file.path(wd, 'cache', 'blast', 'fldctnry.RData')
+  fldctnry_pth <- file.path(wd, 'cache', 'blast',
+                            'fldctnry.RData')
   if(file.exists(fldctnry_pth)) {
     fldctnry <- readRDS(fldctnry_pth)
   } else {
@@ -262,7 +279,8 @@ ldBlstCch <- function(sqs, wd) {
   }
   sqids <- sapply(sqs, function(x) x[['gi']])
   names(sqids) <- NULL
-  pull <- sapply(fldctnry, function(x) all(sqids %in% x) & all(x %in% sqids))
+  pull <- sapply(fldctnry, function(x) all(sqids %in% x) &
+                   all(x %in% sqids))
   if(sum(pull) == 0) {
     return(NULL)
   }

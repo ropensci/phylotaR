@@ -45,13 +45,11 @@ safeSrch <- function(func, args, fnm, ps) {
 nSqs <- function(txid, ps, direct=FALSE) {
   org_term <- ifelse(direct, '[Organism:noexp]',
                      '[Organism:exp]' )
-  args <- list(db='nucleotide',
-               term=paste0('txid', txid,
-                           org_term, '1:',
-                           ps[['mxsql']], '[SLEN]'),
-               use_history=TRUE, retmax=1)
+  term <- paste0('txid', txid, org_term, '1:',
+                 ps[['mxsql']], '[SLEN]')
+  args <- list(db='nucleotide', retmax=0, term=term)
   res <- safeSrch(func=rentrez::entrez_search,
-                  args=args, fnm='entrez_search',
+                  args=args, fnm='nsqs_search',
                   ps=ps)
   res[['count']]
 }
@@ -72,19 +70,19 @@ dwnldFrmNCBI <- function(txid, ps, direct=FALSE) {
   org_trm <- ifelse(direct, '[Organism:noexp]',
                      '[Organism:exp]')
   allseqs <- numeric()
-  args <- list(db='nucleotide',
-               term=paste0('txid', txid, org_trm, '1:',
-                           ps[['mxsql']], '[SLEN]'),
-               use_history=TRUE,
-               ## XXX Without 1e9-1 one could save time...
-               # but are the hits random???
-               # @Hannes: from exp. they're not random,
-               #  easily tested though.
-               retmax=1e9-1)
+  term <- paste0('txid', txid, org_trm, '1:',
+                 ps[['mxsql']], '[SLEN]')
+  args <- list(db='nucleotide', term=term, retmax=1e9-1)
+               # use_history=TRUE,
+               # ## XXX Without 1e9-1 one could save time...
+               # # but are the hits random???
+               # # @Hannes: from exp. they're not random,
+               # #  easily tested though.
+               # retmax=1e9-1)
   srch <- safeSrch(func=rentrez::entrez_search,
                    args=args, fnm='search',
                    ps=ps)
-  gis <- srch[['ids']];
+  gis <- srch[['ids']]
   if(length(gis) < 1) {
     return(list())
   }
@@ -102,36 +100,23 @@ dwnldFrmNCBI <- function(txid, ps, direct=FALSE) {
   btch <- 500
   for(i in seq(0, length(gis)-1, btch)) {
     # Get FASTA strings for IDs in the specified segment
-    info(lvl=1, ps=ps, "Retreiving seqs [",
-        i+1, "-", ifelse(i+btch<length(gis),
-               i+btch, length(gis)),
-        "] for taxid [", txid, "]");
-    seqargs <- list(db="nuccore",
-                    rettype="fasta",
-                    web_history=srch[['web_history']],
-                    retmax=btch,
-                    retstart=i)
+    lower <- i+1
+    upper <- ifelse(i+btch<length(gis), i+btch, length(gis))
+    crrnt_ids <- gis[lower:upper]
+    info(lvl=2, ps=ps, "Retreiving seqs [",
+        lower, "-", upper, "] for taxid [", txid, "]");
+    args <- list(db="nuccore", rettype="fasta",
+                 id=crrnt_ids)
     res <- safeSrch(func=rentrez::entrez_fetch,
-                    fnm='fetch', args=seqargs,
-                    ps=ps)
-    # split fasta string on '>'
+                    fnm='fetch', args=args, ps=ps)
     seqstrs <- unlist(strsplit(res, "(?<=[^>])(?=\n>)",
                                perl=TRUE))
-    # clear defline
     seqstrs <- gsub("^\n?>.*?\\n", "", seqstrs)
-    # clear newlines
     seqstrs <- gsub("\n", "", seqstrs, fixed=TRUE)
-    # Get summary object to retreive taxid, accession,
-    # and other parameters for seqs
+    args=list(db='nucleotide', id=crrnt_ids)
     summaries <- safeSrch(func=rentrez::entrez_summary,
-                          fnm='summary',
-                          args=list(db='nucleotide',
-                                    web_history=srch[['web_history']],
-                                    retmax=btch,
-                                    retstart=i),
-                          ps=ps)
-    # cnvrt to list when only one result
-    if(length(seqstrs)==1) {
+                          fnm='summary', args=args, ps=ps)
+    if(length(seqstrs) == 1) {
       summaries <- list(summaries)
     }
     seqs <- lapply(1:length(seqstrs), function(i) {
@@ -151,10 +136,8 @@ dwnldFrmNCBI <- function(txid, ps, direct=FALSE) {
                   seq=se)
       seq
     })
-    info(lvl=1, ps=ps, "Done retreiving [", length(seqs),
-        "(", i+1, "-",
-        ifelse(i+btch<length(gis),
-               i+btch, length(gis)),
+    info(lvl=1, ps=ps, "Retreived [", length(seqs),
+        "(", lower, "-", upper,
         ")] seqs for taxid [", txid, "]")
     
     allseqs <- c(allseqs, seqs)

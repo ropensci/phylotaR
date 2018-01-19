@@ -27,9 +27,7 @@ cleanUp <- function() {
   }
 }
 # stubs
-mckEntrezSearch <- function(db, term,
-                            use_history,
-                            retmax) {
+mckEntrezSearch <- function(db, term, retmax) {
   if(n == 0) {
     ids <- NULL
   } else {
@@ -37,24 +35,19 @@ mckEntrezSearch <- function(db, term,
   }
   list('ids'=ids)
 }
-mckEntrezFetch <- function(db, rettype,
-                           web_history,
-                           retmax, retstart) {
-  mx <- ifelse(retmax<n, retmax, n)
+mckEntrezFetch <- function(db, rettype, id) {
   seqs <- ''
-  for(i in (retstart+1):(mx+retstart)) {
+  for(i in 1:length(id)) {
     seqs <- paste0(seqs, randFasta())
   }
   seqs
 }
-mckEntrezSummary <- function(db, web_history,
-                             retmax, retstart) {
+mckEntrezSummary <- function(db, id) {
   if(n == 1) {
     return(randSummary())
   }
-  mx <- ifelse(retmax<n, retmax, n)
   summ <- vector('list', length=n)
-  for(i in (retstart+1):(mx+retstart)) {
+  for(i in 1:length(id)) {
     summ[[i]] <- randSummary()
   }
   summ
@@ -63,29 +56,54 @@ mckEntrezSummary <- function(db, web_history,
 # RUNNING
 cleanUp()
 context('Testing \'ncbi-tools\'')
-test_that('safeSrch() works', {
+test_that('safeSrch(fnm=search) works', {
   setUpCch(ps=ps)
-  args <- list('this and that')
+  args <- list('term'='ncbi search term', 'x')
   myfunc <- function(...) {
     print(...)
     return(1)
   }
   res <- safeSrch(func=myfunc,
                   args=args,
-                  fnm='print',
+                  fnm='search',
                   ps=ps)
   expect_true(res == 1)
   myfunc <- function(...) {
     print(...)
     stop()
   }
+  args <- list('term'='another ncbi search term', 'x')
   res <- safeSrch(func=myfunc,
                   args=args,
-                  fnm='print2',
+                  fnm='search',
                   ps=ps)
   expect_null(res)
-  cleanUp()
 })
+cleanUp()
+test_that('safeSrch(fnm=fetch) works', {
+  setUpCch(ps=ps)
+  args <- list('id'=c(1, 2), 'x')
+  myfunc <- function(...) {
+    print(...)
+    return(1)
+  }
+  res <- safeSrch(func=myfunc,
+                  args=args,
+                  fnm='fetch',
+                  ps=ps)
+  expect_true(res == 1)
+  myfunc <- function(...) {
+    print(...)
+    stop()
+  }
+  args <- list('id'=c(2, 3), 'x')
+  res <- safeSrch(func=myfunc,
+                  args=args,
+                  fnm='fetch',
+                  ps=ps)
+  expect_null(res)
+})
+cleanUp()
 test_that('nSqs', {
   setUpCch(ps=ps)
   res <- with_mock(
@@ -108,8 +126,8 @@ test_that('nSqs', {
     nSqs(txid=9606, direct=TRUE, ps=ps)
   )
   expect_true(grepl(':noexp', res[['term']]))
-  cleanUp()
 })
+cleanUp()
 test_that('dwnldFrmNCBI', {
   # n determines the number of available seqs.
   n <- 0
