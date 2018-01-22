@@ -96,17 +96,20 @@ test_that('ldObj() works', {
 cleanUp()
 test_that('svNcbiCch() works', {
   setUpCch(ps=list('wd'='.'))
-  args <- list('term'='unique_search_term')
+  args <- list('term'='unique_search_term',
+               'db'='nucleotide')
   fnm <- 'search'
   obj <- 'important_result'
-  exptd <- file.path('cache', 'ncbi', 'search', '1.RData')
+  exptd <- file.path('cache', 'ncbi', 'search',
+                     'nucleotide', '1.RData')
   svNcbiCch(fnm=fnm, args=args, wd='.', obj=obj)
   expect_true(file.exists(exptd))
 })
 cleanUp()
 test_that('ldNcbiCch() works', {
   setUpCch(ps=list('wd'='.'))
-  args <- list('term'='unique_search_term')
+  args <- list('term'='unique_search_term',
+               'db'='nucleotide')
   fnm <- 'search'
   obj <- 'important_result'
   svNcbiCch(fnm=fnm, args=args, wd='.', obj=obj)

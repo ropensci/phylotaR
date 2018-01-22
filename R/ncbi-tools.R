@@ -49,9 +49,61 @@ nSqs <- function(txid, ps, direct=FALSE) {
                  ps[['mxsql']], '[SLEN]')
   args <- list(db='nucleotide', retmax=0, term=term)
   res <- safeSrch(func=rentrez::entrez_search,
-                  args=args, fnm='nsqs_search',
+                  args=args, fnm='search',
                   ps=ps)
   res[['count']]
+}
+
+
+#' @title Return random set of sequence IDs
+#' @description For a given txid return a random set of 
+#' sequences associated.
+#' @details For model organisms downloading all IDs can take long
+#' or even cause an xml parsing error. For any search with more than
+#' hrdmx sequences, this function we will run multiple small searches
+#' downloading retmax seq IDs at a time with different retstart values
+#' to generate a semi-random vector of sequence IDs. For all other
+#' searches, all IDs will be retrieved.
+#' Note, it makes no sense for mxsqs in parameters to be greater
+#' than hrdmx in this function.
+#' @param txid NCBI taxon identifier
+#' @param direct Whether to download all 'directly' linked
+#' sequences ([Organism:noexp] in Genbank search) or all 'subtree'
+#' sequences ([Organism:exp])
+#' @param ps Parameters
+#' @param sqcnt Sequence count as determined with nSqs()
+#' @param retmax Maximum number of sequences when querying model
+#' organisms. The smaller the more random, the larger the faster.
+#' @param hrdmx Absolute maximum number of sequence IDs to download
+#' in a single query.
+#' @return vector ot IDs
+#' @export
+getGIs <- function(txid, direct, sqcnt, ps, retmax=1000,
+                   hrdmx=100000) {
+  org_term <- ifelse(direct, '[Organism:noexp]',
+                     '[Organism:exp]' )
+  term <- paste0('txid', txid, org_term, '1:',
+                 ps[['mxsql']], '[SLEN]')
+  if(sqcnt > hrdmx) {
+    ids <- NULL
+    retstarts <- sample(1:(sqcnt-retmax),
+                       round(hrdmx/retmax))
+    for(retstart in retstarts) {
+      print(1)
+      args <- list(db='nucleotide', retmax=retmax,
+                   term=term, retstart=retstart)
+      srch <- safeSrch(func=rentrez::entrez_search,
+                       args=args, fnm='search', ps=ps)
+      ids <- c(ids, srch[['ids']])
+    }
+  } else {
+    args <- list(db='nucleotide', retmax=sqcnt, term=term)
+    srch <- safeSrch(func=rentrez::entrez_search,
+                     args=args, fnm='search',
+                     ps=ps)
+    ids <- srch[['ids']]
+  }
+  ids
 }
 
 #' @title dwnldFrmNCBI
@@ -67,25 +119,13 @@ nSqs <- function(txid, ps, direct=FALSE) {
 #' @export
 dwnldFrmNCBI <- function(txid, ps, direct=FALSE) {
   # test w/ golden moles 9389
-  org_trm <- ifelse(direct, '[Organism:noexp]',
-                     '[Organism:exp]')
   allseqs <- numeric()
-  term <- paste0('txid', txid, org_trm, '1:',
-                 ps[['mxsql']], '[SLEN]')
-  args <- list(db='nucleotide', term=term, retmax=1e9-1)
-               # use_history=TRUE,
-               # ## XXX Without 1e9-1 one could save time...
-               # # but are the hits random???
-               # # @Hannes: from exp. they're not random,
-               # #  easily tested though.
-               # retmax=1e9-1)
-  srch <- safeSrch(func=rentrez::entrez_search,
-                   args=args, fnm='search',
-                   ps=ps)
-  gis <- srch[['ids']]
-  if(length(gis) < 1) {
+  sqcnt <- nSqs(txid=txid, ps=ps, direct=direct)
+  if(sqcnt < 1) {
     return(list())
   }
+  gis <- getGIs(txid=txid, direct=direct, sqcnt=sqcnt,
+                ps=ps)
   # If the maximum amount of number is exceeded,
   # randomly pick ps[['mxsqs']] gis
   if(direct && length(gis) > ps[['mxsqs']]) {

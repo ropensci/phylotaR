@@ -27,13 +27,13 @@ cleanUp <- function() {
   }
 }
 # stubs
-mckEntrezSearch <- function(db, term, retmax) {
+mckEntrezSearch <- function(db, term, retmax, retstart) {
   if(n == 0) {
     ids <- NULL
   } else {
     ids <- as.character(1:n)
   }
-  list('ids'=ids)
+  list('ids'=ids, 'count'=n)
 }
 mckEntrezFetch <- function(db, rettype, id) {
   seqs <- ''
@@ -58,7 +58,8 @@ cleanUp()
 context('Testing \'ncbi-tools\'')
 test_that('safeSrch(fnm=search) works', {
   setUpCch(ps=ps)
-  args <- list('term'='ncbi search term', 'x')
+  args <- list('term'='ncbi search term',
+               'db'='nucleotide', 'x')
   myfunc <- function(...) {
     print(...)
     return(1)
@@ -72,7 +73,9 @@ test_that('safeSrch(fnm=search) works', {
     print(...)
     stop()
   }
-  args <- list('term'='another ncbi search term', 'x')
+  args <- list('term'='another ncbi search term',
+               'db'='nucleotide',
+               'x')
   res <- safeSrch(func=myfunc,
                   args=args,
                   fnm='search',
@@ -82,7 +85,9 @@ test_that('safeSrch(fnm=search) works', {
 cleanUp()
 test_that('safeSrch(fnm=fetch) works', {
   setUpCch(ps=ps)
-  args <- list('id'=c(1, 2), 'x')
+  args <- list('id'=c(1, 2),
+               'db'='nucleotide',
+               'x')
   myfunc <- function(...) {
     print(...)
     return(1)
@@ -96,7 +101,9 @@ test_that('safeSrch(fnm=fetch) works', {
     print(...)
     stop()
   }
-  args <- list('id'=c(2, 3), 'x')
+  args <- list('id'=c(2, 3),
+               'db'='nucleotide',
+               'x')
   res <- safeSrch(func=myfunc,
                   args=args,
                   fnm='fetch',
@@ -104,7 +111,7 @@ test_that('safeSrch(fnm=fetch) works', {
   expect_null(res)
 })
 cleanUp()
-test_that('nSqs', {
+test_that('nSqs() works', {
   setUpCch(ps=ps)
   res <- with_mock(
     `phylotaR::safeSrch`=function(func,
@@ -128,9 +135,30 @@ test_that('nSqs', {
   expect_true(grepl(':noexp', res[['term']]))
 })
 cleanUp()
-test_that('dwnldFrmNCBI', {
+test_that('getGIs() works', {
+  cleanUp()
+  setUpCch(ps=ps)
+  n <<- 100
+  res <- with_mock(
+    `rentrez::entrez_search`=mckEntrezSearch,
+    getGIs(txid=9606, direct=FALSE, sqcnt=100, ps=ps)
+  )
+  expect_true(length(res) == n)
+  cleanUp()
+  setUpCch(ps=ps)
+  n <<- 100
+  # TODO: develop mock entrez search to improve
+  res <- with_mock(
+    `rentrez::entrez_search`=mckEntrezSearch,
+    getGIs(txid=9606, direct=FALSE, sqcnt=100, ps=ps,
+           hrdmx=20)
+  )
+  expect_true(length(res) != n)
+})
+test_that('dwnldFrmNCBI() works', {
   # n determines the number of available seqs.
-  n <- 0
+  cleanUp()
+  n <<- 0
   setUpCch(ps=ps)
   res <- with_mock(
     `rentrez::entrez_search`=mckEntrezSearch,

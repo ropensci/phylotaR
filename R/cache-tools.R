@@ -73,9 +73,17 @@ setUpCch <- function(ps, ovrwrt=FALSE) {
   dir.create(d)
   dir.create(file.path(d, 'ncbi'))
   dir.create(file.path(d, 'ncbi', 'search'))
+  dir.create(file.path(d, 'ncbi', 'search', 'taxonomy'))
+  dir.create(file.path(d, 'ncbi', 'search', 'nucleotide'))
+  dir.create(file.path(d, 'ncbi', 'search', 'nuccore'))
   dir.create(file.path(d, 'ncbi', 'fetch'))
+  dir.create(file.path(d, 'ncbi', 'fetch', 'taxonomy'))
+  dir.create(file.path(d, 'ncbi', 'fetch', 'nucleotide'))
+  dir.create(file.path(d, 'ncbi', 'fetch', 'nuccore'))
   dir.create(file.path(d, 'ncbi', 'summary'))
-  dir.create(file.path(d, 'ncbi', 'nsqs_search'))
+  dir.create(file.path(d, 'ncbi', 'summary', 'taxonomy'))
+  dir.create(file.path(d, 'ncbi', 'summary', 'nucleotide'))
+  dir.create(file.path(d, 'ncbi', 'summary', 'nuccore'))
   dir.create(file.path(d, 'sqs'))
   dir.create(file.path(d, 'blast'))
   saveRDS(object=ps,
@@ -209,15 +217,18 @@ ldSqs <- function(wd=wd, txid=txid) {
 #' @param wd Working directory
 #' @export
 ldNcbiCch <- function(fnm, args, wd) {
-  fldctnry_pth <- file.path(wd, 'cache', 'ncbi', fnm,
-                            'fldctnry.RData')
+  flpth <- file.path(wd, 'cache', 'ncbi',
+                     fnm, args[['db']])
+  fldctnry_pth <- file.path(flpth, 'fldctnry.RData')
   if(file.exists(fldctnry_pth)) {
     fldctnry <- readRDS(fldctnry_pth)
   } else {
     return(NULL)
   }
-  if(fnm == 'search' || fnm == 'nsqs_search') {
-    id <- args[['term']]
+  if(fnm == 'search') {
+    id <- paste0('TERM_', args[['term']],
+                 '_RETSTART_', args[['retstart']],
+                 '_RETMAX_', args[['retmax']])
     pull <- sapply(fldctnry, function(x) id == x)
   } else {
     id <- args[['id']]
@@ -228,7 +239,7 @@ ldNcbiCch <- function(fnm, args, wd) {
     return(NULL)
   }
   flnm <- paste0(which(pull), '.RData')
-  flpth <- file.path(wd, 'cache', 'ncbi', fnm, flnm)
+  flpth <- file.path(flpth, flnm)
   readRDS(file=flpth)
 }
 
@@ -242,21 +253,26 @@ ldNcbiCch <- function(fnm, args, wd) {
 #' @param obj NCBI query result
 #' @export
 svNcbiCch <- function(fnm, args, wd, obj) {
-  fldctnry_pth <- file.path(wd, 'cache', 'ncbi', fnm,
-                            'fldctnry.RData')
+  flpth <- file.path(wd, 'cache', 'ncbi',
+                     fnm, args[['db']])
+  fldctnry_pth <- file.path(flpth, 'fldctnry.RData')
   if(file.exists(fldctnry_pth)) {
     fldctnry <- readRDS(fldctnry_pth)
   } else {
     fldctnry <- list()
   }
-  if(fnm == 'search' || fnm == 'nsqs_search') {
-    id <- args[['term']]
+  if(fnm == 'search') {
+    # construct unique identifier from args
+    id <- paste0('TERM_', args[['term']],
+                 '_RETSTART_', args[['retstart']],
+                 '_RETMAX_', args[['retmax']])
   } else {
+    # ids are sufficient
     id <- args[['id']]
   }
   fldctnry[[length(fldctnry) + 1]] <- id
   flnm <- paste0(length(fldctnry), '.RData')
-  flpth <- file.path(wd, 'cache', 'ncbi', fnm, flnm)
+  flpth <- file.path(flpth, flnm)
   saveRDS(object=obj, file=flpth)
   saveRDS(object=fldctnry, file=fldctnry_pth)
 }
