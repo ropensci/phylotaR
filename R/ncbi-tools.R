@@ -10,12 +10,11 @@
 #' @param ps Parameters
 #' @export
 safeSrch <- function(func, args, fnm, ps) {
-  # TODO: wait times?
   res <- ldNcbiCch(fnm=fnm, args=args, wd=ps[['wd']])
   if(!is.null(res)) {
     return(res)
   }
-  for(i in 1:ps[['mxretry']]) {
+  for(wt_tm in ps[['wt_tms']]) {
     query <- try(do.call(func, args),
                  silent=TRUE)
     if(!is(query, "try-error")) {
@@ -27,7 +26,9 @@ safeSrch <- function(func, args, fnm, ps) {
             query[[1]])) {
         stop(query[[1]])
       }
-      info(lvl=1, ps=ps, "Retry [", i, "] for [", fnm, ']')
+      info(lvl=1, ps=ps, "Retrying in [", wt_tm, "s] for [",
+           fnm, ']')
+      Sys.sleep(wt_tm)
     }
   }
   svNcbiCch(fnm=fnm, args=args, wd=ps[['wd']], obj=res)
@@ -89,7 +90,6 @@ getGIs <- function(txid, direct, sqcnt, ps, retmax=1000,
     retstarts <- sample(1:(sqcnt-retmax),
                        round(hrdmx/retmax))
     for(retstart in retstarts) {
-      print(1)
       args <- list(db='nucleotide', retmax=retmax,
                    term=term, retstart=retstart)
       srch <- safeSrch(func=rentrez::entrez_search,

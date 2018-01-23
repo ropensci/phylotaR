@@ -24,16 +24,24 @@
 setUpPrmtrs <- function(wd, txid, ncbi_execs,
                         tdpth=NULL, mxd=10000,
                         tmout=100, mdlt=3000,
-                        mxsqs=10000, mxsql=25000,
+                        mxsqs=1000, mxsql=25000,
                         mxretry=100, mxeval=1.0e-10,
                         mncvrg=0.51, v=FALSE, ncps=1) {
   if(!file.exists(wd)) {
     stop(paste0('Invalid `wd`. [', wd, '] does not exist.'))
   }
+  # calc wait times
+  wt_tms <- c(1, 3, 6, 10, 60, 300)
+  dff <- mxretry - length(wt_tms)
+  if(dff > 0) {
+    wt_tms <- c(wt_tms, rep(wt_tms[length(wt_tms)], dff))
+  } else {
+    wt_tms <- wt_tms[1:mxretry]
+  }
   ps <- list(txid=txid, tdpth=tdpth, mxd=mxd,
              tmout=tmout, mdlt=mdlt, mxsqs=mxsqs,
              mxsql=mxsql, v=v, ncps=ncps, wd=wd,
-             mxretry=mxretry, mxeval=mxeval,
+             mxretry=mxretry, mxeval=mxeval, wt_tms=wt_tms,
              mncvrg=mncvrg, lgfl=file.path(wd, 'log.txt'))
   if(sum(names(ncbi_execs) %in%
          c('mkblstdb', 'blstn')) == 2) {

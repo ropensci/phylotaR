@@ -7,7 +7,8 @@ ps <- list(wd='.', txid=9607,
            tdpth=NULL, mxd=10000,
            tmout=100, mdlt=3000,
            mxsqs=10000, mxsql=25000,
-           mxretry=2, v=FALSE, ncps=1)
+           mxretry=2, v=FALSE, ncps=1,
+           wt_tms=c(0, 0))
 
 # FUNCTIONS
 randFasta <- function() {
