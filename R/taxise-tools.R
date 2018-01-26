@@ -387,8 +387,14 @@ genTxdct <- function(phylt_nds, ps) {
     rcrd <- safeSrch(func=rentrez::entrez_fetch,
                      fnm='fetch', args=args, ps=ps)
     rcrd <- XML::xmlToList(rcrd)[['Taxon']]
+    # augment record for txdct tools
     rcrd[['Lineage']] <- strsplit(rcrd[['Lineage']],
                                   split='; ')[[1]]
+    itslf <- list('TaxId'=rcrd[['TaxId']],
+                  'ScientificName'=rcrd[['ScientificName']],
+                  'Rank'=rcrd[['Rank']])
+    rcrd[['LineageEx']] <- c(rcrd[['LineageEx']],
+                             list('Taxon'=itslf))
     txdct[[txid]] <- rcrd
   }
   txdct

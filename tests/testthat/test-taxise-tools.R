@@ -35,6 +35,21 @@ cleanUp <- function() {
 mckSafeSrch <- function(func, fnm, args, ps) {
   list()
 }
+mckCurlFail <- function(url, path) {
+  list('content'='non-existent-file',
+       'status_code'='FAILED')
+}
+mckCurl <- function(url, path) {
+  list('content'=file.path(data_dr, 'taxonomy',
+                           'taxdump.tar.gz'),
+       'status_code'=226)
+}
+mckUntar <- function(tarfile, files, exdir) {
+  NULL
+}
+mckXmlToList <- function(rcrd) {
+  list('Taxon'=list('Lineage'='A;B;C;', 'LineageEx'=list()))
+}
 
 # DATA
 data('tdobj')
@@ -43,20 +58,6 @@ td_nms <- tdobj[['nms']]
 ps <- list('mxd'=10000, 'tmout'=10, 'v'=FALSE,
            'wd'=data_dr, 'mxsql'=2000, 'mdlt'=2000)
 rm(tdobj)
-
-# FUNCTIONS
-mckCurlFail <- function(url, path) {
-  list('content'='non-existent-file',
-       'status_code'='FAILED')
-}
-mckCurl <- function(url, path) {
-  list('content'=file.path(data_dr, 'taxonomy',
-                           'taxdump.tar.gz'),
-              'status_code'=226)
-}
-mckUntar <- function(tarfile, files, exdir) {
-  NULL
-}
 
 # RUNNING
 context('Testing \'taxise\'')
@@ -212,6 +213,7 @@ test_that('genTxdct() works', {
   phylt_nds <- data.frame(ti=rep(NA, 10))
   res <- with_mock(
     `phylotaR::safeSrch`=mckSafeSrch,
+    `XML::xmlToList`=mckXmlToList,
     genTxdct(phylt_nds=phylt_nds, ps=ps)
   )
   expect_true(length(res) == nrow(phylt_nds))

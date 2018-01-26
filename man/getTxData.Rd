@@ -4,7 +4,8 @@
 \alias{getTxData}
 \title{Return taxonomic information}
 \usage{
-getTxData(clstrs_obj, txid, sltnm = "scientificname")
+getTxData(clstrs_obj, txid, sltnm = c("ScientificName", "CommonName",
+  "OtherNames", "ParentTaxId", "Rank", "Lineage", "LineageEx"))
 }
 \arguments{
 \item{clstrs_obj}{clstrs_obj}
@@ -15,5 +16,5 @@ getTxData(clstrs_obj, txid, sltnm = "scientificname")
 }
 \description{
 Return vector of taxonomic data values
-using taxonomic IDs from a clsuters object.
+using taxonomic IDs from a clusters object.
 }

@@ -67,88 +67,6 @@ byLineage <- function(clstrs_obj, nm) {
   sapply(clstrs_obj@clstrs, .calc)
 }
 
-# SEQ FUNCTIONS
-
-#' @name getSqDfs
-#' @title Return sequence deflines
-#' @description Return all deflines for a cluster's sequences
-#' @param clstrs_obj clstrs_obj
-#' @param id cluster ID(s)
-#' @export
-getSqDfs <- function(clstrs_obj, id, prse=0.1) {
-  gis <- clstrs_obj@clstrs[[id]][['gis']]
-  dflns <- sapply(gis, function(x) clstrs_obj@sqs[[x]][['def']])
-  if(!is.null(prse)) {
-    wrds <- unlist(strsplit(dflns, ' '))
-    wrds <- gsub(pattern="[^a-zA-Z0-9]", replacement='',
-                 x=wrds)
-    wrdfqs <- table(wrds)/length(dflns)
-    sort(wrdfqs, decreasing = TRUE)[1:10]
-    cmmn <- names(wrdfqs)[wrdfqs > prse]
-    return(paste0(cmmn, collapse=' | '))
-  }
-  dflns
-}
-
-#' @name getSqLns
-#' @title Return sequence deflines
-#' @description Return all deflines for a cluster's sequences
-#' @param clstrs_obj clstrs_obj
-#' @param id cluster ID(s)
-#' @export
-getSqLns <- function(clstrs_obj, id) {
-  gis <- clstrs_obj@clstrs[[id]][['gis']]
-  sapply(gis, function(x) clstrs_obj@sqs[[x]][['length']])
-}
-
-#' @name getSqAmbs
-#' @title Return sequence deflines
-#' @description Return all deflines for a cluster's sequences
-#' @param clstrs_obj clstrs_obj
-#' @param id cluster ID(s)
-#' @export
-getSqAmbs <- function(clstrs_obj, id) {
-  .calc <- function(x) {
-    sq <- clstrs_obj@sqs[[x]][['seq']]
-    res <- gregexpr(pattern='[^atcgATCG]',
-                    text=sq)[[1]]
-    length(res)/nchar(sq)
-  }
-  gis <- clstrs_obj@clstrs[[id]][['gis']]
-  sapply(gis, .calc)
-}
-
-#' @name getSqGCR
-#' @title Return GC-ratio by sequences
-#' @description Return the proportion of G or C in
-#' the unambiguous sequence of all sequences in cluster
-#' @param clstrs_obj clstrs_obj
-#' @param id cluster ID(s)
-#' @export
-getSqGCR <- function(clstrs_obj, id) {
-  .calc <- function(x) {
-    sq <- clstrs_obj@sqs[[x]][['seq']]
-    unambsq <- gsub(pattern='[^atcgATCG]',
-                    replacement='', x=sq)[[1]]
-    res <- gregexpr(pattern='[^cgCG]',
-                    text=unambsq)[[1]]
-    length(res)/nchar(unambsq)
-  }
-  gis <- clstrs_obj@clstrs[[id]][['gis']]
-  sapply(gis, .calc)
-}
-
-#' @name getSqTx
-#' @title Return taxonomic ID per sequence
-#' @description Get the taxonomic ID by sequence in
-#' a cluster.
-#' @param clstrs_obj clstrs_obj
-#' @param id cluster ID(s)
-#' @export
-getSqTx <- function(clstrs_obj, id) {
-  clstrs_obj@clstrs[[id]][['tis']]
-}
-
 # OTHER
 
 #' @name getTxData
@@ -238,28 +156,23 @@ getSqs <- function(clstrs_obj, id) {
   clstrs_obj@sqs[id]
 }
 
-#' @name writeSeqs
+#' @name writeSqs
 #' @title Write sequences as fasta
 #' @description TODO
-#' @param clstrs_obj Clusters Object
-#' @param id unique cluster ID
-#' @param wd Working directory, where files will be saved
+#' @param sids Sequence IDs
+#' @param dflns Definition lines
+#' @param flpth File path and name
 #' @export
-writeSeqs <- function(clstrs_obj, id, wd) {
-  # TODO: allow user defined sequence description
-  for(ech in id) {
-    clstr <- clstrs_obj@clstrs[[ech]]
-    sqs <- clstrs_obj@sqs[clstr$gis]
-    filename <- paste0(clstr[['unique_id']], '.fasta')
-    fasta <- ''
-    for(i in seq_along(sqs)) {
-      sq <- sqs[[i]]
-      fasta <- paste0(fasta, '>', sq[['gi']],
-                      '|', sq[['ti']], '\n',
-                      sq[['seq']], '\n\n')
-    }
-    cat(fasta, file=file.path(wd, filename))
+writeSqs <- function(sids, dflns, flpth) {
+  sqs <- clstrs_obj@sqs[sids]
+  fasta <- ''
+  for(i in seq_along(sqs)) {
+    sq <- sqs[[i]]
+    dfln <- dflns[[i]]
+    fasta <- paste0(fasta, '>', dfln, '\n',
+                    sq[['seq']], '\n\n')
   }
+  cat(fasta, file=flpth)
 }
 
 #' @name getBestClstrs
@@ -298,6 +211,40 @@ drpClstrs <- function(clstrs_obj, id) {
 #' @param sid Sequence IDs to be kept
 #' @export
 drpSqs <- function(clstrs_obj, cid, sid) {
+  clstr <- clstrs_obj@clstrs[[cid]]
+  txids <- getSqTx(clstrs_obj=clstrs_obj,
+                   sid=sid, rank=FALSE)
+  names(sid) <- names(txids) <- NULL
+  clstr$gis <- sid
+  clstr$tis <- txids
+  clstr$n_ti <- length(unique(txids))
+  clstrs_obj@clstrs[[cid]] <- clstr
+  clstrs_obj
+}
+
+
+#' @name fltrClstrSqs
+#' @title Filter out sequences for a cluster
+#' @description Identify all sequences in a cluster
+#'  keep only those sequences representing rank of choice (e.g. species)
+#'  identify all sequences of the same taxa
+#'  select 'best' sequence for each taxon
+#'   - drop all with too much ambiguity
+#'   - select longest sequence per taxon
+#' @param clstrs_obj Clusters Object
+#' @param id Clusters ID
+#' @param rank Taxonomic rank
+#' @param mn_pambg Min. ambiguous bases
+#' @export
+fltrClstrSqs <- function(clstrs_obj, id, rank='species',
+                         mn_pambg=0.1) {
   clstr <- clstrs_obj@clstrs[[id]]
-  
+  pambgs <- getSqAmbs(clstrs_obj=clstrs_obj, id=id)
+  gis <- names(pambgs)[pambgs < mn_pambg]
+  txids <- getSqTx(clstrs_obj, sid=gis, rank=rank)
+  sqlns <- getSqLns(clstrs_obj, sid=gis)
+  names(sqlns) <- gis
+  keep <- tapply(sqlns, factor(txids),
+                 function(x) names(x)[which.max(x)])
+  drpSqs(clstrs_obj=clstrs_obj, cid=id, sid=keep)
 }
