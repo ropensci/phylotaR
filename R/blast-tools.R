@@ -107,8 +107,8 @@ fltrBlstRs <- function(blst_rs, ps) {
     # drop all with < mncvrg
     # ensure both qry-sbj and sbj-qry are dropped
     qsids <- blst_rs[pull, c('query.id', 'subject.id')]
-    pull <- (blst_rs[['query.id']] == qsids[['subject.id']] &
-      blst_rs[['subject.id']] == qsids[['query.id']]) | pull
+    pull <- (blst_rs[['query.id']] %in% qsids[['subject.id']] &
+      blst_rs[['subject.id']] %in% qsids[['query.id']]) | pull
   }
   ndrp <- sum(pull)
   info(lvl=3, ps=ps, "Removed [", ndrp, "/",

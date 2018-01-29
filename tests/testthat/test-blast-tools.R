@@ -17,7 +17,7 @@ ps <- list('wd'=data_d, 'mkblstdb'='', 'blstn'='',
            'tdpth'=NULL, 'mxd'=10000, 'tmout'=100,
            'mdlt'=3000, 'mxsqs'=10000, 'mxsql'=25000,
            'mxretry'=100, 'mxeval'=1.0e-10,
-           'mncvrg'=0.49, 'v'=FALSE, 'ncps'=1)
+           'mncvrg'=49.0, 'v'=FALSE, 'ncps'=1)
 
 # FUNCTIONS
 # stubs
@@ -43,8 +43,9 @@ test_that('blstN() works', {
   expect_true(all(nms %in% names(blst_rs)))
 })
 test_that('fltrBlstRs() works', {
-  rnd <- sample(1:nrow(blst_rs), 1)
-  blst_rs[rnd, 'qcovs'] <- 0.1
+  rnd <- sample(2:nrow(blst_rs), 2)
+  blst_rs[rnd, 'qcovs'] <- 48
+  blst_rs <- blst_rs[-1, ]
   res <- fltrBlstRs(blst_rs=blst_rs, ps=ps)
   expect_true(nrow(res) < nrow(blst_rs))
   # make sure rnd and its sq/qs pair is not present
