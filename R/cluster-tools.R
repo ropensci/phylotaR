@@ -240,7 +240,7 @@ blstSqs <- function(txid, typ, sqs, ps) {
     svBlstCch(sqs, wd=ps[['wd']], obj=blst_rs)
   }
   # TODO: Not so elegant
-  if(is.na(blst_rs)) {
+  if(any(is.na(blst_rs))) {
     return(NULL)
   }
   info(lvl=1, ps=ps, "Number of BLAST results [",
@@ -248,7 +248,6 @@ blstSqs <- function(txid, typ, sqs, ps) {
   info(lvl=1, ps=ps, "Filtering BLAST results")
   fltrBlstRs(blst_rs=blst_rs, ps=ps)
 }
-
 
 #' @name clstrBlstRs
 #' @title Cluster BLAST Results
