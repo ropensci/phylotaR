@@ -4,7 +4,7 @@
 \alias{addClstrInf}
 \title{Add taxonomic and sequence info to clusters}
 \usage{
-addClstrInf(clstrs, phylt_nds, txid, sqs, drct = FALSE)
+addClstrInf(clstrs, phylt_nds, txid, sqs, typ)
 }
 \arguments{
 \item{clstrs}{Clusters}
@@ -15,7 +15,7 @@ addClstrInf(clstrs, phylt_nds, txid, sqs, drct = FALSE)
 
 \item{sqs}{Sequneces}
 
-\item{drct}{Direct? T/F}
+\item{typ}{Subtree of direct?}
 }
 \description{
 input: List of clstrs

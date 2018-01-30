@@ -2,14 +2,22 @@
 % Please edit documentation in R/cluster-tools.R
 \name{clstrSqs}
 \alias{clstrSqs}
-\title{Cluster sequences for sequences}
+\title{Identify clusters from sequences}
 \usage{
-clstrSqs(txid, sqs, phylt_nds, ps, drct = FALSE, infrmtv = FALSE,
-  blst_rs = NULL)
+clstrSqs(txid, sqs, phylt_nds, infrmtv, ps, lvl, typ = c("direct", "subtree"))
 }
 \arguments{
-\item{phylt_nds}{PhyLoTa nodes data.frame}
+\item{txid}{Taxonomic ID}
+
+\item{sqs}{Sequence object of sequences to be BLASTed}
+
+\item{phylt_nds}{PhyLoTa table}
+
+\item{ps}{Parameters}
+
+\item{typ}{Direct or Subtree?}
 }
 \description{
-Identify sequence clusters using BLAST
+Given a sequence object, this function will generate
+PhyLoTa-like tables using BLAST.
 }

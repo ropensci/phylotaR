@@ -4,7 +4,7 @@
 \alias{clstrBlstRs}
 \title{Cluster BLAST Results}
 \usage{
-clstrBlstRs(blst_rs, infrmtv = TRUE)
+clstrBlstRs(blst_rs, infrmtv = FALSE)
 }
 \arguments{
 \item{blst_rs}{BLAST results}
