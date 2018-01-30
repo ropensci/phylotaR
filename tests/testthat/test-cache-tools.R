@@ -130,13 +130,18 @@ test_that('svBlstCch() works', {
 cleanUp()
 test_that('ldBlstCch() works', {
   setUpCch(ps=list('wd'='.'))
+  blst_rs <- data.frame('query.id'=as.character(c(1:5)),
+                        'subject.id'='1')
   sqs_1 <- list(list('gi'='1'), list('gi'='2'), list('gi'='3'))
   sqs_2 <- list(list('gi'='1'), list('gi'='2'), list('gi'='4'))
   sqs_3 <- list(list('gi'='1'), list('gi'='2'), list('gi'='5'))
-  svBlstCch(sqs=sqs_1, wd='.', obj='res_1')
-  svBlstCch(sqs=sqs_2, wd='.', obj='res_2')
-  expect_true(ldBlstCch(sqs=sqs_1, wd='.') == 'res_1')
-  expect_true(ldBlstCch(sqs=sqs_2, wd='.') == 'res_2')
+  sqs_4 <- list(list('gi'='1'), list('gi'='2'))
+  svBlstCch(sqs=sqs_1, wd='.', obj=blst_rs[1:3, ])
+  svBlstCch(sqs=sqs_2, wd='.', obj=blst_rs[c(1, 2, 4), ])
+  expect_true(nrow(ldBlstCch(sqs=sqs_1, wd='.')) == 3)
+  expect_true(nrow(ldBlstCch(sqs=sqs_2, wd='.')) == 3)
   expect_null(ldBlstCch(sqs=sqs_3, wd='.'))
+  # sqs 4 blast results are contained within sqs 1 and/or 2
+  expect_true(nrow(ldBlstCch(sqs=sqs_4, wd='.')) == 2)
 })
 cleanUp()

@@ -295,14 +295,23 @@ ldBlstCch <- function(sqs, wd) {
   }
   sqids <- sapply(sqs, function(x) x[['gi']])
   names(sqids) <- NULL
-  pull <- sapply(fldctnry, function(x) all(sqids %in% x) &
-                   all(x %in% sqids))
+  pull <- sapply(fldctnry, function(x) all(sqids %in% x))
   if(sum(pull) == 0) {
     return(NULL)
   }
-  flnm <- paste0(which(pull), '.RData')
+  if(sum(pull) == 0) {
+    flnm <- paste0(which(pull), '.RData')
+    flpth <- file.path(wd, 'cache', 'blast', flnm)
+    return(readRDS(file=flpth))
+  }
+  pssbls <- which(pull)
+  lngs <- sapply(fldctnry[pssbls], length)
+  flnm <- paste0(pssbls[which.min(lngs)], '.RData')
   flpth <- file.path(wd, 'cache', 'blast', flnm)
-  readRDS(file=flpth)
+  res <- readRDS(file=flpth)
+  pull <- blst_rs[['query.id']] %in% sqids &
+    blst_rs[['subject.id']] %in% sqids
+  res[pull, ]
 }
 
 #' @name svBlstCch
