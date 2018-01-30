@@ -62,7 +62,7 @@ setUpPrmtrs <- function(wd, txid, ncbi_execs,
     }
   }
   # log parameters
-  msg <- paste0('Setting up pipeline in with the following parameters:')
+  msg <- paste0('Setting up pipeline with the following parameters:')
   info(lvl=1, ps=ps, msg)
   mxnchrs <- max(sapply(names(ps), nchar)) + 3
   pnms <- names(ps)[names(ps) != 'wt_tms'] # too big to print

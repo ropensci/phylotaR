@@ -29,10 +29,6 @@ runTaxise <- function(wd) {
                              ps=ps)
   info(lvl=1, ps=ps, 'Writing out ...')
   svObj(wd=wd, obj=phylt_nds, nm='phylt_nds')
-  writeTax(phylt_nds=phylt_nds, td_nms=tdobj[['nms']],
-           fl=file.path(wd, paste0('dbfiles-taxonomy-',
-                                   ps[['txid']], '.tsv')),
-           ps=ps)
   # TODO: make this optional?
   info(lvl=1, ps=ps, 'Generating taxonomic dictionary ...')
   txdct <- genTxdct(phylt_nds=phylt_nds, ps=ps)

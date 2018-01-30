@@ -41,14 +41,16 @@ test_that('blstSqs() works', {
 })
 cleanUp()
 test_that('calcClstrs() works', {
+  setUpCch(ps=ps)
   res <- with_mock(
     `phylotaR::clstrAll`=function(...) list(clstr),
-    `list.files`=function(...) rep(NA, 5),
+    `list.files`=function(...) paste0(1:5, '.RData'),
     `readRDS`=function(...) sqs,
     calcClstrs(txid=0, phylt_nds=phylt_nds, ps=ps)
   )
-  res <- ldObj(wd=ps[['wd']], nm='clstrs_sqs')
-  expect_true(length(res$clstrs) == 1)
+  res <- list.files(file.path(ps[['wd']], 'cache',
+                              'clstrs'))
+  expect_true(all(res == paste0(1:5, '.RData')))
 })
 cleanUp()
 test_that('clstrSqs() works', {

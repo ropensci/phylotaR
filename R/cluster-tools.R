@@ -42,13 +42,11 @@ calcClstrs <- function(txid, phylt_nds, ps) {
     # cluster
     clstrs <- clstrAll(txid=txid, sqs=sqs, phylt_nds=phylt_nds,
                        ps=ps)
-    # TODO create special cache tool
-    svObj(wd=ps[['wd']], obj=list('clstrs'=clstrs, 'sqs'=sqs),
-          nm='clstrs_sqs')
-    cldf <- clstrPhylt(clstrs=clstrs)
-    cigidf <- clstrCiGi(clstrs=clstrs)
+    svClstrs(wd=ps[['wd']], txid=txid, clstrs=clstrs)
+    #cldf <- clstrPhylt(txid=txid, clstrs=clstrs)
+    #cigidf <- clstrCiGi(txid=txid, clstrs=clstrs)
     # output
-    writeClstr(cldf, cigidf, sqs, ps)
+    #writeClstr(cldf, cigidf, sqs, ps)
     info(lvl=1, ps=ps, "Finished processing taxid [", txid, "] # [",
         i, "/", length(sq_fls), "]")
   }
@@ -62,13 +60,17 @@ calcClstrs <- function(txid, phylt_nds, ps) {
 #' @details PhyLoTa data.frame must be informed by
 #' clustering functions before writing out.
 #' @export
-writeClstr <- function(cldf, cigidf, sqs, ps) {
-  clstrs_fl <- file.path(ps[['wd']], paste0('dbfiles-', ps[['txid']],
-                                            '-clusters.tsv'))
-  sqs_fl <- file.path(ps[['wd']], paste0('dbfiles-', ps[['txid']],
-                                         '-seqs.tsv'))
-  ci_gi_fl <- file.path(ps[['wd']], paste0('dbfiles-', ps[['txid']],
-                                           '-ci_gi.tsv'))
+writeClstr <- function(txid, cldf, cigidf, sqs, ps) {
+  dbpth <- file.path(ps[['wd']], 'dbfiles')
+  if(!file.exists(dbpth)) {
+    dir.create(dbpth)
+  }
+  clstrs_fl <- file.path(dbpth, paste0('dbfiles-', txid,
+                                       '-clusters.tsv'))
+  sqs_fl <- file.path(dbpth, paste0('dbfiles-', txid,
+                                    '-seqs.tsv'))
+  ci_gi_fl <- file.path(dbpth, paste0('dbfiles-', txid,
+                                      '-ci_gi.tsv'))
   sqdf <- do.call(rbind, lapply(sqs, as.data.frame))
   info(lvl=1, ps=ps, "Taxid", ps[['txid']], ": writing",
        nrow(cldf), "clusters,", nrow(sqdf), "sequences,",

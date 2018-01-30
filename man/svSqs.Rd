@@ -4,7 +4,7 @@
 \alias{svSqs}
 \title{Save sequences to cache}
 \usage{
-svSqs(wd = wd, txid = txid, sqs = sqs)
+svSqs(wd, txid, sqs)
 }
 \arguments{
 \item{wd}{Working directory}
