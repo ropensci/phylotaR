@@ -308,10 +308,10 @@ ldBlstCch <- function(sqs, wd) {
   lngs <- sapply(fldctnry[pssbls], length)
   flnm <- paste0(pssbls[which.min(lngs)], '.RData')
   flpth <- file.path(wd, 'cache', 'blast', flnm)
-  res <- readRDS(file=flpth)
+  blst_rs <- readRDS(file=flpth)
   pull <- blst_rs[['query.id']] %in% sqids &
     blst_rs[['subject.id']] %in% sqids
-  res[pull, ]
+  blst_rs[pull, ]
 }
 
 #' @name svBlstCch

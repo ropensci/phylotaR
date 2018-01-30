@@ -43,16 +43,16 @@ test_that('blstN() works', {
   expect_true(all(nms %in% names(blst_rs)))
 })
 test_that('fltrBlstRs() works', {
+  blst_rs <- blst_rs[-1, ]
   rnd <- sample(2:nrow(blst_rs), 2)
   blst_rs[rnd, 'qcovs'] <- 48
-  blst_rs <- blst_rs[-1, ]
   res <- fltrBlstRs(blst_rs=blst_rs, ps=ps)
   expect_true(nrow(res) < nrow(blst_rs))
   # make sure rnd and its sq/qs pair is not present
-  frst <- blst_rs[rnd, 'query.id'] == res[['query.id']] &
-    blst_rs[rnd, 'subject.id'] == res[['subject.id']]
+  frst <- blst_rs[rnd[1], 'query.id'] == res[['query.id']] &
+    blst_rs[rnd[1], 'subject.id'] == res[['subject.id']]
   expect_false(any(frst))
-  scnd <- blst_rs[rnd, 'subject.id'] == res[['query.id']] &
-    blst_rs[rnd, 'query.id'] == res[['subject.id']]
+  scnd <- blst_rs[rnd[1], 'subject.id'] == res[['query.id']] &
+    blst_rs[rnd[1], 'query.id'] == res[['subject.id']]
   expect_false(any(scnd))
 })
