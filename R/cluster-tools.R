@@ -121,7 +121,8 @@ clstrAll <- function(txid, sqs, phylt_nds, ps, lvl=0) {
 #' @name clstrSbtr
 #' @title Cluster all sequences descending from a txid
 #' @description Identifies clusters from sequences associated
-#' with a txid and all its descendants.
+#' with a txid and all its descendants. Clusters returned by
+#' this function will thus be of cl_type 'subtree'.
 #' @param txid Taxonomic ID
 #' @param sqs Sequence object of all downloaded sequences
 #' @param phylt_nds PhyLoTa table
@@ -164,7 +165,7 @@ clstrSbtr <- function(txid, sqs, phylt_nds, dds, ps, lvl) {
 #' with a higher level taxon (e.g. genus, family ...). This function
 #' generates clusters from these sequences, alone. This function
 #' identifies such sequences in the sequence object and generates
-#' cluster tables.
+#' a list of clusters of cl_type 'Node'.
 #' @param txid Taxonomic ID
 #' @param sqs Sequence object of all downloaded sequences
 #' @param phylt_nds PhyLoTa table
