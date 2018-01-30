@@ -65,9 +65,11 @@ setUpPrmtrs <- function(wd, txid, ncbi_execs,
   msg <- paste0('Setting up pipeline in with the following parameters:')
   info(lvl=1, ps=ps, msg)
   mxnchrs <- max(sapply(names(ps), nchar)) + 3
-  for(prmtr in names(ps)) {
-    spcr <- paste0(rep(' ', mxnchrs - nchar(prmtr)), collapse='')
-    prmtr_msg <- paste0(prmtr, spcr, '[', ps[[prmtr]], ']')
+  pnms <- names(ps)[names(ps) != 'wt_tms'] # too big to print
+  pnms <- sort(pnms)
+  for(pnm in pnms) {
+    spcr <- paste0(rep(' ', mxnchrs - nchar(pnm)), collapse='')
+    prmtr_msg <- paste0(pnm, spcr, '[', ps[[pnm]], ']')
     info(lvl=2, ps=ps, prmtr_msg)
   }
   setUpCch(ps=ps)
