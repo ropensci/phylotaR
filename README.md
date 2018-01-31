@@ -1,5 +1,5 @@
 # phylotaR
-[![Build Status](https://travis-ci.org/DomBennett/phylotaR.svg?branch=master)](https://travis-ci.org/DomBennett/phylotaR) [![Coverage Status](https://coveralls.io/repos/github/DomBennett/phylotaR/badge.svg?branch=master)](https://coveralls.io/github/DomBennett/phylotaR?branch=master)
+[![Build Status](https://travis-ci.org/DomBennett/phylotaR.svg?branch=master)](https://travis-ci.org/DomBennett/phylotaR) [![Coverage Status](https://coveralls.io/repos/github/DomBennett/phylotaR/badge.svg?branch=master)](https://coveralls.io/github/DomBennett/phylotaR?branch=master)[![](https://badges.ropensci.org/187_status.svg)](https://github.com/ropensci/onboarding/issues/187)
 
 > Please note: this package is in its development and is not fully tested.
 
