@@ -1,5 +1,5 @@
 # phylotaR
-[![Build Status](https://travis-ci.org/DomBennett/phylotaR.svg?branch=master)](https://travis-ci.org/DomBennett/phylotaR) [![Coverage Status](https://coveralls.io/repos/github/DomBennett/phylotaR/badge.svg?branch=master)](https://coveralls.io/github/DomBennett/phylotaR?branch=master)[![](https://badges.ropensci.org/187_status.svg)](https://github.com/ropensci/onboarding/issues/187)
+[![Build Status](https://travis-ci.org/DomBennett/phylotaR.svg?branch=master)](https://travis-ci.org/DomBennett/phylotaR) [![Coverage Status](https://coveralls.io/repos/github/DomBennett/phylotaR/badge.svg?branch=master)](https://coveralls.io/github/DomBennett/phylotaR?branch=master) [![](https://badges.ropensci.org/187_status.svg)](https://github.com/ropensci/onboarding/issues/187)
 
 > Please note: this package is in its development and is not fully tested.
 
@@ -16,7 +16,7 @@ devtools::install_github(repo='DomBennett/phylotaR', build_vignettes=TRUE)
 
 ## Pipeline
 
-`phylotaR` runs the PhyLoTa pipeline in three automated stages: identify and retrieve taxonomic information on all descendent nodes of the taxonomic group of interest (`taxise`), download sequence data for every identified node (`download`), identify orthologous clusters using BLAST (`cluster`). After these stages are complete, PhyLoTa-like tables are generated in the user's working directory. Additionally, `phylotaR` provides tools for exploring and identifying suitable clusters.
+`phylotaR` runs the PhyLoTa pipeline in four automated stages: identify and retrieve taxonomic information on all descendent nodes of the taxonomic group of interest (`taxise`), download sequence data for every identified node (`download`), identify orthologous clusters using BLAST (`cluster`), and identify sister clusters for sets of clusters identified in the previous stage (`cluster^2`) After these stages are complete, `phylotaR` provides tools for exploring, identifying and exporting suitable clusters for subsequent analysis.
 
 ![phylotaR pipeline: internet dependencies are indicated with green circles, external software dependcies are indiciated with orange circles.](https://github.com/DomBennett/phylotaR/raw/master/other/stages.png)
 
