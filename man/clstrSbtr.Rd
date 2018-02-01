@@ -19,5 +19,6 @@ clstrSbtr(txid, sqs, phylt_nds, dds, ps, lvl)
 }
 \description{
 Identifies clusters from sequences associated
-with a txid and all its descendants.
+with a txid and all its descendants. Clusters returned by
+this function will thus be of cl_type 'subtree'.
 }

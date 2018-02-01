@@ -267,7 +267,7 @@ getGnsFrmPhyltNds <- function(txid, phylt_nds) {
 #' @param verbose Verbose? T/F
 #' @export
 blstSqs <- function(txid, typ, sqs, ps, lvl) {
-  info(lvl=lvl+1, ps=ps, "BLAST all vs all for [",
+  info(lvl=lvl+1, ps=ps, "BLASTing all vs all for [",
       length(sqs), "] sequences")
   blst_rs <- ldBlstCch(sqs, wd=ps[['wd']])
   if(is.null(blst_rs)) {

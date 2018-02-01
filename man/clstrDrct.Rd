@@ -20,5 +20,5 @@ In GenBank certain sequences may only be associated
 with a higher level taxon (e.g. genus, family ...). This function
 generates clusters from these sequences, alone. This function
 identifies such sequences in the sequence object and generates
-cluster tables.
+a list of clusters of cl_type 'Node'.
 }

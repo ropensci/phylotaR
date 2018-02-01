@@ -79,13 +79,18 @@ runClusters <- function(wd) {
   .stgMsg(ps=ps, msg=msg)
 }
 
-#' @name runAlign
-#' @title Align clusters
-#' @description Run external alignment software
-#' on identified clusters.
-#' @param wd Working directory
-#' @details Object will be cached.
+#' @name runClusters2
+#' @title Cluster
+#' @description Cluster the clusters
 #' @export
-runAlign <- function(wd) {
-  # TODO
+runClusters2 <- function(wd) {
+  ps <- ldPrmtrs(wd)
+  # stage print
+  msg <- paste0('Starting stage CLUSTER^2: [', Sys.time(), ']')
+  .stgMsg(ps=ps, msg=msg)
+  # generate clusters
+  clstrClstrs(ps=ps)
+  # stage print
+  msg <- paste0('Completed stage CLUSTER^2: [', Sys.time(), ']')
+  .stgMsg(ps=ps, msg=msg)
 }
