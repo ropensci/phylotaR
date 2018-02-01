@@ -23,9 +23,9 @@ mkBlstDB <- function(sqs, dbfl, ps) {
   }
   args <- c('-in', fl, '-dbtype nucl')
   res <- .system(command=ps[['mkblstdb']], args=args,
-                 stdout=FALSE, stderr=FALSE)
+                 stdout=TRUE, stderr=TRUE)
   if(res != 0) {
-    error(paste0('Command [', cmd, '] did not return 0'))
+    error(paste0('Command did not return 0'))
   }
   # Check success
   extensions <- c('nhr', 'nin', 'nsq')

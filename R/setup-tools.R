@@ -26,7 +26,7 @@ setUpPrmtrs <- function(wd, txid, ncbi_execs,
                         tmout=100, mdlt=3000,
                         mxsqs=1000, mxsql=25000,
                         mxretry=100, mxeval=1.0e-10,
-                        mncvrg=0.51, v=FALSE, ncps=1) {
+                        mncvrg=51, v=FALSE, ncps=1) {
   if(!file.exists(wd)) {
     stop(paste0('Invalid `wd`. [', wd, '] does not exist.'))
   }
