@@ -2,8 +2,15 @@
 library(phylotaR)
 library(testthat)
 
+# FUNCTIONS
+cleanUp <- function() {
+  if(file.exists('cache')) {
+    unlink('cache', recursive=TRUE)
+  }
+}
+
 # DATA
-ps <- list('mncvrg'=51, 'v'=FALSE)
+ps <- list('mncvrg'=51, 'v'=TRUE, 'wd'='.')
 # mock clstrs 
 clstr <- list("gis"='101', "seed_gi"=NA, "ti_root"='101',
               "ci"=NA, "cl_type"=NA, "n_gi"=1,
@@ -31,11 +38,42 @@ pull <- blst_rs[['query.id']] == blst_rs[['subject.id']]
 blst_rs[pull, 'qcovs'] <- 100
 
 # RUNNING
+cleanUp()
 context('Testing \'cluster^2 tools\'')
 test_that('clstrClstrs() works', {
-  
+  setUpCch(ps)
+  # skip cluster^2
+  res <- with_mock(
+    `phylotaR:::getSeedSqs`=function(...) NA,
+    `phylotaR:::blstSeeds`=function(...) NA,
+    `phylotaR:::jnClstrs`=function(...) NA,
+    `phylotaR:::mrgClstrs`=function(...) NA,
+    `phylotaR:::rnmbrClstrs`=function(...) NA,
+    `phylotaR:::svObj`=function(...) NULL,
+    clstrClstrs(ps=ps)
+  )
+  expect_null(res)
+  saveRDS(NA, file=file.path('cache', 'clstrs',
+                             'id1.RData'))
+  saveRDS(NA, file=file.path('cache', 'clstrs',
+                             'id2.RData'))
+  saveRDS(NA, file=file.path('cache', 'sqs',
+                             'id1.RData'))
+  saveRDS(NA, file=file.path('cache', 'sqs',
+                             'id2.RData'))
+  # don't skip cluster^2
+  res <- with_mock(
+    `phylotaR:::getSeedSqs`=function(...) NA,
+    `phylotaR:::blstSeeds`=function(...) NA,
+    `phylotaR:::jnClstrs`=function(...) NA,
+    `phylotaR:::mrgClstrs`=function(...) NA,
+    `phylotaR:::rnmbrClstrs`=function(...) NA,
+    `phylotaR:::svObj`=function(...) NULL,
+    clstrClstrs(ps=ps)
+  )
+  expect_null(res)
 })
-# no cache needed
+cleanUp()
 test_that('jnClstrs() works', {
   jnd_clstrs <- jnClstrs(blst_rs=blst_rs, ps=ps,
                          seed_ids=seed_ids,
@@ -58,7 +96,7 @@ test_that('mrgClstrs() works', {
   jnd_clstrs <- jnClstrs(blst_rs=blst_rs, ps=ps,
                          seed_ids=seed_ids,
                          all_clstrs=all_clstrs)
-  mrg_clstrs <- mrgClsts(jnd_clstrs=jnd_clstrs)
+  mrg_clstrs <- mrgClstrs(jnd_clstrs=jnd_clstrs)
   expect_true(length(jnd_clstrs) == length(mrg_clstrs))
   rnd <- sample(1:length(jnd_clstrs), 1)
   exmpl <- mrg_clstrs[[rnd]]

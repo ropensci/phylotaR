@@ -2,10 +2,9 @@
 % Please edit documentation in R/cluster2-tools.R
 \name{mrgClstrs}
 \alias{mrgClstrs}
-\alias{mrgClsts}
 \title{Merge joined clusters}
 \usage{
-mrgClsts(jnd_clstrs)
+mrgClstrs(jnd_clstrs)
 }
 \arguments{
 \item{jnd_clstrs}{List of joined clusters}

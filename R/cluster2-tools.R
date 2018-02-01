@@ -106,7 +106,7 @@ jnClstrs <- function(blst_rs, seed_ids, all_clstrs, ps) {
 #' each data slot to create a single merged cluster.
 #' @param jnd_clstrs List of joined clusters
 #' @export
-mrgClsts <- function(jnd_clstrs) {
+mrgClstrs <- function(jnd_clstrs) {
   for(i in seq_along(jnd_clstrs)) {
     # TODO: look up parent of both? Might require internet
     jnd_clstrs[[i]][['ti_root']] <- NA

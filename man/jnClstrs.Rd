@@ -4,7 +4,7 @@
 \alias{jnClstrs}
 \title{Join clusters for merging}
 \usage{
-jnClstrs(blst_rs, seed_ids, all_clstrs)
+jnClstrs(blst_rs, seed_ids, all_clstrs, ps)
 }
 \arguments{
 \item{blst_rs}{Seed sequence BLAST results}
@@ -12,6 +12,8 @@ jnClstrs(blst_rs, seed_ids, all_clstrs)
 \item{seed_ids}{Seed sequence IDs}
 
 \item{all_clstrs}{List of all clusters}
+
+\item{ps}{Parameters}
 }
 \description{
 Uses seed sequence BLAST results and IDs
