@@ -86,9 +86,9 @@ runStgs <- function(wd, to, frm, stgs_msg, rstrt=FALSE) {
     }
     if(frm <= 4 & to >= 4) {
       if(!ps[['v']]) {
-        cat('... Align\n')
+        cat('... Cluster2\n')
       }
-      runAlign(wd)
+      runClusters2(wd)
       svPrgrss(wd, 'align')
     }
   }
@@ -142,7 +142,7 @@ restart <- function(wd, nstages=4) {
   if(is.na(stg)) {
     stop('Pipeline already complete. Use `reset()` to re-run pipeline.')
   }
-  frm <- which(c('taxise', 'download', 'cluster', 'align')
+  frm <- which(c('taxise', 'download', 'cluster', 'cluster2')
                 %in% stg)
   if(frm > nstages) {
     stop('Pipeline has already completed [', nstages,
@@ -169,7 +169,7 @@ chckStgs <- function(frm, to) {
   if(frm > to) {
     stop('Starting stage must always come before ending stage.')
   }
-  stgs <- c('taxise', 'download', 'cluster', 'align')
+  stgs <- c('taxise', 'download', 'cluster', 'cluster2')
   stgs_msg <- paste0(stgs[frm:to], collapse = ', ')
   paste0('Running stages: ', stgs_msg)
 }
@@ -183,7 +183,7 @@ chckStgs <- function(frm, to) {
 #' @export
 #' @seealso \code{\link{restart}}, \code{\link{setParameters}}
 reset <- function(wd, stage, hard=FALSE) {
-  if(!stage %in% c('taxise', 'download', 'cluster', 'align')) {
+  if(!stage %in% c('taxise', 'download', 'cluster', 'cluster2')) {
     stop('Invalid stage name.')
   }
   ps <- ldPrmtrs(wd)

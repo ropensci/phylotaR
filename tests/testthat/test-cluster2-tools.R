@@ -37,7 +37,7 @@ test_that('clstrClstrs() works', {
 })
 # no cache needed
 test_that('jnClstrs() works', {
-  jnd_clstrs <- jnClstrs(blst_rs=blst_rs,
+  jnd_clstrs <- jnClstrs(blst_rs=blst_rs, ps=ps,
                          seed_ids=seed_ids,
                          all_clstrs=all_clstrs)
   ids <- unlist(lapply(jnd_clstrs, function(x)
@@ -55,7 +55,7 @@ test_that('jnClstrs() works', {
   expect_true(length(ids) <= pssbl_mx)
 })
 test_that('mrgClstrs() works', {
-  jnd_clstrs <- jnClstrs(blst_rs=blst_rs,
+  jnd_clstrs <- jnClstrs(blst_rs=blst_rs, ps=ps,
                          seed_ids=seed_ids,
                          all_clstrs=all_clstrs)
   mrg_clstrs <- mrgClsts(jnd_clstrs=jnd_clstrs)

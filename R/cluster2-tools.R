@@ -25,7 +25,7 @@ clstrClstrs <- function(ps) {
     seeds <- getSeedSqs(clstrs=all_clstrs, sqs=all_sqs)
     blst_res <- blstSeeds(sqs=seeds, ps=ps)
     info(lvl=1, ps=ps, 'Done. Merging ...')
-    jnd_clstrs <- jnClstrs(blst_res=blst_res,
+    jnd_clstrs <- jnClstrs(blst_res=blst_res, ps=ps,
                            seed_ids=names(seeds),
                            all_clstrs=all_clstrs)
     mrg_clstrs <- mrgClstrs(jnd_clstrs=jnd_clstrs)
@@ -80,8 +80,9 @@ getSeedSqs <- function(clstrs, sqs) {
 #' @param blst_rs Seed sequence BLAST results
 #' @param seed_ids Seed sequence IDs
 #' @param all_clstrs List of all clusters
+#' @param ps Parameters
 #' @export
-jnClstrs <- function(blst_rs, seed_ids, all_clstrs) {
+jnClstrs <- function(blst_rs, seed_ids, all_clstrs, ps) {
   join <- function(x) {
     pull <- seed_ids %in% x[['gis']]
     jnd_clstr <- all_clstrs[pull]

@@ -33,7 +33,7 @@ mckRunDownload <- function(wd) {
 mckRunClusters <- function(wd) {
   NULL
 }
-mckRunAlign <- function(wd) {
+mckRunClusters2 <- function(wd) {
   NULL
 }
 
@@ -62,7 +62,7 @@ test_that('runStgs() works', {
     `phylotaR:::runTaxise`=mckRunTaxise,
     `phylotaR:::runDownload`=mckRunDownload,
     `phylotaR:::runClusters`=mckRunClusters,
-    `phylotaR:::runAlign`=mckRunAlign,
+    `phylotaR:::runClusters`=mckRunClusters2,
     setUp(wd='.', txid=9606),
     runStgs(wd='.', to=4, frm=1, stgs_msg='',
             rstrt=FALSE)
@@ -72,7 +72,7 @@ test_that('runStgs() works', {
     `phylotaR:::runTaxise`=mckRunTaxise,
     `phylotaR:::runDownload`=mckRunDownload,
     `phylotaR:::runClusters`=mckRunClusters,
-    `phylotaR:::runAlign`=mckRunAlign,
+    `phylotaR:::runClusters`=mckRunClusters2,
     runStgs(wd='.', to=4, frm=1, stgs_msg='',
             rstrt=TRUE)
   )
@@ -105,9 +105,9 @@ test_that('chckStgs() works', {
   expect_error(chckStgs(frm=5, to=5))
   expect_error(chckStgs(frm=2, to=1))
   res <- chckStgs(frm=1, to=4)
-  expect_true(res == 'Running stages: taxise, download, cluster, align')
+  expect_true(res == 'Running stages: taxise, download, cluster, cluster2')
   res <- chckStgs(frm=4, to=4)
-  expect_true(res == 'Running stages: align')
+  expect_true(res == 'Running stages: cluster2')
 })
 test_that('reset() works', {
   # TODO
