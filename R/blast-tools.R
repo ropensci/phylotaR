@@ -89,15 +89,13 @@ blstN <- function(dbfl, outfl, ps) {
 # Remove both, query-subject and subject-query pair of low coverage hits!!
 # Otherwise, we will end up with clusters with uneven sequence lengths!
 # TODO does it make a difference to filter for qcovhsp ??
-# XXX Don't need to collapse when doing single-linkeage clustering!!
-# collapse HSPs such that we end up with unique query-subject pairs
-# TODO The xx is a hack.. how do I collapse by two column values and
-# only get the column back??
-# result.subset <- setkey(blast.dt.filtered, query.id,
-# subject.id)[, .(xx=0),.(query.id, subject.id)]
 #' @name fltrBlstRs
 #' @title Filter BLAST results
-#' @description Can you fill this in Hannes?
+#' @description Given a BLAST output, filters query-subject pairs such
+#' that only HSPs with a coverage greater than \code{mncvrg} (specified
+#' in the pipeline parameters) remain. Filters both: query-subject and
+#' subject-query pairs, if one of the coverages is insufficient. HSP
+#' coverage is obtained from the BLAST column \code{qcovs}.
 #' @param blst_rs BLAST results
 #' @export
 # @Hannes: do you have any blast results to test this?
