@@ -22,7 +22,7 @@
 #' @seealso
 #' \link{setUpNcbiTools}
 setUpPrmtrs <- function(wd, txid, ncbi_execs,
-                        tdpth=NULL, mxd=10000,
+                        tdpth=NULL, mxd=100000,
                         tmout=100, mdlt=3000,
                         mxsqs=1000, mxsql=25000,
                         mxretry=100, mxeval=1.0e-10,

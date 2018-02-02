@@ -35,6 +35,23 @@ safeSrch <- function(func, args, fnm, ps) {
   res
 }
 
+#' @name nNcbiNds
+#' @title Count number of descending taxonomic nodes
+#' @description Searches NCBI taxonomy and returns
+#' number of descendents taxonomic nodes (species, genera ...)
+#' of ID.
+#' @param txid Taxonomic ID
+#' @param ps Parameters
+#' @export
+nNcbiNds <- function(txid, ps) {
+  trm <- paste0('txid', txid, '[Subtree]')
+  args <- list(db='taxonomy', retmax=0, term=trm)
+  res <- safeSrch(func=rentrez::entrez_search,
+                  args=args, fnm='search',
+                  ps=ps)
+  res[['count']]
+}
+
 #' @name nSqs
 #' @title Count number of sequences for txid
 #' @description Return the number of sequences
@@ -42,7 +59,6 @@ safeSrch <- function(func, args, fnm, ps) {
 #' @param txid Taxonomic ID
 #' @param direct exp or noexp? T/F
 #' @export
-# @Hannes: eqv to .num.seqs.for.txid
 nSqs <- function(txid, ps, direct=FALSE) {
   org_term <- ifelse(direct, '[Organism:noexp]',
                      '[Organism:exp]' )

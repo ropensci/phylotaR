@@ -104,32 +104,32 @@ test_that('dwnldTD() works', {
                                  'tdpth'=NULL,
                                  'v'=FALSE)))
   )
-  cleanUp()
 })
+cleanUp()
 test_that('genTDObj() works', {
   tdobj <- genTDObj(ps=ps)
   tdobj <- genTDObj(ps=ps)
   two <- sum(names(tdobj) %in% c('nds', 'nms'))
   expect_true(two == 2)
-  cleanUp()
 })
+cleanUp()
 test_that('getKids() works', {
   pull <- td_nds[ ,'id'] %in% td_nds[ ,'parent']
   rid <- sample(td_nds[pull, 'id'], 1)
   kids <- getKids(rid, td_nds)
   expect_true(length(kids) >= 1)
 })
-test_that('nDscndnts() works', {
-  pull <- td_nds[ ,'id'] %in% td_nds[ ,'parent']
-  rid <- sample(td_nds[pull, 'id'], 1)
-  kids <- getKids(rid, td_nds)
-  n <- nDscndnts(rid, td_nds)
-  expect_true(n >= length(kids))
-  # expect no kids
-  rid <- sample(td_nds[!pull, 'id'], 1)
-  n <- nDscndnts(rid, td_nds)
-  expect_true(n == 0)
-})
+# test_that('nDscndnts() works', {
+#   pull <- td_nds[ ,'id'] %in% td_nds[ ,'parent']
+#   rid <- sample(td_nds[pull, 'id'], 1)
+#   kids <- getKids(rid, td_nds)
+#   n <- nDscndnts(rid, td_nds)
+#   expect_true(n >= length(kids))
+#   # expect no kids
+#   rid <- sample(td_nds[!pull, 'id'], 1)
+#   n <- nDscndnts(rid, td_nds)
+#   expect_true(n == 0)
+# })
 test_that('getGenus() works', {
   rid <- sample(td_nds[['id']][-1], 1)
   res <- getGenus(txid=rid, td_nds=td_nds)
@@ -138,13 +138,21 @@ test_that('getGenus() works', {
   }
 })
 test_that('getMngblIds() works', {
-  pull <- td_nds[ ,'id'] %in% td_nds[ ,'parent']
-  wdsndnts <- sample(td_nds[pull, 'id'], 10)
-  wodsndnts <- sample(td_nds[!pull, 'id'], 10)
-  res <- getMngblIds(txid=c(wdsndnts, wodsndnts),
-                     td_nds=td_nds, ps=ps)
-  ns <- res[['ndscndnts']]
-  expect_equal(ns > 0, rep(c(TRUE, FALSE), each=10))
+  rids <- sample(td_nds[['id']], 10)
+  res <- with_mock(
+    `phylotaR:::nNcbiNds`=function(...) 0,
+    getMngblIds(txid=rids, td_nds=td_nds, ps=ps)
+  )
+  expect_true(all(res[['ndscndnts']] == 0))
+  expect_true(length(res[['mngbl_ids']]) > 0)
+  expect_true(length(res[['rjctd_ids']]) == 0)
+  res <- with_mock(
+    `phylotaR:::nNcbiNds`=function(...) ps[['mxd']]+1,
+    getMngblIds(txid=rids, td_nds=td_nds, ps=ps)
+  )
+  expect_true(all(res[['ndscndnts']] == (ps[['mxd']]+1)))
+  expect_true(length(res[['mngbl_ids']]) == 0)
+  expect_true(length(res[['rjctd_ids']]) > 0)
 })
 test_that('getStats() works', {
   phylt_nds <- data.frame('ti'=NA,
@@ -189,25 +197,28 @@ test_that('getStats() works', {
 #   expect_true(file.exists('test_writeTax.tsv'))
 #   cleanUp()
 # })
+cleanUp()
 test_that('genPhylotaNds() works', {
   # ps[['v']] <- TRUE
   setUpCch(ps=ps)
   txids <- td_nds[['id']]
-  nid_sets <- getMngblIds(txid=txids[1:10], td_nds=td_nds,
-                          ps=ps)
+  nid_sets <- with_mock(
+    `phylotaR::nNcbiNds`=function(...) 500,
+    getMngblIds(txid=txids[1:10],
+                td_nds=td_nds, ps=ps)
+  )
   res <- with_mock(
     `phylotaR::nSqs`=function(txid,
                               direct,
-                              ps){
-      500},
+                              ps) 500,
     genPhylotaNds(nid_sets=nid_sets,
                   td_nds=td_nds,
                   td_nms=td_nms,
                   ps=ps)
   )
   expect_true('data.frame' %in% is(res))
-  cleanUp()
 })
+cleanUp()
 test_that('genTxdct() works', {
   setUpCch(ps=ps)
   phylt_nds <- data.frame(ti=rep(NA, 10))
@@ -217,6 +228,5 @@ test_that('genTxdct() works', {
     genTxdct(phylt_nds=phylt_nds, ps=ps)
   )
   expect_true(length(res) == nrow(phylt_nds))
-  cleanUp()
 })
 cleanUp()

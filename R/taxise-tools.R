@@ -236,9 +236,8 @@ getMngblIds <- function(txid, td_nds, ps) {
   while(length(queue) > 0) {
     id <- head(queue, 1)
     queue <- tail(queue, length(queue)-1)
-    n <- .evlTmLmt(nDscndnts(id, td_nds),
-                   cpu=ps[['tmout']])
-    if (is.null(n) || n > ps[['mxd']]) {
+    n <- nNcbiNds(txid=id, ps=ps)
+    if (n > ps[['mxd']]) {
       queue <- c(queue, getKids(id, td_nds))
       rjctd_ids <- c(rjctd_ids, id)
       info(lvl=1, ps=ps, "Taxon [", id,
@@ -255,32 +254,31 @@ reached counting descendants. Processing child taxa.")
            "Current number of nodes to be processed [", tot, "]")
     }
   }
-  # @Hannes: why have ndscendnts and not use them?
   list('mngbl_ids'=mngbl_ids, 'rjctd_ids'=rjctd_ids,
        'ndscndnts'=ndscndnts)
 }
 
-#' @name nDscndnts
-#' @title Count descendants
-#' @description Count the number of children
-#' descending from a node in the NCBI taxonomy
-#' dump.
-#' @param id Taxonomic ID
-#' @param td_nds NCBI taxonomic nodes
-#' @export
-nDscndnts <- function(id, td_nds) {
-  queue <- id
-  res <- 0
-  while (length(queue) > 0) {
-    res <- res + length(queue)
-    newqueue <- suppressWarnings(foreach(i=seq_along(queue),
-                                         .combine=c) %dopar% {
-                                           getKids(queue[i], td_nds)
-                                         })
-    queue <- newqueue
-  }
-  return(res-1)
-}
+#' #' @name nDscndnts
+#' #' @title Count descendants
+#' #' @description Count the number of children
+#' #' descending from a node in the NCBI taxonomy
+#' #' dump.
+#' #' @param id Taxonomic ID
+#' #' @param td_nds NCBI taxonomic nodes
+#' #' @export
+#' nDscndnts <- function(id, td_nds) {
+#'   queue <- id
+#'   res <- 0
+#'   while (length(queue) > 0) {
+#'     res <- res + length(queue)
+#'     newqueue <- suppressWarnings(foreach(i=seq_along(queue),
+#'                                          .combine=c) %dopar% {
+#'                                            getKids(queue[i], td_nds)
+#'                                          })
+#'     queue <- newqueue
+#'   }
+#'   return(res-1)
+#' }
 
 # TODO: rename -- 'kids' implies tips.
 #' @name getKids

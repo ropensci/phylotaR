@@ -136,6 +136,20 @@ test_that('nSqs() works', {
   expect_true(grepl(':noexp', res[['term']]))
 })
 cleanUp()
+test_that('nNcbiNds() works', {
+  setUpCch(ps=ps)
+  res <- with_mock(
+    `phylotaR::safeSrch`=function(func,
+                                  args,
+                                  fnm,
+                                  ps){
+      list('count'=args)
+    },
+    nNcbiNds(txid=9606, ps=ps)
+  )
+  expect_true(res[['term']] == "txid9606[Subtree]")
+})
+cleanUp()
 test_that('getGIs() works', {
   cleanUp()
   setUpCch(ps=ps)
