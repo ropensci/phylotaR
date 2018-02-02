@@ -23,9 +23,9 @@ clstrClstrs <- function(ps) {
   if(length(clstrfls) > 1) {
     info(lvl=1, ps=ps, 'Done. Cluster-clustering ...')
     seeds <- getSeedSqs(clstrs=all_clstrs, sqs=all_sqs)
-    blst_res <- blstSeeds(sqs=seeds, ps=ps)
+    blst_rs <- blstSeeds(sqs=seeds, ps=ps)
     info(lvl=1, ps=ps, 'Done. Merging ...')
-    jnd_clstrs <- jnClstrs(blst_res=blst_res, ps=ps,
+    jnd_clstrs <- jnClstrs(blst_rs=blst_rs, ps=ps,
                            seed_ids=names(seeds),
                            all_clstrs=all_clstrs)
     mrg_clstrs <- mrgClstrs(jnd_clstrs=jnd_clstrs)
