@@ -275,7 +275,7 @@ blstSqs <- function(txid, typ, sqs, ps, lvl) {
                    '-db.fa')
     outfl <- paste0('taxon-', txid, '-typ-', typ,
                     '-blastout.txt')
-    mkBlstDB(sqs, dbfl=dbfl, ps=ps)
+    mkBlstDB(sqs=sqs, dbfl=dbfl, ps=ps)
     blst_rs <- blstN(dbfl=dbfl, outfl=outfl, ps=ps)
     if(is.null(blst_rs)) {
       blst_rs <- NA

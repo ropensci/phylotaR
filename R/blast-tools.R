@@ -23,7 +23,7 @@ mkBlstDB <- function(sqs, dbfl, ps) {
   }
   args <- c('-in', fl, '-dbtype nucl')
   res <- .system(command=ps[['mkblstdb']], args=args,
-                 stdout=TRUE, stderr=TRUE)
+                 stdout=FALSE, stderr=FALSE)
   if(res != 0) {
     error(paste0('Command did not return 0'))
   }

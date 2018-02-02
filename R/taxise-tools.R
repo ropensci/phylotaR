@@ -100,7 +100,7 @@ genPhylotaNds <- function(nid_sets, td_nds, td_nms, ps) {
                           'n_genera'=NA)
   nids <- nid_sets[['mngbl_ids']]
   info(lvl=1, ps=ps, "Adding [", length(nids),
-       "] nodes recursively, in parallel")
+       "] nodes recursively")
   for(i in seq_along(nids)) {
     txid <- nids[i]
     info(lvl=2, ps=ps, "Recursively processing txid [",
@@ -116,16 +116,18 @@ genPhylotaNds <- function(nid_sets, td_nds, td_nms, ps) {
   ## inserted before it's children, since we need the info from
   # the children. Therefore, this must not
   ## happen in parallel!
-  nids <- nid_sets[['rjctd_ids']]
+  nids <- rev(nid_sets[['rjctd_ids']])
   info(lvl=1, ps=ps, "Adding [", length(nids),
        "] top-level nodes non-recursively, sequentially")
   for (i in seq_along(nids)) {
-    txid <- rev(nids)[i] # TODO: how do we know that this will ensure spp?
+    txid <- nids[i]
     info(lvl=2, ps=ps, "Processing txid [",
          txid, "] [", i, "/", length(nids), "]")
-    n <- getStats(txid=txid, phylt_nds=phylt_nds,
-                  td_nds=td_nds, td_nms=td_nms,
-                  rcrsv=FALSE, ps=ps)
+    phylt_nds <- getStats(txid=txid,
+                          phylt_nds=phylt_nds,
+                          td_nds=td_nds,
+                          td_nms=td_nms,
+                          rcrsv=FALSE, ps=ps)
     info(lvl=1, ps=ps, "Finished processing txid [",
          txid, "] [", i, "/", length(nids), "]")
   }
