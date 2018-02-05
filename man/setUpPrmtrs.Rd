@@ -15,17 +15,27 @@ setUpPrmtrs(wd, txid, ncbi_execs, tdpth = NULL, mxd = 1e+05, tmout = 100,
 
 \item{ncbi_execs}{File directories for NCBI tools, see \code{setUpNcbiTools()}}
 
-\item{tdpth}{NCBI taxdump.tar.gz}
+\item{tdpth}{Path to dump of NCBI taxonomy database
+(available at ftp://ftp.ncbi.nih.gov/pub/taxonomy/taxdump.tar.gz)}
 
 \item{tmout}{Timeout in seconds, numeric.}
 
-\item{mx_dscndnts}{Maximum number of descendants per taxonomic node, numeric}
+\item{mx_dscndnts}{Maximum number of descendants for a taxon to be analysed
+in the taxise step; Sequence counts etc for taxa with more descendants will
+not be reported}
 
-\item{mdl_thrshld}{Maximum number of sequences per species}
+\item{mdl_thrshld}{Number of sequences for a taxon (species) to be considered
+a 'model organism', i.e. a species for which not all its sequences are
+included in the analysis; If more sequences are available for a given taxon,
+a random subset of size mdl_thrshld will be selected;}
 
-\item{mx_blst_sqs}{Maximum number of sequences to blast in a single run;}
+\item{mx_blst_sqs}{Maximum number of sequences to blast in a single run;
+if the number of sequences for the descendant species of a higher level taxon
+exceeds this number, no clustering will be done at this stage; instead,
+BLAST search and clustering will be done on its decendants}
 
-\item{mx_sq_lngth}{Maximum characters in one sequence}
+\item{mx_sq_lngth}{Maximum number of characters in one sequence;
+longer sequences will not be downloaded}
 
 \item{sq_cch_dr}{Directory for sequence cache; will be created if does not exist}
 

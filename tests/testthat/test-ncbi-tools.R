@@ -57,61 +57,6 @@ mckEntrezSummary <- function(db, id) {
 # RUNNING
 cleanUp()
 context('Testing \'ncbi-tools\'')
-test_that('safeSrch(fnm=search) works', {
-  setUpCch(ps=ps)
-  args <- list('term'='ncbi search term',
-               'db'='nucleotide', 'x')
-  myfunc <- function(...) {
-    print(...)
-    return(1)
-  }
-  res <- safeSrch(func=myfunc,
-                  args=args,
-                  fnm='search',
-                  ps=ps)
-  expect_true(res == 1)
-  myfunc <- function(...) {
-    print(...)
-    stop()
-  }
-  args <- list('term'='another ncbi search term',
-               'db'='nucleotide',
-               'x')
-  res <- safeSrch(func=myfunc,
-                  args=args,
-                  fnm='search',
-                  ps=ps)
-  expect_null(res)
-})
-cleanUp()
-test_that('safeSrch(fnm=fetch) works', {
-  setUpCch(ps=ps)
-  args <- list('id'=c(1, 2),
-               'db'='nucleotide',
-               'x')
-  myfunc <- function(...) {
-    print(...)
-    return(1)
-  }
-  res <- safeSrch(func=myfunc,
-                  args=args,
-                  fnm='fetch',
-                  ps=ps)
-  expect_true(res == 1)
-  myfunc <- function(...) {
-    print(...)
-    stop()
-  }
-  args <- list('id'=c(2, 3),
-               'db'='nucleotide',
-               'x')
-  res <- safeSrch(func=myfunc,
-                  args=args,
-                  fnm='fetch',
-                  ps=ps)
-  expect_null(res)
-})
-cleanUp()
 test_that('nSqs() works', {
   setUpCch(ps=ps)
   res <- with_mock(

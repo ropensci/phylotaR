@@ -387,6 +387,8 @@ genTxdct <- function(phylt_nds, ps) {
   names(txdct) <- phylt_nds[['ti']]
   txids <- names(txdct)
   for(txid in txids) {
+    info(lvl=2, ps=ps, "getting data for [", txid,
+         "]")
     args <- list(db="taxonomy", id=txid, rettype='xml')
     rcrd <- safeSrch(func=rentrez::entrez_fetch,
                      fnm='fetch', args=args, ps=ps)
