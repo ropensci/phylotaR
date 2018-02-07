@@ -31,7 +31,7 @@ mkBlstDB <- function(sqs, dbfl, ps) {
   extensions <- c('nhr', 'nin', 'nsq')
   fnames <- sapply(extensions, function(e) paste0(fl, '.', e))
   if(!all(sapply(fnames, file.exists))) {
-    error(ps=ps, 'Command [', cmd, '] did not produce output files [',
+    error(ps=ps, 'Command did not produce output files [',
           paste(fnames), ']')
   }
   NULL
@@ -64,7 +64,7 @@ blstN <- function(dbfl, outfl, ps) {
   res <- .system(command=ps[['blstn']], args=args, stdout=FALSE,
                  stderr=FALSE)
   if(res != 0) {
-    error(paste0('Command [', cmd, '] did not return 0'))
+    error('Command did not return 0')
   }
   if(!file.exists(outfl)) {
     info(lvl=3, ps=ps, "No BLAST output, returning NULL")
