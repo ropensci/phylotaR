@@ -32,8 +32,8 @@
 #' @seealso
 #' \link{setUpNcbiTools}
 setUpPrmtrs <- function(wd, txid, ncbi_execs,
-                        tdpth=NULL, mxd=100000,
-                        tmout=100, mdlt=3000,
+                        tdpth=NULL, mx_nds=100000,
+                        mdlt=3000,
                         mxsqs=1000, mxsql=25000,
                         mxretry=100, mxeval=1.0e-10,
                         mncvrg=51, v=FALSE, ncps=1) {
@@ -93,7 +93,7 @@ setUpPrmtrs <- function(wd, txid, ncbi_execs,
 #' @param d Directory to NCBI BLAST tools
 #' @param wd Working directory
 #' @param v v, T/F
-#' @details BLAST tools must be version >2.7.1.
+#' @details BLAST tools must be version >=2.0
 #' @export
 #' @seealso
 #' \link{setUpPrmtrs}
@@ -115,7 +115,7 @@ setUpNcbiTools <- function(d, v, wd) {
       vrsn <- gsub('[a-zA-Z:+]', '', res[1])
       vrsn <- gsub('\\s', '', vrsn)
       vrsn <- as.numeric(strsplit(vrsn, '\\.')[[1]])
-      tst <- vrsn[1] >= 2 & vrsn[2] >= 7 & vrsn[3] >= 1
+      tst <- vrsn[1] >= 2 & vrsn[2] >= 0
       if(tst) {
         .log(v=v, wd=wd, paste0('Found: [', res[1], ']\n'))
       } else {
