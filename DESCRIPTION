@@ -23,7 +23,9 @@ Imports:
     rentrez,
     DBI,
     taxize,
-    XML
+    XML,
+    ggplot2,
+    plyr
 Suggests:
     testthat,
     knitr,
