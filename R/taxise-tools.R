@@ -224,9 +224,6 @@ getStats <- function(txid, phylt_nds, td_nds, td_nms,
 #' seconds, the taxonomic ID is discarded and its children
 #' are added to the queue.
 #' @export
-# @Hannes: this is functional eqv to get.manageable.node.set
-# @Hannes: why do we need the timeout? Surely, mx_dscndnts
-# is sufficient?
 getMngblIds <- function(txid, td_nds, ps) {
   queue <- txid
   mngbl_ids <- vector()
@@ -241,8 +238,7 @@ getMngblIds <- function(txid, td_nds, ps) {
       queue <- c(queue, getKids(id, td_nds))
       rjctd_ids <- c(rjctd_ids, id)
       info(lvl=1, ps=ps, "Taxon [", id,
-           "] has too many descendants or tmout 
-reached counting descendants. Processing child taxa.")
+           "] has too many descendants. Processing child taxa.")
     } else {
       mngbl_ids <- c(mngbl_ids, id)
       ndscndnts <- c(ndscndnts, n)
