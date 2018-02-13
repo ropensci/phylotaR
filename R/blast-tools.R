@@ -59,7 +59,7 @@ blstN <- function(dbfl, outfl, ps) {
   outfmt <- "'6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore qcovs qcovhsp'"
   # Disable DUST filtering, limit to same-strang matching
   args <- c('-query', dbfl, '-db', dbfl, '-outfmt',
-            outfmt, '-dust no -strand plus -evalue', ps[['mxeval']],
+            outfmt, '-dust no -strand plus -evalue', ps[['mxevl']],
             '-out', outfl)
   res <- .system(command=ps[['blstn']], args=args, stdout=FALSE,
                  stderr=FALSE)
@@ -98,7 +98,6 @@ blstN <- function(dbfl, outfl, ps) {
 #' coverage is obtained from the BLAST column \code{qcovs}.
 #' @param blst_rs BLAST results
 #' @export
-# @Hannes: do you have any blast results to test this?
 fltrBlstRs <- function(blst_rs, ps) {
   pull <- blst_rs[['qcovs']] < ps[['mncvrg']]
   if(any(pull)) {

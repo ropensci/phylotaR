@@ -4,11 +4,7 @@ library(testthat)
 
 # DATA
 data("phylt_nds")
-ps <- list(wd=NULL, txid=9607,
-           tdpth=NULL, mxd=10000,
-           tmout=100, mdlt=3000,
-           mxsqs=10000, mxsql=25000,
-           mxretry=2, v=FALSE, ncps=1)
+ps <- parameters()
 
 # FUNCTIONS
 cleanUp <- function() {
@@ -19,7 +15,7 @@ cleanUp <- function() {
 # stub
 mckNSqs <- function(txid, ps, direct=FALSE) {
   # randomly return either > or < mdl_thrshld
-  sample(c(10, ps[['mdlt']] + 1), 1)
+  sample(c(10, ps[['mdlthrs']] + 1), 1)
 }
 mckDwnldFrmNCBI <- function(txid=txid, ps, direct=FALSE) {
   nsqs <- runif(n=1, min=1, max=10)
@@ -67,11 +63,11 @@ test_that('dwnld() works', {
 test_that('fltr() works', {
   # TODO: not sure what the goal of filtr is, hard to test
   txid <- 9479
-  ps[['mdlt']] <- 3000
+  ps[['mdlthrs']] <- 3000
   ps[['mxsqs']] <- 10000
   res_1 <- fltr(txid=txid, phylt_nds=phylt_nds,
                 ps=ps)
-  ps[['mdlt']] <- 30
+  ps[['mdlthrs']] <- 30
   ps[['mxsqs']] <- 100
   res_2 <- fltr(txid=txid, phylt_nds=phylt_nds,
                 ps=ps)

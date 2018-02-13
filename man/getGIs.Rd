@@ -4,7 +4,7 @@
 \alias{getGIs}
 \title{Return random set of sequence IDs}
 \usage{
-getGIs(txid, direct, sqcnt, ps, retmax = 1000, hrdmx = 1e+05)
+getGIs(txid, direct, sqcnt, ps, retmax = 10, hrdmx = 1e+05)
 }
 \arguments{
 \item{txid}{NCBI taxon identifier}

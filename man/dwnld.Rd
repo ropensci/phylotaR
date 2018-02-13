@@ -11,10 +11,6 @@ dwnld(txids, phylt_nds, ps)
 
 \item{phylt_nds}{PhyLoTa data.frame}
 
-\item{ps[['mdlt']]}{Maximum number of sequences per txid}
-
-\item{ps[['mxsql']]}{Maximum sequence length}
-
 \item{verbose}{Verbose? T/F}
 }
 \description{

@@ -9,12 +9,12 @@
 getSqsByTxid <- function(txid, phylt_nds, ps) {
   info(lvl=2, ps=ps, "Retrieving sequences for taxid [",
        txid, "]")
-  # get subtree counts if that is smaller than ps[['mdlt']]
+  # get subtree counts if that is smaller than ps[['mdlthrs']]
   subtree_count <- nSqs(txid, direct=FALSE, ps=ps)
-  if(subtree_count <= ps[['mdlt']]) {
+  if(subtree_count <= ps[['mdlthrs']]) {
     info(lvl=3, ps=ps,
          '[', subtree_count, "] seqs for taxid [",
-        txid, "], less than maximum of [", ps[['mdlt']],
+        txid, "], less than maximum of [", ps[['mdlthrs']],
         "] sequences. Retreiving sequences for whole subtree.")
     sqs <- dwnldFrmNCBI(txid=txid, direct=FALSE, ps=ps)
     return(sqs)
@@ -34,8 +34,6 @@ getSqsByTxid <- function(txid, phylt_nds, ps) {
 #' given taxonomic IDs.
 #' @param txids Taxonomic node IDs, numeric vector
 #' @param phylt_nds PhyLoTa data.frame
-#' @param ps[['mdlt']] Maximum number of sequences per txid
-#' @param ps[['mxsql']] Maximum sequence length
 #' @param verbose Verbose? T/F
 #' @details Sequence downloads are cached.
 #' @export
@@ -70,7 +68,7 @@ fltr <- function(txid, phylt_nds, ps) {
     nnonmodelsqs <- phylt_nds[match(tmp_id, phylt_nds[['ti']]),
                                'n_gi_sub_nonmodel']
     nmodelsqs <- phylt_nds[match(tmp_id, phylt_nds[['ti']]),
-                            'n_sp_model'] * ps[['mdlt']]
+                            'n_sp_model'] * ps[['mdlthrs']]
     nsqs <- nnonmodelsqs + nmodelsqs
     info(lvl=3, ps=ps, "Number of sequences for taxon [",
         tmp_id, "]: [", nsqs, "]")

@@ -10,7 +10,7 @@ cleanUp <- function() {
 }
 
 # DATA
-ps <- list('mncvrg'=51, 'v'=TRUE, 'wd'='.')
+ps <- parameters()
 # mock clstrs 
 clstr <- list("gis"='101', "seed_gi"=NA, "ti_root"='101',
               "ci"=NA, "cl_type"=NA, "n_gi"=1,

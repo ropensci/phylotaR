@@ -13,11 +13,8 @@ if(grepl('testthat', wd)) {
   data_d <- file.path('tests', 'testthat',
                        'data')
 }
-ps <- list('wd'=data_d, 'mkblstdb'='', 'blstn'='',
-           'tdpth'=NULL, 'mxd'=10000, 'tmout'=100,
-           'mdlt'=3000, 'mxsqs'=10000, 'mxsql'=25000,
-           'mxretry'=100, 'mxeval'=1.0e-10,
-           'mncvrg'=49.0, 'v'=FALSE, 'ncps'=1)
+ps <- parameters()
+ps[['wd']] <- data_d
 
 # FUNCTIONS
 # stubs

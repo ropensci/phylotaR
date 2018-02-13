@@ -25,7 +25,7 @@ nNcbiNds <- function(txid, ps) {
 nSqs <- function(txid, ps, direct=FALSE) {
   org_term <- ifelse(direct, '[Organism:noexp]',
                      '[Organism:exp]' )
-  term <- paste0('txid', txid, org_term, '1:',
+  term <- paste0('txid', txid, org_term, ps[['mnsql']], ':',
                  ps[['mxsql']], '[SLEN]')
   args <- list(db='nucleotide', retmax=0, term=term)
   res <- safeSrch(func=rentrez::entrez_search,
@@ -58,12 +58,13 @@ nSqs <- function(txid, ps, direct=FALSE) {
 #' in a single query.
 #' @return vector ot IDs
 #' @export
-getGIs <- function(txid, direct, sqcnt, ps, retmax=1000,
+getGIs <- function(txid, direct, sqcnt, ps, retmax=10,
                    hrdmx=100000) {
   org_term <- ifelse(direct, '[Organism:noexp]',
                      '[Organism:exp]' )
-  term <- paste0('txid', txid, org_term, '1:',
-                 ps[['mxsql']], '[SLEN]')
+  term <- paste0('txid', txid, org_term,
+                 ps[['mnsql']], ':', ps[['mxsql']],
+                 '[SLEN]')
   if(sqcnt > hrdmx) {
     ids <- NULL
     retstarts <- sample(1:(sqcnt-retmax),
@@ -106,12 +107,13 @@ dwnldFrmNCBI <- function(txid, ps, direct=FALSE) {
   gis <- getGIs(txid=txid, direct=direct, sqcnt=sqcnt,
                 ps=ps)
   # If the maximum amount of number is exceeded,
-  # randomly pick ps[['mxsqs']] gis
-  if(direct && length(gis) > ps[['mxsqs']]) {
-    info(lvl=1, ps=ps, "Choosing [", ps[['mxsqs']],
+  # randomly pick ps[['mdlthrs']] gis
+  if(direct && length(gis) > ps[['mdlthrs']]) {
+    info(lvl=1, ps=ps, "Choosing [", ps[['mdlthrs']],
         "] random sequences from [",
         length(gis), "] available")
-    gis <- gis[sample(1:ps[['mxsqs']], replace=FALSE)]
+    gis <- gis[sample(1:length(gis), size=ps[['mdlthrs']],
+                      replace=FALSE)]
   }
   info(lvl=1, ps=ps, "Retrieving [", length(gis),
       "] sequences for taxid [", txid, "]")
@@ -124,7 +126,7 @@ dwnldFrmNCBI <- function(txid, ps, direct=FALSE) {
     crrnt_ids <- gis[lower:upper]
     info(lvl=2, ps=ps, "Retreiving seqs [",
         lower, "-", upper, "] for taxid [", txid, "]");
-    args <- list(db="nuccore", rettype="fasta",
+    args <- list(db="nucleotide", rettype="fasta",
                  id=crrnt_ids)
     res <- safeSrch(func=rentrez::entrez_fetch,
                     fnm='fetch', args=args, ps=ps)

@@ -12,12 +12,9 @@ if(grepl('testthat', wd)) {
                       'data', 'api')
 }
 load(file.path(data_d, 'xml_timeout.rda'))
-ps <- list(wd='.', txid=9607,
-           tdpth=NULL, mxd=10000,
-           tmout=100, mdlt=3000,
-           mxsqs=10000, mxsql=25000,
-           mxretry=2, v=FALSE, ncps=1,
-           wt_tms=c(0, 0))
+ps <- parameters()
+ps[['mxrtry']] <- 2
+ps[['wt_tms']] <- c(0, 0)
 
 # FUNCTIONS
 cleanUp <- function() {

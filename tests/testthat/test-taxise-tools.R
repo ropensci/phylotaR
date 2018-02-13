@@ -55,8 +55,8 @@ mckXmlToList <- function(rcrd) {
 data('tdobj')
 td_nds <- tdobj[['nds']]
 td_nms <- tdobj[['nms']]
-ps <- list('mxd'=10000, 'tmout'=10, 'v'=FALSE,
-           'wd'=data_dr, 'mxsql'=2000, 'mdlt'=2000)
+ps <- parameters()
+ps[['wd']] <- data_dr
 rm(tdobj)
 
 # RUNNING
@@ -147,10 +147,10 @@ test_that('getMngblIds() works', {
   expect_true(length(res[['mngbl_ids']]) > 0)
   expect_true(length(res[['rjctd_ids']]) == 0)
   res <- with_mock(
-    `phylotaR:::nNcbiNds`=function(...) ps[['mxd']]+1,
+    `phylotaR:::nNcbiNds`=function(...) ps[['mxnds']]+1,
     getMngblIds(txid=rids, td_nds=td_nds, ps=ps)
   )
-  expect_true(all(res[['ndscndnts']] == (ps[['mxd']]+1)))
+  expect_true(all(res[['ndscndnts']] == (ps[['mxnds']]+1)))
   expect_true(length(res[['mngbl_ids']]) == 0)
   expect_true(length(res[['rjctd_ids']]) > 0)
 })

@@ -22,8 +22,8 @@ mckSystem <- function(command, args, stdout, stderr) {
              " Package: blast 2.7.1, build Oct 18 2017 19:57:24")
   }
   if(grepl('wrngvrsn', command)) {
-    res <- c("blastn: 2.6.1+", 
-             " Package: blast 2.6.1, build Oct 18 2017 19:57:24")
+    res <- c("blastn: 1.6.1+", 
+             " Package: blast 1.6.1, build Oct 18 2017 19:57:24")
   }
   res
 }

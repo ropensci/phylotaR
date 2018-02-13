@@ -175,7 +175,7 @@ getStats <- function(txid, phylt_nds, td_nds, td_nms,
   if(length(kids) == 0) {
     stats['n_leaf_desc'] <- stats['n_leaf_desc'] + 1
   }
-  if(n_drctsqs > ps[['mdlt']]) {
+  if(n_drctsqs > ps[['mdlthrs']]) {
     stats['n_gi_sub_model'] <- n_drctsqs
     stats['n_sp_model'] <- stats['n_sp_model'] + 1
   } else {
@@ -234,7 +234,7 @@ getMngblIds <- function(txid, td_nds, ps) {
     id <- head(queue, 1)
     queue <- tail(queue, length(queue)-1)
     n <- nNcbiNds(txid=id, ps=ps)
-    if (n > ps[['mxd']]) {
+    if (n > ps[['mxnds']]) {
       queue <- c(queue, getKids(id, td_nds))
       rjctd_ids <- c(rjctd_ids, id)
       info(lvl=1, ps=ps, "Taxon [", id,

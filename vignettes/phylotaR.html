@@ -12,7 +12,7 @@
 
 <meta name="author" content="D.J. Bennett" />
 
-<meta name="date" content="2018-01-14" />
+<meta name="date" content="2018-02-13" />
 
 <title>phylotaR Tutorial</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">phylotaR Tutorial</h1>
 <h4 class="author"><em>D.J. Bennett</em></h4>
-<h4 class="date"><em>2018-01-14</em></h4>
+<h4 class="date"><em>2018-02-13</em></h4>
 
 
 
@@ -111,7 +111,7 @@ txid &lt;-<span class="st"> </span><span class="dv">9504</span>
 </div>
 <div id="cluster-selection" class="section level2">
 <h2>Cluster selection</h2>
-<p>After a pipeline has completed, the identified clusters can be interrogated. In the below code, we generate a clusters object using <code>genClstrsObj()</code>. Again, all that is required as an argument is the working directory. The produced object contains cluster and sequence information on all the clusters. The <code>phylotaR</code> package has a range of functions for probing clusters in a clusters object. For example, if we want to know how many different taxonomic groups are represented by each cluster we can use <code>nTaxa()</code>. In the below example, however, we use <code>getBestClstsrs()</code> to identify just a single cluster. This function determines best-ness by weighting first by number of taxonomic groups and second by average sequence length. We can write out our best clusters to fasta format for later analysis using <code>writeSeqs()</code>. Note, the filenames are automatically generated as [clstr_id].fasta.</p>
+<p>After a pipeline has completed, the identified clusters can be interrogated. In the below code, we generate a clusters object using <code>genClstrsObj()</code>. Again, all that is required as an argument is the working directory. The produced object contains cluster and sequence information on all the clusters. The <code>phylotaR</code> package has a range of functions for probing clusters in a clusters object. For example, if we want to know how many different taxonomic groups are represented by each cluster we can use <code>getClNTx()</code>. In the below example, however, we use <code>getBestClstsrs()</code> to identify just a single cluster. This function determines best-ness by weighting first by number of taxonomic groups and second by average sequence length. We can write out our best clusters to fasta format for later analysis using <code>writeSeqs()</code>. Note, the filenames are automatically generated as [clstr_id].fasta.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">clstrs_obj &lt;-<span class="st"> </span><span class="kw">genClstrsObj</span>(wd)
 clstr_id &lt;-<span class="st"> </span><span class="kw">getBestClstrs</span>(clstrs_obj, <span class="dt">n=</span><span class="dv">1</span>)
 <span class="kw">writeSeqs</span>(clstrs_obj, clstr_id, wd) <span class="co"># writes sequences to [clstr_id] + .fasta</span></code></pre></div>
