@@ -14,6 +14,7 @@ setUpPrmtrs <- function(wd, ncbi_execs, ...) {
   }
   # get parameters
   ps <- parameters(...)
+  ps[['wd']] <- wd
   # calc wait times
   dff <- ps[['mxrtry']] - length(ps[['wt_tms']])
   if(dff > 0) {

@@ -39,7 +39,6 @@ parameters <-function(wd='.', txid=numeric(),
                       mxrtry=100, mxsqs=10000,
                       mxevl=1.0e-10, mncvrg=51) {
   ps <- as.list(environment())
-  ps[['lgfl']] <- file.path(wd, 'log.txt')
   ps[['wt_tms']] <- c(1, 3, 6, 10, 60, 300)
   ps
 }
