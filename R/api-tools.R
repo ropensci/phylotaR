@@ -1,5 +1,5 @@
-#' @name safeSrch
-#' @title Safely run rentrez function
+#' @name srchNCch
+#' @title Run rentrez function and cache results
 #' @description Safely run a rentrez function.
 #' If the query fails, the function will retry.
 #' All query results are cached. To remove cached data
@@ -9,14 +9,29 @@
 #' @param fnm rentrez function name
 #' @param ps Parameters
 #' @export
-safeSrch <- function(func, args, fnm, ps) {
+srchNCch <- function(func, args, fnm, ps) {
   res <- ldNcbiCch(fnm=fnm, args=args, wd=ps[['wd']])
   if(!is.null(res)) {
     return(res)
   }
+  res <- safeSrch(func=func, args=args, fnm=fnm, ps=ps)
+  svNcbiCch(fnm=fnm, args=args, wd=ps[['wd']], obj=res)
+  res
+}
+
+#' @name safeSrch
+#' @title Safely run rentrez function
+#' @description Safely run a rentrez function.
+#' If the query fails, the function will retry.
+#' @param func rentrez function
+#' @param args rentrez function arguments, list
+#' @param fnm rentrez function name
+#' @param ps Parameters
+#' @export
+safeSrch <- function(func, args, fnm, ps) {
+  res <- NULL
   for(wt_tm in ps[['wt_tms']]) {
-    query <- try(do.call(func, args),
-                 silent=TRUE)
+    query <- try(do.call(func, args), silent=TRUE)
     if(chckSrchObj(query)) {
       res <- query
       break
@@ -31,7 +46,6 @@ safeSrch <- function(func, args, fnm, ps) {
       Sys.sleep(wt_tm)
     }
   }
-  svNcbiCch(fnm=fnm, args=args, wd=ps[['wd']], obj=res)
   res
 }
 

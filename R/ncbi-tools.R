@@ -9,7 +9,7 @@
 nNcbiNds <- function(txid, ps) {
   trm <- paste0('txid', txid, '[Subtree]')
   args <- list(db='taxonomy', retmax=0, term=trm)
-  res <- safeSrch(func=rentrez::entrez_search,
+  res <- srchNCch(func=rentrez::entrez_search,
                   args=args, fnm='search',
                   ps=ps)
   res[['count']]
@@ -28,7 +28,7 @@ nSqs <- function(txid, ps, direct=FALSE) {
   term <- paste0('txid', txid, org_term, ps[['mnsql']], ':',
                  ps[['mxsql']], '[SLEN]')
   args <- list(db='nucleotide', retmax=0, term=term)
-  res <- safeSrch(func=rentrez::entrez_search,
+  res <- srchNCch(func=rentrez::entrez_search,
                   args=args, fnm='search',
                   ps=ps)
   res[['count']]
@@ -38,13 +38,13 @@ nSqs <- function(txid, ps, direct=FALSE) {
 #' @title Return random set of sequence IDs
 #' @description For a given txid return a random set of 
 #' sequences associated.
-#' @details For model organisms downloading all IDs can take long
+#' @details For model organisms downloading all IDs can a take long time
 #' or even cause an xml parsing error. For any search with more than
 #' hrdmx sequences, this function we will run multiple small searches
 #' downloading retmax seq IDs at a time with different retstart values
 #' to generate a semi-random vector of sequence IDs. For all other
 #' searches, all IDs will be retrieved.
-#' Note, it makes no sense for mxsqs in parameters to be greater
+#' Note, it makes no sense for mdlthrs in parameters to be greater
 #' than hrdmx in this function.
 #' @param txid NCBI taxon identifier
 #' @param direct Whether to download all 'directly' linked
@@ -58,30 +58,53 @@ nSqs <- function(txid, ps, direct=FALSE) {
 #' in a single query.
 #' @return vector ot IDs
 #' @export
-getGIs <- function(txid, direct, sqcnt, ps, retmax=10,
+getGIs <- function(txid, direct, sqcnt, ps, retmax=100,
                    hrdmx=100000) {
   org_term <- ifelse(direct, '[Organism:noexp]',
                      '[Organism:exp]' )
   term <- paste0('txid', txid, org_term,
                  ps[['mnsql']], ':', ps[['mxsql']],
                  '[SLEN]')
-  if(sqcnt > hrdmx) {
-    ids <- NULL
-    retstarts <- sample(1:(sqcnt-retmax),
-                       round(hrdmx/retmax))
-    for(retstart in retstarts) {
-      args <- list(db='nucleotide', retmax=retmax,
-                   term=term, retstart=retstart)
-      srch <- safeSrch(func=rentrez::entrez_search,
-                       args=args, fnm='search', ps=ps)
-      ids <- c(ids, srch[['ids']])
-    }
-  } else {
+  if(sqcnt <= hrdmx) {
     args <- list(db='nucleotide', retmax=sqcnt, term=term)
-    srch <- safeSrch(func=rentrez::entrez_search,
+    srch <- srchNCch(func=rentrez::entrez_search,
                      args=args, fnm='search',
                      ps=ps)
-    ids <- srch[['ids']]
+    return(srch[['ids']])
+  }
+  srch_args <- list(db='nucleotide', term=term,
+                    use_history=TRUE, retmax=0)
+  ids <- NULL
+  ret_strts <- sample(seq(1, (sqcnt-retmax), retmax),
+                      round(hrdmx/retmax), replace=FALSE)
+  rsrch <- TRUE
+  for(ret_strt in ret_strts) {
+    mxtry <- 3
+    for(i in 1:mxtry) {
+      # use webobject, search without cache
+      if(rsrch) {
+        srch <- safeSrch(func=rentrez::entrez_search,
+                         args=srch_args, fnm='search',
+                         ps=ps)
+      }
+      ftch_args <- list(db='nucleotide',
+                        web_history=srch[['web_history']],
+                        retmax=retmax,
+                        rettype='GI',
+                        retstart=ret_strt)
+      id_ftch <- try(do.call(what=rentrez::entrez_fetch,
+                             args=ftch_args), silent=TRUE)
+      if(inherits(id_ftch, 'try-error')) {
+        rsrch <- TRUE
+        if(i == mxtry) {
+          error(ps=ps, 'Failed to retrieve IDs for model organism [',
+                txid, ']')
+        }
+      }
+      rsrch <- FALSE
+      break
+    }
+    ids <- c(ids, strsplit(id_ftch, '\n')[[1]])
   }
   ids
 }
@@ -128,14 +151,14 @@ dwnldFrmNCBI <- function(txid, ps, direct=FALSE) {
         lower, "-", upper, "] for taxid [", txid, "]");
     args <- list(db="nucleotide", rettype="fasta",
                  id=crrnt_ids)
-    res <- safeSrch(func=rentrez::entrez_fetch,
+    res <- srchNCch(func=rentrez::entrez_fetch,
                     fnm='fetch', args=args, ps=ps)
     seqstrs <- unlist(strsplit(res, "(?<=[^>])(?=\n>)",
                                perl=TRUE))
     seqstrs <- gsub("^\n?>.*?\\n", "", seqstrs)
     seqstrs <- gsub("\n", "", seqstrs, fixed=TRUE)
     args=list(db='nucleotide', id=crrnt_ids)
-    summaries <- safeSrch(func=rentrez::entrez_summary,
+    summaries <- srchNCch(func=rentrez::entrez_summary,
                           fnm='summary', args=args, ps=ps)
     if(length(seqstrs) == 1) {
       summaries <- list(summaries)
