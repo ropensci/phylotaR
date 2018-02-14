@@ -54,13 +54,13 @@ blstN <- function(dbfl, outfl, ps) {
   if(!file.exists(dbfl)) {
     error(ps=ps, paste0('[', dbfl, '] does not exist. '))
   }
-  # TODO: We don't really need all these columns...
-  outfmt <- "'6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore qcovs qcovhsp'"
+  outfmt <- "6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore qcovs qcovhsp"
   # Disable DUST filtering, limit to same-strang matching
-  args <- c('-query', dbfl, '-db', dbfl, '-outfmt',
-            outfmt, '-dust no -strand plus -evalue', ps[['mxevl']],
+  # TODO: We don't really need all these outfmt columns...
+  args <- c('-query', dbfl, '-db', dbfl, '-outfmt', outfmt,
+            '-dust', 'no', '-strand', 'plus', '-evalue', ps[['mxevl']],
             '-out', outfl)
-  res <- cmdLn(cmd=ps[['blstn']], args=args, lgfl=fl)
+  res <- cmdLn(cmd=ps[['blstn']], args=args, lgfl=dbfl)
   if(res != 0) {
     error(ps=ps, 'blastn failed to run. Check BLAST log files.')
   }

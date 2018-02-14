@@ -183,8 +183,8 @@ clstrDrct <- function(txid, sqs, phylt_nds, ps, lvl) {
     return(list())
   }
   sqs_prt <- sqs[sids %in% names(sqs)]
-  clstrSqs(txid=txid, sqs=sqs_prt, infrmtv=FALSE,
-           typ='direct', phylt_nds=phylt_nds, ps=ps, lvl=lvl)
+  clstrSqs(txid=txid, sqs=sqs_prt, typ='direct',
+           phylt_nds=phylt_nds, ps=ps, lvl=lvl)
 }
 
 #' @name clstrSqs
@@ -194,7 +194,6 @@ clstrDrct <- function(txid, sqs, phylt_nds, ps, lvl) {
 #' @param txid Taxonomic ID
 #' @param sqs Sequence object of sequences to be BLASTed
 #' @param phylt_nds PhyLoTa table
-#' @param infrmtv
 #' @param ps Parameters
 #' @param typ Direct or Subtree?
 #' @export
@@ -289,20 +288,14 @@ blstSqs <- function(txid, typ, sqs, ps, lvl) {
 #' @title Cluster BLAST Results
 #' @description TODO
 #' @param blst_rs BLAST results
-#' @param infrmtv Informative? T/F
 #' @export
-clstrBlstRs <- function(blst_rs, infrmtv=FALSE) {
+clstrBlstRs <- function(blst_rs) {
   g <- igraph::graph.data.frame(blst_rs[ ,c("query.id",
                                             "subject.id")],
                                 directed=FALSE)
   clstrs <- igraph::clusters(g)
   # filter for phylogenetically informative clusters
-  if(infrmtv) {
-    clstrs <- clstrs[['membership']][which(
-      clstrs[['membership']] %in% which(clstrs[['csize']] > 2))]
-  } else {
-    clstrs <- clstrs[['membership']]
-  }
+  clstrs <- clstrs[['membership']]
   # we will return a list, one entry with sequence IDs
   #  for each cluster
   clstr_lst <- lapply(unique(clstrs), function(x) {

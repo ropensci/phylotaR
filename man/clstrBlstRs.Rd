@@ -4,12 +4,10 @@
 \alias{clstrBlstRs}
 \title{Cluster BLAST Results}
 \usage{
-clstrBlstRs(blst_rs, infrmtv = FALSE)
+clstrBlstRs(blst_rs)
 }
 \arguments{
 \item{blst_rs}{BLAST results}
-
-\item{infrmtv}{Informative? T/F}
 }
 \description{
 TODO
