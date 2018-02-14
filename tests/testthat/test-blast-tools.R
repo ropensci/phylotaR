@@ -18,7 +18,7 @@ ps[['wd']] <- data_d
 
 # FUNCTIONS
 # stubs
-mckSystem <- function(command, args, stdout, stderr) {
+mckSystem <- function(command, args, fl=NULL) {
   0
 }
 

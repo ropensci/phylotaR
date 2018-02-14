@@ -10,7 +10,7 @@ cleanUp <- function() {
 }
 
 # STUBS
-mckSystem <- function(command, args, stdout, stderr) {
+mckSystem <- function(command, args, fl=NULL) {
   if(grepl('makeblastdb', command)) {
     res <- c("makeblastdb: 2.7.1+",
              " Package: blast 2.7.1, build Oct 18 2017 19:57:24")

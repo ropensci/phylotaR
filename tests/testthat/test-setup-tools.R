@@ -12,7 +12,7 @@ cleanUp <- function() {
   }
 }
 # stub
-mckSystem <- function(command, args, stdout, stderr) {
+mckSystem <- function(command, args, fl=NULL) {
   if(grepl('makeblastdb', command)) {
     res <- c("makeblastdb: 2.7.1+",
              " Package: blast 2.7.1, build Oct 18 2017 19:57:24")
@@ -58,6 +58,6 @@ test_that('setUpPrmtrs() works', {
   setUpPrmtrs(wd='.', txid=9606,
               ncbi_execs=ncbi_execs)
   ps <- ldPrmtrs(wd='.')
-  expect_true(length(ps) == 17)
+  expect_true(length(ps) == 16)
 })
 cleanUp()

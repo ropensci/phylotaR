@@ -25,6 +25,7 @@ Imports:
     taxize,
     XML,
     ggplot2,
+    sys,
     plyr
 Suggests:
     testthat,

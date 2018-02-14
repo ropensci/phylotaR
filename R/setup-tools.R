@@ -75,8 +75,7 @@ setUpNcbiTools <- function(d, v, wd) {
   blstn <- file.path(d, 'blastn')
   for(ech in c(mkblstdb, blstn)) {
     args <- '-version'
-    res <- try(.system(command=ech, args=args, stdout=TRUE,
-                       stderr=FALSE), silent=TRUE)
+    res <- try(.system(command=ech, args=args), silent=TRUE)
     if(grepl('error', res[[1]], ignore.case=TRUE)) {
       tst <- FALSE
       .log(v=v, wd=wd, paste0('Invalid path: [', ech, ']\n'))
