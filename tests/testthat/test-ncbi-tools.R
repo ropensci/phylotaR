@@ -24,7 +24,15 @@ cleanUp <- function() {
   }
 }
 # stubs
-mckEntrezSearch <- function(db, term, retmax, retstart) {
+mckGetGIs <- function(...) {
+  if(n == 0) {
+    ids <- NULL
+  } else {
+    ids <- as.character(1:n)
+  }
+  ids
+}
+mckEntrezSearch <- function(db, term, retmax, retstart, ...) {
   if(n == 0) {
     ids <- NULL
   } else {
@@ -38,6 +46,9 @@ mckEntrezFetch <- function(db, rettype, id) {
     seqs <- paste0(seqs, randFasta())
   }
   seqs
+}
+mckEntrezFetchIDs <- function(...) {
+  '11111\n11111\n11111\n11111\n11111'
 }
 mckEntrezSummary <- function(db, id) {
   if(n == 1) {
@@ -97,17 +108,18 @@ test_that('getGIs() works', {
   n <<- 100
   res <- with_mock(
     `rentrez::entrez_search`=mckEntrezSearch,
+    `rentrez::entrez_fetch`=mckEntrezFetchIDs,
     getGIs(txid=9606, direct=FALSE, sqcnt=100, ps=ps)
   )
   expect_true(length(res) == n)
   cleanUp()
   setUpCch(ps=ps)
   n <<- 100
-  # TODO: develop mock entrez search to improve
   res <- with_mock(
     `rentrez::entrez_search`=mckEntrezSearch,
+    `rentrez::entrez_fetch`=mckEntrezFetchIDs,
     getGIs(txid=9606, direct=FALSE, sqcnt=100, ps=ps,
-           hrdmx=20)
+           hrdmx=20, retmax=10)
   )
   expect_true(length(res) != n)
 })
@@ -117,6 +129,7 @@ test_that('dwnldFrmNCBI() works', {
   n <<- 0
   setUpCch(ps=ps)
   res <- with_mock(
+    `phylotaR::getGIs`=mckGetGIs,
     `rentrez::entrez_search`=mckEntrezSearch,
     `rentrez::entrez_fetch`=mckEntrezFetch,
     `rentrez::entrez_summary`=mckEntrezSummary,
@@ -128,6 +141,7 @@ test_that('dwnldFrmNCBI() works', {
   setUpCch(ps=ps)
   n <<- 1
   res <- with_mock(
+    `phylotaR::getGIs`=mckGetGIs,
     `rentrez::entrez_search`=mckEntrezSearch,
     `rentrez::entrez_fetch`=mckEntrezFetch,
     `rentrez::entrez_summary`=mckEntrezSummary,
@@ -138,6 +152,7 @@ test_that('dwnldFrmNCBI() works', {
   setUpCch(ps=ps)
   n <<- 100
   res <- with_mock(
+    `phylotaR::getGIs`=mckGetGIs,
     `rentrez::entrez_search`=mckEntrezSearch,
     `rentrez::entrez_fetch`=mckEntrezFetch,
     `rentrez::entrez_summary`=mckEntrezSummary,
@@ -148,6 +163,7 @@ test_that('dwnldFrmNCBI() works', {
   setUpCch(ps=ps)
   n <<- 1000
   res <- with_mock(
+    `phylotaR::getGIs`=mckGetGIs,
     `rentrez::entrez_search`=mckEntrezSearch,
     `rentrez::entrez_fetch`=mckEntrezFetch,
     `rentrez::entrez_summary`=mckEntrezSummary,
