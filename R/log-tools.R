@@ -36,7 +36,7 @@ error <- function(ps, ...) {
 #' @export
 warn <- function(ps, ...) {
   msg <- paste0('Warning: ', ..., '\n')
-  .log(v=FALSE, wd=ps[['wd']], msg=msg)
+  .log(v=ps[['v']], wd=ps[['wd']], msg=msg)
   warning(paste0(msg, ' -- see log.txt'))
 }
 

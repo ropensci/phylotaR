@@ -21,7 +21,7 @@ setUp <- function(wd, txid, ncbi_dr='.', v=FALSE,
   ncbi_execs <- setUpNcbiTools(d=ncbi_dr, v=v,
                                wd=wd)
   setUpPrmtrs(wd=wd, txid=txid,
-              ncbi_execs=ncbi_execs, ...)
+              ncbi_execs=ncbi_execs, v=v, ...)
   # end
   .log(v=v, wd=wd, paste0(brdr, '\n'))
 }
