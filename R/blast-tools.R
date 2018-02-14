@@ -22,9 +22,10 @@ mkBlstDB <- function(sqs, dbfl, ps) {
           file=fl, append=TRUE)
   }
   args <- c('-in', fl, '-dbtype', 'nucl')
-  res <- .system(command=ps[['mkblstdb']], args=args, fl=fl)
+  res <- cmdLn(cmd=ps[['mkblstdb']], args=args,
+               lgfl=fl)
   if(res != 0) {
-    error(ps=ps, paste0('Command did not return 0'))
+    error(ps=ps, paste0('makeblastdb failed to run. Check BLAST log files.'))
   }
   # Check success
   extensions <- c('nhr', 'nin', 'nsq')
@@ -51,8 +52,7 @@ blstN <- function(dbfl, outfl, ps) {
   outfl <- file.path(blst_d, outfl)
   dbfl <- file.path(blst_d, dbfl)
   if(!file.exists(dbfl)) {
-    error(ps=ps, paste0('[', dbfl, '] does not exist. ',
-                        'Are you sure you ran `mkBlstDB`?'))
+    error(ps=ps, paste0('[', dbfl, '] does not exist. '))
   }
   # TODO: We don't really need all these columns...
   outfmt <- "'6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore qcovs qcovhsp'"
@@ -60,9 +60,9 @@ blstN <- function(dbfl, outfl, ps) {
   args <- c('-query', dbfl, '-db', dbfl, '-outfmt',
             outfmt, '-dust no -strand plus -evalue', ps[['mxevl']],
             '-out', outfl)
-  res <- .system(command=ps[['blstn']], args=args, fl=fl)
+  res <- cmdLn(cmd=ps[['blstn']], args=args, lgfl=fl)
   if(res != 0) {
-    error(ps=ps, 'Command did not return 0')
+    error(ps=ps, 'blastn failed to run. Check BLAST log files.')
   }
   if(!file.exists(outfl)) {
     info(lvl=3, ps=ps, "No BLAST output, returning NULL")

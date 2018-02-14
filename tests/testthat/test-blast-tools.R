@@ -18,7 +18,7 @@ ps[['wd']] <- data_d
 
 # FUNCTIONS
 # stubs
-mckSystem <- function(command, args, fl=NULL) {
+mckCmdLn <- function(cmd, args, lgfl=NULL) {
   0
 }
 
@@ -26,14 +26,14 @@ mckSystem <- function(command, args, fl=NULL) {
 context('Testing \'blast-tools\'')
 test_that('mkBlstDB() works', {
   res <- with_mock(
-    `phylotaR:::.system`=mckSystem,
+    `phylotaR::cmdLn`=mckCmdLn,
     mkBlstDB(sqs=sqs, dbfl='testdb', ps=ps)
   )
   expect_null(res)
 })
 test_that('blstN() works', {
   res <- with_mock(
-    `phylotaR:::.system`=mckSystem,
+    `phylotaR::cmdLn`=mckCmdLn,
     blstN(dbfl='testdb', outfl='testblstn', ps=ps)
   )
   nms <- colnames(res)

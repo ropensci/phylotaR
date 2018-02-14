@@ -12,20 +12,17 @@ cleanUp <- function() {
   }
 }
 # stub
-mckSystem <- function(command, args, fl=NULL) {
-  if(grepl('makeblastdb', command)) {
-    res <- c("makeblastdb: 2.7.1+",
-             " Package: blast 2.7.1, build Oct 18 2017 19:57:24")
+mckCmdLn <- function(cmd, args, lgfl=NULL) {
+  if(grepl('makeblastdb', cmd)) {
+    out <- c("makeblastdb: 2.7.1+\nPackage: blast 2.7.1, build Oct 18 2017 19:57:24")
   }
-  if(grepl('blastn', command)) {
-    res <- c("blastn: 2.7.1+", 
-             " Package: blast 2.7.1, build Oct 18 2017 19:57:24")
+  if(grepl('blastn', cmd)) {
+    out <- c("blastn: 2.7.1+\nPackage: blast 2.7.1, build Oct 18 2017 19:57:24")
   }
-  if(grepl('wrngvrsn', command)) {
-    res <- c("blastn: 1.6.1+", 
-             " Package: blast 1.6.1, build Oct 18 2017 19:57:24")
+  if(grepl('wrngvrsn', cmd)) {
+    out <- c("blastn: 1.6.1+\nPackage: blast 1.6.1, build Oct 18 2017 19:57:24")
   }
-  res
+  list(status=0, stdout=charToRaw(out), stderr=charToRaw(''))
 }
 
 # RUNNING
@@ -34,13 +31,13 @@ cleanUp()
 test_that('setUpNcbiTools() works', {
   # test with fake system
   res <- with_mock(
-    `phylotaR:::.system`=mckSystem,
+    `phylotaR::cmdLn`=mckCmdLn,
     setUpNcbiTools(d='.', v=FALSE, wd=NULL)
   )
   expect_true(length(res) == 2)
   # make sure wrong versions are flagged
   res <- with_mock(
-    `phylotaR:::.system`=mckSystem,
+    `phylotaR::cmdLn`=mckCmdLn,
     expect_error(setUpNcbiTools(d='wrngvrsn',
                                 v=FALSE,
                                 wd=NULL))

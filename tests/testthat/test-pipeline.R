@@ -10,16 +10,17 @@ cleanUp <- function() {
 }
 
 # STUBS
-mckSystem <- function(command, args, fl=NULL) {
-  if(grepl('makeblastdb', command)) {
-    res <- c("makeblastdb: 2.7.1+",
-             " Package: blast 2.7.1, build Oct 18 2017 19:57:24")
+mckCmdLn <- function(cmd, args, lgfl=NULL) {
+  if(grepl('makeblastdb', cmd)) {
+    out <- c("makeblastdb: 2.7.1+\nPackage: blast 2.7.1, build Oct 18 2017 19:57:24")
   }
-  if(grepl('blastn', command)) {
-    res <- c("blastn: 2.7.1+", 
-             " Package: blast 2.7.1, build Oct 18 2017 19:57:24")
+  if(grepl('blastn', cmd)) {
+    out <- c("blastn: 2.7.1+\nPackage: blast 2.7.1, build Oct 18 2017 19:57:24")
   }
-  res
+  if(grepl('wrngvrsn', cmd)) {
+    out <- c("blastn: 1.6.1+\nPackage: blast 1.6.1, build Oct 18 2017 19:57:24")
+  }
+  list(status=0, stdout=charToRaw(out), stderr=charToRaw(''))
 }
 mckRunStgs <- function(wd, to, frm, stgs_msg, rstrt=FALSE) {
   NULL
@@ -42,7 +43,7 @@ context('Testing \'pipeline\'')
 cleanUp()
 test_that('setUp() works', {
   res <- with_mock(
-    `phylotaR:::.system`=mckSystem,
+    `phylotaR::cmdLn`=mckCmdLn,
     setUp(wd='.', txid=9606)
   )
   expect_true(file.exists(file.path('cache',
@@ -58,7 +59,7 @@ test_that('run() works', {
 })
 test_that('runStgs() works', {
   res <- with_mock(
-    `phylotaR:::.system`=mckSystem,
+    `phylotaR::cmdLn`=mckCmdLn,
     `phylotaR:::runTaxise`=mckRunTaxise,
     `phylotaR:::runDownload`=mckRunDownload,
     `phylotaR:::runClusters`=mckRunClusters,
@@ -114,7 +115,7 @@ test_that('reset() works', {
 })
 test_that('setParameters() works', {
   res <- with_mock(
-    `phylotaR:::.system`=mckSystem,
+    `phylotaR::cmdLn`=mckCmdLn,
     setUp(wd='.', txid=9606)
   )
   setParameters(wd='.', parameters='txid', values=0000)

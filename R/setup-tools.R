@@ -75,14 +75,19 @@ setUpNcbiTools <- function(d, v, wd) {
   blstn <- file.path(d, 'blastn')
   for(ech in c(mkblstdb, blstn)) {
     args <- '-version'
-    res <- try(.system(command=ech, args=args), silent=TRUE)
-    if(grepl('error', res[[1]], ignore.case=TRUE)) {
+    res <- cmdLn(cmd=ech, args=args)
+    if(res[['status']] != 0) {
       tst <- FALSE
-      .log(v=v, wd=wd, paste0('Invalid path: [', ech, ']\n'))
+      stderr <- rawToChar(res[['stderr']])
+      .log(v=v, wd=wd, paste0('Failed to run: [', ech,
+                              ']. Reason:\n', '[',
+                              stderr, ']'))
       sccdd <- FALSE
     } else {
       # test version
-      vrsn <- gsub('[a-zA-Z:+]', '', res[1])
+      stdout <- rawToChar(res[['stdout']])
+      stdout <- strsplit(x = stdout, split='\n')[[1]]
+      vrsn <- gsub('[a-zA-Z:+]', '', stdout[[1]])
       vrsn <- gsub('\\s', '', vrsn)
       vrsn <- as.numeric(strsplit(vrsn, '\\.')[[1]])
       tst <- vrsn[1] >= 2 & vrsn[2] >= 0
