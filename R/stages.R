@@ -73,7 +73,7 @@ runClusters <- function(wd) {
   # Get PhyLoTa nodes
   phylt_nds <- ldObj(wd=wd, nm='phylt_nds')
   # generate clusters
-  calcClstrs(txid=ps[['txid']], phylt_nds=phylt_nds, ps=ps)
+  calcClstrs(phylt_nds=phylt_nds, ps=ps)
   # stage print
   msg <- paste0('Completed stage CLUSTER: [', Sys.time(), ']')
   .stgMsg(ps=ps, msg=msg)

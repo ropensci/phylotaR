@@ -46,7 +46,7 @@ test_that('calcClstrs() works', {
     `phylotaR::clstrAll`=function(...) list(clstr),
     `list.files`=function(...) paste0(1:5, '.RData'),
     `readRDS`=function(...) sqs,
-    calcClstrs(txid=0, phylt_nds=phylt_nds, ps=ps)
+    calcClstrs(phylt_nds=phylt_nds, ps=ps)
   )
   res <- list.files(file.path(ps[['wd']], 'cache',
                               'clstrs'))
@@ -60,14 +60,14 @@ test_that('clstrSqs() works', {
     `phylotaR::blstN`=mckBlstN,
     `phylotaR::mkBlstDB`=mckMkBlstDB,
     clstrSqs(txid=txid, sqs=sqs, phylt_nds=phylt_nds,
-             infrmtv=FALSE, ps=ps, lvl=0)
+             ps=ps, lvl=0)
   )
   expect_true('list' %in% is(res))
   res <- with_mock(
     `phylotaR::blstN`=mckBlstN,
     `phylotaR::mkBlstDB`=mckMkBlstDB,
     clstrSqs(txid=9479, sqs=sqs, phylt_nds=phylt_nds,
-             infrmtv=FALSE, ps=ps, lvl=0)
+             ps=ps, lvl=0)
   )
   # using the platyrrhini txid we should get more res
   expect_true(length(res) > 0)

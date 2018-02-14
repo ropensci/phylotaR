@@ -28,8 +28,7 @@
 #' @description TODO
 #' @param phylt_nds PhyLoTa nodes data.frame
 #' @export
-calcClstrs <- function(txid, phylt_nds, ps) {
-  root_txid <- txid
+calcClstrs <- function(phylt_nds, ps) {
   # load sequences
   sq_fls <- list.files(file.path(ps[['wd']], 'cache', 'sqs'))
   #foreach(i=seq_along(sq_fls)) %dopar% {
@@ -149,7 +148,7 @@ clstrSbtr <- function(txid, sqs, phylt_nds, dds, ps, lvl) {
   sqs_prt <- sqs[sids %in% names(sqs)]
   sbtr_clstrs <- clstrSqs(txid=txid, sqs=sqs_prt,
                           phylt_nds=phylt_nds,
-                          typ='subtree', infrmtv=FALSE,
+                          typ='subtree',
                           ps=ps, lvl=lvl)
   c(all_clstrs, sbtr_clstrs)
 }
@@ -199,8 +198,7 @@ clstrDrct <- function(txid, sqs, phylt_nds, ps, lvl) {
 #' @param ps Parameters
 #' @param typ Direct or Subtree?
 #' @export
-#TODO what is informative?
-clstrSqs <- function(txid, sqs, phylt_nds, infrmtv, ps,
+clstrSqs <- function(txid, sqs, phylt_nds, ps,
                      lvl, typ=c('direct', 'subtree')) {
   typ <- match.arg(typ)
   blst_rs <- blstSqs(txid=txid, typ=typ, sqs=sqs, ps=ps, lvl=lvl)
@@ -208,7 +206,7 @@ clstrSqs <- function(txid, sqs, phylt_nds, infrmtv, ps,
     return(NULL)
   }
   info(lvl=lvl+1, ps=ps, "Clustering BLAST results for taxid [", txid, "]")
-  raw_clstrs <- clstrBlstRs(blst_rs=blst_rs, infrmtv=infrmtv)
+  raw_clstrs <- clstrBlstRs(blst_rs=blst_rs)
   info(lvl=lvl+1, ps=ps, "Finished clustering BLAST results for taxid [",
        txid, "]")
   clstrs <- addClstrInf(clstrs=raw_clstrs, phylt_nds=phylt_nds,
