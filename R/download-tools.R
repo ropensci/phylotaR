@@ -6,24 +6,22 @@
 #' @param phylt_nds PhyLoTa data.frame
 #' @param verbose Verbose? T/F
 #' @export
-getSqsByTxid <- function(txid, phylt_nds, ps) {
-  info(lvl=2, ps=ps, "Retrieving sequences for taxid [",
-       txid, "]")
+getSqsByTxid <- function(txid, phylt_nds, ps, lvl=0) {
   # get subtree counts if that is smaller than ps[['mdlthrs']]
   subtree_count <- nSqs(txid, direct=FALSE, ps=ps)
   if(subtree_count <= ps[['mdlthrs']]) {
-    info(lvl=3, ps=ps,
-         '[', subtree_count, "] seqs for taxid [",
-        txid, "], less than maximum of [", ps[['mdlthrs']],
-        "] sequences. Retreiving sequences for whole subtree.")
-    sqs <- dwnldFrmNCBI(txid=txid, direct=FALSE, ps=ps)
+    info(lvl=2+lvl, ps=ps,
+         '[', subtree_count, " sqs]. Downloading whole subtree.")
+    sqs <- dwnldFrmNCBI(txid=txid, direct=FALSE, ps=ps, lvl=lvl)
     return(sqs)
   }
   # 1st direct sqs from focal taxon, then from DDs
-  sqs <- dwnldFrmNCBI(txid=txid, direct=TRUE, ps=ps)
+  sqs <- dwnldFrmNCBI(txid=txid, direct=TRUE, ps=ps, lvl=lvl)
   for(dd in getDDFrmPhyltNds(txid, phylt_nds)) {
+    lvl <- lvl + 1
+    info(lvl=2+lvl, ps=ps, "Downloading for child [id ", dd,"]")
     sqs <- c(sqs, getSqsByTxid(txid=dd, phylt_nds=phylt_nds,
-                               ps=ps))
+                               ps=ps, lvl=lvl))
   }
   sqs
 }
@@ -41,9 +39,9 @@ dwnld <- function(txids, phylt_nds, ps) {
   # TODO: add overwrite arg
   for(i in seq_along(txids)) {
     txid <- txids[i]
-    info(lvl=2, ps=ps,
-        "Downloading for taxid [", txid, "]: [", i, "/",
-        length(txids), "]")
+    info(lvl=1, ps=ps,
+        "Downloading for [id ", txid, "]: [", i, "/",
+        length(txids), "] ...")
     sqs <- getSqsByTxid(txid=txid, phylt_nds=phylt_nds,
                         ps=ps)
     svSqs(wd=ps[['wd']], txid=txid, sqs=sqs)

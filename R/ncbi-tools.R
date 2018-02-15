@@ -97,7 +97,7 @@ getGIs <- function(txid, direct, sqcnt, ps, retmax=100,
       if(inherits(id_ftch, 'try-error')) {
         rsrch <- TRUE
         if(i == mxtry) {
-          error(ps=ps, 'Failed to retrieve IDs for model organism [',
+          error(ps=ps, 'Failed to get IDs for model organism [',
                 txid, ']')
         }
       }
@@ -120,7 +120,7 @@ getGIs <- function(txid, direct, sqcnt, ps, retmax=100,
 #' Only makes sense when direct=TRUE
 #' @return list of lists containing sequence objects
 #' @export
-dwnldFrmNCBI <- function(txid, ps, direct=FALSE) {
+dwnldFrmNCBI <- function(txid, ps, direct=FALSE, lvl=0) {
   # test w/ golden moles 9389
   allseqs <- numeric()
   sqcnt <- nSqs(txid=txid, ps=ps, direct=direct)
@@ -129,17 +129,13 @@ dwnldFrmNCBI <- function(txid, ps, direct=FALSE) {
   }
   gis <- getGIs(txid=txid, direct=direct, sqcnt=sqcnt,
                 ps=ps)
-  # If the maximum amount of number is exceeded,
-  # randomly pick ps[['mdlthrs']] gis
   if(direct && length(gis) > ps[['mdlthrs']]) {
-    info(lvl=1, ps=ps, "Choosing [", ps[['mdlthrs']],
-        "] random sequences from [",
-        length(gis), "] available")
+    info(lvl=lvl+3, ps=ps, "More than [", ps[['mdlthrs']], ' sqs] available.',
+         ' Choosing at random.')
     gis <- gis[sample(1:length(gis), size=ps[['mdlthrs']],
                       replace=FALSE)]
   }
-  info(lvl=1, ps=ps, "Retrieving [", length(gis),
-      "] sequences for taxid [", txid, "]")
+  info(lvl=lvl+3, ps=ps, "Getting [", length(gis), " sqs] ...")
   # Fetch sequences in batches
   btch <- 500
   for(i in seq(0, length(gis)-1, btch)) {
@@ -147,8 +143,7 @@ dwnldFrmNCBI <- function(txid, ps, direct=FALSE) {
     lower <- i+1
     upper <- ifelse(i+btch<length(gis), i+btch, length(gis))
     crrnt_ids <- gis[lower:upper]
-    info(lvl=2, ps=ps, "Retreiving seqs [",
-        lower, "-", upper, "] for taxid [", txid, "]");
+    info(lvl=lvl+4, ps=ps, "[", lower, "-", upper, "]");
     args <- list(db="nucleotide", rettype="fasta",
                  id=crrnt_ids)
     res <- srchNCch(func=rentrez::entrez_fetch,
@@ -180,15 +175,8 @@ dwnldFrmNCBI <- function(txid, ps, direct=FALSE) {
                   seq=se)
       seq
     })
-    info(lvl=1, ps=ps, "Retreived [", length(seqs),
-        "(", lower, "-", upper,
-        ")] seqs for taxid [", txid, "]")
-    
     allseqs <- c(allseqs, seqs)
   }
-  info(lvl=1, ps=ps, "Finished retreiving [",
-      length(allseqs), "] sequences for taxid [",
-      txid, "]")
   names(allseqs) <- gis
   allseqs
 }
