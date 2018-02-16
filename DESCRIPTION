@@ -21,8 +21,6 @@ Imports:
     igraph,
     CHNOSZ,
     rentrez,
-    DBI,
-    taxize,
     XML,
     ggplot2,
     sys,
