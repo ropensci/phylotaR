@@ -1,3 +1,24 @@
+#' @name mkSrchTrm
+#' @title Construct GenBank Search Term
+#' @description Construct search term for searching
+#' GenBank's nucleotide database.
+#' Limits the maximum size of sequences, avoids
+#' whole genome shotguns, predicted, unverified and
+#' synthetic sequences.
+#' @param txid Taxonomic ID
+#' @param ps Parameter list
+#' @param drct Node-level only or subtree as well? Default FALSE.
+#' @export
+mkSrchTrm <- function(txid, ps, drct=FALSE) {
+  org_trm <- ifelse(drct, '[Organism:noexp]',
+                     '[Organism:exp]' )
+  avd1 <- ' NOT predicted[TI] NOT "whole genome shotgun"[TI] NOT unverified[TI]'
+  avd2 <- ' NOT "synthetic construct"[Organism]'
+  paste0('(txid', txid, org_trm, ' AND ', ps[['mnsql']],
+         ':100000[SLEN])', avd1, avd2)
+}
+
+
 #' @name nNcbiNds
 #' @title Count number of descending taxonomic nodes
 #' @description Searches NCBI taxonomy and returns
@@ -20,14 +41,11 @@ nNcbiNds <- function(txid, ps) {
 #' @description Return the number of sequences
 #' associated with a taxonomic ID on NCBI GenBank.
 #' @param txid Taxonomic ID
-#' @param direct exp or noexp? T/F
+#' @param drct Node-level only or subtree as well? Default FALSE.
 #' @export
-nSqs <- function(txid, ps, direct=FALSE) {
-  org_term <- ifelse(direct, '[Organism:noexp]',
-                     '[Organism:exp]' )
-  term <- paste0('txid', txid, org_term, ps[['mnsql']], ':',
-                 ps[['mxsql']], '[SLEN]')
-  args <- list(db='nucleotide', retmax=0, term=term)
+nSqs <- function(txid, ps, drct=FALSE) {
+  trm <- mkSrchTrm(txid=txid, ps=ps, drct=drct)
+  args <- list(db='nucleotide', retmax=0, term=trm)
   res <- srchNCch(func=rentrez::entrez_search,
                   args=args, fnm='search',
                   ps=ps)
@@ -47,9 +65,7 @@ nSqs <- function(txid, ps, direct=FALSE) {
 #' Note, it makes no sense for mdlthrs in parameters to be greater
 #' than hrdmx in this function.
 #' @param txid NCBI taxon identifier
-#' @param direct Whether to download all 'directly' linked
-#' sequences ([Organism:noexp] in Genbank search) or all 'subtree'
-#' sequences ([Organism:exp])
+#' @param drct Node-level only or subtree as well? Default FALSE.
 #' @param ps Parameters
 #' @param sqcnt Sequence count as determined with nSqs()
 #' @param retmax Maximum number of sequences when querying model
@@ -58,21 +74,17 @@ nSqs <- function(txid, ps, direct=FALSE) {
 #' in a single query.
 #' @return vector ot IDs
 #' @export
-getGIs <- function(txid, direct, sqcnt, ps, retmax=100,
+getGIs <- function(txid, drct, sqcnt, ps, retmax=100,
                    hrdmx=100000) {
-  org_term <- ifelse(direct, '[Organism:noexp]',
-                     '[Organism:exp]' )
-  term <- paste0('txid', txid, org_term,
-                 ps[['mnsql']], ':', ps[['mxsql']],
-                 '[SLEN]')
+  trm <- mkSrchTrm(txid=txid, ps=ps, drct=drct)
   if(sqcnt <= hrdmx) {
-    args <- list(db='nucleotide', retmax=sqcnt, term=term)
+    args <- list(db='nucleotide', retmax=sqcnt, term=trm)
     srch <- srchNCch(func=rentrez::entrez_search,
                      args=args, fnm='search',
                      ps=ps)
     return(srch[['ids']])
   }
-  srch_args <- list(db='nucleotide', term=term,
+  srch_args <- list(db='nucleotide', term=trm,
                     use_history=TRUE, retmax=0)
   ids <- NULL
   ret_strts <- sample(seq(1, (sqcnt-retmax), retmax),
@@ -109,27 +121,41 @@ getGIs <- function(txid, direct, sqcnt, ps, retmax=100,
   ids
 }
 
-#' @title dwnldFrmNCBI
-#' @description Given a taxon ID, queries NCBI
-#' for sequences that match the taxid.
-#' @param txid NCBI taxon identifier
-#' @param direct Whether to download all 'directly' linked
-#' sequences ([Organism:noexp] in Genbank search) or all 'subtree'
-#' sequences ([Organism:exp])
-#' seqs exceeds it.
-#' Only makes sense when direct=TRUE
-#' @return list of lists containing sequence objects
+#' @title prtDwnld
+#' @description Download batch of sequences.
+#' @details Given a set of IDs, downloads and breaks
+#' up by feature information.
+#' @param gis Sequence GI IDs
+#' @param ps Parameter list
+#' @return Vector of sequence objects
 #' @export
-dwnldFrmNCBI <- function(txid, ps, direct=FALSE, lvl=0) {
+prtDwnld <- function(gis, ps) {
+  ftch_args <- list(db="nucleotide",
+                    rettype='gbwithparts',
+                    retmode='text', id=gis)
+  rw_rcrds <- srchNCch(func=rentrez::entrez_fetch,
+                       args=ftch_args, fnm='fetch',
+                       ps=ps)
+  rwRcrd2SqRcrd(rw_rcrds=rw_rcrds, gis=gis, ps=ps)
+}
+
+#' @title btchDwnld
+#' @description Downloads sequences from GenBank in 500 ID batches.
+#' @param txid NCBI taxonomic ID
+#' @param drct Node-level only or subtree as well? Default FALSE.
+#' @return Vector of sequence records
+#' @export
+btchDwnld <- function(txid, ps, drct=FALSE, lvl=0) {
+  # Searches for GIs, returns accessions
   # test w/ golden moles 9389
-  allseqs <- numeric()
-  sqcnt <- nSqs(txid=txid, ps=ps, direct=direct)
+  allsqs <- numeric()
+  sqcnt <- nSqs(txid=txid, ps=ps, drct=drct)
   if(sqcnt < 1) {
     return(list())
   }
-  gis <- getGIs(txid=txid, direct=direct, sqcnt=sqcnt,
+  gis <- getGIs(txid=txid, drct=drct, sqcnt=sqcnt,
                 ps=ps)
-  if(direct && length(gis) > ps[['mdlthrs']]) {
+  if(drct && length(gis) > ps[['mdlthrs']]) {
     info(lvl=lvl+3, ps=ps, "More than [", ps[['mdlthrs']], ' sqs] available.',
          ' Choosing at random.')
     gis <- gis[sample(1:length(gis), size=ps[['mdlthrs']],
@@ -144,39 +170,8 @@ dwnldFrmNCBI <- function(txid, ps, direct=FALSE, lvl=0) {
     upper <- ifelse(i+btch<length(gis), i+btch, length(gis))
     crrnt_ids <- gis[lower:upper]
     info(lvl=lvl+4, ps=ps, "[", lower, "-", upper, "]");
-    args <- list(db="nucleotide", rettype="fasta",
-                 id=crrnt_ids)
-    res <- srchNCch(func=rentrez::entrez_fetch,
-                    fnm='fetch', args=args, ps=ps)
-    seqstrs <- unlist(strsplit(res, "(?<=[^>])(?=\n>)",
-                               perl=TRUE))
-    seqstrs <- gsub("^\n?>.*?\\n", "", seqstrs)
-    seqstrs <- gsub("\n", "", seqstrs, fixed=TRUE)
-    args=list(db='nucleotide', id=crrnt_ids)
-    summaries <- srchNCch(func=rentrez::entrez_summary,
-                          fnm='summary', args=args, ps=ps)
-    if(length(seqstrs) == 1) {
-      summaries <- list(summaries)
-    }
-    seqs <- lapply(1:length(seqstrs), function(i) {
-      sm <- summaries[[i]]
-      se <- seqstrs[[i]]
-      seq <- list(gi=sm$uid,
-                  ti=sm$taxid,
-                  acc=sm$caption,
-                  acc_vers=sm$accessionversion,
-                  length=sm$slen,
-                  ##TODO: Division not in summary object, how to get?
-                  division=NA,
-                  acc_date=sm$createdate,
-                  ##TODO: GBrel not in summary object, how to get?
-                  gbrel=NA,
-                  def=sm$title,
-                  seq=se)
-      seq
-    })
-    allseqs <- c(allseqs, seqs)
+    sqs <- prtDwnld(gis=crrnt_ids, ps=ps)
+    allsqs <- c(allsqs, sqs)
   }
-  names(allseqs) <- gis
-  allseqs
+  allsqs
 }

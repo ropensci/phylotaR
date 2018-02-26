@@ -4,12 +4,14 @@
 \alias{dwnld}
 \title{Download sequences for txids}
 \usage{
-dwnld(txids, phylt_nds, ps)
+dwnld(txids, phylt_nds, txdct, ps)
 }
 \arguments{
 \item{txids}{Taxonomic node IDs, numeric vector}
 
 \item{phylt_nds}{PhyLoTa data.frame}
+
+\item{txdct}{Taxonomic dictionary}
 
 \item{verbose}{Verbose? T/F}
 }

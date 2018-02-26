@@ -53,7 +53,8 @@ runDownload <- function(wd) {
   info(lvl=1, ps=ps, 'Filtering ...')
   fltrd_ids <- fltr(txid=ps[['txid']], phylt_nds=phylt_nds, ps=ps)
   info(lvl=1, ps=ps, 'Downloading ...')
-  dwnld(txids=fltrd_ids, phylt_nds=phylt_nds, ps=ps)
+  txdct <- ldObj(wd=wd, nm='txdct')
+  dwnld(txids=fltrd_ids, phylt_nds=phylt_nds, txdct=txdct, ps=ps)
   # stage print
   msg <- paste0('Completed stage DOWNLOAD: [', Sys.time(), ']')
   .stgMsg(ps=ps, msg=msg)

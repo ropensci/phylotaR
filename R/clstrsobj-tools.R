@@ -8,7 +8,7 @@ genClstrsObj <- function(wd) {
   # TODO check wd has completed cluster stage
   clstrs_sqs <- ldObj(wd, nm='clstrs_sqs')
   clstrs <- clstrs_sqs[['clstrs']]
-  names(clstrs) <- sapply(clstrs, function(x) x[['unique_id']])
+  names(clstrs) <- sapply(clstrs, function(x) x[['ci']])
   txids <- unique(unlist(sapply(clstrs, function(x) x[['tis']])))
   sqids <- unique(unlist(sapply(clstrs, function(x) x[['gis']])))
   clstr_ids <- names(clstrs)

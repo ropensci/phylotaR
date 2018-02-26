@@ -4,14 +4,12 @@
 \alias{getSqsByTxid}
 \title{Hierarchically get sequences for a txid}
 \usage{
-getSqsByTxid(txid, phylt_nds, ps)
+getSqsByTxid(txid, phylt_nds, ps, lvl = 0)
 }
 \arguments{
 \item{txid}{Taxonomic node ID, numeric}
 
 \item{phylt_nds}{PhyLoTa data.frame}
-
-\item{verbose}{Verbose? T/F}
 }
 \description{
 Looks up and downloads sequences for a

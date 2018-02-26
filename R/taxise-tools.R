@@ -84,7 +84,6 @@ genTDObj <- function(ps) {
 #' @param v v? T/F
 #' @details
 #' @export
-# @Hannes: this is functional eqv to bulk of nodes.create
 genPhylotaNds <- function(nid_sets, td_nds, td_nms, ps) {
   phylt_nds <- data.frame('ti'=NA,
                           'ti_anc'=NA,
@@ -169,7 +168,7 @@ getStats <- function(txid, phylt_nds, td_nds, td_nms,
   if(rank == 'species') {
     stats['n_sp_desc'] <- 1
   }
-  n_drctsqs <- nSqs(txid, direct=TRUE, ps=ps)
+  n_drctsqs <- nSqs(txid, drct=TRUE, ps=ps)
   stats['n_gi_node'] <- n_drctsqs
   kids <- getKids(txid, td_nds=td_nds)
   if(length(kids) == 0) {

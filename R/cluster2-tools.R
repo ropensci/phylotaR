@@ -21,22 +21,26 @@ clstrClstrs <- function(ps) {
     all_clstrs <- c(all_clstrs, clstrs)
   }
   if(length(clstrfls) > 1) {
-    info(lvl=1, ps=ps, 'Done. Cluster-clustering ...')
+    info(lvl=1, ps=ps, 'Cluster-clustering ...')
     seeds <- getSeedSqs(clstrs=all_clstrs, sqs=all_sqs)
+    seed_ids <- names(seeds)
+    seeds <- seeds[!duplicated(seed_ids)]
     blst_rs <- blstSeeds(sqs=seeds, ps=ps)
-    info(lvl=1, ps=ps, 'Done. Merging ...')
+    info(lvl=1, ps=ps, 'Merging ...')
     jnd_clstrs <- jnClstrs(blst_rs=blst_rs, ps=ps,
-                           seed_ids=names(seeds),
+                           seed_ids=seed_ids,
                            all_clstrs=all_clstrs)
     mrg_clstrs <- mrgClstrs(jnd_clstrs=jnd_clstrs)
+    info(lvl=2, ps=ps, "Generated [", length(mrg_clstrs),
+         "] merged clusters")
     all_clstrs <- c(all_clstrs, mrg_clstrs)
   } else {
     info(lvl=1, ps=ps,
          'Done. Only one cluster set -- skipping cluster^2')
   }
-  info(lvl=1, ps=ps, 'Done. Renumbering clusters ...')
+  info(lvl=1, ps=ps, 'Renumbering clusters ...')
   all_clstrs <- rnmbrClstrs(clstrs=all_clstrs)
-  info(lvl=1, ps=ps, 'Done. Saving ...')
+  info(lvl=1, ps=ps, 'Saving ...')
   svObj(wd=ps[['wd']], obj=list('clstrs'=all_clstrs,
                                 'sqs'=all_sqs),
         nm='clstrs_sqs')
@@ -49,14 +53,13 @@ clstrClstrs <- function(ps) {
 #' @param ps Parameters
 #' @export
 blstSeeds <- function(sqs, ps) {
-  info(lvl=2, ps=ps, "BLASTing all vs all for [",
-       length(sqs), "] sequences")
+  info(lvl=2, ps=ps, "BLASTing [", length(sqs),
+       " sqs]")
   dbfl <- 'seeds-db.fa'
   outfl <- 'seeds-db-blastout.txt'
+  file.path(ps[['wd']], 'blast', dbfl)
   mkBlstDB(sqs, dbfl=dbfl, ps=ps)
   blst_rs <- blstN(dbfl=dbfl, outfl=outfl, ps=ps)
-  info(lvl=2, ps=ps, "Done. Number of BLAST results [",
-       nrow(blst_rs), "]")
   blst_rs
 }
 
@@ -91,12 +94,18 @@ jnClstrs <- function(blst_rs, seed_ids, all_clstrs, ps) {
       unlist(lapply(jnd_clstr, function(cl) cl[[nm]])))
     names(clstr) <- nms
     clstr[['seed_gi']] <- x[['seed_gi']]
+    # ensure no dups seqs in joined cluster
+    pull <- !duplicated(clstr[['gis']])
+    clstr[['gis']] <- clstr[['gis']][pull]
+    clstr[['tis']] <- clstr[['tis']][pull]
     clstr
   }
   pull <- blst_rs[['query.id']] != blst_rs[['subject.id']] &
     blst_rs[['qcovs']] > ps[['mncvrg']]
   blst_rs <- blst_rs[pull, ]
   clstrs <- clstrBlstRs(blst_rs=blst_rs)
+  info(lvl=2, ps=ps, "Identified [", length(clstrs),
+       "] clusters")
   lapply(clstrs, join)
 }
 

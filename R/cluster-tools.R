@@ -38,10 +38,11 @@ calcClstrs <- function(phylt_nds, ps) {
     sqs <- readRDS(file=file.path(file.path(ps[['wd']], 'cache',
                                             'sqs', sq_fl)))
     txid <- as.numeric(sub('\\.RData', '', sq_fl))
+    info(lvl=1, ps=ps, "Working on [id ", txid, "]")
     clstrs <- clstrAll(txid=txid, sqs=sqs, phylt_nds=phylt_nds,
                        ps=ps)
     svClstrs(wd=ps[['wd']], txid=txid, clstrs=clstrs)
-    info(lvl=1, ps=ps, "Finished processing taxid [", txid, "] # [",
+    info(lvl=1, ps=ps, "Finished [id ", txid, "] # [",
         i, "/", length(sq_fls), "]")
   }
 }
@@ -95,7 +96,7 @@ clstrAll <- function(txid, sqs, phylt_nds, ps, lvl=0) {
   all_clstrs <- clstrSbtr(txid=txid, sqs=sqs, phylt_nds=phylt_nds,
                           ps=ps, dds=dds, lvl=lvl+1)
   for(dd in dds) {
-    info(lvl=lvl+2, ps=ps, "Processing child taxon of [", txid,
+    info(lvl=lvl+2, ps=ps, "Processing child [id ", txid,
          "] [", dd, "]")
     dd_clstrs <- clstrAll(txid=dd, phylt_nds=phylt_nds, 
                           sqs=sqs, ps=ps, lvl=lvl+1)
@@ -127,25 +128,23 @@ clstrSbtr <- function(txid, sqs, phylt_nds, dds, ps, lvl) {
   all_clstrs <- list()
   rnks <- as.character(phylt_nds[['rank']])
   rnk <- as.character(rnks[match(txid, phylt_nds[['ti']])])
-  info(lvl=lvl+1, ps=ps, "Processing taxid [", txid, "] of rank [",
-       rnk, "] attempting to make subtree clusters")
+  info(lvl=lvl+1, ps=ps, "Generating subtree clusters for [id ",
+       txid, "(", rnk, ")]")
   if(length(dds) > 0) {
     drct_clstrs <- clstrDrct(txid, ps=ps, phylt_nds=phylt_nds,
                              sqs=sqs, lvl=lvl)
     all_clstrs <- c(all_clstrs, drct_clstrs)
   }
   txids <- getADs(txid=txid, phylt_nds=phylt_nds)
-  all_sq_txids <- sapply(sqs, '[[', 'ti')
-  sids <- names(sqs[which(all_sq_txids %in% txids)])
-  info(lvl=lvl+2, ps=ps, "Found [", length(sids),
-       "] subtree GIs for taxid [", txid, "]")
+  all_sq_txids <- sqs@txids
+  sids <- sqs@ids[which(all_sq_txids %in% txids)]
+  info(lvl=lvl+2, ps=ps, "[", length(sids), " sqs]")
   if(length(sids) < 3) {
-    info(lvl=lvl+1, ps=ps,
-         "Insufficient subtree sequences for taxid [",
-         txid, "], cannot make clusters")
+    info(lvl=lvl+3, ps=ps,
+         "Too few sequences, cannot make clusters")
     return(all_clstrs)
   }
-  sqs_prt <- sqs[sids %in% names(sqs)]
+  sqs_prt <- sqs[sids]
   sbtr_clstrs <- clstrSqs(txid=txid, sqs=sqs_prt,
                           phylt_nds=phylt_nds,
                           typ='subtree',
@@ -169,20 +168,17 @@ clstrDrct <- function(txid, sqs, phylt_nds, ps, lvl) {
   all_clstrs <- list()
   rnks <- as.character(phylt_nds[['rank']])
   rnk <- as.character(rnks[match(txid, phylt_nds[['ti']])])
-  info(lvl=lvl+1, ps=ps, "Processing taxid [", txid,
-       "] of rank [", rnk,
-       "] attempting to make direct clusters")
-  all_sq_txids <- sapply(sqs, '[[', 'ti')
-  sids <- names(sqs[which(all_sq_txids %in% txid)])
-  info(lvl=lvl+1, ps=ps, "Found [", length(sids),
-       "] direct GIs for taxid [", txid, "]")
+  info(lvl=lvl+1, ps=ps, "Generating direct clusters for [id ",
+       txid, "(", rnk, ")]")
+  all_sq_txids <- sqs@txids
+  sids <- sqs@ids[all_sq_txids %in% txid]
+  info(lvl=lvl+2, ps=ps, "[", length(sids), " sqs]")
   if(length(sids) < 3) {
-    info(lvl=lvl+1, ps=ps,
-         "Insufficient direct sequences for taxid [",
-         txid, "], cannot make clusters")
+    info(lvl=lvl+3, ps=ps,
+         "Too few sequences, cannot make clusters")
     return(list())
   }
-  sqs_prt <- sqs[sids %in% names(sqs)]
+  sqs_prt <- sqs[sids]
   clstrSqs(txid=txid, sqs=sqs_prt, typ='direct',
            phylt_nds=phylt_nds, ps=ps, lvl=lvl)
 }
@@ -200,17 +196,16 @@ clstrDrct <- function(txid, sqs, phylt_nds, ps, lvl) {
 clstrSqs <- function(txid, sqs, phylt_nds, ps,
                      lvl, typ=c('direct', 'subtree')) {
   typ <- match.arg(typ)
+  info(lvl=lvl+1, ps=ps, "BLASTing [", length(sqs@ids),
+       " sqs] ....")
   blst_rs <- blstSqs(txid=txid, typ=typ, sqs=sqs, ps=ps, lvl=lvl)
   if(is.null(blst_rs)) {
     return(NULL)
   }
-  info(lvl=lvl+1, ps=ps, "Clustering BLAST results for taxid [", txid, "]")
   raw_clstrs <- clstrBlstRs(blst_rs=blst_rs)
-  info(lvl=lvl+1, ps=ps, "Finished clustering BLAST results for taxid [",
-       txid, "]")
   clstrs <- addClstrInf(clstrs=raw_clstrs, phylt_nds=phylt_nds,
                         txid=txid, sqs=sqs, typ=typ)
-  info(lvl=lvl+1, ps=ps, "Generated [", length(clstrs),
+  info(lvl=lvl+1, ps=ps, "Identified [", length(clstrs),
        "] clusters")
   clstrs
 }
@@ -259,9 +254,7 @@ getGnsFrmPhyltNds <- function(txid, phylt_nds) {
 #' @param verbose Verbose? T/F
 #' @export
 blstSqs <- function(txid, typ, sqs, ps, lvl) {
-  info(lvl=lvl+1, ps=ps, "BLASTing all vs all for [",
-      length(sqs), "] sequences")
-  blst_rs <- ldBlstCch(sqs, wd=ps[['wd']])
+  blst_rs <- ldBlstCch(sqs@ids, wd=ps[['wd']])
   if(is.null(blst_rs)) {
     dbfl <- paste0('taxon-', txid, '-typ-', typ,
                    '-db.fa')
@@ -272,15 +265,12 @@ blstSqs <- function(txid, typ, sqs, ps, lvl) {
     if(is.null(blst_rs)) {
       blst_rs <- NA
     }
-    svBlstCch(sqs, wd=ps[['wd']], obj=blst_rs)
+    svBlstCch(sqs@ids, wd=ps[['wd']], obj=blst_rs)
   }
   # TODO: Not so elegant
   if(any(is.na(blst_rs))) {
     return(NULL)
   }
-  info(lvl=lvl+1, ps=ps, "Number of BLAST results [",
-       nrow(blst_rs), "]")
-  info(lvl=lvl+1, ps=ps, "Filtering BLAST results")
   fltrBlstRs(blst_rs=blst_rs, ps=ps)
 }
 
