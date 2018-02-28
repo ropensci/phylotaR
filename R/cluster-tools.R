@@ -1,28 +1,3 @@
-## Taxa can have "direct" sequence links up to some certain level, e.g. genus.
-# This means that no sequnces of the children
-## of the taxon are included. These clusters will be stored separately
-## as "node" clusters. In genbank, one searches for direct links using keyword
-# 'noexp' and 'exp' for subtree links.
-## Below, we also calulate the direct ('node') clusters for the taxon of
-# interest
-## In NCBI, subtree search on terminals (taxa without children)
-# gives the direct sequences.
-## Therefore, we have to exclude terminals from direct cluster calculation,
-# because their
-## clusters are already calculated in the 'subtree' (direct=false) mode!
-## two numbers can only be calculated if we have cluster
-# info on multiple taxonomic levels:
-##  n_child, the number of child clusters, and ci_anc,
-# the parent cluster.
-##  Since we are dealing with single-likeage clusters,
-# we can identify the parent cluster of a
-##  cluster if at least one gi of both clusters is the same.
-## Get the indices of the parent clusters that contain
-#a gi of the child clusters
-## If a gi is in two clusters (e.g. parent and grandparent),
-# take the lower one, by taking
-## the higher index
-
 #' @name calcClstrs
 #' @title Calculate clusters for all sequences in WD
 #' @description TODO
@@ -137,7 +112,7 @@ clstrSbtr <- function(txid, sqs, phylt_nds, dds, ps, lvl) {
   }
   txids <- getADs(txid=txid, phylt_nds=phylt_nds)
   all_sq_txids <- sqs@txids
-  sids <- sqs@ids[which(all_sq_txids %in% txids)]
+  sids <- sqs@ids[which(all_sq_txids %in% as.character(txids))]
   info(lvl=lvl+2, ps=ps, "[", length(sids), " sqs]")
   if(length(sids) < 3) {
     info(lvl=lvl+3, ps=ps,
@@ -171,7 +146,7 @@ clstrDrct <- function(txid, sqs, phylt_nds, ps, lvl) {
   info(lvl=lvl+1, ps=ps, "Generating direct clusters for [id ",
        txid, "(", rnk, ")]")
   all_sq_txids <- sqs@txids
-  sids <- sqs@ids[all_sq_txids %in% txid]
+  sids <- sqs@ids[all_sq_txids %in% as.character(txid)]
   info(lvl=lvl+2, ps=ps, "[", length(sids), " sqs]")
   if(length(sids) < 3) {
     info(lvl=lvl+3, ps=ps,
@@ -326,10 +301,10 @@ addClstrInf <- function(clstrs, phylt_nds, txid, sqs, typ) {
     cl[['cl_type']] <- typ
     cl[['n_gi']] <- length(cl[['gis']])
     # all taxon ids for gis in cluster
-    cl[['tis']] <- sapply(cl_sqs, '[[', 'ti')
+    cl[['tis']] <- sapply(cl_sqs, function(x) x@txid)
     cl[['n_ti']] <- length(unique(cl[['tis']]))
     # sequence lengths
-    l <- sapply(cl_sqs, '[[', 'length')
+    l <- sapply(cl_sqs, function(x) x@nncltds)
     cl[['MinLength']] <- min(l)
     cl[['MaxLength']] <- max(l)
     # get n. genera

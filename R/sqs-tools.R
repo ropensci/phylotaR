@@ -106,5 +106,5 @@ genSqsRcrd <- function(sqs) {
   ids <- vapply(sqs, function(x) x@id, '')
   txids <- vapply(sqs, function(x) x@txid, '')
   new('SqsRcrd', ids=ids, nncltds=nncltds, nambgs=nambgs,
-      txids=txids)
+      txids=txids, sqs=sqs)
 }

@@ -75,7 +75,7 @@ setMethod('summary', c('object'='SqsRcrd'),
 setMethod('[[', c('SqsRcrd', 'character'),
           function(x, i) {
             pull <- which(x@ids %in% i)
-            if(sum(pull) == 1) {
+            if(length(pull) == 1) {
               return(x@sqs[[pull[1]]])
             }
             stop(paste0('[', i , '] not in records'))
@@ -83,7 +83,7 @@ setMethod('[[', c('SqsRcrd', 'character'),
 setMethod('[', c('SqsRcrd', 'character', 'missing', 'missing'),
           function(x, i, j, ..., drop=TRUE) {
             pull <- which(x@ids %in% i)
-            if(sum(pull) == length(pull)) {
+            if(length(i) == length(pull)) {
               return(genSqsRcrd(x@sqs[pull]))
             }
             mssng <- paste0(i[!i %in% x@ids], collapse=', ')

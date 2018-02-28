@@ -301,11 +301,11 @@ svNcbiCch <- function(fnm, args, wd, obj) {
 #' @name ldBlstCch
 #' @title Load BLAST results from cache
 #' @description Run to load cached BLAST results.
-#' @param sqs Sequences
+#' @param sids Sequence IDs
 #' @param wd Working dir
 #' @param obj BLAST result
 #' @export
-ldBlstCch <- function(sqs, wd) {
+ldBlstCch <- function(sids, wd) {
   # fldctnry contains all the IDs of the sequences used in a BLAST
   fldctnry_pth <- file.path(wd, 'cache', 'blast',
                             'fldctnry.RData')
@@ -314,9 +314,7 @@ ldBlstCch <- function(sqs, wd) {
   } else {
     return(NULL)
   }
-  sqids <- sapply(sqs, function(x) x[['gi']])
-  names(sqids) <- NULL
-  pull <- sapply(fldctnry, function(x) all(sqids %in% x))
+  pull <- sapply(fldctnry, function(x) all(sids %in% x))
   if(sum(pull) == 0) {
     return(NULL)
   }
@@ -330,8 +328,8 @@ ldBlstCch <- function(sqs, wd) {
   flnm <- paste0(pssbls[which.min(lngs)], '.RData')
   flpth <- file.path(wd, 'cache', 'blast', flnm)
   blst_rs <- readRDS(file=flpth)
-  pull <- blst_rs[['query.id']] %in% sqids &
-    blst_rs[['subject.id']] %in% sqids
+  pull <- blst_rs[['query.id']] %in% sids &
+    blst_rs[['subject.id']] %in% sids
   blst_rs[pull, ]
 }
 
@@ -339,11 +337,11 @@ ldBlstCch <- function(sqs, wd) {
 #' @title Save BLAST results to cache
 #' @description Run whenever local BLAST runs are made to save
 #' results in cache in case the pipeline is run again.
-#' @param sqs Sequences
+#' @param sids Sequence IDs
 #' @param wd Working dir
 #' @param obj BLAST result
 #' @export
-svBlstCch <- function(sqs, wd, obj) {
+svBlstCch <- function(sids, wd, obj) {
   # fldctnry contains all the IDs of the sequences used in a BLAST
   fldctnry_pth <- file.path(wd, 'cache', 'blast', 'fldctnry.RData')
   if(file.exists(fldctnry_pth)) {
@@ -351,9 +349,7 @@ svBlstCch <- function(sqs, wd, obj) {
   } else {
     fldctnry <- list()
   }
-  sqids <- sapply(sqs, function(x) x[['gi']])
-  names(sqids) <- NULL
-  fldctnry[[length(fldctnry) + 1]] <- sqids
+  fldctnry[[length(fldctnry) + 1]] <- sids
   flnm <- paste0(length(fldctnry), '.RData')
   flpth <- file.path(wd, 'cache', 'blast', flnm)
   saveRDS(object=obj, file=flpth)

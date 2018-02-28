@@ -6,20 +6,21 @@
 #' @param dbfl Outfile for database
 #' @export
 mkBlstDB <- function(sqs, dbfl, ps) {
-  if(length(sqs) < 2) {
+  if(length(sqs@sqs) < 2) {
     error(ps=ps, 'Need more than 2 sequences for BLAST.')
   }
   info(lvl=3, ps=ps,
-       "Making blast database for [", length(sqs), "] sequences")
+       "Making blast database for [", length(sqs@sqs), "] sequences")
   blst_d <- file.path(ps[['wd']], 'blast')
   if(!file.exists(blst_d)) {
     dir.create(blst_d)
   }
   fl <- file.path(blst_d, dbfl)
   file.create(fl)
-  for(gi in names(sqs)) {
-    write(paste0("> ", gi, "\n", sqs[[as.character(gi)]][['seq']]),
-          file=fl, append=TRUE)
+  for(i in seq_along(sqs@ids)) {
+    sq <- sqs@sqs[[i]]
+    write(paste0("> ", sq@id, "\n", rawToChar(sq@sq)),
+                 file=fl, append=TRUE)
   }
   args <- c('-in', fl, '-dbtype', 'nucl')
   res <- cmdLn(cmd=ps[['mkblstdb']], args=args,

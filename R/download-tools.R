@@ -10,6 +10,7 @@
 #' @export
 dwnld <- function(txids, phylt_nds, txdct, ps) {
   # TODO: add overwrite arg
+  sqcnt <- 0
   for(i in seq_along(txids)) {
     txid <- txids[i]
     info(lvl=1, ps=ps,
@@ -17,9 +18,14 @@ dwnld <- function(txids, phylt_nds, txdct, ps) {
          length(txids), "] ...")
     sqs <- getSqsByTxid(txid=txid, phylt_nds=phylt_nds,
                         ps=ps)
-    sqs <- agmntRcrds(sqs=sqs, txdct=txdct)
-    svSqs(wd=ps[['wd']], txid=txid, sqs=sqs)
+    if(length(sqs) > 0) {
+      sqcnt <- sqcnt + length(sqs)
+      sqs <- agmntRcrds(sqs=sqs, txdct=txdct)
+      svSqs(wd=ps[['wd']], txid=txid, sqs=sqs)
+    }
   }
+  info(lvl=1, ps=ps, "Successfully downloaded [",
+       sqcnt, " sqs] in total.")
 }
 
 #' @name getSqsByTxid
