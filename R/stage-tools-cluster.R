@@ -1,27 +1,3 @@
-#' @name calcClstrs
-#' @title Calculate clusters for all sequences in WD
-#' @description TODO
-#' @param phylt_nds PhyLoTa nodes data.frame
-#' @export
-calcClstrs <- function(phylt_nds, ps) {
-  # load sequences
-  sq_fls <- list.files(file.path(ps[['wd']], 'cache', 'sqs'))
-  #foreach(i=seq_along(sq_fls)) %dopar% {
-  for(i in seq_along(sq_fls)) {
-    sq_fl <- sq_fls[i]
-    # TODO: use the cache tool
-    sqs <- readRDS(file=file.path(file.path(ps[['wd']], 'cache',
-                                            'sqs', sq_fl)))
-    txid <- as.numeric(sub('\\.RData', '', sq_fl))
-    info(lvl=1, ps=ps, "Working on [id ", txid, "]")
-    clstrs <- clstrAll(txid=txid, sqs=sqs, phylt_nds=phylt_nds,
-                       ps=ps)
-    svClstrs(wd=ps[['wd']], txid=txid, clstrs=clstrs)
-    info(lvl=1, ps=ps, "Finished [id ", txid, "] # [",
-        i, "/", length(sq_fls), "]")
-  }
-}
-
 #' @name clstrAll
 #' @title Hierarchically cluster all sequences of a txid
 #' @description Identifies all direct and subtree clusters
@@ -31,7 +7,6 @@ calcClstrs <- function(phylt_nds, ps) {
 #' @param phylt_nds PhyLoTa table
 #' @param ps Parameters
 #' @param lvl Log level
-#' @export
 clstrAll <- function(txid, sqs, phylt_nds, ps, lvl=0) {
   dds <- getDDFrmPhyltNds(txid=txid, phylt_nds=phylt_nds)
   all_clstrs <- clstrSbtr(txid=txid, sqs=sqs, phylt_nds=phylt_nds,
@@ -56,7 +31,6 @@ clstrAll <- function(txid, sqs, phylt_nds, ps, lvl=0) {
 #' @param phylt_nds PhyLoTa table
 #' @param dds Vector of direct descendants
 #' @param ps Parameters
-#' @export
 clstrSbtr <- function(txid, sqs, phylt_nds, dds, ps, lvl) {
   all_clstrs <- list()
   rnks <- as.character(phylt_nds[['rank']])
@@ -94,7 +68,6 @@ clstrSbtr <- function(txid, sqs, phylt_nds, dds, ps, lvl) {
 #' @param sqs Sequence object of all downloaded sequences
 #' @param phylt_nds PhyLoTa table
 #' @param ps Parameters
-#' @export
 clstrDrct <- function(txid, sqs, phylt_nds, ps, lvl) {
   all_clstrs <- list()
   rnks <- as.character(phylt_nds[['rank']])
@@ -122,7 +95,6 @@ clstrDrct <- function(txid, sqs, phylt_nds, ps, lvl) {
 #' @param sqs Sequence object of sequences to be BLASTed
 #' @param ps Parameters
 #' @param typ Direct or Subtree?
-#' @export
 clstrSqs <- function(txid, sqs, ps, lvl,
                      typ=c('direct', 'subtree')) {
   typ <- match.arg(typ)
@@ -146,7 +118,6 @@ clstrSqs <- function(txid, sqs, ps, lvl,
 #' from given taxonomic ID
 #' @param txid Taxonomic node ID, numeric
 #' @param phylt_nds PhyLoTa nodes data.frame
-#' @export
 # TODO: create separate taxonomy look-up tools
 getADs <- function(txid, phylt_nds) {
   dds <- getDDFrmPhyltNds(txid=txid, phylt_nds=phylt_nds)
@@ -166,7 +137,6 @@ getADs <- function(txid, phylt_nds) {
 #' @param sqs Sequences
 #' @param wd Working directory
 #' @param verbose Verbose? T/F
-#' @export
 blstSqs <- function(txid, typ, sqs, ps, lvl) {
   blst_rs <- ldBlstCch(sqs@ids, wd=ps[['wd']])
   if(is.null(blst_rs)) {
@@ -192,7 +162,6 @@ blstSqs <- function(txid, typ, sqs, ps, lvl) {
 #' @title Cluster BLAST Results
 #' @description TODO
 #' @param blst_rs BLAST results
-#' @export
 clstrBlstRs <- function(blst_rs) {
   g <- igraph::graph.data.frame(blst_rs[ ,c("query.id",
                                             "subject.id")],
@@ -220,7 +189,6 @@ clstrBlstRs <- function(blst_rs) {
 #' @param txid Taxonomic node ID
 #' @param sqs Sequnece records
 #' @param typ Subtree of direct?
-#' @export
 genClstr <- function(clstr_lst, txid, sqs, typ) {
   clstrs <- vector('list', length=length(clstr_lst))
   for(i in seq_along(clstr_lst)) {

@@ -4,7 +4,6 @@
 #' @description Creates a progress list recording each
 #' stage run in cache
 #' @param wd Working directory
-#' @export
 intPrgrss <- function(wd) {
   prgrss <- rep(FALSE, 4)
   names(prgrss) <- c('taxise', 'download',
@@ -17,7 +16,6 @@ intPrgrss <- function(wd) {
 #' @title Save current progress
 #' @description Stores the pipeline progress in the cache.
 #' @param wd Working directory
-#' @export
 svPrgrss <- function(wd, stg) {
   fl <- file.path(wd, 'cache', 'progress.RData')
   prgrss <- readRDS(file=fl)
@@ -32,7 +30,6 @@ svPrgrss <- function(wd, stg) {
 #' mark stages 'download', 'cluster' and 'align' as un-run.
 #' @param wd Working directory
 #' @param stg Stage to which the pipeline will be reset
-#' @export
 rstPrgrss <- function(wd, stg) {
   fl <- file.path(wd, 'cache', 'progress.RData')
   prgrss <- readRDS(file=fl)
@@ -45,7 +42,6 @@ rstPrgrss <- function(wd, stg) {
 #' @title Read the progress from cache
 #' @description Return the last completed stage using the cache.
 #' @param wd Working directory
-#' @export
 rdPrgrss <- function(wd) {
   fl <- file.path(wd, 'cache', 'progress.RData')
   prgrss <- readRDS(file=fl)
@@ -60,7 +56,6 @@ rdPrgrss <- function(wd) {
 #' @param ovrwrt Overwrite existing cache? Default FALSE.
 #' @details Warning: overwriting with this function will
 #' delete the existing cache.
-#' @export
 setUpCch <- function(ps, ovrwrt=FALSE) {
   d <- file.path(ps[['wd']], 'cache')
   if(file.exists(d)) {
@@ -96,7 +91,6 @@ setUpCch <- function(ps, ovrwrt=FALSE) {
 #' @description Parameters are held in cache, use
 #' this function to load parameters set for a wd.
 #' @param wd Working directory
-#' @export
 ldPrmtrs <- function(wd) {
   fl <- file.path(wd, 'cache', 'prmtrs.RData')
   if(file.exists(fl)) {
@@ -112,7 +106,6 @@ ldPrmtrs <- function(wd) {
 #' @description Check if an object exists in the cache.
 #' @param wd Working directory
 #' @param nm Object name
-#' @export
 chkObj <- function(wd, nm) {
   fl <- file.path(wd, 'cache', paste0(nm, '.RData'))
   file.exists(fl)
@@ -124,7 +117,6 @@ chkObj <- function(wd, nm) {
 #' as stored by \code{svObj}
 #' @param wd Working directory
 #' @param nm Object name
-#' @export
 ldObj <- function(wd, nm) {
   fl <- file.path(wd, 'cache', paste0(nm, '.RData'))
   if(!file.exists(fl)) {
@@ -141,7 +133,6 @@ ldObj <- function(wd, nm) {
 #' @param wd Working directory
 #' @param obj Object
 #' @param nm Object name
-#' @export
 svObj <- function(wd, obj, nm) {
   d <- file.path(wd, 'cache')
   if(!file.exists(d)) {
@@ -155,7 +146,6 @@ svObj <- function(wd, obj, nm) {
 #' @title Delete a cache
 #' @description Deletes a cache from a wd.
 #' @param wd Working directory
-#' @export
 rmCch <- function(wd) {
   d <- file.path(wd, 'cache')
   if(file.exists(d)) {
@@ -172,7 +162,6 @@ rmCch <- function(wd) {
 #' @param sqdf Sequence data.frame
 #' @details Used within the \code{dwnld} function. Saves
 #' sequence data by txid in cache.
-#' @export
 svSqs <- function(wd, txid, sqs) {
   # TODO: avoid overwriting
   d <- file.path(wd, 'cache')
@@ -193,7 +182,6 @@ svSqs <- function(wd, txid, sqs) {
 #' \code{dwnld} function.
 #' @param wd Working directory
 #' @param txid Taxonomic ID, numeric
-#' @export
 ldSqs <- function(wd, txid) {
   d <- file.path(wd, 'cache')
   if(!file.exists(d)) {
@@ -216,7 +204,6 @@ ldSqs <- function(wd, txid) {
 #' @param wd Working directory
 #' @param txid Taxonomic ID, numeric
 #' @param clstr cluster list
-#' @export
 svClstrs <- function(wd, txid, clstrs) {
   d <- file.path(wd, 'cache')
   if(!file.exists(d)) {
@@ -236,7 +223,6 @@ svClstrs <- function(wd, txid, clstrs) {
 #' @param fnm NCBI Entrez function name
 #' @param args Args used for function
 #' @param wd Working directory
-#' @export
 ldNcbiCch <- function(fnm, args, wd) {
   flpth <- file.path(wd, 'cache', 'ncbi',
                      fnm, args[['db']])
@@ -272,7 +258,6 @@ ldNcbiCch <- function(fnm, args, wd) {
 #' @param args Args used for function
 #' @param wd Working directory
 #' @param obj NCBI query result
-#' @export
 svNcbiCch <- function(fnm, args, wd, obj) {
   flpth <- file.path(wd, 'cache', 'ncbi',
                      fnm, args[['db']])
@@ -304,7 +289,6 @@ svNcbiCch <- function(fnm, args, wd, obj) {
 #' @param sids Sequence IDs
 #' @param wd Working dir
 #' @param obj BLAST result
-#' @export
 ldBlstCch <- function(sids, wd) {
   # fldctnry contains all the IDs of the sequences used in a BLAST
   fldctnry_pth <- file.path(wd, 'cache', 'blast',
@@ -340,7 +324,6 @@ ldBlstCch <- function(sids, wd) {
 #' @param sids Sequence IDs
 #' @param wd Working dir
 #' @param obj BLAST result
-#' @export
 svBlstCch <- function(sids, wd, obj) {
   # fldctnry contains all the IDs of the sequences used in a BLAST
   fldctnry_pth <- file.path(wd, 'cache', 'blast', 'fldctnry.RData')

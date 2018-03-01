@@ -4,7 +4,6 @@
 #' for given sequences.
 #' @param sqs Sequences
 #' @param dbfl Outfile for database
-#' @export
 mkBlstDB <- function(sqs, dbfl, ps) {
   if(length(sqs@sqs) < 2) {
     error(ps=ps, 'Need more than 2 sequences for BLAST.')
@@ -44,7 +43,6 @@ mkBlstDB <- function(sqs, dbfl, ps) {
 #' a BLAST database
 #' @param dbfl Database file
 #' @param outfl Output file
-#' @export
 blstN <- function(dbfl, outfl, ps) {
   blst_d <- file.path(ps[['wd']], 'blast')
   if(!file.exists(blst_d)) {
@@ -96,7 +94,6 @@ blstN <- function(dbfl, outfl, ps) {
 #' subject-query pairs, if one of the coverages is insufficient. HSP
 #' coverage is obtained from the BLAST column \code{qcovs}.
 #' @param blst_rs BLAST results
-#' @export
 fltrBlstRs <- function(blst_rs, ps) {
   pull <- blst_rs[['qcovs']] < ps[['mncvrg']]
   if(any(pull)) {

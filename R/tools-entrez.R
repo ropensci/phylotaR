@@ -8,7 +8,6 @@
 #' @param txid Taxonomic ID
 #' @param ps Parameter list
 #' @param drct Node-level only or subtree as well? Default FALSE.
-#' @export
 mkSrchTrm <- function(txid, ps, drct=FALSE) {
   org_trm <- ifelse(drct, '[Organism:noexp]',
                      '[Organism:exp]' )
@@ -26,7 +25,6 @@ mkSrchTrm <- function(txid, ps, drct=FALSE) {
 #' of ID.
 #' @param txid Taxonomic ID
 #' @param ps Parameters
-#' @export
 nNcbiNds <- function(txid, ps) {
   trm <- paste0('txid', txid, '[Subtree]')
   args <- list(db='taxonomy', retmax=0, term=trm)
@@ -42,7 +40,6 @@ nNcbiNds <- function(txid, ps) {
 #' associated with a taxonomic ID on NCBI GenBank.
 #' @param txid Taxonomic ID
 #' @param drct Node-level only or subtree as well? Default FALSE.
-#' @export
 nSqs <- function(txid, ps, drct=FALSE) {
   trm <- mkSrchTrm(txid=txid, ps=ps, drct=drct)
   args <- list(db='nucleotide', retmax=0, term=trm)
@@ -73,7 +70,6 @@ nSqs <- function(txid, ps, drct=FALSE) {
 #' @param hrdmx Absolute maximum number of sequence IDs to download
 #' in a single query.
 #' @return vector ot IDs
-#' @export
 getGIs <- function(txid, drct, sqcnt, ps, retmax=100,
                    hrdmx=100000) {
   trm <- mkSrchTrm(txid=txid, ps=ps, drct=drct)
@@ -128,7 +124,6 @@ getGIs <- function(txid, drct, sqcnt, ps, retmax=100,
 #' @param gis Sequence GI IDs
 #' @param ps Parameter list
 #' @return Vector of sequence objects
-#' @export
 prtDwnld <- function(gis, ps) {
   ftch_args <- list(db="nucleotide",
                     rettype='gbwithparts',
@@ -144,7 +139,6 @@ prtDwnld <- function(gis, ps) {
 #' @param txid NCBI taxonomic ID
 #' @param drct Node-level only or subtree as well? Default FALSE.
 #' @return Vector of sequence records
-#' @export
 btchDwnld <- function(txid, ps, drct=FALSE, lvl=0) {
   # Searches for GIs, returns accessions
   # test w/ golden moles 9389

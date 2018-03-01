@@ -10,7 +10,6 @@
 #' @param lgfl File to which stdout/err will be written
 #' @details Note, stdout/err are returned as 'raw'. Use rawToChar() to
 #' convert to characters.
-#' @export
 cmdLn <- function(cmd, args, lgfl=NULL) {
   if(!is.null(lgfl)) {
     # remove any filetype and replace with .log

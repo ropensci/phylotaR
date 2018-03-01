@@ -3,7 +3,6 @@
 #' @description Return all deflines for a cluster's sequences
 #' @param clstrs_obj clstrs_obj
 #' @param id cluster ID(s)
-#' @export
 getSqDfs <- function(clstrs_obj, id, prse=0.1) {
   gis <- clstrs_obj@clstrs[[id]][['gis']]
   dflns <- sapply(gis, function(x) clstrs_obj@sqs[[x]][['def']])
@@ -24,7 +23,6 @@ getSqDfs <- function(clstrs_obj, id, prse=0.1) {
 #' @description Return all deflines for a cluster's sequences
 #' @param clstrs_obj clstrs_obj
 #' @param id cluster ID(s)
-#' @export
 getSqLns <- function(clstrs_obj, cid=NULL, sid=NULL) {
   if(!is.null(cid)) {
     sid <- clstrs_obj@clstrs[[cid]][['gis']]
@@ -37,7 +35,6 @@ getSqLns <- function(clstrs_obj, cid=NULL, sid=NULL) {
 #' @description Return all deflines for a cluster's sequences
 #' @param clstrs_obj clstrs_obj
 #' @param id cluster ID(s)
-#' @export
 getSqAmbs <- function(clstrs_obj, id) {
   .calc <- function(x) {
     sq <- clstrs_obj@sqs[[x]][['seq']]
@@ -55,7 +52,6 @@ getSqAmbs <- function(clstrs_obj, id) {
 #' the unambiguous sequence of all sequences in cluster
 #' @param clstrs_obj clstrs_obj
 #' @param id cluster ID(s)
-#' @export
 getSqGCR <- function(clstrs_obj, id) {
   .calc <- function(x) {
     sq <- clstrs_obj@sqs[[x]][['seq']]
@@ -74,7 +70,6 @@ getSqGCR <- function(clstrs_obj, id) {
 #' @description 
 #' @param clstrs_obj clstrs_obj
 #' @param id cluster ID(s)
-#' @export
 getClMAD <- function(clstrs_obj, cids) {
   calc <- function(cid) {
     sqlns <- getSqLns(clstrs_obj, cid=cid)
@@ -89,7 +84,6 @@ getClMAD <- function(clstrs_obj, cids) {
 #' a cluster.
 #' @param clstrs_obj clstrs_obj
 #' @param id cluster ID(s)
-#' @export
 getSqTx <- function(clstrs_obj, cid=NULL, sid=NULL,
                     rank=FALSE) {
   if(!is.null(cid)) {

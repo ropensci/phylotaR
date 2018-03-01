@@ -5,7 +5,6 @@
 #' @param id Taxon IDs
 #' @param ret Return ID or Name?
 #' @param rank Rank of output
-#' @export
 getIDFrmTxdct <- function(txdct, id, ret=c('TaxId', 'ScientificName'),
                           rank=c("superkingdom", "kingdom", "phylum",
                                  "subphylum", "class", "superorder",

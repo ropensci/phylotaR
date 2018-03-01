@@ -7,7 +7,6 @@
 #' @param lvl Number of message indentations, indicating code depth.
 #' @param ps Parameters
 #' @param ... Message elements for concatenating
-#' @export
 info <- function(lvl, ps, ...) {
   msg <- paste0(..., '\n')
   spcr <- paste0(rep('... ', lvl-1), collapse='')
@@ -21,7 +20,6 @@ info <- function(lvl, ps, ...) {
 #' halt pipeline.
 #' @param wd Working directory
 #' @param ... Message elements for concatenating
-#' @export
 error <- function(ps, ...) {
   msg <- paste0('Error: ', ..., '\n')
   .log(v=FALSE, wd=ps[['wd']], msg=msg)
@@ -33,7 +31,6 @@ error <- function(ps, ...) {
 #' @description Inform a user if a potential error has occurred in log.txt.
 #' @param ps Parameters
 #' @param ... Message elements for concatenating
-#' @export
 warn <- function(ps, ...) {
   msg <- paste0('Warning: ', ..., '\n')
   .log(v=ps[['v']], wd=ps[['wd']], msg=msg)

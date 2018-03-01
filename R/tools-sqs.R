@@ -5,7 +5,6 @@
 #' @param rw_rcrds Raw records returned from Entrez fetch
 #' @param gis GIs of each fectched record
 #' @param ps Parameters list
-#' @export
 rwRcrd2SqRcrd <- function(rw_rcrds, gis, ps) {
   res <- NULL
   rcrds <- XML::xmlToList(rw_rcrds)
@@ -81,7 +80,6 @@ rwRcrd2SqRcrd <- function(rw_rcrds, gis, ps) {
 #' @param rcrd_typ Sequence record type
 #' @param vrsn Accession version
 #' @param lctn Location numbers for features, e.g. '1..200'
-#' @export
 genSqRcrd <- function(accssn, gi, nm, txid, sq, dfln,
                       orgnsm, ml_typ, rcrd_typ,
                       vrsn, lctn=NULL) {
@@ -104,7 +102,6 @@ genSqRcrd <- function(accssn, gi, nm, txid, sq, dfln,
 #' @title Generate SqsRcrd
 #' @description Creates an S4 SqsRcrd object from list of SqRcrds
 #' @param sqs List of SqRcrds
-#' @export
 genSqsRcrd <- function(sqs) {
   nambgs <- vapply(sqs, function(x) x@nambgs, 1)
   nncltds <- vapply(sqs, function(x) x@nncltds, 1)

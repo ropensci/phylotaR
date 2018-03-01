@@ -8,7 +8,6 @@
 #' @param args rentrez function arguments, list
 #' @param fnm rentrez function name
 #' @param ps Parameters
-#' @export
 srchNCch <- function(func, args, fnm, ps) {
   res <- ldNcbiCch(fnm=fnm, args=args, wd=ps[['wd']])
   if(!is.null(res)) {
@@ -27,7 +26,6 @@ srchNCch <- function(func, args, fnm, ps) {
 #' @param args rentrez function arguments, list
 #' @param fnm rentrez function name
 #' @param ps Parameters
-#' @export
 safeSrch <- function(func, args, fnm, ps) {
   res <- NULL
   for(wt_tm in ps[['wt_tms']]) {
@@ -55,7 +53,6 @@ safeSrch <- function(func, args, fnm, ps) {
 #' @description Returns T/F. Checks if object
 #' returned from rentrez function is as expected.
 #' @param obj
-#' @export
 chckSrchObj <- function(obj) {
   if(inherits(x=obj, what='try-error')) {
     return(FALSE)

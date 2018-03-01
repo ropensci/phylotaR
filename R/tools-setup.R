@@ -5,7 +5,6 @@
 #' @param wd Working directory
 #' @param ncbi_execs File directories for NCBI tools, see \code{setUpNcbiTools()}
 #' @param ... Set parameters, see parameters()
-#' @export
 #' @seealso
 #' \link{parameters}, \link{setUpNcbiTools}
 setUpPrmtrs <- function(wd, ncbi_execs, ...) {
@@ -65,7 +64,6 @@ setUpPrmtrs <- function(wd, ncbi_execs, ...) {
 #' @param wd Working directory
 #' @param v v, T/F
 #' @details BLAST tools must be version >=2.0
-#' @export
 #' @seealso
 #' \link{setUpPrmtrs}
 setUpNcbiTools <- function(d, v, wd) {
