@@ -45,7 +45,7 @@ dwnld <- function(txids, phylt_nds, txdct, ps) {
                         ps=ps)
     if(length(sqs) > 0) {
       sqcnt <- sqcnt + length(sqs)
-      sqs <- agmntRcrds(sqs=sqs, txdct=txdct)
+      sqs <- agmntSqRcrds(sqs=sqs, txdct=txdct)
       svSqs(wd=ps[['wd']], txid=txid, sqs=sqs)
     }
   }

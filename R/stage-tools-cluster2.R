@@ -53,7 +53,7 @@ jnClstrs <- function(blst_rs, seed_ids, all_clstrs, ps) {
 #' @title Merge joined clusters
 #' @description Takes a list of joined clusters and computes
 #' each data slot to create a single merged cluster.
-#' @param jnd_clstrs List of joined clusters
+#' @param jnd_clstrs List of joined cluster records
 mrgClstrs <- function(jnd_clstrs) {
   mrg_clstrs <- vector('list', length=length(jnd_clstrs))
   for(i in seq_along(jnd_clstrs)) {
@@ -69,17 +69,17 @@ mrgClstrs <- function(jnd_clstrs) {
 
 #' @name rnmbrClstrs
 #' @title Renumbers cluster IDs
-#' @description Returns a list of clusters with
+#' @description Returns a ClRcrdBx with
 #' ID determined by the number of sequences
 #' in each cluster.
-#' @param clstrs List of clusters
-rnmbrClstrs <- function(clstrs) {
-  nsqs <- vapply(clstrs, function(x) length(x@sids),
+#' @param clstr_rcrds List of clusters
+rnmbrClstrs <- function(clstr_rcrds) {
+  nsqs <- vapply(clstr_rcrds, function(x) length(x@sids),
                  numeric(1))
   ord <- order(nsqs, decreasing=TRUE)
-  clstrs <- clstrs[ord]
-  for(i in seq_along(clstrs)) {
-    clstrs[[i]]@id <- as.integer(i - 1)
+  clstr_rcrds <- clstr_rcrds[ord]
+  for(i in seq_along(clstr_rcrds)) {
+    clstr_rcrds[[i]]@id <- as.integer(i - 1)
   }
-  clstrs
+  genClRcrdBx(clstr_rcrds)
 }

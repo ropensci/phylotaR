@@ -1,34 +1,34 @@
-chckSqsRcrd <- function(object) {
+chckSqRcrdBx <- function(object) {
   # TODO
   TRUE
 }
 
-#' @name SqsRcrd-class
-#' @aliases SqsRcrd-method
-#' @param x \code{SqsRcrd} object
-#' @param object \code{SqsRcrd} object
-#' @title SqsRcrd-class
+#' @name SqRcrdBx-class
+#' @aliases SqRcrdBx-method
+#' @param x \code{SqRcrdBx} object
+#' @param object \code{SqRcrdBx} object
+#' @title SqRcrdBx-class
 #' @description Multiple sequence records containing sequence data.
 #' @details Sequences are stored as raw. Use rawToChar().
-#' @slot ids Vector of SqsRcrd IDs
+#' @slot ids Vector of Sequence Record IDs
 #' @slot nncltds Vector of sequence lengths
 #' @slot nambgs Vector of number of ambiguous nucleotides
 #' @slot txids Vector source txid associated with each sequence
-#' @slot sqs List of SqsRcrds named by ID
-#' @exportClass SqsRcrd
+#' @slot sqs List of SqRcrds named by ID
+#' @exportClass SqRcrdBx
 #' @seealso 
-#' \code{\link{genSqsRcrd}}
-setClass('SqsRcrd', representation=representation(
+#' \code{\link{genSqRcrdBx}}
+setClass('SqRcrdBx', representation=representation(
   ids='vector',
   nncltds='vector',
   nambgs='vector',
   txids='vector',
   sqs='list'),
-  validity=chckSqsRcrd)
+  validity=chckSqRcrdBx)
 
-#' @rdname SqsRcrd-class
+#' @rdname SqRcrdBx-class
 #' @exportMethod as.character
-setMethod('as.character', c('x'='SqsRcrd'),
+setMethod('as.character', c('x'='SqRcrdBx'),
           function(x) {
             msg <- 'Multiple SqRcrd(s)\n'
             msg <- paste0(msg, ' - [', length(x@ids),
@@ -40,39 +40,39 @@ setMethod('as.character', c('x'='SqsRcrd'),
             msg <- paste0(msg, ' - [', median(x@nambgs),
                           '] median ambiguous nucleotides\n')
           })
-#' @rdname SqsRcrd-class
+#' @rdname SqRcrdBx-class
 #' @exportMethod show
-setMethod('show', 'SqsRcrd',
+setMethod('show', 'SqRcrdBx',
           function(object){
             msg <- as.character(object)
             cat(msg)
           })
-#' @rdname SqsRcrd-class
+#' @rdname SqRcrdBx-class
 #' @exportMethod print
-setMethod('print', 'SqsRcrd',
+setMethod('print', 'SqRcrdBx',
           function(x){
             msg <- as.character(x)
             print(msg)
           })
-#' @rdname SqsRcrd-class
+#' @rdname SqRcrdBx-class
 #' @exportMethod str
-setMethod('str', c('object'='SqsRcrd'),
+setMethod('str', c('object'='SqRcrdBx'),
           function(object, max.level=2L, ...) {
             if(is.na(max.level)) {
               stop('max.level must be numeric')
             }
             str@default(object, max.level=max.level, ...)
           })
-#' @rdname SqsRcrd-class
+#' @rdname SqRcrdBx-class
 #' @exportMethod summary
-setMethod('summary', c('object'='SqsRcrd'),
+setMethod('summary', c('object'='SqRcrdBx'),
           function(object){
             msg <- as.character(x)
             cat(msg)
           })
 
 # Accessor methods
-setMethod('[[', c('SqsRcrd', 'character'),
+setMethod('[[', c('SqRcrdBx', 'character'),
           function(x, i) {
             pull <- which(x@ids %in% i)
             if(length(pull) == 1) {
@@ -80,11 +80,11 @@ setMethod('[[', c('SqsRcrd', 'character'),
             }
             stop(paste0('[', i , '] not in records'))
           })
-setMethod('[', c('SqsRcrd', 'character', 'missing', 'missing'),
+setMethod('[', c('SqRcrdBx', 'character', 'missing', 'missing'),
           function(x, i, j, ..., drop=TRUE) {
             pull <- i %in% x@ids
             if(all(pull)) {
-              return(genSqsRcrd(x@sqs[x@ids %in% i]))
+              return(genSqRcrdBx(x@sqs[x@ids %in% i]))
             }
             mssng <- paste0(i[!pull], collapse=', ')
             stop(paste0('[', mssng , '] not in records'))

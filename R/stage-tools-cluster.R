@@ -14,9 +14,9 @@ clstrAll <- function(txid, sqs, phylt_nds, ps, lvl=0) {
   for(dd in dds) {
     info(lvl=lvl+2, ps=ps, "Processing [id ", txid,
          "] child [id ", dd, "]")
-    dd_clstrs <- clstrAll(txid=dd, phylt_nds=phylt_nds, 
+    dd_clstrs <- clstrAll(txid=dd, phylt_nds=phylt_nds,
                           sqs=sqs, ps=ps, lvl=lvl+1)
-    all_clstrs <- c(all_clstrs, dd_clstrs)
+    all_clstrs <- jnBxs(all_clstrs, dd_clstrs)
   }
   all_clstrs
 }
@@ -32,7 +32,7 @@ clstrAll <- function(txid, sqs, phylt_nds, ps, lvl=0) {
 #' @param dds Vector of direct descendants
 #' @param ps Parameters
 clstrSbtr <- function(txid, sqs, phylt_nds, dds, ps, lvl) {
-  all_clstrs <- list()
+  all_clstrs <- genClRcrdBx(list())
   rnks <- as.character(phylt_nds[['rank']])
   rnk <- as.character(rnks[match(txid, phylt_nds[['ti']])])
   info(lvl=lvl+1, ps=ps, "Generating subtree clusters for [id ",
@@ -40,7 +40,7 @@ clstrSbtr <- function(txid, sqs, phylt_nds, dds, ps, lvl) {
   if(length(dds) > 0) {
     drct_clstrs <- clstrDrct(txid, ps=ps, phylt_nds=phylt_nds,
                              sqs=sqs, lvl=lvl)
-    all_clstrs <- c(all_clstrs, drct_clstrs)
+    all_clstrs <- jnBxs(all_clstrs, drct_clstrs)
   }
   txids <- getADs(txid=txid, phylt_nds=phylt_nds)
   all_sq_txids <- sqs@txids
@@ -54,7 +54,7 @@ clstrSbtr <- function(txid, sqs, phylt_nds, dds, ps, lvl) {
   sbtr_clstrs <- clstrSqs(txid=txid, sqs=sqs_prt,
                           typ='subtree',
                           ps=ps, lvl=lvl)
-  c(all_clstrs, sbtr_clstrs)
+  jnBxs(all_clstrs, sbtr_clstrs)
 }
 
 #' @name clstrDrct
@@ -69,7 +69,7 @@ clstrSbtr <- function(txid, sqs, phylt_nds, dds, ps, lvl) {
 #' @param phylt_nds PhyLoTa table
 #' @param ps Parameters
 clstrDrct <- function(txid, sqs, phylt_nds, ps, lvl) {
-  all_clstrs <- list()
+  all_clstrs <- genClRcrdBx(list())
   rnks <- as.character(phylt_nds[['rank']])
   rnk <- as.character(rnks[match(txid, phylt_nds[['ti']])])
   info(lvl=lvl+1, ps=ps, "Generating direct clusters for [id ",
@@ -80,7 +80,7 @@ clstrDrct <- function(txid, sqs, phylt_nds, ps, lvl) {
   if(length(sids) < 3) {
     info(lvl=lvl+3, ps=ps,
          "Too few sequences, cannot make clusters")
-    return(list())
+    return(all_clstrs)
   }
   sqs_prt <- sqs[sids]
   clstrSqs(txid=txid, sqs=sqs_prt, typ='direct',
@@ -105,11 +105,11 @@ clstrSqs <- function(txid, sqs, ps, lvl,
     return(NULL)
   }
   clstr_lst <- clstrBlstRs(blst_rs=blst_rs)
-  clstrs <- genClstr(clstr_lst=clstr_lst, txid=txid,
-                     sqs=sqs, typ=typ)
-  info(lvl=lvl+1, ps=ps, "Identified [", length(clstrs),
+  cl_rcrds <- genClRcrds(clstr_lst=clstr_lst, txid=txid,
+                         sqs=sqs, typ=typ)
+  info(lvl=lvl+1, ps=ps, "Identified [", length(cl_rcrds@ids),
        "] clusters")
-  clstrs
+  cl_rcrds
 }
 
 #' @name getADs
@@ -181,22 +181,22 @@ clstrBlstRs <- function(blst_rs) {
   clstr_lst
 }
 
-#' @name genClstr
+#' @name genClRcrds
 #' @title Generate list of Clstrs
 #' @description Takes a list of lists of cluster descriptions,
-#' returns a list of Clstr objects.
+#' returns a ClRcrdBx.
 #' @param clstr_lst List of list of cluster descriptions
 #' @param txid Taxonomic node ID
 #' @param sqs Sequnece records
 #' @param typ Subtree of direct?
-genClstr <- function(clstr_lst, txid, sqs, typ) {
-  clstrs <- vector('list', length=length(clstr_lst))
+genClRcrds <- function(clstr_lst, txid, sqs, typ) {
+  cl_rcrds <- vector('list', length=length(clstr_lst))
   for(i in seq_along(clstr_lst)) {
     cl <- clstr_lst[[i]]
     cl_sqs <- sqs[cl[['sids']]]
-    clstr <- new('Clstr', sids=cl[['sids']], txids=cl_sqs@txids,
-                 typ=typ, prnt=as.character(txid), seed=cl[['seed']])
-    clstrs[[i]] <- clstr
+    cl_rcrd <- new('ClRcrd', sids=cl[['sids']], txids=cl_sqs@txids,
+                   typ=typ, prnt=as.character(txid), seed=cl[['seed']])
+    cl_rcrds[[i]] <- cl_rcrd
   }
-  clstrs
+  genClRcrdBx(cl_rcrds)
 }

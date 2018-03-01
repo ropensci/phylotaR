@@ -98,15 +98,15 @@ genSqRcrd <- function(accssn, gi, nm, txid, sq, dfln,
       txid=txid)
 }
 
-#' @name genSqsRcrd
-#' @title Generate SqsRcrd
-#' @description Creates an S4 SqsRcrd object from list of SqRcrds
+#' @name genSqRcrdBx
+#' @title Generate SqRcrdBx
+#' @description Creates an S4 SqRcrdBx from list of SqRcrds
 #' @param sqs List of SqRcrds
-genSqsRcrd <- function(sqs) {
+genSqRcrdBx <- function(sqs) {
   nambgs <- vapply(sqs, function(x) x@nambgs, 1)
   nncltds <- vapply(sqs, function(x) x@nncltds, 1)
   ids <- vapply(sqs, function(x) x@id, '')
   txids <- vapply(sqs, function(x) x@txid, '')
-  new('SqsRcrd', ids=ids, nncltds=nncltds, nambgs=nambgs,
+  new('SqRcrdBx', ids=ids, nncltds=nncltds, nambgs=nambgs,
       txids=txids, sqs=sqs)
 }

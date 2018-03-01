@@ -9,16 +9,15 @@
 readPhyLoTa <- function(wd) {
   # TODO check wd has completed cluster stage
   clstrs_sqs <- ldObj(wd, nm='clstrs_sqs')
-  clstrs <- clstrs_sqs[['clstrs']]
+  cls <- clstrs_sqs[['clstrs']]
   sqs <- clstrs_sqs[['sqs']]
-  names(clstrs) <- vapply(clstrs, function(x) x@id, 1L)
-  txids <- unique(sqs@txids)
-  sids <- unique(sqs@ids)
-  clstr_ids <- names(clstrs)
+  txids <- sort(unique(sqs@txids))
+  sids <- sort(unique(sqs@ids))
+  cids <- cls@ids
   txdct <- ldObj(wd, nm='txdct')
-  new('PhyLoTa', sqs=clstrs_sqs[['sqs']],
-      clstrs=clstrs, txids=txids, sids=sids,
-      clstr_ids=clstr_ids, txdct=txdct)
+  new('PhyLoTa', sqs=sqs, cls=cls,
+      txids=txids, sids=sids,
+      cids=cids, txdct=txdct)
 }
 
 # CLUSTER FUNCTIONS

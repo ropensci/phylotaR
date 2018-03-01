@@ -10,29 +10,36 @@ chckPhyLoTa <- function(object) {
 #' @param object \code{PhyLoTa} object
 #' @title PhyLoTa-class
 #' @description PhyLoTa table contains sequences and clusters information.
-#' @slot clstr_ids IDs of all clusters
-#' @slot txids IDs of all taxa
+#' @slot cids IDs of all clusters
 #' @slot sids IDs of all sequences
+#' @slot txids IDs of all taxa
+#' @slot sqs All sequence records as SqRcrdBx
+#' @slot cls All cluster records as ClRcrdBx
 #' @slot txdct Taxonomic dictionary
-#' @slot sqs All sequence records
-#' @slot clstrs All cluster records
 #' @exportClass PhyLoTa
 #' @seealso 
 #' \code{\link{genPhyLoTa}}
 setClass('PhyLoTa', representation=representation(
-  clstr_ids='vector',
+  cids='vector',
   txids='vector',
   sids='vector',
   txdct='list',
-  sqs='SqsRcrd',
-  clstrs='list'),
+  sqs='SqRcrdBx',
+  cls='ClRcrdBx'),
   validity=chckPhyLoTa)
 
 #' @rdname PhyLoTa-class
 #' @exportMethod as.character
 setMethod('as.character', c('x'='PhyLoTa'),
           function(x) {
-            paste0('PhyLoTa Table of [', length(x@clstrs),'] clusters')
+            msg <- 'PhyLoTa Table\n'
+            msg <- paste0(msg, '- [', length(x@cids),
+                          '] clusters\n')
+            msg <- paste0(msg, '- [', length(x@sids),
+                          '] sequences\n')
+            msg <- paste0(msg, '- [', length(x@txids),
+                          '] source taxa\n')
+            msg
           })
 #' @rdname PhyLoTa-class
 #' @exportMethod show

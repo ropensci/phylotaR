@@ -18,12 +18,12 @@ clstrClstrs <- function(ps) {
     clstrs <- readRDS(file.path(clstrpth, clstrfls[i]))
     sqs <- readRDS(file.path(sqpth, sqfls[i]))
     all_sqs <- c(all_sqs, sqs@sqs)
-    all_clstrs <- c(all_clstrs, clstrs)
+    all_clstrs <- c(all_clstrs, clstrs@cls)
   }
-  all_sqs <- genSqsRcrd(all_sqs)
+  all_sqs <- genSqRcrdBx(all_sqs)
   if(length(clstrfls) > 1) {
     info(lvl=1, ps=ps, 'Cluster-clustering ...')
-    seed_ids <- vapply(clstrs, function(x) x@seed, '')
+    seed_ids <- vapply(all_clstrs@cls, function(x) x@seed, '')
     seeds <- all_sqs[seed_ids[!duplicated(seed_ids)]]
     blst_rs <- blstSeeds(sqs=seeds, ps=ps)
     info(lvl=1, ps=ps, 'Merging ...')
@@ -31,7 +31,7 @@ clstrClstrs <- function(ps) {
                            seed_ids=seed_ids,
                            all_clstrs=all_clstrs)
     mrg_clstrs <- mrgClstrs(jnd_clstrs=jnd_clstrs)
-    info(lvl=2, ps=ps, "Generated [", length(mrg_clstrs),
+    info(lvl=2, ps=ps, "Generated [", length(mrg_clstrs@ids),
          "] merged clusters")
     all_clstrs <- c(all_clstrs, mrg_clstrs)
   } else {
@@ -39,7 +39,8 @@ clstrClstrs <- function(ps) {
          'Done. Only one cluster set -- skipping cluster^2')
   }
   info(lvl=1, ps=ps, 'Renumbering clusters ...')
-  all_clstrs <- rnmbrClstrs(clstrs=all_clstrs)
+  # returns cluster record box
+  all_clstrs <- rnmbrClstrs(clstr_rcrds=all_clstrs)
   info(lvl=1, ps=ps, 'Saving ...')
   svObj(wd=ps[['wd']], obj=list('clstrs'=all_clstrs,
                                 'sqs'=all_sqs),

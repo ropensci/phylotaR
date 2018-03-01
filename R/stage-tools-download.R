@@ -24,12 +24,12 @@ getSqsByTxid <- function(txid, phylt_nds, ps, lvl=0) {
   sqs
 }
 
-#' @name agmntRcrds
+#' @name agmntSqRcrds
 #' @title Augment sequence records list
 #' @description Convert to sqsrcrds and add taxids
 #' @param sqs List of SqRcrds
 #' @param txdct Taxonomic Dictionary
-agmntRcrds <- function(sqs, txdct) {
+agmntSqRcrds <- function(sqs, txdct) {
   # TODO: gen. txdct tools
   # txids are not downloaded as part of sequence, added here
   txdct_nms <- vapply(txdct, function(x) x[['ScientificName']], '')
@@ -39,7 +39,7 @@ agmntRcrds <- function(sqs, txdct) {
   for(i in seq_along(sqs)) {
     sqs[[i]]@txid <- as.character(sqs_ids[[i]])
   }
-  genSqsRcrd(sqs)
+  genSqRcrdBx(sqs)
 }
 
 #' @name getDDFrmPhyltNds
