@@ -1,20 +1,23 @@
 
-#' @name genClstrsObj
-#' @title Create a clstrsObj
-#' @description TODO
+#' @name readPhyLoTa
+#' @title Generate a PhyLoTa object in R
+#' @description Creates a PhyLoTa object containing
+#' information on clusters, sequences and taxonomy
+#' from the working directory of a completed pipeline.
 #' @param wd Working directory
 #' @export
-genClstrsObj <- function(wd) {
+readPhyLoTa <- function(wd) {
   # TODO check wd has completed cluster stage
   clstrs_sqs <- ldObj(wd, nm='clstrs_sqs')
   clstrs <- clstrs_sqs[['clstrs']]
-  names(clstrs) <- sapply(clstrs, function(x) x[['ci']])
-  txids <- unique(unlist(sapply(clstrs, function(x) x[['tis']])))
-  sqids <- unique(unlist(sapply(clstrs, function(x) x[['gis']])))
+  sqs <- clstrs_sqs[['sqs']]
+  names(clstrs) <- vapply(clstrs, function(x) x@id, 1L)
+  txids <- unique(sqs@txids)
+  sids <- unique(sqs@ids)
   clstr_ids <- names(clstrs)
   txdct <- ldObj(wd, nm='txdct')
-  new('ClstrsObj', sqs=clstrs_sqs[['sqs']],
-      clstrs=clstrs, txids=txids, sqids=sqids,
+  new('PhyLoTa', sqs=clstrs_sqs[['sqs']],
+      clstrs=clstrs, txids=txids, sids=sids,
       clstr_ids=clstr_ids, txdct=txdct)
 }
 

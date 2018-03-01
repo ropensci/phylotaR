@@ -4,7 +4,7 @@
 \alias{mrgClstrs}
 \title{Merge joined clusters}
 \usage{
-mrgClstrs(jnd_clstrs)
+mrgClstrs(jnd_clstrs, sqs)
 }
 \arguments{
 \item{jnd_clstrs}{List of joined clusters}

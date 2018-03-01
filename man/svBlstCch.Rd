@@ -4,10 +4,10 @@
 \alias{svBlstCch}
 \title{Save BLAST results to cache}
 \usage{
-svBlstCch(sqs, wd, obj)
+svBlstCch(sids, wd, obj)
 }
 \arguments{
-\item{sqs}{Sequences}
+\item{sids}{Sequence IDs}
 
 \item{wd}{Working dir}
 

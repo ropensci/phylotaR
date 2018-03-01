@@ -11,6 +11,6 @@ rnmbrClstrs(clstrs)
 }
 \description{
 Returns a list of clusters with
-ID (cis) determined by the number of sequences
+ID determined by the number of sequences
 in each cluster.
 }

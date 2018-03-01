@@ -85,27 +85,16 @@ fltr <- function(txid, phylt_nds, ps) {
   while(length(queue) > 0) {
     tmp_id <- head(queue, 1)
     queue <- tail(queue, length(queue)-1)
-    # get number of sequences to determine if it
-    # is manageable to calculate clusters
-    info(lvl=3, ps=ps, "Counting species for taxon [",
-        tmp_id, "]")
     nnonmodelsqs <- phylt_nds[match(tmp_id, phylt_nds[['ti']]),
                                'n_gi_sub_nonmodel']
     nmodelsqs <- phylt_nds[match(tmp_id, phylt_nds[['ti']]),
                             'n_sp_model'] * ps[['mdlthrs']]
     nsqs <- nnonmodelsqs + nmodelsqs
-    info(lvl=3, ps=ps, "Number of sequences for taxon [",
-        tmp_id, "]: [", nsqs, "]")
-    # if sequence count is smaller than ps[['mxsqs']],
-    # add it to the phylt_nds to process
-    # otherwise look up direct descendants
     if(nsqs <= ps[['mxsqs']]) {
-      info(lvl=3, ps=ps, "Will process taxon [",
-           tmp_id, "]")
       res <- c(res, tmp_id)
     } else {
-      info(lvl=3, ps=ps, "Too many seqs to blast for taxid [",
-          tmp_id, "] ... looking up direct descendents\n")
+      info(lvl=2, ps=ps, "[", nsqs, " sqs] for [id ",
+           tmp_id, "] ... searching descendants instead\n")
       queue <- c(queue, getDDFrmPhyltNds(tmp_id, phylt_nds))
     }
   }

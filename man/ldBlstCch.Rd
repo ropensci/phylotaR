@@ -4,10 +4,10 @@
 \alias{ldBlstCch}
 \title{Load BLAST results from cache}
 \usage{
-ldBlstCch(sqs, wd)
+ldBlstCch(sids, wd)
 }
 \arguments{
-\item{sqs}{Sequences}
+\item{sids}{Sequence IDs}
 
 \item{wd}{Working dir}
 

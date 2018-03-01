@@ -17,14 +17,14 @@ clstrClstrs <- function(ps) {
   for(i in seq_along(clstrfls)) {
     clstrs <- readRDS(file.path(clstrpth, clstrfls[i]))
     sqs <- readRDS(file.path(sqpth, sqfls[i]))
-    all_sqs <- c(all_sqs, sqs)
+    all_sqs <- c(all_sqs, sqs@sqs)
     all_clstrs <- c(all_clstrs, clstrs)
   }
+  all_sqs <- genSqsRcrd(all_sqs)
   if(length(clstrfls) > 1) {
     info(lvl=1, ps=ps, 'Cluster-clustering ...')
-    seeds <- getSeedSqs(clstrs=all_clstrs, sqs=all_sqs)
-    seed_ids <- names(seeds)
-    seeds <- seeds[!duplicated(seed_ids)]
+    seed_ids <- vapply(clstrs, function(x) x@seed, '')
+    seeds <- all_sqs[seed_ids[!duplicated(seed_ids)]]
     blst_rs <- blstSeeds(sqs=seeds, ps=ps)
     info(lvl=1, ps=ps, 'Merging ...')
     jnd_clstrs <- jnClstrs(blst_rs=blst_rs, ps=ps,
@@ -53,7 +53,7 @@ clstrClstrs <- function(ps) {
 #' @param ps Parameters
 #' @export
 blstSeeds <- function(sqs, ps) {
-  info(lvl=2, ps=ps, "BLASTing [", length(sqs),
+  info(lvl=2, ps=ps, "BLASTing [", length(sqs@ids),
        " sqs]")
   dbfl <- 'seeds-db.fa'
   outfl <- 'seeds-db-blastout.txt'
@@ -61,17 +61,6 @@ blstSeeds <- function(sqs, ps) {
   mkBlstDB(sqs, dbfl=dbfl, ps=ps)
   blst_rs <- blstN(dbfl=dbfl, outfl=outfl, ps=ps)
   blst_rs
-}
-
-#' @name getSeedSqs
-#' @title Extract seed sequences from clusters
-#' @description Returns seed sequences of all clusters
-#' @param clstrs All clusters
-#' @param sqs All seed sequences to be BLASTed
-#' @export
-getSeedSqs <- function(clstrs, sqs) {
-  sids <- vapply(clstrs, function(x) x[['seed_gi']], '')
-  sqs[sids]
 }
 
 #' @name jnClstrs
@@ -87,26 +76,27 @@ getSeedSqs <- function(clstrs, sqs) {
 #' @export
 jnClstrs <- function(blst_rs, seed_ids, all_clstrs, ps) {
   join <- function(x) {
-    pull <- seed_ids %in% x[['gis']]
+    pull <- seed_ids %in% x[['sids']]
     jnd_clstr <- all_clstrs[pull]
-    nms <- names(jnd_clstr[[1]])
+    nms <- slotNames(jnd_clstr[[1]])
     clstr <- lapply(nms, function(nm)
-      unlist(lapply(jnd_clstr, function(cl) cl[[nm]])))
+      unlist(lapply(jnd_clstr, function(cl) slot(cl, nm))))
     names(clstr) <- nms
-    clstr[['seed_gi']] <- x[['seed_gi']]
+    clstr[['typ']] <- 'merged'
+    clstr[['seed']] <- x[['seed']]
     # ensure no dups seqs in joined cluster
-    pull <- !duplicated(clstr[['gis']])
-    clstr[['gis']] <- clstr[['gis']][pull]
-    clstr[['tis']] <- clstr[['tis']][pull]
+    pull <- !duplicated(clstr[['sids']])
+    clstr[['sids']] <- clstr[['sids']][pull]
+    clstr[['txids']] <- clstr[['txids']][pull]
     clstr
   }
   pull <- blst_rs[['query.id']] != blst_rs[['subject.id']] &
     blst_rs[['qcovs']] > ps[['mncvrg']]
   blst_rs <- blst_rs[pull, ]
-  clstrs <- clstrBlstRs(blst_rs=blst_rs)
-  info(lvl=2, ps=ps, "Identified [", length(clstrs),
+  clstr_lst <- clstrBlstRs(blst_rs=blst_rs)
+  info(lvl=2, ps=ps, "Identified [", length(clstr_lst),
        "] clusters")
-  lapply(clstrs, join)
+  lapply(clstr_lst, join)
 }
 
 #' @name mrgClstrs
@@ -116,44 +106,32 @@ jnClstrs <- function(blst_rs, seed_ids, all_clstrs, ps) {
 #' @param jnd_clstrs List of joined clusters
 #' @export
 mrgClstrs <- function(jnd_clstrs) {
+  mrg_clstrs <- vector('list', length=length(jnd_clstrs))
   for(i in seq_along(jnd_clstrs)) {
-    # TODO: look up parent of both? Might require internet
-    jnd_clstrs[[i]][['ti_root']] <- NA
-    jnd_clstrs[[i]][['ci']] <- NA
-    jnd_clstrs[[i]][['ci_anc']] <- NA
-    jnd_clstrs[[i]][['cl_type']] <- 'merged'
-    jnd_clstrs[[i]][['n_gi']] <-
-      sum(jnd_clstrs[[i]][['n_gi']])
-    jnd_clstrs[[i]][['n_ti']] <-
-      sum(jnd_clstrs[[i]][['n_ti']])
-    jnd_clstrs[[i]][['n_gen']] <-
-      sum(jnd_clstrs[[i]][['n_gen']])
-    jnd_clstrs[[i]][['n_child']] <-
-      sum(jnd_clstrs[[i]][['n_child']])
-    jnd_clstrs[[i]][['unique_id']] <-
-      paste0(jnd_clstrs[[i]][['unique_id']], collapse='|')
-    jnd_clstrs[[i]][['MinLength']] <-
-      min(jnd_clstrs[[i]][['MinLength']])
-    jnd_clstrs[[i]][['MaxLength']] <-
-      max(jnd_clstrs[[i]][['MaxLength']])
+    # TODO: look up parent
+    cl <- jnd_clstrs[[i]]
+    clstr <- new('Clstr', sids=cl[['sids']],
+                 txids=cl[['txids']], typ='merged',
+                 seed=cl[['seed']])
+    mrg_clstrs[[i]] <- clstr
   }
-  jnd_clstrs
+  mrg_clstrs
 }
 
 #' @name rnmbrClstrs
 #' @title Renumbers cluster IDs
 #' @description Returns a list of clusters with
-#' ID (cis) determined by the number of sequences
+#' ID determined by the number of sequences
 #' in each cluster.
 #' @param clstrs List of clusters
 #' @export
 rnmbrClstrs <- function(clstrs) {
-  nsqs <- vapply(clstrs, function(x) x[['n_gi']],
+  nsqs <- vapply(clstrs, function(x) length(x@sids),
                  numeric(1))
   ord <- order(nsqs, decreasing=TRUE)
   clstrs <- clstrs[ord]
   for(i in seq_along(clstrs)) {
-    clstrs[[i]][['ci']] <- i - 1
+    clstrs[[i]]@id <- as.integer(i - 1)
   }
   clstrs
 }

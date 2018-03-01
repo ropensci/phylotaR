@@ -30,7 +30,7 @@ setClass('SqsRcrd', representation=representation(
 #' @exportMethod as.character
 setMethod('as.character', c('x'='SqsRcrd'),
           function(x) {
-            msg <- 'Multiple SqRcrd(s) Container\n'
+            msg <- 'Multiple SqRcrd(s)\n'
             msg <- paste0(msg, ' - [', length(x@ids),
                           '] sequences\n')
             msg <- paste0(msg, ' - [', length(unique(x@txids)),
@@ -82,10 +82,10 @@ setMethod('[[', c('SqsRcrd', 'character'),
           })
 setMethod('[', c('SqsRcrd', 'character', 'missing', 'missing'),
           function(x, i, j, ..., drop=TRUE) {
-            pull <- which(x@ids %in% i)
-            if(length(i) == length(pull)) {
-              return(genSqsRcrd(x@sqs[pull]))
+            pull <- i %in% x@ids
+            if(all(pull)) {
+              return(genSqsRcrd(x@sqs[x@ids %in% i]))
             }
-            mssng <- paste0(i[!i %in% x@ids], collapse=', ')
+            mssng <- paste0(i[!pull], collapse=', ')
             stop(paste0('[', mssng , '] not in records'))
           })

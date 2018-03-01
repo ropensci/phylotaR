@@ -17,6 +17,11 @@ rwRcrd2SqRcrd <- function(rw_rcrds, gis, ps) {
     vrsn <- rcrd[["GBSeq_accession-version"]]
     ml_typ <- rcrd[['GBSeq_moltype']]
     sq <- rcrd[['GBSeq_sequence']]
+    if(is.null(sq)) {
+      # master records have no sequences
+      # e.g. https://www.ncbi.nlm.nih.gov/nuccore/1283191328
+      next
+    }
     dfln <- rcrd[['GBSeq_definition']]
     orgnsm <- rcrd[['GBSeq_organism']]
     ftr_tbl <- rcrd[['GBSeq_feature-table']]
