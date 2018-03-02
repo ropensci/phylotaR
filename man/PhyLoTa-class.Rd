@@ -32,17 +32,17 @@ PhyLoTa table contains sequences and clusters information.
 \section{Slots}{
 
 \describe{
-\item{\code{clstr_ids}}{IDs of all clusters}
-
-\item{\code{txids}}{IDs of all taxa}
+\item{\code{cids}}{IDs of all clusters}
 
 \item{\code{sids}}{IDs of all sequences}
 
+\item{\code{txids}}{IDs of all taxa}
+
+\item{\code{sqs}}{All sequence records as SqRcrdBx}
+
+\item{\code{cls}}{All cluster records as ClRcrdBx}
+
 \item{\code{txdct}}{Taxonomic dictionary}
-
-\item{\code{sqs}}{All sequence records}
-
-\item{\code{clstrs}}{All cluster records}
 }}
 
 \seealso{

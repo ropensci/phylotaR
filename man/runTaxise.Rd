@@ -2,7 +2,7 @@
 % Please edit documentation in R/stages.R
 \name{runTaxise}
 \alias{runTaxise}
-\title{Extract and filter NCBI taxonomy}
+\title{Run taxise stage}
 \usage{
 runTaxise(wd)
 }
@@ -10,12 +10,7 @@ runTaxise(wd)
 \item{wd}{Working directory}
 }
 \description{
-Look up NCBI taxonomy and generate
-a list of descendent taxonomic nodes based on
-provided root \code{txid}. Descendent nodes
-are written to disk in PhyLoTa table format.
-This is a necessary step before clustering can
-be performed.
+TODO
 }
 \details{
 Object will be cached.

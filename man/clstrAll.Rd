@@ -4,14 +4,14 @@
 \alias{clstrAll}
 \title{Hierarchically cluster all sequences of a txid}
 \usage{
-clstrAll(txid, sqs, phylt_nds, ps, lvl = 0)
+clstrAll(txid, sqs, txdct, ps, lvl = 0)
 }
 \arguments{
 \item{txid}{Taxonomic ID}
 
 \item{sqs}{Sequence object of all downloaded sequences}
 
-\item{phylt_nds}{PhyLoTa table}
+\item{txdct}{PhyLoTa table}
 
 \item{ps}{Parameters}
 

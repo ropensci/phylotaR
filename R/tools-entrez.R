@@ -159,7 +159,6 @@ btchDwnld <- function(txid, ps, drct=FALSE, lvl=0) {
   # Fetch sequences in batches
   btch <- 500
   for(i in seq(0, length(gis)-1, btch)) {
-    # Get FASTA strings for IDs in the specified segment
     lower <- i+1
     upper <- ifelse(i+btch<length(gis), i+btch, length(gis))
     crrnt_ids <- gis[lower:upper]

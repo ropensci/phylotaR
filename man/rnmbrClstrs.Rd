@@ -4,13 +4,13 @@
 \alias{rnmbrClstrs}
 \title{Renumbers cluster IDs}
 \usage{
-rnmbrClstrs(clstrs)
+rnmbrClstrs(clstr_rcrds)
 }
 \arguments{
-\item{clstrs}{List of clusters}
+\item{clstr_rcrds}{List of clusters}
 }
 \description{
-Returns a list of clusters with
+Returns a ClRcrdBx with
 ID determined by the number of sequences
 in each cluster.
 }

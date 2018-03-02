@@ -4,10 +4,7 @@
 \alias{calcClstrs}
 \title{Calculate clusters for all sequences in WD}
 \usage{
-calcClstrs(phylt_nds, ps)
-}
-\arguments{
-\item{phylt_nds}{PhyLoTa nodes data.frame}
+calcClstrs(txdct, ps)
 }
 \description{
 TODO

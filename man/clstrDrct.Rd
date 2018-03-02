@@ -4,14 +4,14 @@
 \alias{clstrDrct}
 \title{Cluster sequences directly associated with txid}
 \usage{
-clstrDrct(txid, sqs, phylt_nds, ps, lvl)
+clstrDrct(txid, sqs, txdct, ps, lvl)
 }
 \arguments{
 \item{txid}{Taxonomic ID}
 
 \item{sqs}{Sequence object of all downloaded sequences}
 
-\item{phylt_nds}{PhyLoTa table}
+\item{txdct}{PhyLoTa table}
 
 \item{ps}{Parameters}
 }

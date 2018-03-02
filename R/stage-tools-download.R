@@ -3,8 +3,7 @@
 #' @description Looks up and downloads sequences for a
 #' taxonomic ID.
 #' @param txid Taxonomic node ID, numeric
-#' @param phylt_nds PhyLoTa data.frame
-getSqsByTxid <- function(txid, phylt_nds, ps, lvl=0) {
+getSqsByTxid <- function(txid, txdct, ps, lvl=0) {
   # get subtree counts if that is smaller than ps[['mdlthrs']]
   subtree_count <- nSqs(txid, drct=FALSE, ps=ps)
   if(subtree_count <= ps[['mdlthrs']]) {
@@ -15,10 +14,10 @@ getSqsByTxid <- function(txid, phylt_nds, ps, lvl=0) {
   }
   # 1st direct sqs from focal taxon, then from DDs
   sqs <- btchDwnld(txid=txid, drct=TRUE, ps=ps, lvl=lvl)
-  for(dd in getDDFrmPhyltNds(txid, phylt_nds)) {
+  for(dd in getDDs(id=txid, txdct=txdct)) {
     lvl <- lvl + 1
     info(lvl=2+lvl, ps=ps, "Downloading for child [id ", dd,"]")
-    sqs <- c(sqs, getSqsByTxid(txid=dd, phylt_nds=phylt_nds,
+    sqs <- c(sqs, getSqsByTxid(txid=dd, txdct=txdct,
                                ps=ps, lvl=lvl))
   }
   sqs
@@ -32,23 +31,12 @@ getSqsByTxid <- function(txid, phylt_nds, ps, lvl=0) {
 agmntSqRcrds <- function(sqs, txdct) {
   # TODO: gen. txdct tools
   # txids are not downloaded as part of sequence, added here
-  txdct_nms <- vapply(txdct, function(x) x[['ScientificName']], '')
-  txdct_ids <- vapply(txdct, function(x) x[['TaxId']], '')
+  txdct_nms <- vapply(txdct@rcrds, function(x) x[['ScientificName']], '')
+  txdct_ids <- vapply(txdct@rcrds, function(x) x[['TaxId']], '')
   sqs_nms <- vapply(sqs, function(x) x@orgnsm, '')
   sqs_ids <- txdct_ids[match(sqs_nms, txdct_nms)]
   for(i in seq_along(sqs)) {
     sqs[[i]]@txid <- as.character(sqs_ids[[i]])
   }
   genSqRcrdBx(sqs)
-}
-
-#' @name getDDFrmPhyltNds
-#' @title Get direct descendants from PhyLoTa nodes
-#' @description Find next node IDs using the PhyLoTa
-#' nodes data.frame.
-#' @param txid parent
-#' @param phylt_nds PhyLoTa nodes data.frame
-#' @details Returns vector of node IDs
-getDDFrmPhyltNds <- function(txid, phylt_nds) {
-  phylt_nds[phylt_nds[,'ti_anc']==txid,'ti']
 }

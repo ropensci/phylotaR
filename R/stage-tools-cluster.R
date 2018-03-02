@@ -4,17 +4,17 @@
 #' for a taxonomic ID.
 #' @param txid Taxonomic ID
 #' @param sqs Sequence object of all downloaded sequences
-#' @param phylt_nds PhyLoTa table
+#' @param txdct PhyLoTa table
 #' @param ps Parameters
 #' @param lvl Log level
-clstrAll <- function(txid, sqs, phylt_nds, ps, lvl=0) {
-  dds <- getDDFrmPhyltNds(txid=txid, phylt_nds=phylt_nds)
-  all_clstrs <- clstrSbtr(txid=txid, sqs=sqs, phylt_nds=phylt_nds,
+clstrAll <- function(txid, sqs, txdct, ps, lvl=0) {
+  dds <- getDDs(id=txid, txdct=txdct)
+  all_clstrs <- clstrSbtr(txid=txid, sqs=sqs, txdct=txdct,
                           ps=ps, dds=dds, lvl=lvl+1)
   for(dd in dds) {
     info(lvl=lvl+2, ps=ps, "Processing [id ", txid,
          "] child [id ", dd, "]")
-    dd_clstrs <- clstrAll(txid=dd, phylt_nds=phylt_nds,
+    dd_clstrs <- clstrAll(txid=dd, txdct=txdct,
                           sqs=sqs, ps=ps, lvl=lvl+1)
     all_clstrs <- jnBxs(all_clstrs, dd_clstrs)
   }
@@ -28,21 +28,20 @@ clstrAll <- function(txid, sqs, phylt_nds, ps, lvl=0) {
 #' this function will thus be of cl_type 'subtree'.
 #' @param txid Taxonomic ID
 #' @param sqs Sequence object of all downloaded sequences
-#' @param phylt_nds PhyLoTa table
+#' @param txdct PhyLoTa table
 #' @param dds Vector of direct descendants
 #' @param ps Parameters
-clstrSbtr <- function(txid, sqs, phylt_nds, dds, ps, lvl) {
+clstrSbtr <- function(txid, sqs, txdct, dds, ps, lvl) {
   all_clstrs <- genClRcrdBx(list())
-  rnks <- as.character(phylt_nds[['rank']])
-  rnk <- as.character(rnks[match(txid, phylt_nds[['ti']])])
+  rnk <- getRnk(id=txid, txdct=txdct)
   info(lvl=lvl+1, ps=ps, "Generating subtree clusters for [id ",
        txid, "(", rnk, ")]")
   if(length(dds) > 0) {
-    drct_clstrs <- clstrDrct(txid, ps=ps, phylt_nds=phylt_nds,
+    drct_clstrs <- clstrDrct(txid, ps=ps, txdct=txdct,
                              sqs=sqs, lvl=lvl)
     all_clstrs <- jnBxs(all_clstrs, drct_clstrs)
   }
-  txids <- getADs(txid=txid, phylt_nds=phylt_nds)
+  txids <- getADs(id=txid, txdct=txdct)
   all_sq_txids <- sqs@txids
   sids <- sqs@ids[which(all_sq_txids %in% as.character(txids))]
   if(length(sids) < 3) {
@@ -66,12 +65,11 @@ clstrSbtr <- function(txid, sqs, phylt_nds, dds, ps, lvl) {
 #' a list of clusters of cl_type 'Node'.
 #' @param txid Taxonomic ID
 #' @param sqs Sequence object of all downloaded sequences
-#' @param phylt_nds PhyLoTa table
+#' @param txdct PhyLoTa table
 #' @param ps Parameters
-clstrDrct <- function(txid, sqs, phylt_nds, ps, lvl) {
+clstrDrct <- function(txid, sqs, txdct, ps, lvl) {
   all_clstrs <- genClRcrdBx(list())
-  rnks <- as.character(phylt_nds[['rank']])
-  rnk <- as.character(rnks[match(txid, phylt_nds[['ti']])])
+  rnk <- getRnk(id=txid, txdct=txdct)
   info(lvl=lvl+1, ps=ps, "Generating direct clusters for [id ",
        txid, "(", rnk, ")]")
   all_sq_txids <- sqs@txids
@@ -110,22 +108,6 @@ clstrSqs <- function(txid, sqs, ps, lvl,
   info(lvl=lvl+1, ps=ps, "Identified [", length(cl_rcrds@ids),
        "] clusters")
   cl_rcrds
-}
-
-#' @name getADs
-#' @title Get all descendants
-#' @description Return all the taxonomic node IDs descending
-#' from given taxonomic ID
-#' @param txid Taxonomic node ID, numeric
-#' @param phylt_nds PhyLoTa nodes data.frame
-# TODO: create separate taxonomy look-up tools
-getADs <- function(txid, phylt_nds) {
-  dds <- getDDFrmPhyltNds(txid=txid, phylt_nds=phylt_nds)
-  res <- dds
-  for(dd in dds) {
-    res <- c(res, getADs(txid=dd, phylt_nds=phylt_nds))
-  }
-  res
 }
 
 #' @name blstSqs

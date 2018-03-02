@@ -7,7 +7,7 @@
 mrgClstrs(jnd_clstrs)
 }
 \arguments{
-\item{jnd_clstrs}{List of joined clusters}
+\item{jnd_clstrs}{List of joined cluster records}
 }
 \description{
 Takes a list of joined clusters and computes

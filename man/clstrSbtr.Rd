@@ -4,14 +4,14 @@
 \alias{clstrSbtr}
 \title{Cluster all sequences descending from a txid}
 \usage{
-clstrSbtr(txid, sqs, phylt_nds, dds, ps, lvl)
+clstrSbtr(txid, sqs, txdct, dds, ps, lvl)
 }
 \arguments{
 \item{txid}{Taxonomic ID}
 
 \item{sqs}{Sequence object of all downloaded sequences}
 
-\item{phylt_nds}{PhyLoTa table}
+\item{txdct}{PhyLoTa table}
 
 \item{dds}{Vector of direct descendants}
 

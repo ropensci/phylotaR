@@ -1,8 +1,7 @@
 #' @name calcClstrs
 #' @title Calculate clusters for all sequences in WD
 #' @description TODO
-#' @param phylt_nds PhyLoTa nodes data.frame
-calcClstrs <- function(phylt_nds, ps) {
+calcClstrs <- function(txdct, ps) {
   # load sequences
   sq_fls <- list.files(file.path(ps[['wd']], 'cache', 'sqs'))
   #foreach(i=seq_along(sq_fls)) %dopar% {
@@ -11,9 +10,9 @@ calcClstrs <- function(phylt_nds, ps) {
     # TODO: use the cache tool
     sqs <- readRDS(file=file.path(file.path(ps[['wd']], 'cache',
                                             'sqs', sq_fl)))
-    txid <- as.numeric(sub('\\.RData', '', sq_fl))
+    txid <- as.character(sub('\\.RData', '', sq_fl))
     info(lvl=1, ps=ps, "Working on [id ", txid, "]")
-    clstrs <- clstrAll(txid=txid, sqs=sqs, phylt_nds=phylt_nds,
+    clstrs <- clstrAll(txid=txid, sqs=sqs, txdct=txdct,
                        ps=ps)
     svClstrs(wd=ps[['wd']], txid=txid, clstrs=clstrs)
     info(lvl=1, ps=ps, "Finished [id ", txid, "] # [",
