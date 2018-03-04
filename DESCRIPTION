@@ -24,6 +24,7 @@ Imports:
     XML,
     ggplot2,
     sys,
+    treeman,
     plyr
 Suggests:
     testthat,
