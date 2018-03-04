@@ -4,7 +4,7 @@
 \alias{clstrSqs}
 \title{Identify clusters from sequences}
 \usage{
-clstrSqs(txid, sqs, ps, lvl, typ = c("direct", "subtree"))
+clstrSqs(txid, sqs, ps, lvl, typ = c("direct", "subtree", "paraphyly"))
 }
 \arguments{
 \item{txid}{Taxonomic ID}

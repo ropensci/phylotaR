@@ -27,14 +27,15 @@
 \item{object}{\code{TxDct} object}
 }
 \description{
-Cluster record contains all information on a cluster.
+Taxonomic dictionary contains a taxonomic
+tree and NCBI taxonomy data for all taxonomic IDs.
 }
 \section{Slots}{
 
 \describe{
 \item{\code{txids}}{Taxonomic IDs of taxon records}
 
-\item{\code{rcrds}}{List of records}
+\item{\code{rcrds}}{Environment of records}
 
 \item{\code{prnt}}{Parent taxonomic ID}
 

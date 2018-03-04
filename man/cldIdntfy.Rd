@@ -12,6 +12,6 @@ cldIdntfy(txdct, ps)
 \item{ps}{Parameters}
 }
 \description{
-All nodes for which all children
-contain < mxsqs sequences
+All nodes with less than maximum number
+of nodes and sequences.
 }

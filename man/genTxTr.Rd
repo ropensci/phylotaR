@@ -4,14 +4,14 @@
 \alias{genTxTr}
 \title{Generate taxonomic tree}
 \usage{
-genTxTr(prinds, txids, root)
+genTxTr(prinds, trids, root)
 }
 \arguments{
 \item{prinds}{Vector of integers indicating preceding node.}
 
-\item{txids}{Vector of taxonomic IDs}
-
 \item{root}{ID of root taxon}
+
+\item{txids}{Vector of taxonomic IDs}
 }
 \value{
 TreeMan
