@@ -12,6 +12,9 @@ cldIdntfy <- function(txdct, ps) {
     queue <- tail(queue, length(queue)-1)
     sqcnt <- nSqs(txid=tmp_id, ps=ps)
     ndcnt <- nNds(txid=tmp_id, ps=ps)
+    mx_pssbl_sqcnt <- ps[['mdlthrs']] * ndcnt
+    sqcnt <- ifelse(sqcnt > mx_pssbl_sqcnt, mx_pssbl_sqcnt,
+                    sqcnt)
     if(sqcnt <= ps[['mxsqs']] & ndcnt <= ps[['mxnds']]) {
       res <- c(res, tmp_id)
     } else {

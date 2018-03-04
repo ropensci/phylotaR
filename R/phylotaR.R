@@ -35,7 +35,7 @@ parameters <-function(wd='.', txid=numeric(),
                       mkblstdb='', blstn='',
                       v=FALSE, ncps=1, tdpth=NULL,
                       mxnds=100000, mdlthrs=3000,
-                      mnsql=250, mxsql=7500, 
+                      mnsql=250, mxsql=2000, 
                       mxrtry=100, mxsqs=10000,
                       mxevl=1.0e-10, mncvrg=51) {
   ps <- as.list(environment())
