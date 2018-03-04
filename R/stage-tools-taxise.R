@@ -24,3 +24,25 @@ prtDwnldTxRcrds <- function(txids, ps) {
   }
   rcrds
 }
+
+#' @name btchDwnldTxRcrds
+#' @title Download taxonomic records
+#' @description Takes a vector of txids and returns
+#' a list of taxonomic records.
+#' @return List of taxonomic records
+#' @param txids Vector of taxonomic IDs
+#' @param ps Parameter list
+btchDwnldTxRcrds <- function(txids, ps) {
+  all_rcrds <- vector('list', length=length(txids))
+  names(all_rcrds) <- txids
+  btch <- 500
+  for(i in seq(0, length(txids)-1, btch)) {
+    lower <- i+1
+    upper <- ifelse(i+btch<length(txids), i+btch, length(txids))
+    crrnt_ids <- txids[lower:upper]
+    info(lvl=2, ps=ps, "[", lower, "-", upper, "]");
+    rcrds <- prtDwnldTxRcrds(txids=crrnt_ids, ps=ps)
+    all_rcrds[lower:upper] <- rcrds
+  }
+  all_rcrds
+}

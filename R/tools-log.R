@@ -9,7 +9,7 @@
 #' @param ... Message elements for concatenating
 info <- function(lvl, ps, ...) {
   msg <- paste0(..., '\n')
-  spcr <- paste0(rep('... ', lvl-1), collapse='')
+  spcr <- paste0(rep('. ', lvl-1), collapse='')
   msg <- paste0(spcr, msg, collapse='')
   .log(v=ps[['v']], wd=ps[['wd']], msg=msg)
 }

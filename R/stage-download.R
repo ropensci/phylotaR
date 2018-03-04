@@ -19,8 +19,8 @@ cldIdntfy <- function(txdct, ps) {
       res <- c(res, tmp_id)
     } else {
       info(lvl=2, ps=ps, "[", sqcnt, " sqs] and [",
-           ndcnt, "] descendent nodes for clade [id ",
-           tmp_id, "] ... searching descendants instead")
+           ndcnt, " nds] for clade [id ",
+           tmp_id, "] - searching descendants instead ...")
       queue <- c(queue, getDDs(id=as.character(tmp_id),
                                txdct=txdct))
     }
@@ -28,7 +28,7 @@ cldIdntfy <- function(txdct, ps) {
   res
 }
 
-#' @name dwnld
+#' @name dwnldSqRcrds
 #' @title Download sequences for txids
 #' @description Look up and download all sequences for
 #' given taxonomic IDs.
@@ -36,15 +36,15 @@ cldIdntfy <- function(txdct, ps) {
 #' @param txdct Taxonomic dictionary
 #' @param verbose Verbose? T/F
 #' @details Sequence downloads are cached.
-dwnld <- function(txids, phylt_nds, txdct, ps) {
+dwnldSqRcrds <- function(txids, phylt_nds, txdct, ps) {
   # TODO: add overwrite arg
   sqcnt <- 0
   for(i in seq_along(txids)) {
     txid <- txids[i]
     info(lvl=1, ps=ps,
-         "Downloading for [id ", txid, "]: [", i, "/",
+         "Working on parent [id ", txid, "]: [", i, "/",
          length(txids), "] ...")
-    sqs <- getSqsByTxid(txid=txid, txdct=txdct, ps=ps)
+    sqs <- hrrchcDwnld(txid=txid, txdct=txdct, ps=ps)
     if(length(sqs) > 0) {
       sqcnt <- sqcnt + length(sqs)
       sqs <- agmntSqRcrds(sqs=sqs, txdct=txdct)

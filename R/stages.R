@@ -6,6 +6,7 @@
 #' @details Object will be cached.
 #' @export
 runTaxise <- function(wd) {
+  # TODO: allow a user to have their own taxids and/or tax tree
   ps <- ldPrmtrs(wd)
   msg <- paste0('Starting stage TAXISE: [', Sys.time(), ']')
   .stgMsg(ps=ps, msg=msg)
@@ -32,8 +33,9 @@ runDownload <- function(wd) {
   txdct <- ldObj(wd=wd, nm='txdct')
   clds_ids <- cldIdntfy(txdct=txdct, ps=ps)
   info(lvl=1, ps=ps, 'Identified [', length(clds_ids),
-       '] suitable clades. Downloading ...')
-  dwnld(txids=clds_ids, txdct=txdct, ps=ps)
+       '] suitable clades.')
+  info('Downloading hierarchically ...')
+  dwnldSqRcrds(txids=clds_ids, txdct=txdct, ps=ps)
   msg <- paste0('Completed stage DOWNLOAD: [', Sys.time(), ']')
   .stgMsg(ps=ps, msg=msg)
 }
