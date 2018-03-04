@@ -8,9 +8,10 @@ chckTxDct <- function(object) {
 #' @param x \code{TxDct} object
 #' @param object \code{TxDct} object
 #' @title TxDct-class
-#' @description Cluster record contains all information on a cluster.
+#' @description Taxonomic dictionary contains a taxonomic
+#' tree and NCBI taxonomy data for all taxonomic IDs.
 #' @slot txids Taxonomic IDs of taxon records
-#' @slot rcrds List of records
+#' @slot rcrds Environment of records
 #' @slot prnt Parent taxonomic ID
 #' @slot txtr Taxonomic tree
 #' @exportClass TxDct
@@ -18,6 +19,7 @@ chckTxDct <- function(object) {
 #' \code{\link{genTxDct}}
 setClass('TxDct', representation=representation(
   txids='vector',
+  indx='vector',
   rcrds='environment',
   txtr='TreeMan',
   prnt='character'),

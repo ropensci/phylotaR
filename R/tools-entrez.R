@@ -18,14 +18,14 @@ mkSrchTrm <- function(txid, ps, drct=FALSE) {
 }
 
 
-#' @name nNcbiNds
+#' @name nNds
 #' @title Count number of descending taxonomic nodes
 #' @description Searches NCBI taxonomy and returns
 #' number of descendents taxonomic nodes (species, genera ...)
 #' of ID.
 #' @param txid Taxonomic ID
 #' @param ps Parameters
-nNcbiNds <- function(txid, ps) {
+nNds <- function(txid, ps) {
   trm <- paste0('txid', txid, '[Subtree]')
   args <- list(db='taxonomy', retmax=0, term=trm)
   res <- srchNCch(func=rentrez::entrez_search,

@@ -23,7 +23,7 @@ clstrClstrs <- function(ps) {
   all_sqs <- genSqRcrdBx(all_sqs)
   if(length(clstrfls) > 1) {
     info(lvl=1, ps=ps, 'Cluster-clustering ...')
-    seed_ids <- vapply(all_clstrs@cls, function(x) x@seed, '')
+    seed_ids <- vapply(all_clstrs, function(x) x@seed, '')
     seeds <- all_sqs[seed_ids[!duplicated(seed_ids)]]
     blst_rs <- blstSeeds(sqs=seeds, ps=ps)
     info(lvl=1, ps=ps, 'Merging ...')
@@ -38,6 +38,9 @@ clstrClstrs <- function(ps) {
     info(lvl=1, ps=ps,
          'Done. Only one cluster set -- skipping cluster^2')
   }
+  info(lvl=1, ps=ps, 'Dropping all clusters of < 3 sqs ...')
+  nsqs <- vapply(all_clstrs, function(x) length(x@sids), 1L)
+  all_clstrs <- all_clstrs[nsqs >= 3]
   info(lvl=1, ps=ps, 'Renumbering clusters ...')
   # returns cluster record box
   all_clstrs <- rnmbrClstrs(clstr_rcrds=all_clstrs)

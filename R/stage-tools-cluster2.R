@@ -59,10 +59,10 @@ mrgClstrs <- function(jnd_clstrs) {
   for(i in seq_along(jnd_clstrs)) {
     # TODO: look up parent
     cl <- jnd_clstrs[[i]]
-    clstr <- new('Clstr', sids=cl[['sids']],
-                 txids=cl[['txids']], typ='merged',
-                 seed=cl[['seed']])
-    mrg_clstrs[[i]] <- clstr
+    cl_rcrd <- new('ClRcrd', sids=cl[['sids']],
+                   txids=cl[['txids']], typ='merged',
+                   seed=cl[['seed']])
+    mrg_clstrs[[i]] <- cl_rcrd
   }
   mrg_clstrs
 }

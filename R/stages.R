@@ -31,7 +31,8 @@ runDownload <- function(wd) {
   info(lvl=1, ps=ps, 'Identifying suitable clades ...')
   txdct <- ldObj(wd=wd, nm='txdct')
   clds_ids <- cldIdntfy(txdct=txdct, ps=ps)
-  info(lvl=1, ps=ps, 'Downloading ...')
+  info(lvl=1, ps=ps, 'Identified [', length(clds_ids),
+       '] suitable clades. Downloading ...')
   dwnld(txids=clds_ids, txdct=txdct, ps=ps)
   msg <- paste0('Completed stage DOWNLOAD: [', Sys.time(), ']')
   .stgMsg(ps=ps, msg=msg)

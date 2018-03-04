@@ -9,8 +9,12 @@ getTxids <- function(ps) {
   # TODO: handle multiple txids
   # TODO: use safe search
   trm <- paste0('txid', ps[['txid']],'[Subtree]')
-  srch_rs <- rentrez::entrez_search(db='taxonomy',
-                                    term=trm, retmax=10000)
+  args <- c(db='taxonomy', term=trm, retmax=1E6)
+  srch_rs <- safeSrch(func=rentrez::entrez_search, args=args,
+           fnm='search', ps=ps)
+  if(srch_rs[['count']] == 1E6) {
+    error('Too large a clade.')
+  }
   srch_rs[['ids']]
 }
 
@@ -45,13 +49,40 @@ dwnldTxRcrds <- function(txids, ps) {
 #' @param rcrds List of taxonomic records
 genTxDct <- function(txids, rcrds) {
   # TODO: allow paraphyly
+  # identify pre-node IDs
+  # based upon: https://github.com/DomBennett/treeman/wiki/trmn-format
+  # drop singletons
+  # create index to recover original IDs, indx
   prids <- vapply(txids, function(x) rcrds[[x]][['ParentTaxId']], '')
   names(prids) <- NULL
-  root <- txids[!prids %in% txids]
-  prinds <- match(prids, txids)
-  prinds[is.na(prinds)] <- which(is.na(prinds))
+  root_bool <- !prids %in% txids
+  root <- txids[root_bool]
+  prids[root_bool] <- root
+  root_trid <- as.character(which(root_bool))
+  trids <- seq_along(txids)
+  n_ptnds <- table(prids)
+  to_drop <- NULL
+  while(any(n_ptnds == 1)) {
+    # get singletons
+    sngltns <- names(n_ptnds)[n_ptnds == 1]
+    sngltns_indx <- match(sngltns, txids)
+    sngltns_trids <- match(sngltns, prids)
+    # replace singleton prid in tree IDs
+    trids[sngltns_indx] <- sngltns_trids
+    # replace singleton prid in prids
+    prids[sngltns_trids] <- prids[sngltns_indx]
+    to_drop <- c(to_drop, sngltns)
+    n_ptnds <- table(prids)
+  }
+  indx <- trids
+  to_drop <- !txids %in% to_drop
+  prids <- prids[to_drop]
+  trids <- as.character(trids[to_drop])
+  prinds <- match(prids, txids[to_drop])
   prinds <- as.integer(prinds)
-  txtr <- genTxTr(prinds=prinds, txids=txids, root=root)
+  # create tax tree
+  txtr <- genTxTr(prinds=prinds, trids=trids, root=root_trid)
+  # create tax dict
   new('TxDct', txids=txids, rcrds=list2env(rcrds), txtr=txtr,
-      prnt=root)
+      prnt=root, indx=indx)
 }

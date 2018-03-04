@@ -8,27 +8,45 @@
 #' @param txids Vector of taxonomic IDs
 #' @param root ID of root taxon
 #' @importClassesFrom treeman TreeMan
-genTxTr <- function(prinds, txids, root) {
+genTxTr <- function(prinds, trids, root) {
   .add <- function(i) {
     nd <- vector("list", length=4)
     names(nd) <- c('id', 'ptid', 'prid', 'spn')
-    nd[['id']] <- txids[i]
-    nd[['prid']] <- txids[prinds[i]]
+    nd[['id']] <- trids[i]
+    nd[['prid']] <- trids[prinds[i]]
     nd[['ptid']] <- ptids[ptnds_pool == i]
     nd[['spn']] <- 1
     nd
   }
-  nonroot_i <- txids != root
+  nonroot_i <- trids != root
   nnds <- length(prinds)
   tinds <- which(!1:nnds %in% prinds)
   ptnds_pool <- prinds[nonroot_i]
-  ptids <- txids[nonroot_i]
+  ptids <- trids[nonroot_i]
   ndlst <- lapply(1:nnds, .add)
-  names(ndlst) <- txids
+  names(ndlst) <- trids
   tree <- new('TreeMan', ndlst=ndlst, root=root,
               wtxnyms=FALSE, ndmtrx=NULL,
               prinds=prinds, tinds=tinds)
+  treeman::checkNdlst(ndlst, root)
+  treeman::fastCheckTreeMan
   treeman::updateSlts(tree)
+}
+
+# CONVERSION
+#' @name trid2Txid
+#' @title Get taxonomic ID from tree ID
+#' @description Return taxonomic ID for taxonomic
+#' tree ID in TxDct.
+#' @return Character or vector
+#' @param id txid
+#' @param txdct TxDct
+trid2Txid <- function(id, txdct) {
+  txdct@txids[match(id, txdct@indx)]
+}
+
+txid2Trid <- function(id, txdct) {
+  as.character(txdct@indx[match(id, txdct@txids)])
 }
 
 # GET
@@ -49,7 +67,9 @@ getRnk <- function(id, txdct) {
 #' @param id txid
 #' @param txdct TxDct
 getADs <- function(id, txdct) {
-  treeman::getNdPtids(tree=txdct@txtr, id=id)
+  trid <- txid2Trid(id=id, txdct=txdct)
+  tr_ptids <- treeman::getNdPtids(tree=txdct@txtr, id=trid)
+  trid2Txid(id=tr_ptids, txdct=txdct)
 }
 
 #' @name getDDs
@@ -59,7 +79,10 @@ getADs <- function(id, txdct) {
 #' @param id txid
 #' @param txdct TxDct
 getDDs <- function(id, txdct) {
-  treeman::getNdSlt(tree=txdct@txtr, slt_nm='ptid', id=id)
+  trid <- txid2Trid(id=id, txdct=txdct)
+  tr_ptids <- treeman::getNdSlt(tree=txdct@txtr,
+                                slt_nm='ptid', id=trid)
+  trid2Txid(id=tr_ptids, txdct=txdct)
 }
 
 #' @name getPrnt
@@ -69,10 +92,14 @@ getDDs <- function(id, txdct) {
 #' @param id txid(s)
 #' @param txdct TxDct
 getPrnt <- function(id, txdct) {
-  if(length(id) > 1) {
-    return(treeman::getPrnt(tree=txdct@txtr, ids=id))
+  trid <- txid2Trid(id=id, txdct=txdct)
+  if(length(trid) > 1) {
+    res <- treeman::getPrnt(tree=txdct@txtr,
+                            ids=trid)
   }
-  treeman::getNdSlt(tree=txdct@txtr, slt_nm='prid', id=id)
+  res <- treeman::getNdSlt(tree=txdct@txtr,
+                           slt_nm='prid', id=trid)
+  trid2Txid(id=res, txdct=txdct)
 }
 
 

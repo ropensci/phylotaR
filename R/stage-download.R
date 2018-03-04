@@ -1,7 +1,7 @@
 #' @name cldIdntfy
 #' @title Get all node IDs that will be processed
-#' @description All nodes for which all children
-#' contain < mxsqs sequences
+#' @description All nodes with less than maximum number
+#' of nodes and sequences.
 #' @param txdct TxDct
 #' @param ps Parameters
 cldIdntfy <- function(txdct, ps) {
@@ -11,12 +11,15 @@ cldIdntfy <- function(txdct, ps) {
     tmp_id <- head(queue, 1)
     queue <- tail(queue, length(queue)-1)
     sqcnt <- nSqs(txid=tmp_id, ps=ps)
-    if(sqcnt <= ps[['mxsqs']]) {
+    ndcnt <- nNds(txid=tmp_id, ps=ps)
+    if(sqcnt <= ps[['mxsqs']] & ndcnt <= ps[['mxnds']]) {
       res <- c(res, tmp_id)
     } else {
-      info(lvl=2, ps=ps, "[", nsqs, " sqs] for clade [id ",
-           tmp_id, "] ... searching descendants instead\n")
-      queue <- c(queue, getDDs(id=tmp_id, txdct=txdct))
+      info(lvl=2, ps=ps, "[", sqcnt, " sqs] and [",
+           ndcnt, "] descendent nodes for clade [id ",
+           tmp_id, "] ... searching descendants instead")
+      queue <- c(queue, getDDs(id=as.character(tmp_id),
+                               txdct=txdct))
     }
   }
   res
@@ -38,7 +41,7 @@ dwnld <- function(txids, phylt_nds, txdct, ps) {
     info(lvl=1, ps=ps,
          "Downloading for [id ", txid, "]: [", i, "/",
          length(txids), "] ...")
-    sqs <- getSqsByTxid(txid=txid, ps=ps)
+    sqs <- getSqsByTxid(txid=txid, txdct=txdct, ps=ps)
     if(length(sqs) > 0) {
       sqcnt <- sqcnt + length(sqs)
       sqs <- agmntSqRcrds(sqs=sqs, txdct=txdct)

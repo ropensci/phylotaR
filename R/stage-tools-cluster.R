@@ -94,7 +94,7 @@ clstrDrct <- function(txid, sqs, txdct, ps, lvl) {
 #' @param ps Parameters
 #' @param typ Direct or Subtree?
 clstrSqs <- function(txid, sqs, ps, lvl,
-                     typ=c('direct', 'subtree')) {
+                     typ=c('direct', 'subtree', 'paraphyly')) {
   typ <- match.arg(typ)
   info(lvl=lvl+1, ps=ps, "BLASTing [", length(sqs@ids),
        " sqs] ....")
