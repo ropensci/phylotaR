@@ -7,12 +7,12 @@
 #' @param ps Parameter list
 getTxids <- function(ps) {
   # TODO: handle multiple txids
-  # TODO: use safe search
+  # TODO: handle taxa of more than 1E4
   trm <- paste0('txid', ps[['txid']],'[Subtree]')
-  args <- c(db='taxonomy', term=trm, retmax=1E6)
-  srch_rs <- safeSrch(func=rentrez::entrez_search, args=args,
-           fnm='search', ps=ps)
-  if(srch_rs[['count']] == 1E6) {
+  args <- list(db='taxonomy', term=trm, retmax=1E4)
+  srch_rs <- srchNCch(func=rentrez::entrez_search, args=args,
+                      fnm='search', ps=ps)
+  if(srch_rs[['count']] > 1E4) {
     error('Too large a clade.')
   }
   srch_rs[['ids']]
