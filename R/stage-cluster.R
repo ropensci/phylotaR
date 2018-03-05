@@ -21,8 +21,7 @@ calcClstrs <- function(txdct, ps) {
     } else {
       fld <- c(fld, i)
     }
-    info(lvl=1, ps=ps, "Finished [", i, "/",
-         length(sq_fls), "] clades")
+    info(lvl=1, ps=ps, "[", i, "/", length(sq_fls), "]")
   }
   info(lvl=1, ps=ps, "Paraphyletic retry with unsuccessful clades ...")
   all_sqs <- NULL

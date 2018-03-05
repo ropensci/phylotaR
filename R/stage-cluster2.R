@@ -9,14 +9,12 @@ clstrClstrs <- function(ps) {
   # TODO: break up to manageable blasting sizes
   info(lvl=1, ps=ps, 'Loading clusters ...')
   clstrpth <- file.path(ps[['wd']], 'cache', 'clstrs')
-  sqpth <- file.path(ps[['wd']], 'cache', 'sqs')
   clstrfls <- list.files(clstrpth)
-  sqfls <- list.files(sqpth)
   seeds <- NULL
   all_sqs <- all_clstrs <- list()
   for(i in seq_along(clstrfls)) {
     clstrs <- readRDS(file.path(clstrpth, clstrfls[i]))
-    sqs <- readRDS(file.path(sqpth, sqfls[i]))
+    sqs <- readRDS(file.path(sqpth, clstrfls[i]))
     all_sqs <- c(all_sqs, sqs@sqs)
     all_clstrs <- c(all_clstrs, clstrs@cls)
   }
@@ -24,7 +22,8 @@ clstrClstrs <- function(ps) {
   if(length(clstrfls) > 1) {
     info(lvl=1, ps=ps, 'Cluster-clustering ...')
     seed_ids <- vapply(all_clstrs, function(x) x@seed, '')
-    seeds <- all_sqs[seed_ids[!duplicated(seed_ids)]]
+    non_dups <- seed_ids[!duplicated(seed_ids)]
+    seeds <- all_sqs[non_dups]
     blst_rs <- blstSeeds(sqs=seeds, ps=ps)
     info(lvl=1, ps=ps, 'Merging ...')
     jnd_clstrs <- jnClstrs(blst_rs=blst_rs, ps=ps,
