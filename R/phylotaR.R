@@ -42,3 +42,27 @@ parameters <-function(wd='.', txid=numeric(),
   ps[['wt_tms']] <- c(1, 3, 6, 10, 60, 300)
   ps
 }
+
+#' @name list_ncbi_ranks
+#' @title List all NCBI Ranks
+#' @description Returns a vector of all
+#' NCBI taxonomic ranks in descending order.
+#' @return vector
+#' @export
+list_ncbi_ranks <- function() {
+  c("superkingdom", "kingdom", "phylum",
+    "subphylum", "class", "superorder",
+    "order", "suborder", "infraorder",
+    "parvorder", "family", "genus",
+    "species", "subspecies")
+}
+
+#' @name list_sqrcrd_slots
+#' @title List all SqRcrd slots
+#' @description Returns a vector of all
+#' available SqRcrd slots.
+#' @return vector
+#' @export
+list_sqrcrd_slots <- function() {
+  names(getSlots('SqRcrd'))
+}

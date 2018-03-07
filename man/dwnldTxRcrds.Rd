@@ -2,7 +2,7 @@
 % Please edit documentation in R/stage-taxise.R
 \name{dwnldTxRcrds}
 \alias{dwnldTxRcrds}
-\title{Download taxonomic records}
+\title{Download and parse taxonomic records}
 \usage{
 dwnldTxRcrds(txids, ps)
 }
@@ -15,6 +15,7 @@ dwnldTxRcrds(txids, ps)
 List of taxonomic records
 }
 \description{
-Takes a vector of txids and returns
-a list of taxonomic records.
+Downloads taxonomic records from a vector
+of IDs. Parses the returned records to control for
+lowest rank.
 }

@@ -9,6 +9,7 @@
 \alias{print,PhyLoTa-method}
 \alias{str,PhyLoTa-method}
 \alias{summary,PhyLoTa-method}
+\alias{plot,PhyLoTa,missing-method}
 \title{PhyLoTa-class}
 \usage{
 \S4method{as.character}{PhyLoTa}(x)
@@ -20,6 +21,8 @@
 \S4method{str}{PhyLoTa}(object, max.level = 2L, ...)
 
 \S4method{summary}{PhyLoTa}(object)
+
+\S4method{plot}{PhyLoTa,missing}(x, y, ...)
 }
 \arguments{
 \item{x}{\code{PhyLoTa} object}
@@ -42,7 +45,7 @@ PhyLoTa table contains sequences and clusters information.
 
 \item{\code{cls}}{All cluster records as ClRcrdBx}
 
-\item{\code{txdct}}{Taxonomic dictionary}
+\item{\code{txdct}}{Taxonomic dictionary as TxDct}
 }}
 
 \seealso{

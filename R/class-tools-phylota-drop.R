@@ -1,0 +1,77 @@
+#' @name drop_sqs
+#' @title Drop sequences in a cluster
+#' @description Drop all sequences in a cluster
+#' except those identified by user.
+#' @param phylota Phylota object
+#' @param cid Cluster ID
+#' @param sid Sequence ID(s) to be kept
+#' @return phylota
+#' @export
+drop_sqs <- function(phylota, cid, sid) {
+  cl <- phylota@cls[[cid]]
+  pull <- cl@sids %in% sid
+  cl@sids <- cl@sids[pull]
+  cl@txids <- cl@txids[pull]
+  phylota@cls[[cid]] <- cl
+  update_phylota(phylota)
+}
+
+#' @name drop_cls
+#' @title Drop cluster records from phylota object
+#' @description Drops all clusters except those
+#' identified by user.
+#' @param phylota Phylota object
+#' @param cid Cluster ID(s) to be kept
+#' @return phylota
+#' @export
+drop_cls <- function(phylota, cid) {
+  phylota@cls <- phylota@cls[cid]
+  phylota@cids <- cid
+  update_phylota(phylota)
+}
+
+#' @name drop_by_rank
+#' @title Reduce clusters to specific rank
+#' @description Identifies higher level taxa for each sequence
+#' in clusters for given rank. Selects representative sequences
+#' for each unique taxon using the choose_by functions. By default,
+#' the function will choose the top ten sequences by first sorting
+#' by those with fewest number of ambiguous sequences, then by
+#' youngest, then by sequence length.
+#' @param phylota Phylota object
+#' @param rank Taxonomic rank
+#' @param keep_higher Keep higher taxonomic ranks?
+#' @param n Number of sequences per taxon
+#' @param choose_by Vector of selection functions
+#' @param greatest Greatest of lowest for each choose_by function
+#' @return phylota
+#' @export
+drop_by_rank <- function(phylota, rank='species',
+                         keep_higher=FALSE, n=10,
+                         choose_by=c('pambgs', 'age',
+                                     'nncltds'),
+                         greatest=c(FALSE, FALSE, TRUE)) {
+  slct <- function(txid) {
+    pssbls <- sids[txid == txids]
+    for(i in seq_along(choose_by)) {
+      vals <- get_sq_slot(phylota=phylota, sid=pssbls,
+                          slt_nm=choose_by[[i]])
+      mx_n <- ifelse(length(vals) > n, n, length(vals))
+      vals <- sort(x=vals, decreasing=greatest[i])[1:mx_n]
+      pssbls <- names(vals)
+    }
+    pssbls
+  }
+  pull <- !choose_by %in% list_sqrcrd_slots()
+  if(any(pull)) {
+    stop(paste0('[', choose_by[pull], '] not in SqRcrd.'))
+  }
+  for(cid in phylota@cids) {
+    txids <- get_txnyms(phylota=phylota, cid=cid,
+                        rnk=rnk, hghr_tx=hghr_tx)
+    unqids <- unique(txids)
+    keep <- unlist(lapply(unqids, slct))
+    phylota <- drop_sqs(phylota=phylota, cid=id, sid=keep)
+  }
+  phylota
+}
