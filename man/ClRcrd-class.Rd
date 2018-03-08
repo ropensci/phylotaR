@@ -36,7 +36,11 @@ Cluster record contains all information on a cluster.
 
 \item{\code{sids}}{Sequence IDs}
 
+\item{\code{nsqs}}{Number of sequences}
+
 \item{\code{txids}}{Source txids for sequences}
+
+\item{\code{ntx}}{Number of taxa}
 
 \item{\code{typ}}{Cluster type: direct, subtree or merged}
 

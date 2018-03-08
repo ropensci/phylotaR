@@ -8,11 +8,14 @@
 #' @return phylota
 #' @export
 drop_sqs <- function(phylota, cid, sid) {
-  cl <- phylota@cls[[cid]]
+  indx <- which(phylota@cls@ids == cid)
+  cl <- phylota@cls@cls[[indx]]
   pull <- cl@sids %in% sid
   cl@sids <- cl@sids[pull]
+  cl@nsqs <- length(cl@sids)
   cl@txids <- cl@txids[pull]
-  phylota@cls[[cid]] <- cl
+  cl@ntx <- length(unique(cl@txids))
+  phylota@cls@cls[[indx]] <- cl
   update_phylota(phylota)
 }
 
@@ -39,14 +42,14 @@ drop_cls <- function(phylota, cid) {
 #' by those with fewest number of ambiguous sequences, then by
 #' youngest, then by sequence length.
 #' @param phylota Phylota object
-#' @param rank Taxonomic rank
+#' @param rnk Taxonomic rank
 #' @param keep_higher Keep higher taxonomic ranks?
 #' @param n Number of sequences per taxon
 #' @param choose_by Vector of selection functions
 #' @param greatest Greatest of lowest for each choose_by function
 #' @return phylota
 #' @export
-drop_by_rank <- function(phylota, rank='species',
+drop_by_rank <- function(phylota, rnk='species',
                          keep_higher=FALSE, n=10,
                          choose_by=c('pambgs', 'age',
                                      'nncltds'),
@@ -56,6 +59,7 @@ drop_by_rank <- function(phylota, rank='species',
     for(i in seq_along(choose_by)) {
       vals <- get_sq_slot(phylota=phylota, sid=pssbls,
                           slt_nm=choose_by[[i]])
+      names(vals) <- pssbls
       mx_n <- ifelse(length(vals) > n, n, length(vals))
       vals <- sort(x=vals, decreasing=greatest[i])[1:mx_n]
       pssbls <- names(vals)
@@ -67,11 +71,15 @@ drop_by_rank <- function(phylota, rank='species',
     stop(paste0('[', choose_by[pull], '] not in SqRcrd.'))
   }
   for(cid in phylota@cids) {
-    txids <- get_txnyms(phylota=phylota, cid=cid,
-                        rnk=rnk, hghr_tx=hghr_tx)
+    txids <- get_txids(phylota=phylota, cid=cid, 
+                       rnk=rnk, keep_higher=keep_higher)
+    sids <- phylota@cls[[cid]]@sids
+    pull <- txids != ''
+    sids <- sids[pull]
+    txids <- txids[pull]
     unqids <- unique(txids)
     keep <- unlist(lapply(unqids, slct))
-    phylota <- drop_sqs(phylota=phylota, cid=id, sid=keep)
+    phylota <- drop_sqs(phylota=phylota, cid=cid, sid=keep)
   }
   phylota
 }

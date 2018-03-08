@@ -30,5 +30,5 @@ returned. If NULL, the lowest level is returned.
 \details{
 If keep_higher is TRUE, any sequence that has
 a identity that is higher than the given rank will be returned.
-If FALSE, these sequences will return NA.
+If FALSE, these sequences will return ''.
 }

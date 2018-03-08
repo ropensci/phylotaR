@@ -176,8 +176,13 @@ genClRcrds <- function(clstr_lst, txid, sqs, typ) {
   for(i in seq_along(clstr_lst)) {
     cl <- clstr_lst[[i]]
     cl_sqs <- sqs[cl[['sids']]]
-    cl_rcrd <- new('ClRcrd', sids=cl[['sids']], txids=cl_sqs@txids,
-                   typ=typ, prnt=as.character(txid), seed=cl[['seed']])
+    nsqs <- length(cl[['sids']])
+    ntx <- length(unique(cl_sqs@txids))
+    cl_rcrd <- new('ClRcrd', sids=cl[['sids']],
+                   txids=cl_sqs@txids, nsqs=nsqs,
+                   ntx=ntx, typ=typ,
+                   prnt=as.character(txid),
+                   seed=cl[['seed']])
     cl_rcrds[[i]] <- cl_rcrd
   }
   genClRcrdBx(cl_rcrds)

@@ -12,14 +12,27 @@ prtDwnldTxRcrds <- function(txids, ps) {
                        fnm='fetch', args=args, ps=ps)
   rw_rcrds <- XML::xmlToList(rw_rcrds)
   for(i in seq_along(rw_rcrds)) {
-    rcrd <- rw_rcrds[[i]]
-    rcrd[['Lineage']] <- strsplit(rcrd[['Lineage']],
-                                  split='; ')[[1]]
-    itslf <- list('TaxId'=rcrd[['TaxId']],
-                  'ScientificName'=rcrd[['ScientificName']],
-                  'Rank'=rcrd[['Rank']])
-    rcrd[['LineageEx']] <- c(rcrd[['LineageEx']],
-                             list('Taxon'=itslf))
+    rw_rcrd <- rw_rcrds[[i]]
+    rw_lng <- rw_rcrd[['LineageEx']]
+    lng_ids <- vapply(rw_lng, function(x) x[['TaxId']], '')
+    names(lng_ids) <- NULL
+    lng_ids <- c(lng_ids, rw_rcrd[['TaxId']])
+    lng_rnks <- vapply(rw_lng, function(x) x[['Rank']], '')
+    names(lng_rnks) <- NULL
+    lng_rnks <- c(lng_rnks, rw_rcrd[['Rank']])
+    lng <- list('ids'=lng_ids, 'rnks'=lng_rnks)
+    cmnms <- rw_rcrd[['OtherNames']]
+    if('GenbankCommonName' %in% names(cmnms)) {
+      cmnm <- cmnms[['GenbankCommonName']]
+    } else if ('CommonName' %in% names(cmnms)) {
+      cmnm <- cmnms[['CommonName']]
+    } else {
+      cmnm <- ''
+    }
+    rcrd <- new('TxRcrd', id=rw_rcrd[['TaxId']],
+                scnm=rw_rcrd[['ScientificName']],
+                cmnm=cmnm, rnk=rw_rcrd[['Rank']],
+                lng=lng, prnt=rw_rcrd[['ParentTaxId']])
     rcrds[[i]] <- rcrd
   }
   rcrds

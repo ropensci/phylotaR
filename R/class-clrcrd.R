@@ -11,7 +11,9 @@ chckClRcrd <- function(object) {
 #' @description Cluster record contains all information on a cluster.
 #' @slot id Cluster ID, integer
 #' @slot sids Sequence IDs
+#' @slot nsqs Number of sequences
 #' @slot txids Source txids for sequences
+#' @slot ntx Number of taxa
 #' @slot typ Cluster type: direct, subtree or merged
 #' @slot seed Seed sequence ID
 #' @slot prnt Parent taxonomic ID
@@ -21,7 +23,9 @@ chckClRcrd <- function(object) {
 setClass('ClRcrd', representation=representation(
   id='integer',
   sids='vector',
+  nsqs='integer',
   txids='vector',
+  ntx='integer',
   typ='character',
   prnt='character',
   seed='character'),
@@ -31,15 +35,15 @@ setClass('ClRcrd', representation=representation(
 #' @exportMethod as.character
 setMethod('as.character', c('x'='ClRcrd'),
           function(x) {
-            msg <- paste0('Cluster Record [', x@id,']\n')
+            msg <- paste0('Cluster Record [id ', x@id,']\n')
             msg <- paste0(msg, ' - [', x@typ,
                           '] type\n')
             msg <- paste0(msg, ' - [', x@seed,
                           '] seed sequence\n')
-            msg <- paste0(msg, ' - [', length(x@sids),
+            msg <- paste0(msg, ' - [', x@nsqs,
                           '] sequences\n')
-            msg <- paste0(msg, ' - [', length(unique(x@txids)),
-                          '] unique txids\n')
+            msg <- paste0(msg, ' - [', x@ntx,
+                          '] taxa\n')
           })
 #' @rdname ClRcrd-class
 #' @exportMethod show

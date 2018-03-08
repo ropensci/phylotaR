@@ -4,8 +4,8 @@
 \alias{calc_wrdfrq}
 \title{Calculate word frequencies}
 \usage{
-calc_wrdfrq(phylota, cid, min_frq = 0.1, type = c("dfln", "nm"),
-  ignr_pttrn = "[^a-z0-9]")
+calc_wrdfrq(phylota, cid, min_frq = 0.1, min_nchar = 1, type = c("dfln",
+  "nm"), ignr_pttrn = "[^a-z0-9]")
 }
 \arguments{
 \item{phylota}{Phylota object}

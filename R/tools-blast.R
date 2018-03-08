@@ -8,8 +8,6 @@ mkBlstDB <- function(sqs, dbfl, ps) {
   if(length(sqs@sqs) < 2) {
     error(ps=ps, 'Need more than 2 sequences for BLAST.')
   }
-  info(lvl=3, ps=ps,
-       "Making blast database for [", length(sqs@sqs), "] sequences")
   blst_d <- file.path(ps[['wd']], 'blast')
   if(!file.exists(blst_d)) {
     dir.create(blst_d)
@@ -22,6 +20,7 @@ mkBlstDB <- function(sqs, dbfl, ps) {
                  file=fl, append=TRUE)
   }
   args <- c('-in', fl, '-dbtype', 'nucl')
+  info(lvl=3, ps=ps, "Running makeblastdb")
   res <- cmdLn(cmd=ps[['mkblstdb']], args=args,
                lgfl=fl)
   if(res != 0) {
@@ -59,6 +58,7 @@ blstN <- function(dbfl, outfl, ps) {
   args <- c('-query', dbfl, '-db', dbfl, '-outfmt', outfmt,
             '-dust', 'no', '-strand', 'plus', '-evalue', ps[['mxevl']],
             '-out', outfl)
+  info(lvl=3, ps=ps, "Running blastn")
   res <- cmdLn(cmd=ps[['blstn']], args=args, lgfl=dbfl)
   if(res != 0) {
     error(ps=ps, 'blastn failed to run. Check BLAST log files.')

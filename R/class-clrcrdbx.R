@@ -72,7 +72,9 @@ setMethod('[', c('ClRcrdBx', 'character', 'missing', 'missing'),
           function(x, i, j, ..., drop=TRUE) {
             pull <- i %in% x@ids
             if(all(pull)) {
-              return(genClRcrdBx(x@cls[x@ids %in% i]))
+              x <- genClRcrdBx(x@cls[x@ids %in% i])
+              x@ids <- i
+              return(x)
             }
             mssng <- paste0(i[!pull], collapse=', ')
             stop(paste0('[', mssng , '] not in records'))

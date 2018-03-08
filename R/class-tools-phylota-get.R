@@ -14,8 +14,8 @@
 get_ntaxa <- function(phylota, cid=NULL, sid=NULL,
                       rnk=NULL, keep_higher=FALSE) {
   count <- function(sids) {
-    txids <- get_txnyms(phylota=phylota, sid=sids,
-                        rnk=rnk, keep_higher=keep_higher)
+    txids <- get_txids(phylota=phylota, sid=sids,
+                       rnk=rnk, keep_higher=keep_higher)
     length(unique(txids))
   }
   get_sids_and_count <- function(cid) {
@@ -41,7 +41,7 @@ get_ntaxa <- function(phylota, cid=NULL, sid=NULL,
 #' @param keep_higher Keep higher taxonomic IDs?
 #' @details If keep_higher is TRUE, any sequence that has
 #' a identity that is higher than the given rank will be returned.
-#' If FALSE, these sequences will return NA.
+#' If FALSE, these sequences will return ''.
 #' @return vector
 #' @export
 get_txids <- function(phylota, cid=NULL, sid=NULL,
@@ -61,7 +61,7 @@ get_txids <- function(phylota, cid=NULL, sid=NULL,
         # if no match, use lowest available rank
         mtch <- length(rnks)
       } else {
-        return(NA)
+        return('')
       }
     }
     ids[[mtch[[1]]]]
@@ -108,7 +108,8 @@ get_nsqs <- function(phylota, cid) {
 get_sq_slot <- function(phylota, cid=NULL, sid=NULL,
                         slt_nm=list_sqrcrd_slots()) {
   get <- function(sid) {
-    sq <- phylota@sqs[[sid]]
+    i <- which(sid == phylota@sqs@ids)
+    sq <- phylota@sqs@sqs[[i]]
     slot(sq, slt_nm)
   }
   if(!is.null(cid)) {
@@ -120,4 +121,24 @@ get_sq_slot <- function(phylota, cid=NULL, sid=NULL,
   vapply(sid, get, expctd)
 }
 
-# TODO: get tx rcrd and cl rcrd slots
+#' @name get_cl_slot
+#' @title Get slot data for each cluster
+#' @description Get slot data for cluster(s)
+#' @param phylota Phylota object
+#' @param cid Cluster ID
+#' @param slt_nm Slot name
+#' @return vector
+#' @export
+get_cl_slot <- function(phylota, cid,
+                        slt_nm=list_clrcrd_slots()) {
+  get <- function(cid) {
+    i <- which(cid == phylota@cls@ids)
+    cl <- phylota@cls@cls[[i]]
+    slot(cl, slt_nm)
+  }
+  slt_nm <- match.arg(slt_nm)
+  expctd <- new(getSlots('ClRcrd')[[slt_nm]], 1)
+  vapply(cid, get, expctd)
+}
+
+# TODO: get txrcrd slots

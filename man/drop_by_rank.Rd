@@ -4,14 +4,14 @@
 \alias{drop_by_rank}
 \title{Reduce clusters to specific rank}
 \usage{
-drop_by_rank(phylota, rank = "species", keep_higher = FALSE, n = 10,
+drop_by_rank(phylota, rnk = "species", keep_higher = FALSE, n = 10,
   choose_by = c("pambgs", "age", "nncltds"), greatest = c(FALSE, FALSE,
   TRUE))
 }
 \arguments{
 \item{phylota}{Phylota object}
 
-\item{rank}{Taxonomic rank}
+\item{rnk}{Taxonomic rank}
 
 \item{keep_higher}{Keep higher taxonomic ranks?}
 

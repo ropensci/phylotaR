@@ -9,6 +9,7 @@ clstrClstrs <- function(ps) {
   # TODO: break up to manageable blasting sizes
   info(lvl=1, ps=ps, 'Loading clusters ...')
   clstrpth <- file.path(ps[['wd']], 'cache', 'clstrs')
+  sqpth <- file.path(ps[['wd']], 'cache', 'sqs')
   clstrfls <- list.files(clstrpth)
   seeds <- NULL
   all_sqs <- all_clstrs <- list()
@@ -30,8 +31,6 @@ clstrClstrs <- function(ps) {
                            seed_ids=seed_ids,
                            all_clstrs=all_clstrs)
     mrg_clstrs <- mrgClstrs(jnd_clstrs=jnd_clstrs)
-    info(lvl=2, ps=ps, "Generated [", length(mrg_clstrs@ids),
-         "] merged clusters")
     all_clstrs <- c(all_clstrs, mrg_clstrs)
   } else {
     info(lvl=1, ps=ps,

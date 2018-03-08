@@ -3,7 +3,7 @@
 #' @description Takes a list of ClRcrds, returns a box.
 #' @param clstr_rcrds Cluster records
 genClRcrdBx <- function(clstr_rcrds) {
-  ids <- as.character(seq_along(clstr_rcrds))
+  ids <- as.character(seq_along(clstr_rcrds)-1)
   names(clstr_rcrds) <- ids
   new('ClRcrdBx', ids=ids, cls=clstr_rcrds)
 }

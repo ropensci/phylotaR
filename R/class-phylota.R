@@ -82,11 +82,11 @@ setMethod('[[', c('PhyLoTa', 'character'),
           function(x, i) {
             pull <- which(x@cids %in% i)
             if(length(pull) == 1) {
-              return(x@cls[[pull[1]]])
+              return(x@cls@cls[[pull[1]]])
             }
             pull <- which(x@sids %in% i)
             if(length(pull) == 1) {
-              return(x@sqs[[pull[1]]])
+              return(x@sqs@sqs[[pull[1]]])
             }
             stop(paste0('[', i , '] not in table'))
           })

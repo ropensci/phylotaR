@@ -66,3 +66,23 @@ list_ncbi_ranks <- function() {
 list_sqrcrd_slots <- function() {
   names(getSlots('SqRcrd'))
 }
+
+#' @name list_clrcrd_slots
+#' @title List all ClRcrd slots
+#' @description Returns a vector of all
+#' available ClRcrd slots.
+#' @return vector
+#' @export
+list_clrcrd_slots <- function() {
+  names(getSlots('ClRcrd'))
+}
+
+#' @name list_txrcrd_slots
+#' @title List all TxRcrd slots
+#' @description Returns a vector of all
+#' available TxRcrd slots.
+#' @return vector
+#' @export
+list_txrcrd_slots <- function() {
+  names(getSlots('TxRcrd'))
+}
