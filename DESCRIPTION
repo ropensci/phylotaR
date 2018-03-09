@@ -14,15 +14,12 @@ Depends:
     R (>= 3.3.0),
     methods,
 Imports:
-    curl,
     igraph,
-    CHNOSZ,
     rentrez,
     XML,
     ggplot2,
     sys,
     treeman,
-    plyr
 Suggests:
     foreach,
     doMC,

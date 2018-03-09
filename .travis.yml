@@ -4,15 +4,13 @@ warnings_are_errors: true
 sudo: required
 
 r_binary_packages:
- - foreach
- - doMC
- - doSNOW
  - rentrez
- - taxize
  - XML
- - CHNOSZ
  - igraph
+ - treeman
  - testthat
+ - ggplot2
+ - sys
 r_github_packages:
   - jimhester/covr
 
