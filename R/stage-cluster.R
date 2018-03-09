@@ -27,20 +27,22 @@ calcClstrs <- function(txdct, ps) {
     }
     info(lvl=1, ps=ps, "[", i, "/", length(sq_fls), "]")
   }
-  info(lvl=1, ps=ps, "Paraphyletic retry with unsuccessful clades ...")
-  all_sqs <- NULL
-  for(i in fld) {
-    sq_fl <- sq_fls[i]
-    # TODO: use the cache tool
-    sqs <- readRDS(file=file.path(file.path(ps[['wd']], 'cache',
-                                            'sqs', sq_fl)))
-    all_sqs <- c(all_sqs, sqs@sqs)
-  }
-  all_sqs <- genSqRcrdBx(all_sqs)
-  clstrs <- clstrSqs(txid='', sqs=all_sqs, ps=ps,
-                     lvl=1, typ='paraphyly')
-  if(length(clstrs@ids) > 0) {
-    svClstrs(wd=ps[['wd']], txid='paraphyly', clstrs=clstrs)
-    svSqs(wd=ps[['wd']], txid='paraphyly', sqs=all_sqs)
+  if(length(fld) > 1) {
+    info(lvl=1, ps=ps, "Paraphyletic retry with unsuccessful clades ...")
+    all_sqs <- NULL
+    for(i in fld) {
+      sq_fl <- sq_fls[i]
+      # TODO: use the cache tool
+      sqs <- readRDS(file=file.path(file.path(ps[['wd']], 'cache',
+                                              'sqs', sq_fl)))
+      all_sqs <- c(all_sqs, sqs@sqs)
+    }
+    all_sqs <- genSqRcrdBx(all_sqs)
+    clstrs <- clstrSqs(txid='', sqs=all_sqs, ps=ps,
+                       lvl=1, typ='paraphyly')
+    if(length(clstrs@ids) > 0) {
+      svClstrs(wd=ps[['wd']], txid='paraphyly', clstrs=clstrs)
+      svSqs(wd=ps[['wd']], txid='paraphyly', sqs=all_sqs)
+    }
   }
 }
