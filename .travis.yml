@@ -7,7 +7,6 @@ r_binary_packages:
  - rentrez
  - XML
  - igraph
- - treeman
  - testthat
  - ggplot2
  - sys
