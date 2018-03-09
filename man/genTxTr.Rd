@@ -9,9 +9,9 @@ genTxTr(prinds, trids, root)
 \arguments{
 \item{prinds}{Vector of integers indicating preceding node.}
 
-\item{root}{ID of root taxon}
+\item{trids}{Vector of taxonomic IDs}
 
-\item{txids}{Vector of taxonomic IDs}
+\item{root}{ID of root taxon}
 }
 \value{
 TreeMan

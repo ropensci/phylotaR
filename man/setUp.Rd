@@ -13,10 +13,13 @@ setUp(wd, txid, ncbi_dr = ".", v = FALSE, ...)
 
 \item{ncbi_dr}{Directory to NCBI BLAST tools, default '.'}
 
-\item{...}{Additional parameters}
+\item{v}{Verbose, T/F}
 
-\item{verbose}{Verbose, T/F}
+\item{...}{Additional parameters}
+}
+\description{
+Set up working directory with parameters.
 }
 \seealso{
-\code{\link{setUp}}
+\code{\link{parameters}}
 }

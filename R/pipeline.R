@@ -1,14 +1,14 @@
 
 #' @name setUp
 #' @title Set-up parameters
-#' @description 
+#' @description Set up working directory with parameters.
 #' @param wd Working directory
 #' @param txid Root taxonomic ID(s), vector or numeric
 #' @param ncbi_dr Directory to NCBI BLAST tools, default '.'
-#' @param verbose Verbose, T/F
+#' @param v Verbose, T/F
 #' @param ... Additional parameters
 #' @export
-#' @seealso \code{\link{setUp}}
+#' @seealso \code{\link{parameters}}
 setUp <- function(wd, txid, ncbi_dr='.', v=FALSE,
                   ...) {
   # header log
@@ -45,7 +45,7 @@ setUp <- function(wd, txid, ncbi_dr='.', v=FALSE,
 #' @export
 #' @seealso \code{\link{restart}}, \code{\link{runTaxise}},
 #' \code{\link{runDownload}}, \code{\link{runClusters}},
-#' \code{\link{runAlign}}
+#' \code{\link{runClusters2}}
 run <- function(wd, nstages=4) {
   stgs_msg <- chckStgs(frm=1, to=nstages)
   runStgs(wd=wd, frm=1, to=nstages, stgs_msg=stgs_msg)

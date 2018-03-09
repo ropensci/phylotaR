@@ -10,6 +10,8 @@ blstN(dbfl, outfl, ps)
 \item{dbfl}{Database file}
 
 \item{outfl}{Output file}
+
+\item{ps}{Parameters}
 }
 \description{
 Use \code{blastn} to BLAST all vs all using

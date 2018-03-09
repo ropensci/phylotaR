@@ -13,6 +13,8 @@ clstrSqs(txid, sqs, ps, lvl, typ = c("direct", "subtree", "paraphyly"))
 
 \item{ps}{Parameters}
 
+\item{lvl}{Log level}
+
 \item{typ}{Direct or Subtree?}
 }
 \description{

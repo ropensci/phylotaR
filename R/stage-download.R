@@ -34,9 +34,9 @@ cldIdntfy <- function(txdct, ps) {
 #' given taxonomic IDs.
 #' @param txids Taxonomic node IDs, numeric vector
 #' @param txdct Taxonomic dictionary
-#' @param verbose Verbose? T/F
+#' @param ps parameters
 #' @details Sequence downloads are cached.
-dwnldSqRcrds <- function(txids, phylt_nds, txdct, ps) {
+dwnldSqRcrds <- function(txids, txdct, ps) {
   # TODO: add overwrite arg
   sqcnt <- 0
   for(i in seq_along(txids)) {

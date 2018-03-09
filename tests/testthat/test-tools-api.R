@@ -1,5 +1,4 @@
 # LIBS
-library(phylotaR)
 library(testthat)
 
 # DATA
@@ -25,22 +24,22 @@ cleanUp <- function() {
 
 # RUNNING
 cleanUp()
-context('Testing \'api-tools\'')
-test_that('chckSrchObj() works', {
-  expect_false(chckSrchObj(xml_tmout))
+context('Testing \'tools-api\'')
+test_that('phylotaR::chckSrchObj() works', {
+  expect_false(phylotaR:::chckSrchObj(xml_tmout))
 })
 test_that('safeSrch(fnm=search) works', {
-  setUpCch(ps=ps)
+  phylotaR:::setUpCch(ps=ps)
   args <- list('term'='ncbi search term',
                'db'='nucleotide', 'x')
   myfunc <- function(...) {
     print(...)
     return(1)
   }
-  res <- safeSrch(func=myfunc,
-                  args=args,
-                  fnm='search',
-                  ps=ps)
+  res <- phylotaR:::safeSrch(func=myfunc,
+                            args=args,
+                            fnm='search',
+                            ps=ps)
   expect_true(res == 1)
   myfunc <- function(...) {
     print(...)
@@ -49,15 +48,15 @@ test_that('safeSrch(fnm=search) works', {
   args <- list('term'='another ncbi search term',
                'db'='nucleotide',
                'x')
-  res <- safeSrch(func=myfunc,
-                  args=args,
-                  fnm='search',
-                  ps=ps)
+  res <- phylotaR:::safeSrch(func=myfunc,
+                            args=args,
+                            fnm='search',
+                            ps=ps)
   expect_null(res)
 })
 cleanUp()
 test_that('safeSrch(fnm=fetch) works', {
-  setUpCch(ps=ps)
+  phylotaR:::setUpCch(ps=ps)
   args <- list('id'=c(1, 2),
                'db'='nucleotide',
                'x')
@@ -65,10 +64,10 @@ test_that('safeSrch(fnm=fetch) works', {
     print(...)
     return(1)
   }
-  res <- safeSrch(func=myfunc,
-                  args=args,
-                  fnm='fetch',
-                  ps=ps)
+  res <- phylotaR:::safeSrch(func=myfunc,
+                            args=args,
+                            fnm='fetch',
+                            ps=ps)
   expect_true(res == 1)
   myfunc <- function(...) {
     print(...)
@@ -77,10 +76,10 @@ test_that('safeSrch(fnm=fetch) works', {
   args <- list('id'=c(2, 3),
                'db'='nucleotide',
                'x')
-  res <- safeSrch(func=myfunc,
-                  args=args,
-                  fnm='fetch',
-                  ps=ps)
+  res <- phylotaR:::safeSrch(func=myfunc,
+                            args=args,
+                            fnm='fetch',
+                            ps=ps)
   expect_null(res)
 })
 cleanUp()

@@ -4,14 +4,14 @@
 \alias{dwnldSqRcrds}
 \title{Download sequences for txids}
 \usage{
-dwnldSqRcrds(txids, phylt_nds, txdct, ps)
+dwnldSqRcrds(txids, txdct, ps)
 }
 \arguments{
 \item{txids}{Taxonomic node IDs, numeric vector}
 
 \item{txdct}{Taxonomic dictionary}
 
-\item{verbose}{Verbose? T/F}
+\item{ps}{parameters}
 }
 \description{
 Look up and download all sequences for

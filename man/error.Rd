@@ -7,9 +7,9 @@
 error(ps, ...)
 }
 \arguments{
-\item{...}{Message elements for concatenating}
+\item{ps}{parameters}
 
-\item{wd}{Working directory}
+\item{...}{Message elements for concatenating}
 }
 \description{
 Inform a user if an error has occurred in log.txt,

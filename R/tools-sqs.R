@@ -85,7 +85,7 @@ rwRcrd2SqRcrd <- function(rw_rcrds, gis, ps) {
 #' @title Generate SqRcrd
 #' @description Creates an S4 SqRcrd
 #' @param accssn Accession ID
-#' @param GI GI
+#' @param gi GI
 #' @param nm Sequence name
 #' @param txid Taxonomic ID of source organism
 #' @param sq Sequence
@@ -94,6 +94,7 @@ rwRcrd2SqRcrd <- function(rw_rcrds, gis, ps) {
 #' @param ml_typ Molecule type
 #' @param rcrd_typ Sequence record type
 #' @param vrsn Accession version
+#' @param age Number of days since upload
 #' @param lctn Location numbers for features, e.g. '1..200'
 genSqRcrd <- function(accssn, gi, nm, txid, sq, dfln,
                       orgnsm, ml_typ, rcrd_typ,

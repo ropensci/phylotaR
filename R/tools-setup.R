@@ -33,7 +33,7 @@ setUpPrmtrs <- function(wd, ncbi_execs, ...) {
   if(ps[['ncps']] > 1) {
     os <- .Platform$OS.type
     if(grepl('windows', os)) {
-      doSNOW::registerDoMC(ps[['ncps']])
+      doSNOW::registerDoSNOW(ps[['ncps']])
     } else if (grepl('unix', os)) {
       doMC::registerDoMC(ps[['ncps']])
     } else {
@@ -90,9 +90,9 @@ setUpNcbiTools <- function(d, v, wd) {
       vrsn <- as.numeric(strsplit(vrsn, '\\.')[[1]])
       tst <- vrsn[1] >= 2 & vrsn[2] >= 0
       if(tst) {
-        .log(v=v, wd=wd, paste0('Found: [', res[1], ']\n'))
+        .log(v=v, wd=wd, paste0('Found: [', ech, ']\n'))
       } else {
-        .log(v=v, wd=wd, paste0('Incorrect version: [', res[1], ']\n'))
+        .log(v=v, wd=wd, paste0('Incorrect version: [', ech, ']\n'))
         sccdd <- FALSE
       }
     }

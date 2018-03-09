@@ -6,6 +6,9 @@
 \usage{
 runClusters(wd)
 }
+\arguments{
+\item{wd}{Working directory}
+}
 \description{
 Identify sequence clusters
 for an initial PhyLoTa cluster table

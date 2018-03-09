@@ -33,9 +33,10 @@ read_phylota <- function(wd) {
 
 #' @name write_phylota
 #' @title Write out PhyLoTa-like Table
-#' @description 
+#' @description Create a PhyLoTa-like table
+#' from phylota object.
 #' @param phylota Phylota object
-#' @param drcty Output directory
+#' @param outfile Output file
 #' @return NULL
 #' @export
 write_table <- function(phylota, outfile) {

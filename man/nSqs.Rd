@@ -9,6 +9,8 @@ nSqs(txid, ps, drct = FALSE)
 \arguments{
 \item{txid}{Taxonomic ID}
 
+\item{ps}{parameters}
+
 \item{drct}{Node-level only or subtree as well? Default FALSE.}
 }
 \description{

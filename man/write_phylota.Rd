@@ -10,5 +10,9 @@ write_table(phylota, outfile)
 \arguments{
 \item{phylota}{Phylota object}
 
-\item{drcty}{Output directory}
+\item{outfile}{Output file}
+}
+\description{
+Create a PhyLoTa-like table
+from phylota object.
 }

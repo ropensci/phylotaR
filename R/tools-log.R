@@ -18,7 +18,7 @@ info <- function(lvl, ps, ...) {
 #' @title Write error message to log
 #' @description Inform a user if an error has occurred in log.txt,
 #' halt pipeline.
-#' @param wd Working directory
+#' @param ps parameters
 #' @param ... Message elements for concatenating
 error <- function(ps, ...) {
   msg <- paste0('Error: ', ..., '\n')

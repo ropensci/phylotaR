@@ -11,11 +11,13 @@ clstrSbtr(txid, sqs, txdct, dds, ps, lvl)
 
 \item{sqs}{Sequence object of all downloaded sequences}
 
-\item{txdct}{PhyLoTa table}
+\item{txdct}{Taxonomic dictionary}
 
 \item{dds}{Vector of direct descendants}
 
 \item{ps}{Parameters}
+
+\item{lvl}{Log level}
 }
 \description{
 Identifies clusters from sequences associated

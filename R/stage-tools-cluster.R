@@ -28,9 +28,10 @@ clstrAll <- function(txid, sqs, txdct, ps, lvl=0) {
 #' this function will thus be of cl_type 'subtree'.
 #' @param txid Taxonomic ID
 #' @param sqs Sequence object of all downloaded sequences
-#' @param txdct PhyLoTa table
+#' @param txdct Taxonomic dictionary
 #' @param dds Vector of direct descendants
 #' @param ps Parameters
+#' @param lvl Log level
 clstrSbtr <- function(txid, sqs, txdct, dds, ps, lvl) {
   all_clstrs <- genClRcrdBx(list())
   rnk <- getRnk(id=txid, txdct=txdct)
@@ -67,6 +68,7 @@ clstrSbtr <- function(txid, sqs, txdct, dds, ps, lvl) {
 #' @param sqs Sequence object of all downloaded sequences
 #' @param txdct PhyLoTa table
 #' @param ps Parameters
+#' @param lvl Log level
 clstrDrct <- function(txid, sqs, txdct, ps, lvl) {
   all_clstrs <- genClRcrdBx(list())
   rnk <- getRnk(id=txid, txdct=txdct)
@@ -93,6 +95,7 @@ clstrDrct <- function(txid, sqs, txdct, ps, lvl) {
 #' @param sqs Sequence object of sequences to be BLASTed
 #' @param ps Parameters
 #' @param typ Direct or Subtree?
+#' @param lvl Log level
 clstrSqs <- function(txid, sqs, ps, lvl,
                      typ=c('direct', 'subtree', 'paraphyly')) {
   typ <- match.arg(typ)
@@ -117,8 +120,8 @@ clstrSqs <- function(txid, sqs, ps, lvl,
 #' @param txid Taxonomic node ID, numeric
 #' @param typ Cluster type, 'direct' or 'subtree'
 #' @param sqs Sequences
-#' @param wd Working directory
-#' @param verbose Verbose? T/F
+#' @param lvl Log level
+#' @param ps Parameters
 blstSqs <- function(txid, typ, sqs, ps, lvl) {
   blst_rs <- ldBlstCch(sqs@ids, wd=ps[['wd']])
   if(is.null(blst_rs)) {
@@ -142,7 +145,9 @@ blstSqs <- function(txid, typ, sqs, ps, lvl) {
 
 #' @name clstrBlstRs
 #' @title Cluster BLAST Results
-#' @description TODO
+#' @description Find single-linkage clusters from
+#' BLAST results. Identifies seed sequence.
+#' @return List of list
 #' @param blst_rs BLAST results
 clstrBlstRs <- function(blst_rs) {
   g <- igraph::graph.data.frame(blst_rs[ ,c("query.id",

@@ -1,8 +1,5 @@
 # LIBS
-library(phylotaR)
 library(testthat)
-
-# VARS
 
 # FUNCTIONS
 cleanUp <- function() {
@@ -27,30 +24,30 @@ cleanUp()
 test_that('runTaxise() works', {
   with_mock(
     `phylotaR:::setUpNcbiTools`=mckSetupNcbiTools,
-    `phylotaR:::dwnldTD`=mckFun,
-    `phylotaR:::genTDObj`=mckFun,
-    `phylotaR:::getMngblIds`=mckFun,
-    `phylotaR:::genPhylotaNds`=mckFun,
-    `phylotaR:::writeTax`=mckFun,
-    `phylotaR:::genTxdct`=mckFun,
-    setUp(wd='.', txid=9606),
-    runTaxise(wd='.')
+    `phylotaR:::getTxids`=mckFun,
+    `phylotaR:::dwnldTxRcrds`=mckFun,
+    `phylotaR:::genTxDct`=mckFun,
+    `phylotaR:::svObj`=mckFun,
+    phylotaR::setUp(wd='.', txid=9606),
+    phylotaR::runTaxise(wd='.')
   )
   lglns <- readLines('log.txt')
-  expect_true(grepl('Completed stage', lglns[length(lglns) - 1]))
+  expect_true(grepl('Completed stage',
+                    lglns[length(lglns) - 1]))
 })
 cleanUp()
 test_that('runDownload() works', {
   with_mock(
     `phylotaR:::setUpNcbiTools`=mckSetupNcbiTools,
     `phylotaR:::ldObj`=mckFun,
-    `phylotaR:::fltr`=mckFun,
-    `phylotaR:::dwnld`=mckFun,
-    setUp(wd='.', txid=9606),
-    runDownload(wd='.')
+    `phylotaR:::cldIdntfy`=mckFun,
+    `phylotaR:::dwnldSqRcrds`=mckFun,
+    phylotaR::setUp(wd='.', txid=9606),
+    phylotaR::runDownload(wd='.')
   )
   lglns <- readLines('log.txt')
-  expect_true(grepl('Completed stage', lglns[length(lglns) - 1]))
+  expect_true(grepl('Completed stage',
+                    lglns[length(lglns) - 1]))
 })
 cleanUp()
 test_that('runClusters() works', {
@@ -58,10 +55,24 @@ test_that('runClusters() works', {
     `phylotaR:::setUpNcbiTools`=mckSetupNcbiTools,
     `phylotaR:::ldObj`=mckFun,
     `phylotaR:::calcClstrs`=mckFun,
-    setUp(wd='.', txid=9606),
-    runClusters(wd='.')
+    phylotaR::setUp(wd='.', txid=9606),
+    phylotaR::runClusters(wd='.')
   )
   lglns <- readLines('log.txt')
-  expect_true(grepl('Completed stage', lglns[length(lglns) - 1]))
+  expect_true(grepl('Completed stage',
+                    lglns[length(lglns) - 1]))
+})
+cleanUp()
+test_that('runClusters2() works', {
+  with_mock(
+    `phylotaR:::setUpNcbiTools`=mckSetupNcbiTools,
+    `phylotaR:::ldObj`=mckFun,
+    `phylotaR:::clstrClstrs`=mckFun,
+    phylotaR::setUp(wd='.', txid=9606),
+    phylotaR::runClusters2(wd='.')
+  )
+  lglns <- readLines('log.txt')
+  expect_true(grepl('Completed stage',
+                    lglns[length(lglns) - 1]))
 })
 cleanUp()

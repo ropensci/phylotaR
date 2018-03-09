@@ -5,7 +5,6 @@
 #' MAD score.
 #' @param phylota Phylota object
 #' @param cid CLuster ID(s)
-#' @param sid Sequence ID(s)
 #' @details MAD is a measure of the deviation in 
 #' sequence length of a cluster. Values range from 0 to
 #' 1. Clusters with values close to 1 have sequences with
@@ -32,6 +31,7 @@ calc_mad <- function(phylota, cid) {
 #' @param phylota Phylota object
 #' @param cid CLuster ID(s)
 #' @param min_frq Minimum frequency
+#' @param min_nchar Minimum number of characters for a word
 #' @param type Definitions (dfln) or features (nm)
 #' @param ignr_pttrn Ignore pattern, REGEX for text to ignore.
 #' @details By default, anything that is not alphanumeric is 

@@ -6,6 +6,9 @@
 \usage{
 chckSrchObj(obj)
 }
+\arguments{
+\item{obj}{Object returned from rentrez function}
+}
 \description{
 Returns T/F. Checks if object
 returned from rentrez function is as expected.

@@ -10,6 +10,8 @@ mkBlstDB(sqs, dbfl, ps)
 \item{sqs}{Sequences}
 
 \item{dbfl}{Outfile for database}
+
+\item{ps}{Parameters}
 }
 \description{
 Generate BLAST database in wd 

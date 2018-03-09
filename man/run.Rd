@@ -28,5 +28,5 @@ functions below.
 \seealso{
 \code{\link{restart}}, \code{\link{runTaxise}},
 \code{\link{runDownload}}, \code{\link{runClusters}},
-\code{\link{runAlign}}
+\code{\link{runClusters2}}
 }

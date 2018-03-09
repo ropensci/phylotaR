@@ -11,11 +11,10 @@ svSqs(wd, txid, sqs)
 
 \item{txid}{Taxonomic ID, numeric}
 
-\item{sqdf}{Sequence data.frame}
+\item{sqs}{Sequences}
 }
 \description{
-Saves sequences downloaded \code{getSqs}
-and converted to data.frame.
+Saves sequences downloaded
 }
 \details{
 Used within the \code{dwnld} function. Saves

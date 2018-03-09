@@ -1,6 +1,10 @@
 #' @name calcClstrs
 #' @title Calculate clusters for all sequences in WD
-#' @description TODO
+#' @description Loop through downloaded sequences
+#' for each clade and hierarchically find clusters
+#' using BLAST.
+#' @param txdct Taxonomic dictionary
+#' @param ps Parameters
 calcClstrs <- function(txdct, ps) {
   # load sequences
   sq_fls <- list.files(file.path(ps[['wd']], 'cache', 'sqs'))

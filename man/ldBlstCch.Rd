@@ -10,8 +10,6 @@ ldBlstCch(sids, wd)
 \item{sids}{Sequence IDs}
 
 \item{wd}{Working dir}
-
-\item{obj}{BLAST result}
 }
 \description{
 Run to load cached BLAST results.

@@ -13,11 +13,8 @@ SystemRequirements: BLAST+ (>=2.0)
 Depends:
     R (>= 3.3.0),
     methods,
-    foreach
 Imports:
     curl,
-    doMC,
-    doSNOW,
     igraph,
     CHNOSZ,
     rentrez,
@@ -27,6 +24,9 @@ Imports:
     treeman,
     plyr
 Suggests:
+    foreach,
+    doMC,
+    doSNOW,
     testthat,
     knitr,
     rmarkdown

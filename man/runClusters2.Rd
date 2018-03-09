@@ -6,6 +6,9 @@
 \usage{
 runClusters2(wd)
 }
+\arguments{
+\item{wd}{Working directory}
+}
 \description{
 Cluster the clusters
 }

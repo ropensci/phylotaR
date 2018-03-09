@@ -24,6 +24,7 @@ runTaxise <- function(wd) {
 #' @name runDownload
 #' @title Download 
 #' @description Download sequences
+#' @param wd Working directory
 #' @export
 runDownload <- function(wd) {
   ps <- ldPrmtrs(wd)
@@ -45,6 +46,7 @@ runDownload <- function(wd) {
 #' @description Identify sequence clusters
 #' for an initial PhyLoTa cluster table
 #' generated
+#' @param wd Working directory
 #' @export
 runClusters <- function(wd) {
   ps <- ldPrmtrs(wd)
@@ -59,6 +61,7 @@ runClusters <- function(wd) {
 #' @name runClusters2
 #' @title Cluster
 #' @description Cluster the clusters
+#' @param wd Working directory
 #' @export
 runClusters2 <- function(wd) {
   ps <- ldPrmtrs(wd)

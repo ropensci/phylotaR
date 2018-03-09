@@ -3,6 +3,9 @@
 #' @description Looks up and downloads sequences for a
 #' taxonomic ID.
 #' @param txid Taxonomic node ID, numeric
+#' @param txdct Taxonomic dictionary
+#' @param ps parameters
+#' @param lvl Log level
 hrrchcDwnld <- function(txid, txdct, ps, lvl=0) {
   # get subtree counts if that is smaller than ps[['mdlthrs']]
   # or if there are no direct descendants
@@ -64,6 +67,8 @@ prtDwnldSqRcrds <- function(gis, ps) {
 #' @description Downloads sequences from GenBank in 500 ID batches.
 #' @param txid NCBI taxonomic ID
 #' @param drct Node-level only or subtree as well? Default FALSE.
+#' @param ps parameters
+#' @param lvl Log level
 #' @return Vector of sequence records
 btchDwnldSqRcrds <- function(txid, ps, drct=FALSE, lvl=0) {
   # Searches for GIs, returns accessions

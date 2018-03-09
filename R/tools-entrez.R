@@ -39,6 +39,7 @@ nNds <- function(txid, ps) {
 #' @description Return the number of sequences
 #' associated with a taxonomic ID on NCBI GenBank.
 #' @param txid Taxonomic ID
+#' @param ps parameters
 #' @param drct Node-level only or subtree as well? Default FALSE.
 nSqs <- function(txid, ps, drct=FALSE) {
   trm <- mkSrchTrm(txid=txid, ps=ps, drct=drct)

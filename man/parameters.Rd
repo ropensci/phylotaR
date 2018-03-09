@@ -5,14 +5,16 @@
 \title{Default parameters}
 \usage{
 parameters(wd = ".", txid = numeric(), mkblstdb = "", blstn = "",
-  v = FALSE, ncps = 1, tdpth = NULL, mxnds = 1e+05, mdlthrs = 3000,
-  mnsql = 250, mxsql = 2000, mxrtry = 100, mxsqs = 50000,
-  mxevl = 1e-10, mncvrg = 51, date = Sys.Date())
+  v = FALSE, ncps = 1, mxnds = 1e+05, mdlthrs = 3000, mnsql = 250,
+  mxsql = 2000, mxrtry = 100, mxsqs = 50000, mxevl = 1e-10,
+  mncvrg = 51, btchsz = 300, date = Sys.Date())
 }
 \arguments{
 \item{wd}{The working directory where all output files are saved.}
 
 \item{txid}{Taxonomic group of interest, allows vectors.}
+
+\item{mkblstdb}{File path to makeblastdb}
 
 \item{blstn}{File path to blastn}
 
@@ -21,9 +23,6 @@ Statements will always be printed to log.txt.}
 
 \item{ncps}{The number of CPUs to run clustering in parallel.
 If 1, no parallelisation performed.}
-
-\item{tdpth}{File path to taxdump.tar.gz.
-If NULL, file will be downloaded automatically.}
 
 \item{mxnds}{The maximum number of nodes descending from a taxonomic group.
 If there are more than this number, nodes at the lower taxonomic level are analysed.}
@@ -47,7 +46,9 @@ If there are more sequences for a node, BLAST is performed at the lower taxonomi
 \item{mncvrg}{The maximum percentile coverage defining an overlapping BLAST hit.
 Sequences with BLAST matches with lower values are not considered orthologous.}
 
-\item{mkblstn}{File path to mkblastdb}
+\item{btchsz}{Batch size when querying NCBI}
+
+\item{date}{Date when pipeline was initiated}
 }
 \description{
 Returns a parameter list with default

@@ -1,4 +1,4 @@
-#' @importFrom methods is new
+#' @importFrom methods is new getSlots initialize slot slotNames show
 #' @importFrom stats median 
 #' @importFrom utils head packageVersion read.table tail write.table
 
@@ -8,12 +8,10 @@
 #' parameter values.
 #' @param wd The working directory where all output files are saved.
 #' @param txid Taxonomic group of interest, allows vectors.
-#' @param mkblstn File path to mkblastdb
+#' @param mkblstdb File path to makeblastdb
 #' @param blstn File path to blastn
 #' @param btchsz Batch size when querying NCBI
 #' @param date Date when pipeline was initiated
-#' @param tdpth File path to taxdump.tar.gz.
-#' If NULL, file will be downloaded automatically.
 #' @param v Print progress statements to console?
 #' Statements will always be printed to log.txt.
 #' @param ncps The number of CPUs to run clustering in parallel.
@@ -35,7 +33,7 @@
 #' @export
 parameters <-function(wd='.', txid=numeric(),
                       mkblstdb='', blstn='',
-                      v=FALSE, ncps=1, tdpth=NULL,
+                      v=FALSE, ncps=1,
                       mxnds=100000, mdlthrs=3000,
                       mnsql=250, mxsql=2000, 
                       mxrtry=100, mxsqs=50000,

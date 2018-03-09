@@ -8,6 +8,8 @@ fltrBlstRs(blst_rs, ps)
 }
 \arguments{
 \item{blst_rs}{BLAST results}
+
+\item{ps}{Parameters}
 }
 \description{
 Given a BLAST output, filters query-subject pairs such

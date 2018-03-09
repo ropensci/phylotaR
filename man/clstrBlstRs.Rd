@@ -9,6 +9,10 @@ clstrBlstRs(blst_rs)
 \arguments{
 \item{blst_rs}{BLAST results}
 }
+\value{
+List of list
+}
 \description{
-TODO
+Find single-linkage clusters from
+BLAST results. Identifies seed sequence.
 }

@@ -5,7 +5,7 @@
 #' easy look up of taxonomic parents and descendants.
 #' @return TreeMan
 #' @param prinds Vector of integers indicating preceding node.
-#' @param txids Vector of taxonomic IDs
+#' @param trids Vector of taxonomic IDs
 #' @param root ID of root taxon
 #' @importClassesFrom treeman TreeMan
 genTxTr <- function(prinds, trids, root) {

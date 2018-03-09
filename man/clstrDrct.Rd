@@ -14,6 +14,8 @@ clstrDrct(txid, sqs, txdct, ps, lvl)
 \item{txdct}{PhyLoTa table}
 
 \item{ps}{Parameters}
+
+\item{lvl}{Log level}
 }
 \description{
 In GenBank certain sequences may only be associated

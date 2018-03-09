@@ -6,6 +6,9 @@
 \usage{
 runDownload(wd)
 }
+\arguments{
+\item{wd}{Working directory}
+}
 \description{
 Download sequences
 }

@@ -10,8 +10,6 @@ calc_mad(phylota, cid)
 \item{phylota}{Phylota object}
 
 \item{cid}{CLuster ID(s)}
-
-\item{sid}{Sequence ID(s)}
 }
 \value{
 vector

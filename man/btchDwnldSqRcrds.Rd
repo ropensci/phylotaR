@@ -9,7 +9,11 @@ btchDwnldSqRcrds(txid, ps, drct = FALSE, lvl = 0)
 \arguments{
 \item{txid}{NCBI taxonomic ID}
 
+\item{ps}{parameters}
+
 \item{drct}{Node-level only or subtree as well? Default FALSE.}
+
+\item{lvl}{Log level}
 }
 \value{
 Vector of sequence records

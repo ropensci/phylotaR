@@ -10,6 +10,8 @@ genSqRcrd(accssn, gi, nm, txid, sq, dfln, orgnsm, ml_typ, rcrd_typ, vrsn, age,
 \arguments{
 \item{accssn}{Accession ID}
 
+\item{gi}{GI}
+
 \item{nm}{Sequence name}
 
 \item{txid}{Taxonomic ID of source organism}
@@ -26,9 +28,9 @@ genSqRcrd(accssn, gi, nm, txid, sq, dfln, orgnsm, ml_typ, rcrd_typ, vrsn, age,
 
 \item{vrsn}{Accession version}
 
-\item{lctn}{Location numbers for features, e.g. '1..200'}
+\item{age}{Number of days since upload}
 
-\item{GI}{GI}
+\item{lctn}{Location numbers for features, e.g. '1..200'}
 }
 \description{
 Creates an S4 SqRcrd

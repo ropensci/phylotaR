@@ -8,6 +8,12 @@ hrrchcDwnld(txid, txdct, ps, lvl = 0)
 }
 \arguments{
 \item{txid}{Taxonomic node ID, numeric}
+
+\item{txdct}{Taxonomic dictionary}
+
+\item{ps}{parameters}
+
+\item{lvl}{Log level}
 }
 \description{
 Looks up and downloads sequences for a

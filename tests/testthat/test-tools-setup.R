@@ -1,5 +1,4 @@
 # LIBS
-library(phylotaR)
 library(testthat)
 
 # FUNCTIONS
@@ -31,30 +30,31 @@ cleanUp()
 test_that('setUpNcbiTools() works', {
   # test with fake system
   res <- with_mock(
-    `phylotaR::cmdLn`=mckCmdLn,
-    setUpNcbiTools(d='.', v=FALSE, wd=NULL)
+    `phylotaR:::cmdLn`=mckCmdLn,
+    phylotaR:::setUpNcbiTools(d='.', v=FALSE, wd=NULL)
   )
   expect_true(length(res) == 2)
   # make sure wrong versions are flagged
   res <- with_mock(
-    `phylotaR::cmdLn`=mckCmdLn,
-    expect_error(setUpNcbiTools(d='wrngvrsn',
-                                v=FALSE,
-                                wd=NULL))
+    `phylotaR:::cmdLn`=mckCmdLn,
+    expect_error(phylotaR:::setUpNcbiTools(d='wrngvrsn',
+                                          v=FALSE,
+                                          wd=NULL))
   )
   # make sure wrong dirs are flagged
-  expect_error(setUpNcbiTools(d='.',
-                              v=FALSE,
-                              wd=NULL))
+  expect_error(phylotaR:::setUpNcbiTools(d='.',
+                                        v=FALSE,
+                                        wd=NULL))
 })
 test_that('setUpPrmtrs() works', {
-  expect_error(setUpPrmtrs(wd='.', txid=9606,
-                           ncbi_execs=c('', '')))
+  expect_error(phylotaR:::setUpPrmtrs(wd='.',
+                                     txid=9606,
+                                     ncbi_execs=c('', '')))
   ncbi_execs <- list('mkblstdb'=NA,
                      'blstn'=NA)
-  setUpPrmtrs(wd='.', txid=9606,
+  phylotaR:::setUpPrmtrs(wd='.', txid=9606,
               ncbi_execs=ncbi_execs)
   ps <- ldPrmtrs(wd='.')
-  expect_true(length(ps) == 16)
+  expect_true(length(ps) == 17)
 })
 cleanUp()

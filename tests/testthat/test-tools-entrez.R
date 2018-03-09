@@ -1,5 +1,4 @@
 # LIBS
-library(phylotaR)
 library(testthat)
 
 # DATA
@@ -63,41 +62,41 @@ mckEntrezSummary <- function(db, id) {
 
 # RUNNING
 cleanUp()
-context('Testing \'ncbi-tools\'')
+context('Testing \'entrez-tools\'')
 test_that('nSqs() works', {
   setUpCch(ps=ps)
   res <- with_mock(
-    `phylotaR::safeSrch`=function(func,
+    `phylotaR:::safeSrch`=function(func,
                                   args,
                                   fnm,
                                   ps){
       list('count'=args)
     },
-    nSqs(txid=9606, direct=FALSE, ps=ps)
+    phylotaR:::nSqs(txid=9606, drct=FALSE, ps=ps)
   )
   expect_true(grepl(':exp', res[['term']]))
   res <- with_mock(
-    `phylotaR::safeSrch`=function(func,
+    `phylotaR:::safeSrch`=function(func,
                                   args,
                                   fnm,
                                   ps){
       list('count'=args)
     },
-    nSqs(txid=9606, direct=TRUE, ps=ps)
+    phylotaR:::nSqs(txid=9606, drct=TRUE, ps=ps)
   )
   expect_true(grepl(':noexp', res[['term']]))
 })
 cleanUp()
-test_that('nNcbiNds() works', {
+test_that('nNds() works', {
   setUpCch(ps=ps)
   res <- with_mock(
-    `phylotaR::safeSrch`=function(func,
+    `phylotaR:::safeSrch`=function(func,
                                   args,
                                   fnm,
                                   ps){
       list('count'=args)
     },
-    nNcbiNds(txid=9606, ps=ps)
+    phylotaR:::nNds(txid=9606, ps=ps)
   )
   expect_true(res[['term']] == "txid9606[Subtree]")
 })
@@ -109,7 +108,8 @@ test_that('getGIs() works', {
   res <- with_mock(
     `rentrez::entrez_search`=mckEntrezSearch,
     `rentrez::entrez_fetch`=mckEntrezFetchIDs,
-    getGIs(txid=9606, direct=FALSE, sqcnt=100, ps=ps)
+    phylotaR:::getGIs(txid=9606, drct=FALSE,
+                     sqcnt=100, ps=ps)
   )
   expect_true(length(res) == n)
   cleanUp()
@@ -118,58 +118,10 @@ test_that('getGIs() works', {
   res <- with_mock(
     `rentrez::entrez_search`=mckEntrezSearch,
     `rentrez::entrez_fetch`=mckEntrezFetchIDs,
-    getGIs(txid=9606, direct=FALSE, sqcnt=100, ps=ps,
-           hrdmx=20, retmax=10)
+    phylotaR:::getGIs(txid=9606, drct=FALSE,
+                     sqcnt=100, ps=ps, hrdmx=20,
+                     retmax=10)
   )
   expect_true(length(res) != n)
-})
-test_that('dwnldFrmNCBI() works', {
-  # n determines the number of available seqs.
-  cleanUp()
-  n <<- 0
-  setUpCch(ps=ps)
-  res <- with_mock(
-    `phylotaR::getGIs`=mckGetGIs,
-    `rentrez::entrez_search`=mckEntrezSearch,
-    `rentrez::entrez_fetch`=mckEntrezFetch,
-    `rentrez::entrez_summary`=mckEntrezSummary,
-    dwnldFrmNCBI(txid=1, direct=FALSE, ps=ps)
-  )
-  expect_true(class(res) == 'list')
-  expect_true(length(res) == 0)
-  cleanUp()
-  setUpCch(ps=ps)
-  n <<- 1
-  res <- with_mock(
-    `phylotaR::getGIs`=mckGetGIs,
-    `rentrez::entrez_search`=mckEntrezSearch,
-    `rentrez::entrez_fetch`=mckEntrezFetch,
-    `rentrez::entrez_summary`=mckEntrezSummary,
-    dwnldFrmNCBI(txid=1, direct=FALSE, ps=ps)
-  )
-  expect_true(length(res) == 1)
-  cleanUp()
-  setUpCch(ps=ps)
-  n <<- 100
-  res <- with_mock(
-    `phylotaR::getGIs`=mckGetGIs,
-    `rentrez::entrez_search`=mckEntrezSearch,
-    `rentrez::entrez_fetch`=mckEntrezFetch,
-    `rentrez::entrez_summary`=mckEntrezSummary,
-    dwnldFrmNCBI(txid=1, direct=FALSE, ps=ps)
-  )
-  expect_true(length(res) == 100)
-  cleanUp()
-  setUpCch(ps=ps)
-  n <<- 1000
-  res <- with_mock(
-    `phylotaR::getGIs`=mckGetGIs,
-    `rentrez::entrez_search`=mckEntrezSearch,
-    `rentrez::entrez_fetch`=mckEntrezFetch,
-    `rentrez::entrez_summary`=mckEntrezSummary,
-    dwnldFrmNCBI(txid=1, direct=FALSE, ps=ps)
-  )
-  expect_true(length(res) == 1000)
-  cleanUp()
 })
 cleanUp()

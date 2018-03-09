@@ -13,9 +13,9 @@ blstSqs(txid, typ, sqs, ps, lvl)
 
 \item{sqs}{Sequences}
 
-\item{wd}{Working directory}
+\item{ps}{Parameters}
 
-\item{verbose}{Verbose? T/F}
+\item{lvl}{Log level}
 }
 \description{
 Return blast results from

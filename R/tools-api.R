@@ -52,7 +52,7 @@ safeSrch <- function(func, args, fnm, ps) {
 #' @title Check an object returned from rentrez
 #' @description Returns T/F. Checks if object
 #' returned from rentrez function is as expected.
-#' @param obj
+#' @param obj Object returned from rentrez function
 chckSrchObj <- function(obj) {
   if(inherits(x=obj, what='try-error')) {
     return(FALSE)

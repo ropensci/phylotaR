@@ -8,6 +8,8 @@ svPrgrss(wd, stg)
 }
 \arguments{
 \item{wd}{Working directory}
+
+\item{stg}{Stage}
 }
 \description{
 Stores the pipeline progress in the cache.

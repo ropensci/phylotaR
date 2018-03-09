@@ -14,6 +14,8 @@ calc_wrdfrq(phylota, cid, min_frq = 0.1, min_nchar = 1, type = c("dfln",
 
 \item{min_frq}{Minimum frequency}
 
+\item{min_nchar}{Minimum number of characters for a word}
+
 \item{type}{Definitions (dfln) or features (nm)}
 
 \item{ignr_pttrn}{Ignore pattern, REGEX for text to ignore.}
