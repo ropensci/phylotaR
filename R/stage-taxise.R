@@ -45,7 +45,7 @@ genTxDct <- function(txids, rcrds) {
   # based upon: https://github.com/DomBennett/treeman/wiki/trmn-format
   # drop singletons
   # create index to recover original IDs, indx
-  prids <- vapply(txids, function(x) rcrds[[x]][['ParentTaxId']], '')
+  prids <- vapply(txids, function(x) rcrds[[x]]@prnt, '')
   names(prids) <- NULL
   root_bool <- !prids %in% txids
   root <- txids[root_bool]

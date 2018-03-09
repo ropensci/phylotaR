@@ -32,57 +32,42 @@ read_phylota <- function(wd) {
 }
 
 #' @name write_phylota
-#' @title Write out phylota
-#' @description Write out phylota object either
-#' as .fasta or PhyLoTa table.
+#' @title Write out PhyLoTa-like Table
+#' @description 
 #' @param phylota Phylota object
 #' @param drcty Output directory
-#' @param type PhyLoTa or fasta?
-#' @param cls_names Cluster names
-#' @param sqs_names Sequence names
-#' @details User can either output all the clusters
-#' in the phylota object as a PhyLoTa-style table,
-#' or as each of the clusters' sequences as separate
-#' .fasta files.
-#' The user can control the output names of the sequences
-#' and clusters using the cls_names and sqs_names arguments.
-#' By default, the IDs for the clusters and sequences
-#' are used as names.
-#' If PhyLoTa, the output file will be called 'phylota.csv'.
-#' If fasta, the output files will each be named after the
-#' cls_names argument.
-#' Note, ensure the cls_names and sqs_names are in the same
-#' order as cids and sids.
 #' @return NULL
 #' @export
-write_phylota <- function(phylota, drctry='.',
-                          type=c('fasta', 'phylota'),
-                          cls_names=phylota@cids,
-                          sqs_names=phylota@sids) {
-  get_fasta <- function(sid) {
-    sq <- sqs[[i]]
-    dfln <- dflns[[i]]
-    
+write_table <- function(phylota, outfile) {
+  # TODO
+}
+
+#' @name write_sqs
+#' @title Write out sequences
+#' @description Write out sequences, as .fasta,
+#' for a given vector of IDs.
+#' @param phylota Phylota object
+#' @param outfile Output file
+#' @param sid Sequence ID(s)
+#' @param sq_nm Sequence name(s)
+#' @details 
+#' The user can control the output definition
+#' lines of the sequences using the sq_nm.
+#' By default sequences IDs are used.
+#' Note, ensure the sq_nm are in the same
+#' order as sid.
+#' @return NULL
+#' @export
+write_sqs <- function(phylota, outfile,
+                          sid, sq_nm=sid) {
+  get <- function(i) {
+    sq <- phylota@sqs[[sid[i]]]
+    paste0('>', sq_nm[i], '\n',
+           rawToChar(sq@sq), '\n\n')
   }
-  type <- match.arg(type)
-  if(type == 'phylota') {
-    stop('PhyLoTa table output not yet available.')
-  }
-  fasta <- ''
-  for(i in seq_along(phylota@cids)) {
-    cid <- phylota@cids[i]
-    cl <- phylota@cls[[cid]]
-    sqs <- cl@sqs
-    for(j in seq_along(sqs)) {
-      sid <- cl@sids[i]
-      sq <- sqs[[sid]]
-      fasta <- paste0(fasta, '>', sqs_names[i],
-                      '\n', rawToChar(sq@sq),
-                      '\n\n')
-    }
-    otpt_fl <- paste0(cid, '.fasta')
-    write(x=fasta, file=file.path(drctry, cid))
-  }
+  fasta <- vapply(seq_along(sid), get, '')
+  fasta <- paste0(fasta, collapse='')
+  write(x=fasta, file=outfile)
 }
 
 plot_phylota <- function(phylota){
@@ -152,8 +137,7 @@ update_phylota <- function(phylota) {
   all_sids <- unique(c(unlist(all_sids), all_seeds))
   sqs <- phylota@sqs
   sqs <- sqs[all_sids]
-  # TODO: update TxDct
-  # txids <- sqs@txids
+  phylota@txids <- unique(sqs@txids)
   phylota@sids <- sqs@ids
   phylota@sqs <- sqs
   initialize(phylota)

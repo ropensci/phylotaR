@@ -50,11 +50,8 @@ get_txids <- function(phylota, cid=NULL, sid=NULL,
     sq <- phylota@sqs[[sid]]
     txid <- sq@txid
     tx <- phylota@txdct@rcrds[[txid]]
-    # TODO: update for TxRcrd
-    rnks <- sapply(tx[['LineageEx']],
-                   function(x) x[['Rank']])
-    ids <- sapply(tx[['LineageEx']],
-                  function(x) x[['TaxId']])
+    rnks <- tx@lng[['rnks']]
+    ids <- tx@lng[['ids']]
     mtch <- which(rnk == rnks)
     if(length(mtch) == 0) {
       if(keep_higher) {
@@ -122,7 +119,7 @@ get_sq_slot <- function(phylota, cid=NULL, sid=NULL,
 }
 
 #' @name get_cl_slot
-#' @title Get slot data for each cluster
+#' @title Get slot data for each cluster record
 #' @description Get slot data for cluster(s)
 #' @param phylota Phylota object
 #' @param cid Cluster ID
@@ -141,4 +138,21 @@ get_cl_slot <- function(phylota, cid,
   vapply(cid, get, expctd)
 }
 
-# TODO: get txrcrd slots
+#' @name get_tx_slot
+#' @title Get slot data for each taxon record
+#' @description Get slot data for taxa(s)
+#' @param phylota Phylota object
+#' @param txid Taxonnomic ID
+#' @param slt_nm Slot name
+#' @return vector or list
+#' @export
+get_tx_slot <- function(phylota, txid,
+                        slt_nm=list_txrcrd_slots()) {
+  get <- function(txid) {
+    tx <- phylota@txdct@rcrds[[txid]]
+    slot(tx, slt_nm)
+  }
+  slt_nm <- match.arg(slt_nm)
+  expctd <- new(getSlots('TxRcrd')[[slt_nm]], 1)
+  vapply(txid, get, expctd)
+}

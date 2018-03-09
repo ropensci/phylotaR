@@ -48,7 +48,7 @@ prtDwnldTxRcrds <- function(txids, ps) {
 btchDwnldTxRcrds <- function(txids, ps) {
   all_rcrds <- vector('list', length=length(txids))
   names(all_rcrds) <- txids
-  btch <- 500
+  btch <- 100
   for(i in seq(0, length(txids)-1, btch)) {
     lower <- i+1
     upper <- ifelse(i+btch<length(txids), i+btch, length(txids))
