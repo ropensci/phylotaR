@@ -94,26 +94,32 @@ summary_phylota <- function(phylota) {
   }
   get_row <- function(cid) {
     cl <- phylota@cls[[cid]]
-    dflns <- calc_wrdfrq(phylota, cid, type='dfln',
-                         min_frq=0)[[1]]
+    mad_scr <- calc_mad(phylota=phylota, cid=cid)
+    sqlngth <- median(get_sq_slot(phylota=phylota,
+                                  cid=cid,
+                                  slt_nm='nncltds'))
+    dflns <- calc_wrdfrq(phylota=phylota, cid=cid,
+                         type='dfln', min_frq=0)[[1]]
     dflns <- print_frq_wrds(dflns)
-    ftr_nms <- calc_wrdfrq(phylota, cid, type='nm',
-                           min_frq=0)[[1]]
+    ftr_nms <- calc_wrdfrq(phylota=phylota, cid=cid,
+                           type='nm', min_frq=0)[[1]]
     ftr_nms <- print_frq_wrds(ftr_nms)
-    res <- c(cl@id, cl@typ, cl@seed, #cl@prnt,
+    res <- c(cl@id, cl@typ, cl@seed, cl@prnt,
              length(unique(cl@txids)), length(cl@sids),
-             dflns, ftr_nms)
+             sqlngth, mad_scr, dflns, ftr_nms)
     res
   }
   res <- lapply(phylota@cids, get_row)
   res <- matrix(unlist(res), nrow=length(phylota@cids),
                 byrow=TRUE)
-  colnames(res) <- c('ID', 'Type', 'Seed', #'Parent',
-                     'N_taxa', 'N_seqs', 'Definition',
-                     'Feature')
+  colnames(res) <- c('ID', 'Type', 'Seed', 'Parent',
+                     'N_taxa', 'N_seqs', 'Med_sql', 'MAD',
+                     'Definition', 'Feature')
   res <- data.frame(res, stringsAsFactors=FALSE)
   res[['N_taxa']] <- as.integer(res[['N_taxa']])
   res[['N_seqs']] <- as.integer(res[['N_seqs']])
+  res[['Med_sql']] <- as.numeric(res[['Med_sql']])
+  res[['MAD']] <- as.numeric(res[['MAD']])
   res
 }
 

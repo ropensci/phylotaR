@@ -6,6 +6,10 @@
 #' @param gis GIs of each fectched record
 #' @param ps Parameters list
 rwRcrd2SqRcrd <- function(rw_rcrds, gis, ps) {
+  # rw_rcrds <- rentrez::entrez_fetch(db="nucleotide",
+  #                                   rettype='gbwithparts',
+  #                                   retmode='text',
+  #                                   id='EF597500.1')
   res <- NULL
   rcrds <- XML::xmlToList(rw_rcrds)
   for(i in seq_along(rcrds)) {
@@ -16,6 +20,10 @@ rwRcrd2SqRcrd <- function(rw_rcrds, gis, ps) {
     vrsn <- rcrd[["GBSeq_accession-version"]]
     ml_typ <- rcrd[['GBSeq_moltype']]
     sq <- rcrd[['GBSeq_sequence']]
+    create_date <- rcrd[["GBSeq_create-date"]]
+    create_date <- as.Date(create_date,
+                           format="%d-%b-%Y")
+    age <- as.integer(ps[['date']] - create_date)
     if(is.null(sq)) {
       # master records have no sequences
       # e.g. https://www.ncbi.nlm.nih.gov/nuccore/1283191328
@@ -28,26 +36,30 @@ rwRcrd2SqRcrd <- function(rw_rcrds, gis, ps) {
     kywrds <- paste0(kywrds, collapse=' | ')
     # extract features
     for(ftr in ftr_tbl) {
-      if(ftr[['GBFeature_key']] == 'gene') {
-        lctn <- ftr[['GBFeature_location']]
-        if(!grepl('^[0-9\\.]+$', lctn)) {
-          next
+      lctn <- ftr[['GBFeature_location']]
+      if(!grepl('^[0-9\\.]+$', lctn)) {
+        next
+      }
+      strtstp <- strsplit(x=lctn, split='\\.\\.')[[1]]
+      if(length(strtstp) != 2) {
+        next
+      }
+      strtstp <- as.numeric(strtstp)
+      sqlngth <- strtstp[2] - strtstp[1]
+      if(sqlngth > ps[['mnsql']] & sqlngth < ps[['mxsql']]) {
+        ftr_nm <- ftr[['GBFeature_quals']][[
+          'GBQualifier']][['GBQualifier_value']]
+        if(is.null(ftr_nm)) {
+          ftr_nm <- ftr[['GBFeature_key']]
         }
-        strtstp <- strsplit(x=lctn, split='\\.\\.')[[1]]
-        strtstp <- as.numeric(strtstp)
-        sqlngth <- strtstp[2] - strtstp[1]
-        if(sqlngth > ps[['mnsql']] & sqlngth < ps[['mxsql']]) {
-          ftr_nm <- ftr[['GBFeature_quals']][[
-            'GBQualifier']][['GBQualifier_value']]
-          tmp <- substr(x=sq, start=strtstp[1], stop=strtstp[2])
-          sq_rcrd <- genSqRcrd(accssn=accssn, lctn=lctn,
-                               orgnsm=orgnsm, txid='',
-                               vrsn=vrsn, sq=tmp, dfln=dfln,
-                               gi=gis[[i]], ml_typ=ml_typ,
-                               nm=ftr_nm, rcrd_typ='feature')
-          res <- c(res, sq_rcrd)
-          wftrs <- TRUE
-        }
+        tmp <- substr(x=sq, start=strtstp[1], stop=strtstp[2])
+        sq_rcrd <- genSqRcrd(accssn=accssn, lctn=lctn, age=age,
+                             orgnsm=orgnsm, txid='',
+                             vrsn=vrsn, sq=tmp, dfln=dfln,
+                             gi=gis[[i]], ml_typ=ml_typ,
+                             nm=ftr_nm, rcrd_typ='feature')
+        res <- c(res, sq_rcrd)
+        wftrs <- TRUE
       }
     }
     # if no features, add entire sequence
@@ -58,12 +70,15 @@ rwRcrd2SqRcrd <- function(rw_rcrds, gis, ps) {
                              nm=kywrds, gi=gis[[i]],
                              orgnsm=orgnsm, sq=sq,
                              dfln=dfln, ml_typ=ml_typ,
-                             rcrd_typ='whole', vrsn=vrsn)
+                             rcrd_typ='whole', vrsn=vrsn,
+                             age=age)
         res <- c(res, sq_rcrd)
       }
     }
   }
-  res
+  ids <- vapply(res, function(x) x@id, '')
+  nondups <- !duplicated(ids)
+  res[nondups]
 }
 
 #' @name genSqRcrd
@@ -82,7 +97,7 @@ rwRcrd2SqRcrd <- function(rw_rcrds, gis, ps) {
 #' @param lctn Location numbers for features, e.g. '1..200'
 genSqRcrd <- function(accssn, gi, nm, txid, sq, dfln,
                       orgnsm, ml_typ, rcrd_typ,
-                      vrsn, lctn=NULL) {
+                      vrsn, age, lctn=NULL) {
   if(is.null(lctn)) {
     id <- vrsn
   } else {
@@ -90,12 +105,16 @@ genSqRcrd <- function(accssn, gi, nm, txid, sq, dfln,
   }
   url <- paste0('https://www.ncbi.nlm.nih.gov/nuccore/', id)
   nncltds <- nchar(sq)
-  nambgs <- gregexpr(pattern='[^atcgATCG]', text=sq)[[1]]
-  nambgs <- sum(nambgs != -1)
+  unambsq <- gsub(pattern='[^atcgATCG]', replacement='',
+                  x=sq)[[1]]
+  nambgs <- nncltds - nchar(unambsq)
+  pambgs <- nambgs/nncltds
+  gcr <- gregexpr(pattern='[^cgCG]', text=unambsq)[[1]]
+  gcr <- length(gcr)/nchar(unambsq)
   new('SqRcrd', accssn=accssn, gi=gi, nm=nm, sq=charToRaw(sq),
       dfln=dfln, ml_typ=ml_typ, rcrd_typ=rcrd_typ, vrsn=vrsn, id=id,
       url=url, nncltds=nncltds, nambgs=nambgs, orgnsm=orgnsm,
-      txid=txid)
+      txid=txid, pambgs=pambgs, gcr=gcr, age=age)
 }
 
 #' @name genSqRcrdBx

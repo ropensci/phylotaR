@@ -60,6 +60,12 @@ Sequence is stored as raw. Use rawToChar().
 \item{\code{nncltds}}{Number of nucleotides}
 
 \item{\code{nambgs}}{Number of ambiguous nucleotides}
+
+\item{\code{pambgs}}{Proportion of ambiguous nucleotides}
+
+\item{\code{gcr}}{GC ratio}
+
+\item{\code{age}}{Number of days between sequence upload and running pipeline}
 }}
 
 \seealso{

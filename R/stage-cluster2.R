@@ -30,7 +30,9 @@ clstrClstrs <- function(ps) {
     jnd_clstrs <- jnClstrs(blst_rs=blst_rs, ps=ps,
                            seed_ids=seed_ids,
                            all_clstrs=all_clstrs)
-    mrg_clstrs <- mrgClstrs(jnd_clstrs=jnd_clstrs)
+    txdct <- ldObj(wd=ps[['wd']], nm='txdct')
+    mrg_clstrs <- mrgClstrs(jnd_clstrs=jnd_clstrs,
+                            txdct=txdct)
     all_clstrs <- c(all_clstrs, mrg_clstrs)
   } else {
     info(lvl=1, ps=ps,

@@ -9,14 +9,14 @@ hrrchcDwnld <- function(txid, txdct, ps, lvl=0) {
   dds <- getDDs(id=txid, txdct=txdct)
   subtree_count <- nSqs(txid, drct=FALSE, ps=ps)
   if(subtree_count <= ps[['mdlthrs']] | length(dds) == 0) {
-    info(lvl=2+lvl, ps=ps, "... whole subtree ...")
-    sqs <- btchDwnld(txid=txid, drct=FALSE, ps=ps, lvl=lvl)
+    info(lvl=2+lvl, ps=ps, "+ whole subtree ...")
+    sqs <- btchDwnldSqRcrds(txid=txid, drct=FALSE, ps=ps, lvl=lvl)
     return(sqs)
   }
   # 1st direct sqs from focal taxon, then from DDs
-  info(lvl=2+lvl, ps=ps, "... direct ...")
-  sqs <- btchDwnld(txid=txid, drct=TRUE, ps=ps, lvl=lvl)
-  info(lvl=2+lvl, ps=ps, "... by child ...")
+  info(lvl=2+lvl, ps=ps, "+ direct ...")
+  sqs <- btchDwnldSqRcrds(txid=txid, drct=TRUE, ps=ps, lvl=lvl)
+  info(lvl=2+lvl, ps=ps, "+ by child ...")
   for(dd in dds) {
     lvl <- lvl + 1
     info(lvl=2+lvl, ps=ps, "Working on child [id ", dd,"]")
@@ -32,10 +32,9 @@ hrrchcDwnld <- function(txid, txdct, ps, lvl=0) {
 #' @param sqs List of SqRcrds
 #' @param txdct Taxonomic Dictionary
 agmntSqRcrds <- function(sqs, txdct) {
-  # TODO: gen. txdct tools
   # txids are not downloaded as part of sequence, added here
-  txdct_nms <- vapply(txdct@rcrds, function(x) x[['ScientificName']], '')
-  txdct_ids <- vapply(txdct@rcrds, function(x) x[['TaxId']], '')
+  txdct_nms <- vapply(txdct@rcrds, function(x) x@scnm, '')
+  txdct_ids <- vapply(txdct@rcrds, function(x) x@id, '')
   sqs_nms <- vapply(sqs, function(x) x@orgnsm, '')
   sqs_ids <- txdct_ids[match(sqs_nms, txdct_nms)]
   for(i in seq_along(sqs)) {
@@ -76,15 +75,15 @@ btchDwnldSqRcrds <- function(txid, ps, drct=FALSE, lvl=0) {
   }
   gis <- getGIs(txid=txid, drct=drct, sqcnt=sqcnt,
                 ps=ps)
-  if(drct && length(gis) > ps[['mdlthrs']]) {
-    info(lvl=lvl+3, ps=ps, "More than [", ps[['mdlthrs']], ' sqs] available.',
-         ' Choosing at random.')
+  if(length(gis) > ps[['mdlthrs']]) {
+    info(lvl=lvl+3, ps=ps, "More than [", ps[['mdlthrs']],
+         ' sqs] available. Choosing at random.')
     gis <- gis[sample(1:length(gis), size=ps[['mdlthrs']],
                       replace=FALSE)]
   }
   info(lvl=lvl+3, ps=ps, "Getting [", length(gis), " sqs] ...")
   # Fetch sequences in batches
-  btch <- 500
+  btch <- ps[['btchsz']]
   for(i in seq(0, length(gis)-1, btch)) {
     lower <- i+1
     upper <- ifelse(i+btch<length(gis), i+btch, length(gis))

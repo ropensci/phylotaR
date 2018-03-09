@@ -23,6 +23,9 @@ chckSqRcrd <- function(object) {
 #' @slot rcrd_typ Record type: Whole or feature
 #' @slot nncltds Number of nucleotides
 #' @slot nambgs Number of ambiguous nucleotides
+#' @slot pambgs Proportion of ambiguous nucleotides
+#' @slot gcr GC ratio
+#' @slot age Number of days between sequence upload and running pipeline 
 #' @exportClass SqRcrd
 #' @seealso 
 #' \code{\link{genSqRcrd}}
@@ -40,7 +43,10 @@ setClass('SqRcrd', representation=representation(
   ml_typ='character',
   rcrd_typ='character',
   nncltds='integer',
-  nambgs='integer'),
+  nambgs='integer',
+  pambgs='numeric',
+  gcr='numeric',
+  age='integer'),
   validity=chckSqRcrd)
 
 #' @rdname SqRcrd-class

@@ -4,7 +4,7 @@
 \alias{genSqRcrd}
 \title{Generate SqRcrd}
 \usage{
-genSqRcrd(accssn, gi, nm, txid, sq, dfln, orgnsm, ml_typ, rcrd_typ, vrsn,
+genSqRcrd(accssn, gi, nm, txid, sq, dfln, orgnsm, ml_typ, rcrd_typ, vrsn, age,
   lctn = NULL)
 }
 \arguments{

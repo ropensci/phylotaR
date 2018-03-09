@@ -2,38 +2,13 @@
 % Please edit documentation in R/class-tools-phylota-special.R
 \name{write_phylota}
 \alias{write_phylota}
-\title{Write out phylota}
+\alias{write_table}
+\title{Write out PhyLoTa-like Table}
 \usage{
-write_phylota(phylota, drctry = ".", type = c("fasta", "phylota"),
-  cls_names = phylota@cids, sqs_names = phylota@sids)
+write_table(phylota, outfile)
 }
 \arguments{
 \item{phylota}{Phylota object}
 
-\item{type}{PhyLoTa or fasta?}
-
-\item{cls_names}{Cluster names}
-
-\item{sqs_names}{Sequence names}
-
 \item{drcty}{Output directory}
-}
-\description{
-Write out phylota object either
-as .fasta or PhyLoTa table.
-}
-\details{
-User can either output all the clusters
-in the phylota object as a PhyLoTa-style table,
-or as each of the clusters' sequences as separate
-.fasta files.
-The user can control the output names of the sequences
-and clusters using the cls_names and sqs_names arguments.
-By default, the IDs for the clusters and sequences
-are used as names.
-If PhyLoTa, the output file will be called 'phylota.csv'.
-If fasta, the output files will each be named after the
-cls_names argument.
-Note, ensure the cls_names and sqs_names are in the same
-order as cids and sids.
 }

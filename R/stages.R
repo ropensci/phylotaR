@@ -34,7 +34,7 @@ runDownload <- function(wd) {
   clds_ids <- cldIdntfy(txdct=txdct, ps=ps)
   info(lvl=1, ps=ps, 'Identified [', length(clds_ids),
        '] suitable clades.')
-  info('Downloading hierarchically ...')
+  info(lvl=1, ps=ps, 'Downloading hierarchically ...')
   dwnldSqRcrds(txids=clds_ids, txdct=txdct, ps=ps)
   msg <- paste0('Completed stage DOWNLOAD: [', Sys.time(), ']')
   .stgMsg(ps=ps, msg=msg)

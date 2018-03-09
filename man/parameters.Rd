@@ -6,8 +6,8 @@
 \usage{
 parameters(wd = ".", txid = numeric(), mkblstdb = "", blstn = "",
   v = FALSE, ncps = 1, tdpth = NULL, mxnds = 1e+05, mdlthrs = 3000,
-  mnsql = 250, mxsql = 2000, mxrtry = 100, mxsqs = 10000,
-  mxevl = 1e-10, mncvrg = 51)
+  mnsql = 250, mxsql = 2000, mxrtry = 100, mxsqs = 50000,
+  mxevl = 1e-10, mncvrg = 51, date = Sys.Date())
 }
 \arguments{
 \item{wd}{The working directory where all output files are saved.}

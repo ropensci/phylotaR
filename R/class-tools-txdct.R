@@ -64,7 +64,7 @@ txid2Trid <- function(id, txdct) {
 #' @param id txid
 #' @param txdct TxDct
 getRnk <- function(id, txdct) {
-  txdct@rcrds[[id]][['Rank']]
+  txdct@rcrds[[id]]@rnk
 }
 
 #' @name getADs
@@ -102,9 +102,10 @@ getPrnt <- function(id, txdct) {
   trid <- txid2Trid(id=id, txdct=txdct)
   if(length(trid) > 1) {
     res <- treeman::getPrnt(tree=txdct@txtr,
-                            ids=trid)
+                            ids=unique(trid))
+  } else {
+    res <- treeman::getNdSlt(tree=txdct@txtr,
+                             slt_nm='prid', id=trid)
   }
-  res <- treeman::getNdSlt(tree=txdct@txtr,
-                           slt_nm='prid', id=trid)
   trid2Txid(id=res, txdct=txdct)
 }

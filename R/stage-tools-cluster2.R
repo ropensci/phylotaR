@@ -53,15 +53,17 @@ jnClstrs <- function(blst_rs, seed_ids, all_clstrs, ps) {
 #' @title Merge joined clusters
 #' @description Takes a list of joined clusters and computes
 #' each data slot to create a single merged cluster.
+#' txdct is required for parent look-up.
 #' @param jnd_clstrs List of joined cluster records
-mrgClstrs <- function(jnd_clstrs) {
+#' @param txdct Taxonomic dictionary
+mrgClstrs <- function(jnd_clstrs, txdct) {
   mrg_clstrs <- vector('list', length=length(jnd_clstrs))
   for(i in seq_along(jnd_clstrs)) {
-    # TODO: look up parent
     cl <- jnd_clstrs[[i]]
+    prnt <- getPrnt(id=cl[['txids']], txdct=txdct)
     cl_rcrd <- new('ClRcrd', sids=cl[['sids']],
                    txids=cl[['txids']], typ='merged',
-                   seed=cl[['seed']])
+                   seed=cl[['seed']], prnt=prnt)
     mrg_clstrs[[i]] <- cl_rcrd
   }
   mrg_clstrs

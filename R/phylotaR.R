@@ -10,6 +10,8 @@
 #' @param txid Taxonomic group of interest, allows vectors.
 #' @param mkblstn File path to mkblastdb
 #' @param blstn File path to blastn
+#' @param btchsz Batch size when querying NCBI
+#' @param date Date when pipeline was initiated
 #' @param tdpth File path to taxdump.tar.gz.
 #' If NULL, file will be downloaded automatically.
 #' @param v Print progress statements to console?
@@ -36,8 +38,9 @@ parameters <-function(wd='.', txid=numeric(),
                       v=FALSE, ncps=1, tdpth=NULL,
                       mxnds=100000, mdlthrs=3000,
                       mnsql=250, mxsql=2000, 
-                      mxrtry=100, mxsqs=10000,
-                      mxevl=1.0e-10, mncvrg=51) {
+                      mxrtry=100, mxsqs=50000,
+                      mxevl=1.0e-10, mncvrg=51,
+                      btchsz=300, date=Sys.Date()) {
   ps <- as.list(environment())
   ps[['wt_tms']] <- c(1, 3, 6, 10, 60, 300)
   ps
