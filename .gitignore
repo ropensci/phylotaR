@@ -15,3 +15,5 @@ NCBI/
 taxonomy/
 log.txt
 inst/doc
+demos/ncbi_dr.txt
+demos/*/
