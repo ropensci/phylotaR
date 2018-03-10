@@ -56,7 +56,7 @@ agmntSqRcrds <- function(sqs, txdct) {
 prtDwnldSqRcrds <- function(gis, ps) {
   ftch_args <- list(db="nucleotide",
                     rettype='gbwithparts',
-                    retmode='text', id=gis)
+                    retmode='xml', id=gis)
   rw_rcrds <- srchNCch(func=rentrez::entrez_fetch,
                        args=ftch_args, fnm='fetch',
                        ps=ps)
