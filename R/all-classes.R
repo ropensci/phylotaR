@@ -1,8 +1,3 @@
-chckClRcrd <- function(object) {
-  # TODO
-  TRUE
-}
-
 #' @name ClRcrd-class
 #' @aliases ClRcrd-method
 #' @param x \code{ClRcrd} object
@@ -28,8 +23,7 @@ setClass('ClRcrd', representation=representation(
   ntx='integer',
   typ='character',
   prnt='character',
-  seed='character'),
-  validity=chckClRcrd)
+  seed='character'))
 
 #' @rdname ClRcrd-class
 #' @exportMethod as.character
@@ -77,8 +71,7 @@ setMethod('summary', c('object'='ClRcrd'),
           })
 
 chckClRcrdBx <- function(object) {
-  # TODO
-  TRUE
+  length(object@ids) == length(object@cls)
 }
 
 #' @name ClRcrdBx-class
@@ -165,11 +158,6 @@ setMethod('[', c('ClRcrdBx', 'character', 'missing', 'missing'),
             stop(paste0('[', mssng , '] not in records'))
           })
 
-chckSqRcrd <- function(object) {
-  # TODO
-  TRUE
-}
-
 #' @name SqRcrd-class
 #' @aliases SqRcrd-method
 #' @param x \code{SqRcrd} object
@@ -214,8 +202,7 @@ setClass('SqRcrd', representation=representation(
   nambgs='integer',
   pambgs='numeric',
   gcr='numeric',
-  age='integer'),
-  validity=chckSqRcrd)
+  age='integer'))
 
 #' @rdname SqRcrd-class
 #' @exportMethod as.character
@@ -255,8 +242,8 @@ setMethod('summary', c('object'='SqRcrd'),
           })
 
 chckSqRcrdBx <- function(object) {
-  # TODO
-  TRUE
+  length(object@ids) == length(object@sqs) &
+    length(object@ids) == length(object@txids)  
 }
 
 #' @name SqRcrdBx-class
@@ -354,8 +341,8 @@ setMethod('[', c('SqRcrdBx', 'character', 'missing', 'missing'),
           })
 
 chckTxRcrd <- function(object) {
-  # TODO
-  TRUE
+  length(object@lng[['rnks']]) ==
+    length(object@lng[['ids']])
 }
 
 #' @name TxRcrd-class
@@ -422,8 +409,10 @@ setMethod('summary', c('object'='TxRcrd'),
           })
 
 chckTxDct <- function(object) {
-  # TODO
-  TRUE
+  length(object@txids) ==
+    length(ls(object@rcrds)) &
+    length(object@txids) ==
+    length(object@indx)
 }
 
 #' @name TxDct-class
@@ -489,8 +478,9 @@ setMethod('summary', c('object'='TxDct'),
 
 
 chckPhyLoTa <- function(object) {
-  # TODO
-  TRUE
+  length(object@cids) == length(object@cls@cls) &
+    length(object@sids) == length(object@sqs@sqs) &
+    all(object@txids %in% object@txdct@txids)
 }
 
 #' @name PhyLoTa-class
@@ -509,6 +499,8 @@ chckPhyLoTa <- function(object) {
 #' @slot sqs All sequence records as SqRcrdBx
 #' @slot cls All cluster records as ClRcrdBx
 #' @slot txdct Taxonomic dictionary as TxDct
+#' @slot prnt_id Parent taxonomic ID
+#' @slot prnt_nm Parent taxonomic name
 #' @exportClass PhyLoTa
 setClass('PhyLoTa', representation=representation(
   cids='vector',
@@ -516,14 +508,17 @@ setClass('PhyLoTa', representation=representation(
   sids='vector',
   txdct='TxDct',
   sqs='SqRcrdBx',
-  cls='ClRcrdBx'),
+  cls='ClRcrdBx',
+  prnt_id='character',
+  prnt_nm='character'),
   validity=chckPhyLoTa)
 
 #' @rdname PhyLoTa-class
 #' @exportMethod as.character
 setMethod('as.character', c('x'='PhyLoTa'),
           function(x) {
-            msg <- 'PhyLoTa Table\n'
+            msg <- paste0('PhyLoTa Table (',
+                          x@prnt_nm, ')\n')
             msg <- paste0(msg, '- [', length(x@cids),
                           '] clusters\n')
             msg <- paste0(msg, '- [', length(x@sids),

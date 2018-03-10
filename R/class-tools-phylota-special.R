@@ -25,9 +25,12 @@ read_phylota <- function(wd) {
   sids <- sort(unique(sqs@ids))
   cids <- cls@ids
   txdct <- ldObj(wd, nm='txdct')
+  prnt_id <- txdct@prnt
+  prnt_nm <- txdct@rcrds[[prnt_id]]@scnm
   phylota <- new('PhyLoTa', sqs=sqs, cls=cls,
                  txids=txids, sids=sids,
-                 cids=cids, txdct=txdct)
+                 cids=cids, txdct=txdct,
+                 prnt_id=prnt_id, prnt_nm=prnt_nm)
   update_phylota(phylota)
 }
 

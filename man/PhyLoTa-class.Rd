@@ -57,5 +57,9 @@ PhyLoTa table contains sequences and clusters information.
 \item{\code{cls}}{All cluster records as ClRcrdBx}
 
 \item{\code{txdct}}{Taxonomic dictionary as TxDct}
+
+\item{\code{prnt_id}}{Parent taxonomic ID}
+
+\item{\code{prnt_nm}}{Parent taxonomic name}
 }}
 
