@@ -1,45 +1,44 @@
 
 devtools::load_all('~/Coding/phylotaR')
 
+data(aotus)
+phylota <- aotus
+phylota <- drop_cls(phylota, phylota@cids[1:10])
+
+cids <- phylota@cids
+txids <- phylota@txids
+txnms <- get_tx_slot(phylota, txids, slt_nm='scnm')
+txnms <- sample(txnms)
+cnms <- cids
 
 
-
-# INPUT
-ptable <- read_phylota(wd)
-
-# CLTYPE STATS
-# drop clusters of 10
-# n_taxa <- get_ntaxa(ptable, cid=ptable@cids)
-# n_taxa <- get_cl_slot(ptable, cid=ptable@cids, slt_nm='ntx')
-# keep <- names(n_taxa)[n_taxa > 10]
-keep <- ptable@cids[1:100]
-ptable <- drop_cls(ptable, keep)
-table(sapply(ptable@cls@cls, function(x) x@typ))
-
-# REDUCE
-# get n taxa per cluster
-n_taxa <- get_ntaxa(ptable, cid=ptable@cids)
-# drop all clusters with fewer than 100 taxa
-keep <- names(n_taxa)[n_taxa > 100]
-ptable <- drop_cls(ptable, keep)
-
-# FILTER
-fltrd <- drop_by_rank(ptable, rnk='genus', n=2,
-                      choose_by=c('nncltds'),
-                      greatest=c(TRUE))
-
-# SUMMARISE
-smmry <- summary_phylota(fltrd)
-smmry[grepl('rna', smmry$Feature),]
-smmry <- smmry[order(smmry$N_taxa, decreasing=TRUE), ]
-slctd_smmry <- smmry[smmry[['MAD']] > 0.6, ]
-slctd_smmry <- slctd_smmry[1:10, ]
-slctd_smmry$ID <- as.numeric(slctd_smmry$ID)
-
-# KEEP ONLY TOP TEN
-slctd <- drop_cls(fltrd, as.character(slctd_smmry$ID))
-
-# GET GENUS NAMES
-txids <- get_txids(slctd, cid='0', rnk='genus')
-genus_names <- get_tx_slot(slctd, txids, 'scnm')
-table(genus_names)
+plot_phylota_pa <- function(phylota, cids, txids,
+                            cnms=cids, txnms=txids) {
+  mkdata <- function(cid) {
+    cl <- phylota@cls@cls[[which(cid == phylota@cids)]]
+    value <- factor(as.numeric(txids %in% cl@txids))
+    data.frame(txid=as.character(txids),
+               cid=cid, value=value)
+  }
+  # gen p_data
+  p_data <- lapply(cids, mkdata)
+  p_data <- do.call('rbind', p_data)
+  p_data[['cnm']] <- 
+    cnms[match(p_data[['cid']], cids)]
+  p_data[['txnm']] <- 
+    txnms[match(p_data[['txid']], txids)]
+  # reorder
+  p_data[['cnm']] <- factor(p_data[['cnm']],
+                            levels=cnms,
+                            ordered=TRUE)
+  p_data[['txnm']] <- factor(p_data[['txnm']],
+                             levels=txnms,
+                             ordered=TRUE)
+  # plot
+  ggplot2::ggplot(p_data, ggplot2::aes(cnm, txnm)) +
+    ggplot2::geom_tile(ggplot2::aes(fill=value)) +
+    ggplot2::xlab('') + ggplot2::ylab('') +
+    ggplot2::scale_fill_manual(values=c('white', 'black')) +
+    ggplot2::theme_bw() +
+    ggplot2::theme(legend.position='none')
+}
