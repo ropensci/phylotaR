@@ -2,9 +2,9 @@
 % Please edit documentation in R/class-tools-phylota-get.R
 \name{get_txids}
 \alias{get_txids}
-\title{Get taxonomic IDs}
+\title{Get taxonomic IDs by rank}
 \usage{
-get_txids(phylota, cid = NULL, sid = NULL, rnk = NULL,
+get_txids(phylota, cid = NULL, sid = NULL, txids = NULL, rnk = NULL,
   keep_higher = FALSE)
 }
 \arguments{
@@ -14,7 +14,9 @@ get_txids(phylota, cid = NULL, sid = NULL, rnk = NULL,
 
 \item{sid}{Sequence ID(s)}
 
-\item{rnk}{Taxonomic rnk}
+\item{txids}{Vector of txids}
+
+\item{rnk}{Taxonomic rank}
 
 \item{keep_higher}{Keep higher taxonomic IDs?}
 }
@@ -28,6 +30,9 @@ User can specify what rank the IDs should be
 returned. If NULL, the lowest level is returned.
 }
 \details{
+txids can either be provided by user or
+they can be determined for a vector of sids or for a
+cid.
 If keep_higher is TRUE, any sequence that has
 a identity that is higher than the given rank will be returned.
 If FALSE, these sequences will return ''.

@@ -487,7 +487,6 @@ chckPhyLoTa <- function(object) {
 #' @aliases PhyLoTa-method
 #' @param x \code{PhyLoTa} object
 #' @param object \code{PhyLoTa} object
-#' @param y Not used in plot for this class
 #' @param i Either sid or cid
 #' @param max.level Maximum level of nesting for str()
 #' @param ... Further arguments for str()
@@ -555,12 +554,6 @@ setMethod('str', c('object'='PhyLoTa'),
 setMethod('summary', c('object'='PhyLoTa'),
           function(object){
             summary_phylota(object)
-          })
-#' @rdname PhyLoTa-class
-#' @exportMethod plot
-setMethod('plot', c('x'='PhyLoTa', y='missing'),
-          function(x, y, ...){
-            plot_phylota(x)
           })
 
 # Accessor methods

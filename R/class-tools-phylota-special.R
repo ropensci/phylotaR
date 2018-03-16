@@ -74,9 +74,213 @@ write_sqs <- function(phylota, outfile,
   write(x=fasta, file=outfile)
 }
 
-plot_phylota <- function(phylota){
-  # TODO
+#' @name plot_phylota_pa
+#' @title Plot presence/absence matrix
+#' @description Plot presence/absence of taxa by each
+#' cluster in phylota object.
+#' @param phylota PhyLoTa object
+#' @param cids Vector of cluster IDs
+#' @param txids Vector of taxonomic IDs
+#' @param cnms Cluster names
+#' @param txnms Taxonomic names
+#' @param cord Cluster names order
+#' @param txord Taxonomic names order
+#' @details Cluster names and taxonomic names
+#' can be given to the function, by default IDs are used
+#' A user can also specify the order in which the names
+#' are displayed using the *ord arguments.
+#' @return geom_object
+#' @examples
+#' library(phylotaR)
+#' data(cycads)
+#' # drop all but first ten
+#' cycads <- drop_cls(cycads, cycads@cids[1:10])
+#' # plot all
+#' p <- plot_phylota_pa(phylota=cycads, cids=cycads@cids,
+#'                      txids=cycads@txids)
+#' print(p)  # lots of information, difficult to interpret
+#' # get genus-level taxonomic names
+#' genus_txids <- get_txids(cycads,
+#'                          txids=cycads@txids,
+#'                         rnk='genus')
+#' # dropping missing
+#' genus_txids <- genus_txids[genus_txids != '']
+#' genus_nms <- get_tx_slot(cycads, genus_txids, slt_nm='scnm')
+#' # generate geom_object
+#' p <- plot_phylota_pa(phylota=cycads, cids=cycads@cids,
+#'                      txids=cycads@txids, txnms=genus_nms)
+#' # plot
+#' print(p)  # easier to interpret
+#' @export
+plot_phylota_pa <- function(phylota, cids, txids,
+                            cnms=cids, txnms=txids,
+                            cord=unique(cnms),
+                            txord=unique(txnms)) {
+  mkdata <- function(cid) {
+    cl <- phylota@cls@cls[[which(cid == phylota@cids)]]
+    value <- factor(as.numeric(txids %in% cl@txids))
+    data.frame(txid=as.character(txids),
+               cid=cid, value=value)
+  }
+  value <- NULL
+  # gen p_data
+  p_data <- lapply(cids, mkdata)
+  p_data <- do.call('rbind', p_data)
+  p_data[['cnm']] <- 
+    cnms[match(p_data[['cid']], cids)]
+  p_data[['txnm']] <- 
+    txnms[match(p_data[['txid']], txids)]
+  # reorder
+  p_data[['cnm']] <- factor(p_data[['cnm']],
+                            levels=cord,
+                            ordered=TRUE)
+  p_data[['txnm']] <- factor(p_data[['txnm']],
+                             levels=txord,
+                             ordered=TRUE)
+  # plot
+  # https://stackoverflow.com/questions/9439256/how-can-i-handle-r-cmd-check-no-visible-binding-for-global-variable-notes-when
+  cnm <- txnm <- NULL
+  ggplot2::ggplot(p_data, ggplot2::aes(cnm, txnm)) +
+    ggplot2::geom_tile(ggplot2::aes(fill=value)) +
+    ggplot2::xlab('') + ggplot2::ylab('') +
+    ggplot2::scale_fill_manual(values=c('white', 'black')) +
+    ggplot2::theme_bw() +
+    ggplot2::theme(legend.position='none')
 }
+
+#' @name plot_phylota_treemap
+#' @title Plot treemap of PhyLoTa object
+#' @description Treemaps show relative size with boxes.
+#' The user can explore which taxa or clusters are most
+#' represented either by sequence or cluster number.
+#' If cluster IDs are provided, the plot is made for
+#' clusters. If taxonomic IDs are provided, the plot
+#' is made for taxa.
+#' @param phylota PhyLoTa object
+#' @param cids Cluster IDs
+#' @param txids Taxonomic IDs
+#' @param cnms Cluster names
+#' @param txnms Taxonomic names
+#' @param with_labels Show names per box?
+#' @param area What determines the size per box?
+#' @param fill What determines the coloured fill per box?
+#' @details The function can take a long time to run for
+#' large PhyLoTa objects over many taxonomic IDs because
+#' searches are made across lineages.
+#' The idea of the function is to assess the data
+#' dominance of specific clusters and taxa.
+#' @return geom_object
+#' @examples 
+#' data("tinamous")
+#' # Plot clusters, size by n. sq, fill by n. tx
+#' p <- plot_phylota_treemap(phylota=tinamous, cids=tinamous@cids,
+#'                           area='nsq', fill='ntx')
+#' print(p)
+#' # Plot taxa, size by n. sq, fill by ncl
+#' txids <- get_txids(tinamous, txids=tinamous@txids,
+#'                    rnk='genus')
+#' txids <- txids[txids != '']
+#' txids <- unique(txids)
+#' txnms <- get_tx_slot(tinamous, txids, slt_nm='scnm')
+#' p <- plot_phylota_treemap(phylota=tinamous, txids=txids,
+#'                           txnms=txnms, area='nsq', fill='ncl')
+#' print(p)
+#' @export
+plot_phylota_treemap <- function(phylota, cids=NULL,
+                                 txids=NULL, cnms=cids,
+                                 txnms=txids, with_labels=TRUE,
+                                 area=c('ntx', 'nsq', 'ncl'),
+                                 fill=c('NULL', 'typ', 'ntx',
+                                        'nsq', 'ncl')) {
+  mkcldata <- function(i) {
+    cl <- phylota@cls@cls[[which(cids[i] == phylota@cids)]]
+    data.frame(id=cids[i], label=cnms[i], nsq=cl@nsqs,
+               ntx=cl@ntx, typ=cl@typ)
+  }
+  mktxdata <- function(i) {
+    in_cl <- function(j) {
+      cl <- phylota@cls@cls[[j]]
+      any(in_sqs[cl@sids])
+    }
+    tx <- phylota@txdct@rcrds[[txids[i]]]
+    in_sqs <- vapply(phylota@sids, is_txid_in_sq,
+                     logical(1), txid=txids[i],
+                     phylota=phylota)
+    in_cls <- vapply(seq_along(phylota@cls),
+                     in_cl, logical(1))
+    data.frame(id=txids[i], label=txnms[i],
+               nsq=sum(in_sqs), ncl=sum(in_cls))
+  }
+  area <- match.arg(area)
+  fill <- match.arg(fill)
+  if(!is.null(cids)) {
+    p_data <- lapply(seq_along(cids), mkcldata)
+  } else if(!is.null(txids)) {
+    p_data <- lapply(seq_along(txids), mktxdata)
+  } else {
+    stop('Either cids or txids not provided.')
+  }
+  p_data <- do.call('rbind', p_data)
+  p <- ggplot2::ggplot(p_data,
+                       ggplot2::aes_string(area=area,
+                                           fill=fill,
+                                           subgroup='label',
+                                           label='label')) +
+    treemapify::geom_treemap()
+  if(with_labels) {
+    p <- p + treemapify::geom_treemap_subgroup_text()
+  }
+  p
+}
+
+#' @name is_txid_in_sq
+#' @title Is txid in sequence?
+#' @description Checks if given txid is represented
+#' by sequence by looking at sequence source organism's
+#' lineage.
+#' @param phylota PhyLoTa object
+#' @param txid Taxonomic ID
+#' @param sid Sequence ID
+#' @return boolean
+#' @examples
+#' data(tinamous)
+#' sid <- tinamous@sids[[1]]
+#' sq <- tinamous[[sid]]
+#' txid <- sq@txid
+#' # expect true
+#' is_txid_in_sq(phylota=tinamous, txid=txid, sid=sid)
+#' @export
+is_txid_in_sq <- function(phylota, txid, sid) {
+  sq <- phylota@sqs@sqs[[which(sid == phylota@sids)]]
+  sq_tx <-  phylota@txdct@rcrds[[sq@txid]]
+  txid %in% sq_tx@lng[['ids']]
+}
+
+#' @name is_txid_in_cl
+#' @title Is txid in cluster?
+#' @description Checks if given txid is represented
+#' by any of the sequences of a cluster by searching
+#' through all the sequence search organism lineages.
+#' @param phylota PhyLoTa object
+#' @param txid Taxonomic ID
+#' @param cid Cluster ID
+#' @return boolean
+#' @examples
+#' data(tinamous)
+#' cid <- tinamous@cids[[1]]
+#' cl <- tinamous[[cid]]
+#' sq <- tinamous[[cl@sids[[1]]]]
+#' txid <- sq@txid
+#' # expect true
+#' is_txid_in_cl(phylota=tinamous, txid=txid, cid=cid)
+#' @export
+is_txid_in_cl <- function(phylota, txid, cid) {
+  cl <- phylota@cls@cls[[which(cid == phylota@cids)]]
+  bool <- vapply(cl@sids, is_txid_in_sq, logical(1),
+                 txid=txid, phylota=phylota)
+  any(bool)
+}
+
 
 #' @name summary_phylota
 #' @title Summarise clusters in PhyLoTa Table

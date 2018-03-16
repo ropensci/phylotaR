@@ -29,7 +29,7 @@ get_ntaxa <- function(phylota, cid=NULL, sid=NULL,
 }
 
 #' @name get_txids
-#' @title Get taxonomic IDs
+#' @title Get taxonomic IDs by rank
 #' @description Return taxonomic IDs for
 #' a vector of sequence IDs or all sequences in a cluster.
 #' User can specify what rank the IDs should be
@@ -37,18 +37,21 @@ get_ntaxa <- function(phylota, cid=NULL, sid=NULL,
 #' @param phylota Phylota object
 #' @param cid CLuster ID
 #' @param sid Sequence ID(s)
-#' @param rnk Taxonomic rnk
+#' @param txids Vector of txids
+#' @param rnk Taxonomic rank
 #' @param keep_higher Keep higher taxonomic IDs?
-#' @details If keep_higher is TRUE, any sequence that has
+#' @details txids can either be provided by user or
+#' they can be determined for a vector of sids or for a
+#' cid.
+#' If keep_higher is TRUE, any sequence that has
 #' a identity that is higher than the given rank will be returned.
 #' If FALSE, these sequences will return ''.
 #' @return vector
 #' @export
 get_txids <- function(phylota, cid=NULL, sid=NULL,
-                      rnk=NULL, keep_higher=FALSE) {
-  get <- function(sid) {
-    sq <- phylota@sqs[[sid]]
-    txid <- sq@txid
+                      txids=NULL, rnk=NULL,
+                      keep_higher=FALSE) {
+  get <- function(txid) {
     tx <- phylota@txdct@rcrds[[txid]]
     rnks <- tx@lng[['rnks']]
     ids <- tx@lng[['ids']]
@@ -63,15 +66,19 @@ get_txids <- function(phylota, cid=NULL, sid=NULL,
     }
     ids[[mtch[[1]]]]
   }
-  if(!is.null(cid)) {
-    cl <- phylota@cls[[cid]]
-    sid <- cl@sids
+  if(is.null(txids)) {
+    if(!is.null(cid)) {
+      cl <- phylota@cls[[cid]]
+      sid <- cl@sids
+    }
+    txids <- get_sq_slot(phylota=phylota,
+                         sid=sid,
+                         slt_nm='txid')
   }
   if(is.null(rnk)) {
-    return(get_sq_slot(phylota=phylota,
-                       sid=sid, slt_nm='txid'))
+    return(txids)
   }
-  vapply(sid, get, '')
+  vapply(txids, get, '')
 }
 
 #' @name get_nsqs

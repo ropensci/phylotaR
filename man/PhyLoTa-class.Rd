@@ -9,7 +9,6 @@
 \alias{print,PhyLoTa-method}
 \alias{str,PhyLoTa-method}
 \alias{summary,PhyLoTa-method}
-\alias{plot,PhyLoTa,missing-method}
 \alias{[[,PhyLoTa,character-method}
 \title{PhyLoTa-class}
 \usage{
@@ -23,8 +22,6 @@
 
 \S4method{summary}{PhyLoTa}(object)
 
-\S4method{plot}{PhyLoTa,missing}(x, y, ...)
-
 \S4method{[[}{PhyLoTa,character}(x, i)
 }
 \arguments{
@@ -35,8 +32,6 @@
 \item{max.level}{Maximum level of nesting for str()}
 
 \item{...}{Further arguments for str()}
-
-\item{y}{Not used in plot for this class}
 
 \item{i}{Either sid or cid}
 }
