@@ -65,7 +65,9 @@ list_ncbi_ranks <- function() {
 #' @return vector
 #' @export
 list_sqrcrd_slots <- function() {
-  names(getSlots('SqRcrd'))
+  slt_typs <- getSlots('SqRcrd')
+  pull <- slt_typs %in% c('character', 'integer', 'raw', 'numeric')
+  names(slt_typs[pull])
 }
 
 #' @name list_clrcrd_slots
@@ -75,7 +77,9 @@ list_sqrcrd_slots <- function() {
 #' @return vector
 #' @export
 list_clrcrd_slots <- function() {
-  names(getSlots('ClRcrd'))
+  slt_typs <- getSlots('ClRcrd')
+  pull <- slt_typs %in% c('character', 'integer', 'raw', 'numeric')
+  names(slt_typs[pull])
 }
 
 #' @name list_txrcrd_slots
@@ -85,5 +89,7 @@ list_clrcrd_slots <- function() {
 #' @return vector
 #' @export
 list_txrcrd_slots <- function() {
-  names(getSlots('TxRcrd'))
+  slt_typs <- getSlots('TxRcrd')
+  pull <- slt_typs %in% c('character', 'integer', 'raw', 'numeric')
+  names(slt_typs[pull])
 }
