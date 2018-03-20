@@ -61,9 +61,12 @@ mrgClstrs <- function(jnd_clstrs, txdct) {
   for(i in seq_along(jnd_clstrs)) {
     cl <- jnd_clstrs[[i]]
     prnt <- getPrnt(id=cl[['txids']], txdct=txdct)
+    nsqs <- length(cl[['sids']])
+    ntx <- length(unique(cl[['txids']]))
     cl_rcrd <- new('ClRcrd', sids=cl[['sids']],
-                   txids=cl[['txids']], typ='merged',
-                   seed=cl[['seed']], prnt=prnt)
+                   txids=cl[['txids']], nsqs=nsqs,
+                   ntx=ntx, typ='merged',
+                   prnt=prnt, seed=cl[['seed']])
     mrg_clstrs[[i]] <- cl_rcrd
   }
   mrg_clstrs
