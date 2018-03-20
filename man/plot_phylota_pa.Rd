@@ -4,8 +4,7 @@
 \alias{plot_phylota_pa}
 \title{Plot presence/absence matrix}
 \usage{
-plot_phylota_pa(phylota, cids, txids, cnms = cids, txnms = txids,
-  cord = unique(cnms), txord = unique(txnms))
+plot_phylota_pa(phylota, cids, txids, cnms = cids, txnms = txids)
 }
 \arguments{
 \item{phylota}{PhyLoTa object}
@@ -17,10 +16,6 @@ plot_phylota_pa(phylota, cids, txids, cnms = cids, txnms = txids,
 \item{cnms}{Cluster names}
 
 \item{txnms}{Taxonomic names}
-
-\item{cord}{Cluster names order}
-
-\item{txord}{Taxonomic names order}
 }
 \value{
 geom_object
@@ -31,9 +26,7 @@ cluster in phylota object.
 }
 \details{
 Cluster names and taxonomic names
-can be given to the function, by default IDs are used
-A user can also specify the order in which the names
-are displayed using the *ord arguments.
+can be given to the function, by default IDs are used.
 }
 \examples{
 library(phylotaR)
@@ -47,13 +40,16 @@ print(p)  # lots of information, difficult to interpret
 # get genus-level taxonomic names
 genus_txids <- get_txids(cycads,
                          txids=cycads@txids,
-                        rnk='genus')
+                         rnk='genus')
+genus_txids <- unique(genus_txids)
 # dropping missing
 genus_txids <- genus_txids[genus_txids != '']
 genus_nms <- get_tx_slot(cycads, genus_txids, slt_nm='scnm')
+# make alphabetical for plotting
+genus_nms <- sort(genus_nms, decreasing=TRUE)
 # generate geom_object
 p <- plot_phylota_pa(phylota=cycads, cids=cycads@cids,
-                     txids=cycads@txids, txnms=genus_nms)
+                     txids=genus_txids, txnms=genus_nms)
 # plot
 print(p)  # easier to interpret
 }

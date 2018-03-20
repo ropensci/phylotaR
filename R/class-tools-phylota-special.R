@@ -83,12 +83,8 @@ write_sqs <- function(phylota, outfile,
 #' @param txids Vector of taxonomic IDs
 #' @param cnms Cluster names
 #' @param txnms Taxonomic names
-#' @param cord Cluster names order
-#' @param txord Taxonomic names order
 #' @details Cluster names and taxonomic names
-#' can be given to the function, by default IDs are used
-#' A user can also specify the order in which the names
-#' are displayed using the *ord arguments.
+#' can be given to the function, by default IDs are used.
 #' @return geom_object
 #' @examples
 #' library(phylotaR)
@@ -102,28 +98,32 @@ write_sqs <- function(phylota, outfile,
 #' # get genus-level taxonomic names
 #' genus_txids <- get_txids(cycads,
 #'                          txids=cycads@txids,
-#'                         rnk='genus')
+#'                          rnk='genus')
+#' genus_txids <- unique(genus_txids)
 #' # dropping missing
 #' genus_txids <- genus_txids[genus_txids != '']
 #' genus_nms <- get_tx_slot(cycads, genus_txids, slt_nm='scnm')
+#' # make alphabetical for plotting
+#' genus_nms <- sort(genus_nms, decreasing=TRUE)
 #' # generate geom_object
 #' p <- plot_phylota_pa(phylota=cycads, cids=cycads@cids,
-#'                      txids=cycads@txids, txnms=genus_nms)
+#'                      txids=genus_txids, txnms=genus_nms)
 #' # plot
 #' print(p)  # easier to interpret
 #' @export
 plot_phylota_pa <- function(phylota, cids, txids,
-                            cnms=cids, txnms=txids,
-                            cord=unique(cnms),
-                            txord=unique(txnms)) {
+                            cnms=cids, txnms=txids) {
   mkdata <- function(cid) {
     cl <- phylota@cls@cls[[which(cid == phylota@cids)]]
-    value <- factor(as.numeric(txids %in% cl@txids))
+    value <- apply(X=tis_mtrx[ ,cl@sids], 1, any)
+    value <- factor(as.numeric(value))
     data.frame(txid=as.character(txids),
                cid=cid, value=value)
   }
   value <- NULL
   # gen p_data
+  tis_mtrx <- mk_txid_in_sq_mtrx(phylota=phylota,
+                                 txids=txids)
   p_data <- lapply(cids, mkdata)
   p_data <- do.call('rbind', p_data)
   p_data[['cnm']] <- 
@@ -132,10 +132,10 @@ plot_phylota_pa <- function(phylota, cids, txids,
     txnms[match(p_data[['txid']], txids)]
   # reorder
   p_data[['cnm']] <- factor(p_data[['cnm']],
-                            levels=cord,
+                            levels=cnms,
                             ordered=TRUE)
   p_data[['txnm']] <- factor(p_data[['txnm']],
-                             levels=txord,
+                             levels=txnms,
                              ordered=TRUE)
   # plot
   # https://stackoverflow.com/questions/9439256/how-can-i-handle-r-cmd-check-no-visible-binding-for-global-variable-notes-when
@@ -197,25 +197,33 @@ plot_phylota_treemap <- function(phylota, cids=NULL,
     data.frame(id=cids[i], label=cnms[i], nsq=cl@nsqs,
                ntx=cl@ntx, typ=cl@typ)
   }
+  getcltxids <- function(i) {
+    cl <- phylota@cls@cls[[i]]
+    res <- cl@txids
+    names(res) <- NULL
+    res
+  }
   mktxdata <- function(i) {
-    in_cl <- function(j) {
-      cl <- phylota@cls@cls[[j]]
-      any(in_sqs[cl@sids])
+    anycltxids <- function(ids) {
+      any(ids %in% all_ids)
     }
-    tx <- phylota@txdct@rcrds[[txids[i]]]
-    in_sqs <- vapply(phylota@sids, is_txid_in_sq,
-                     logical(1), txid=txids[i],
-                     phylota=phylota)
-    in_cls <- vapply(seq_along(phylota@cls),
-                     in_cl, logical(1))
+    ads <- getADs(id=txids[i],
+                  txdct=phylota@txdct)
+    all_ids <- c(ads, txids[i])
+    nsq <- sum(sids_txids %in% all_ids)
+    ncl <- sum(vapply(cids_txids, anycltxids,
+                      logical(1)))
     data.frame(id=txids[i], label=txnms[i],
-               nsq=sum(in_sqs), ncl=sum(in_cls))
+               nsq=nsq, ncl=ncl)
   }
   area <- match.arg(area)
   fill <- match.arg(fill)
   if(!is.null(cids)) {
     p_data <- lapply(seq_along(cids), mkcldata)
   } else if(!is.null(txids)) {
+    sids_txids <- get_sq_slot(phylota, sid=phylota@sids,
+                              slt_nm='txid')
+    cids_txids <- lapply(seq_along(phylota@cids), getcltxids)
     p_data <- lapply(seq_along(txids), mktxdata)
   } else {
     stop('Either cids or txids not provided.')
@@ -231,6 +239,30 @@ plot_phylota_treemap <- function(phylota, cids=NULL,
     p <- p + treemapify::geom_treemap_subgroup_text()
   }
   p
+}
+
+#' @name mk_txid_in_sq_mtrx
+#' @title Return matrix of txid in sequence
+#' @description Searches through lineages of sequences'
+#' source organisms to determine whether each txid
+#' is represented by the sequence.
+#' @param phylota PhyLoTa object
+#' @param txids Taxonomic IDs
+#' @param sids Sequence IDs
+#' @return matrix
+mk_txid_in_sq_mtrx <- function(phylota, txids,
+                               sids=phylota@sids) {
+  is_txid_in_sqs <- function(txid) {
+    ads <- getADs(id=txid, txdct=phylota@txdct)
+    all_ids <- c(ads, txid)
+    sids_txids %in% all_ids
+  }
+  sids_txids <- get_sq_slot(phylota, sid=sids,
+                            slt_nm='txid')
+  tis_mtrx <- do.call('rbind', lapply(txids, is_txid_in_sqs))
+  colnames(tis_mtrx) <- sids
+  rownames(tis_mtrx) <- txids
+  tis_mtrx
 }
 
 #' @name is_txid_in_sq
