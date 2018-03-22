@@ -73,6 +73,9 @@ nSqs <- function(txid, ps, drct=FALSE) {
 #' @return vector ot IDs
 getGIs <- function(txid, drct, sqcnt, ps, retmax=100,
                    hrdmx=100000) {
+  if(chckGIs(wd=ps[['wd']], txid=txid)) {
+    return(ldGIs(wd=ps[['wd']], txid=txid))
+  }
   trm <- mkSrchTrm(txid=txid, ps=ps, drct=drct)
   if(sqcnt <= hrdmx) {
     args <- list(db='nucleotide', retmax=sqcnt, term=trm)
@@ -115,5 +118,6 @@ getGIs <- function(txid, drct, sqcnt, ps, retmax=100,
     }
     ids <- c(ids, strsplit(id_ftch, '\n')[[1]])
   }
+  svGIs(wd=ps[['wd']], txid=txid, gis=ids)
   ids
 }
