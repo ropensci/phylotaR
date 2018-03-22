@@ -23,7 +23,7 @@ rwRcrd2SqRcrd <- function(rw_rcrds, gis, ps) {
     ml_typ <- rcrd[['GBSeq_moltype']]
     if(is.null(ml_typ)) {
       # ml_typ not always recorded, e.g. NR_040059
-      ml_type <- ''
+      ml_typ <- ''
     }
     sq <- rcrd[['GBSeq_sequence']]
     create_date <- rcrd[["GBSeq_create-date"]]
