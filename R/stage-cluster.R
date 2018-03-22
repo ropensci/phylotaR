@@ -14,6 +14,11 @@ calcClstrs <- function(txdct, ps) {
   for(i in seq_along(sq_fls)) {
     sq_fl <- sq_fls[i]
     # TODO: use the cache tool
+    clfl <- file.path(file.path(file.path(ps[['wd']], 'cache',
+                                          'clstrs', sq_fl)))
+    if(file.exists(clfl)) {
+      next
+    }
     sqs <- readRDS(file=file.path(file.path(ps[['wd']], 'cache',
                                             'sqs', sq_fl)))
     txid <- as.character(sub('\\.RData', '', sq_fl))
