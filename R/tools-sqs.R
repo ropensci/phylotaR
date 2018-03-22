@@ -22,8 +22,8 @@ rwRcrd2SqRcrd <- function(rw_rcrds, gis, ps) {
     vrsn <- rcrd[["GBSeq_accession-version"]]
     ml_typ <- rcrd[['GBSeq_moltype']]
     if(is.null(ml_typ)) {
-      # TODO: Quick fix... must investigate
-      next
+      # ml_typ not always recorded, e.g. NR_040059
+      ml_type <- ''
     }
     sq <- rcrd[['GBSeq_sequence']]
     create_date <- rcrd[["GBSeq_create-date"]]
