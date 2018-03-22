@@ -41,6 +41,11 @@ dwnldSqRcrds <- function(txids, txdct, ps) {
   sqcnt <- 0
   for(i in seq_along(txids)) {
     txid <- txids[i]
+    sqfl <- file.path(ps[['wd']], 'cache', 'sqs',
+                      paste0(txid, '.RData'))
+    if(file.exists(sqfl)) {
+      next
+    }
     info(lvl=1, ps=ps,
          "Working on parent [id ", txid, "]: [", i, "/",
          length(txids), "] ...")
