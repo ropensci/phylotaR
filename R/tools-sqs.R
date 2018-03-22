@@ -6,12 +6,22 @@
 #' @param gis GIs of each fectched record
 #' @param ps Parameters list
 rwRcrd2SqRcrd <- function(rw_rcrds, gis, ps) {
+  # gis <- '558614019'
   # rw_rcrds <- rentrez::entrez_fetch(db="nucleotide",
   #                                   rettype='gbwithparts',
-  #                                   retmode='text',
-  #                                   id='EF597500.1')
+  #                                   retmode='xml',
+  #                                   id=gis)
   res <- NULL
-  rcrds <- XML::xmlToList(rw_rcrds)
+  rcrds <- try(XML::xmlToList(rw_rcrds), silent=TRUE)
+  if(inherits(rcrds, 'try-error')) {
+    msg <- paste0('XML parsing error with one or more of the following GIs:\n[',
+                  paste0(gis, collapse=','), ']\nSkipping...\n',
+                  '(This can occur with GenBank data. ',
+                  'Trying restarting pipeline to see if warning reoccurs. ',
+                  'If it does, contact maintainer.)')
+    warn(ps=ps, msg)
+    return(NULL)
+  }
   for(i in seq_along(rcrds)) {
     # for debugging.... save last GI
     svObj(wd=ps[['wd']], obj=gis[[i]], nm='last_gi')
