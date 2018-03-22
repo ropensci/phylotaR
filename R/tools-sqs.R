@@ -13,12 +13,18 @@ rwRcrd2SqRcrd <- function(rw_rcrds, gis, ps) {
   res <- NULL
   rcrds <- XML::xmlToList(rw_rcrds)
   for(i in seq_along(rcrds)) {
+    # for debugging.... save last GI
+    svObj(wd=ps[['wd']], obj=gis[[i]], nm='last_gi')
     rcrd <- rcrds[[i]]
     wftrs <-  FALSE
     # key info
     accssn <- rcrd[['GBSeq_primary-accession']]
     vrsn <- rcrd[["GBSeq_accession-version"]]
     ml_typ <- rcrd[['GBSeq_moltype']]
+    if(is.null(ml_typ)) {
+      # TODO: Quick fix... must investigate
+      next
+    }
     sq <- rcrd[['GBSeq_sequence']]
     create_date <- rcrd[["GBSeq_create-date"]]
     create_date <- as.Date(create_date,
