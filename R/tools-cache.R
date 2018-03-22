@@ -1,3 +1,4 @@
+# TODO: lots of duplicated lines, break into small functions.
 
 #' @name intPrgrss
 #' @title Initialise progress list in cache

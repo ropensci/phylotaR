@@ -20,7 +20,8 @@ Imports:
     ggplot2,
     sys,
     treeman,
-    treemapify
+    treemapify,
+    R.utils
 Suggests:
     foreach,
     doMC,

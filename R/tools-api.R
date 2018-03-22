@@ -1,3 +1,5 @@
+# TODO: sometimes entrez hangs, create a timeout
+
 #' @name srchNCch
 #' @title Run rentrez function and cache results
 #' @description Safely run a rentrez function.
@@ -29,7 +31,12 @@ srchNCch <- function(func, args, fnm, ps) {
 safeSrch <- function(func, args, fnm, ps) {
   res <- NULL
   for(wt_tm in ps[['wt_tms']]) {
-    query <- try(do.call(func, args), silent=TRUE)
+    # limit query to 1 hour
+    # TODO: allow user interruption with tryCatch?
+    query <- try(R.utils::withTimeout(do.call(func, args),
+                                      timeout=3600),
+                 silent=TRUE)
+    #query <- try(do.call(func, args), silent=TRUE)
     if(chckSrchObj(query)) {
       res <- query
       break
