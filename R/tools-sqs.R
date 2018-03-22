@@ -36,8 +36,14 @@ rwRcrd2SqRcrd <- function(rw_rcrds, gis, ps) {
     kywrds <- paste0(kywrds, collapse=' | ')
     # extract features
     for(ftr in ftr_tbl) {
+      # TODO: perhaps make sure locations don't overlap
+      if(grepl('^source$', ftr[['GBFeature_key']],
+               ignore.case=TRUE)) {
+        next
+      }
       lctn <- ftr[['GBFeature_location']]
-      if(!grepl('^[0-9\\.]+$', lctn)) {
+      lctn <- gsub('[^0-9\\.]', '', lctn)
+      if(nchar(lctn) == 0) {
         next
       }
       strtstp <- strsplit(x=lctn, split='\\.\\.')[[1]]
@@ -46,6 +52,10 @@ rwRcrd2SqRcrd <- function(rw_rcrds, gis, ps) {
       }
       strtstp <- as.numeric(strtstp)
       sqlngth <- strtstp[2] - strtstp[1]
+      if(all(strtstp == c(1, nchar(sq)))) {
+        # feature should not span entire sequence
+        next
+      }
       if(sqlngth > ps[['mnsql']] & sqlngth < ps[['mxsql']]) {
         ftr_nm <- ftr[['GBFeature_quals']][[
           'GBQualifier']][['GBQualifier_value']]
