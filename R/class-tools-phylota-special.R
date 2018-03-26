@@ -116,7 +116,7 @@ plot_phylota_pa <- function(phylota, cids, txids,
   mkdata <- function(cid) {
     cl <- phylota@cls@cls[[which(cid == phylota@cids)]]
     value <- apply(X=tis_mtrx[ ,cl@sids], 1, any)
-    value <- factor(as.numeric(value))
+    value <- as.numeric(value)
     data.frame(txid=as.character(txids),
                cid=cid, value=value)
   }
@@ -143,7 +143,8 @@ plot_phylota_pa <- function(phylota, cids, txids,
   ggplot2::ggplot(p_data, ggplot2::aes(cnm, txnm)) +
     ggplot2::geom_tile(ggplot2::aes(fill=value)) +
     ggplot2::xlab('') + ggplot2::ylab('') +
-    ggplot2::scale_fill_manual(values=c('white', 'black')) +
+    ggplot2::scale_fill_gradient(low='#e0e0e0',
+                                 high='#303030') +
     ggplot2::theme_bw() +
     ggplot2::theme(legend.position='none')
 }
@@ -209,7 +210,8 @@ plot_phylota_treemap <- function(phylota, cids=NULL,
     }
     ads <- getADs(id=txids[i],
                   txdct=phylota@txdct)
-    all_ids <- c(ads, txids[i])
+    sngltns <- getSngltns(txid=txids[i], txdct=phylota@txdct)
+    all_ids <- c(ads, txids[i], sngltns)
     nsq <- sum(sids_txids %in% all_ids)
     ncl <- sum(vapply(cids_txids, anycltxids,
                       logical(1)))
@@ -254,7 +256,8 @@ mk_txid_in_sq_mtrx <- function(phylota, txids,
                                sids=phylota@sids) {
   is_txid_in_sqs <- function(txid) {
     ads <- getADs(id=txid, txdct=phylota@txdct)
-    all_ids <- c(ads, txid)
+    sngltns <- getSngltns(txid=txid, txdct=phylota@txdct)
+    all_ids <- c(ads, txid, sngltns)
     sids_txids %in% all_ids
   }
   sids_txids <- get_sq_slot(phylota, sid=sids,

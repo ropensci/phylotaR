@@ -57,6 +57,24 @@ txid2Trid <- function(id, txdct) {
 }
 
 # GET
+#' @name getSngltns
+#' @title Get equivalent singleton IDs
+#' @description For a given taxonomic ID, return all the
+#' equivalent singleton IDs.
+#' @return Character vector
+#' @param txid txid
+#' @param txdct TxDct
+#' @details phylotaR drops all singleton nodes from
+#' the NCBI taxonomy upon initiation. To retrieve all
+#' the singleton IDs for an ID use this function.
+#' Singletons are defined as nodes in the hierarchy
+#' that do not split. 
+getSngltns <- function(txid, txdct) {
+  trid <- as.character(txdct@indx[match(txid, txdct@txids)])
+  sngltns <- txdct@txids[trid == txdct@indx]
+  sngltns[sngltns != txid]
+}
+
 #' @name getRnk
 #' @title Get rank
 #' @description Look-up taxonomic rank from TxDct.
