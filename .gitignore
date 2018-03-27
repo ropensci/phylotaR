@@ -1,0 +1,19 @@
+.Rproj.user
+.Rhistory
+.RData
+.Ruserdata
+*.Rproj
+
+# data files
+*.fa
+*.tsv
+blast/
+.~*
+cache/
+results/
+NCBI/
+taxonomy/
+log.txt
+inst/doc
+demos/ncbi_dr.txt
+demos/*/
