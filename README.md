@@ -54,4 +54,6 @@ Dom Bennett (maintainer, R package dev), Hannes Hettling (workhouse code dev), R
 
 ## Reference
 
+Bennett, D.J.; Hettling, H.; Silvestro, D.; Zizka, A.; Bacon, C.D.; Faurby, S.; Vos, R.A.; Antonelli, A. phylotaR: An automated pipeline for retrieving orthologous DNA sequences from GenBank in R. Preprints 2018, 2018040047 (doi: 10.20944/preprints201804.0047.v1).
+
 Sanderson, M. J., Boss, D., Chen, D., Cranston, K. A., & Wehe, A. (2008). The PhyLoTA Browser: Processing GenBank for molecular phylogenetics research. *Systematic Biology*, **57**(3), 335–346. [DOI:10.1080/10635150802158688](https://doi.org/10.1080/10635150802158688)
