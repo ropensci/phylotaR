@@ -6,10 +6,10 @@
 R implementation of the PhyLoTa sequence cluster pipeline (http://phylota.net/).
 
 ## Install
-Currently only devlopment package is available:
+Currently only the devlopment package is available:
 
 ```r
-devtools::install_github(repo='DomBennett/phylotaR', build_vignettes=TRUE)
+devtools::install_github(repo='AntonelliLab/phylotaR', build_vignettes=TRUE)
 ```
 
 **Full functionality depends on a local copy of BLAST+**. For details on downloading and compiling BLAST+ on your machine please visit the [NCBI website](https://www.ncbi.nlm.nih.gov/books/NBK279690/).
