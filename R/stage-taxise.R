@@ -5,17 +5,27 @@
 #' taxonomic nodes.
 #' @return Vector of txids
 #' @param ps Parameter list
-getTxids <- function(ps) {
+#' @param retmax integer, maximum number of IDs to return per query
+getTxids <- function(ps, retmax = 1E4) {
   # TODO: handle multiple txids
-  # TODO: handle taxa of more than 1E4
   trm <- paste0('txid', ps[['txid']],'[Subtree]')
-  args <- list(db='taxonomy', term=trm, retmax=1E4)
-  srch_rs <- srchNCch(func=rentrez::entrez_search, args=args,
-                      fnm='search', ps=ps)
-  if(srch_rs[['count']] > 1E4) {
-    error('Too large a clade.')
+  args <- list(db = 'taxonomy', term = trm, retmax = retmax)
+  srch_rs <- srchNCch(func = rentrez::entrez_search,
+                      args = args, fnm = 'search', ps = ps)
+  txcnt <- srch_rs[['count']]
+  txids <- srch_rs[['ids']]
+  if (txcnt < retmax) {
+    return(txids)
   }
-  srch_rs[['ids']]
+  ret_strts <- seq(retmax, txcnt, retmax)
+  for (ret_strt in ret_strts) {
+    args <- list(db = 'taxonomy', term = trm, retmax = retmax,
+                 retstart = ret_strt)
+    srch_rs <- srchNCch(func = rentrez::entrez_search,
+                        args = args, fnm = 'search', ps = ps)
+    txids <- c(txids, srch_rs[['ids']])
+  }
+  txids
 }
 
 #' @name dwnldTxRcrds

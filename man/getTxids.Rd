@@ -4,10 +4,12 @@
 \alias{getTxids}
 \title{Searches for descendent taxonomic IDs}
 \usage{
-getTxids(ps)
+getTxids(txid, ps, retmax = 10000)
 }
 \arguments{
 \item{ps}{Parameter list}
+
+\item{retmax}{integer, maximum number of IDs to return per query}
 }
 \value{
 Vector of txids
