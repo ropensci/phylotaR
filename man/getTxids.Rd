@@ -4,7 +4,7 @@
 \alias{getTxids}
 \title{Searches for descendent taxonomic IDs}
 \usage{
-getTxids(txid, ps, retmax = 10000)
+getTxids(ps, retmax = 10000)
 }
 \arguments{
 \item{ps}{Parameter list}
