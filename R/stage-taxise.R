@@ -83,8 +83,8 @@ genTxDct <- function(txids, rcrds) {
   prinds <- match(prids, txids[to_drop])
   prinds <- as.integer(prinds)
   # create tax tree
-  txtr <- genTxTr(prinds=prinds, trids=trids, root=root_trid)
+  txtr <- taxonomic_tree_generate(prinds=prinds, trids=trids, root=root_trid)
   # create tax dict
-  new('TxDct', txids=txids, rcrds=list2env(rcrds), txtr=txtr,
+  new('DictionaryTaxon', txids=txids, rcrds=list2env(rcrds), txtr=txtr,
       prnt=root, indx=indx)
 }
