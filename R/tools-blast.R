@@ -54,9 +54,12 @@ blstN <- function(dbfl, outfl, ps) {
   if(!file.exists(dbfl)) {
     error(ps=ps, paste0('[', dbfl, '] does not exist. '))
   }
-  outfmt <- "6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore qcovs qcovhsp"
+  if (grepl('windows', .Platform$OS.type)) {
+    outfmt <- "\"6 qseqid sseqid pident length evalue qcovs qcovhsp\""
+  } else {
+    outfmt <- "6 qseqid sseqid pident length evalue qcovs qcovhsp"
+  }
   # Disable DUST filtering, limit to same-strang matching
-  # TODO: We don't really need all these outfmt columns...
   args <- c('-query', dbfl, '-db', dbfl, '-outfmt', outfmt,
             '-dust', 'no', '-strand', 'plus', '-evalue', ps[['mxevl']],
             '-out', outfl)
@@ -75,10 +78,8 @@ blstN <- function(dbfl, outfl, ps) {
   }
   blst_rs <- read.table(outfl)
   colnames(blst_rs) <- c('query.id', 'subject.id', 'identity',
-                         'alignment.length', 'mismatches',
-                         'gap.opens', 'q.start', 'q.end',
-                         's.start', 's.end', 'evalue',
-                         'bit.score', 'qcovs', 'qcovhsp')
+                         'alignment.length', 'evalue',
+                         'qcovs', 'qcovhsp')
   blst_rs
 }
 
