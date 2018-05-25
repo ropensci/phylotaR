@@ -6,11 +6,11 @@
 #' @param gis GIs of each fectched record
 #' @param ps Parameters list
 rwRcrd2SqRcrd <- function(rw_rcrds, gis, ps) {
-  # gis <- '558614019'
-  # rw_rcrds <- rentrez::entrez_fetch(db="nucleotide",
-  #                                   rettype='gbwithparts',
-  #                                   retmode='xml',
-  #                                   id=gis)
+  gis <- '728952670'
+  rw_rcrds <- rentrez::entrez_fetch(db="nucleotide",
+                                    rettype='gbwithparts',
+                                    retmode='xml',
+                                    id=gis)
   res <- NULL
   rcrds <- try(XML::xmlToList(rw_rcrds), silent=TRUE)
   if(inherits(rcrds, 'try-error')) {
@@ -30,6 +30,9 @@ rwRcrd2SqRcrd <- function(rw_rcrds, gis, ps) {
     # key info
     accssn <- rcrd[['GBSeq_primary-accession']]
     vrsn <- rcrd[["GBSeq_accession-version"]]
+    if (is.null(vrsn)) {
+      next
+    }
     ml_typ <- rcrd[['GBSeq_moltype']]
     if(is.null(ml_typ)) {
       # ml_typ not always recorded, e.g. NR_040059
@@ -39,7 +42,8 @@ rwRcrd2SqRcrd <- function(rw_rcrds, gis, ps) {
     create_date <- rcrd[["GBSeq_create-date"]]
     create_date <- as.Date(create_date,
                            format="%d-%b-%Y")
-    age <- as.integer(ps[['date']] - create_date)
+    age <- as.integer(difftime(ps[['date']],
+                               create_date, units = 'days'))
     if(is.null(sq)) {
       # master records have no sequences
       # e.g. https://www.ncbi.nlm.nih.gov/nuccore/1283191328
