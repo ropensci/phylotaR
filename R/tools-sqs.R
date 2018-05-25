@@ -6,11 +6,11 @@
 #' @param gis GIs of each fectched record
 #' @param ps Parameters list
 rwRcrd2SqRcrd <- function(rw_rcrds, gis, ps) {
-  gis <- '728952670'
-  rw_rcrds <- rentrez::entrez_fetch(db="nucleotide",
-                                    rettype='gbwithparts',
-                                    retmode='xml',
-                                    id=gis)
+  # gis <- '728952670'
+  # rw_rcrds <- rentrez::entrez_fetch(db="nucleotide",
+  #                                   rettype='gbwithparts',
+  #                                   retmode='xml',
+  #                                   id=gis)
   res <- NULL
   rcrds <- try(XML::xmlToList(rw_rcrds), silent=TRUE)
   if(inherits(rcrds, 'try-error')) {
