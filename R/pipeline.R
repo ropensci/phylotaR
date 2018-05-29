@@ -13,16 +13,16 @@ setup <- function(wd, txid, ncbi_dr='.', v=FALSE,
   # header log
   msg <- paste0('phylotaR: Implementation of PhyLoTa in R [v',
                 packageVersion('phylotaR'), ']')
-  brdr <- paste0(rep('-', nchar(msg)), collapse='')
+  brdr <- paste0(rep('-', nchar(msg)), collapse = '')
   msg <- paste0(brdr, '\n', msg, '\n', brdr, '\n')
-  .log(v=v, wd=wd, msg)
+  .log(v = v, wd = wd, msg)
   # set up
-  ncbi_execs <- setUpNcbiTools(d=ncbi_dr, v=v,
-                               wd=wd)
-  setUpPrmtrs(wd=wd, txid=txid,
-              ncbi_execs=ncbi_execs, v=v, ...)
+  ncbi_execs <- blast_setup(d = ncbi_dr, v = v,
+                            wd = wd)
+  parameters_setup(wd = wd, txid = txid,
+                   ncbi_execs = ncbi_execs, v = v, ...)
   # end
-  .log(v=v, wd=wd, paste0(brdr, '\n'))
+  .log(v = v, wd = wd, paste0(brdr, '\n'))
 }
 
 #' @name run

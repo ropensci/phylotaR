@@ -10,24 +10,25 @@ taxise_run <- function(wd) {
   msg <- paste0('Starting stage TAXISE: [', Sys.time(), ']')
   .stgMsg(ps = ps, msg = msg)
   info(lvl = 1, ps = ps, 'Searching taxonomic IDs ...')
-  txids <- getTxids(ps = ps)
+  txids <- txids_get(ps = ps)
   info(lvl = 1, ps = ps, 'Downloading taxonomic records ...')
-  rcrds <- dwnldTxRcrds(txids = txids, ps = ps)
+  rcrds <- batcher(ids = txids, func = tax_download, ps = ps,
+                   lvl = 2)
   info(lvl = 1, ps = ps, 'Generating taxonomic dictionary ...')
-  txdct <- genTxDct(rcrds = rcrds, txids = txids)
+  txdct <- taxdict_gen(rcrds = rcrds, txids = txids)
   svObj(wd = wd, obj = txdct, nm = 'txdct')
   msg <- paste0('Completed stage TAXISE: [', Sys.time(), ']')
   .stgMsg(ps = ps, msg = msg)
 }
 
-#' @name getTxids
+#' @name txids_get
 #' @title Searches for descendent taxonomic IDs
 #' @description Searches NCBI taxonomy for all descendent
 #' taxonomic nodes.
 #' @return Vector of txids
 #' @param ps Parameter list
 #' @param retmax integer, maximum number of IDs to return per query
-getTxids <- function(ps, retmax = 1E4) {
+txids_get <- function(ps, retmax = 1E4) {
   # TODO: handle multiple txids
   trm <- paste0('txid', ps[['txid']],'[Subtree]')
   args <- list(db = 'taxonomy', term = trm, retmax = retmax)
@@ -42,35 +43,21 @@ getTxids <- function(ps, retmax = 1E4) {
   for (ret_strt in ret_strts) {
     args <- list(db = 'taxonomy', term = trm, retmax = retmax,
                  retstart = ret_strt)
-    srch_rs <- srchNCch(func = rentrez::entrez_search,
-                        args = args, fnm = 'search', ps = ps)
+    srch_rs <- search_and_cache(func = rentrez::entrez_search,
+                                args = args, fnm = 'search', ps = ps)
     txids <- c(txids, srch_rs[['ids']])
   }
   txids
 }
 
-#' @name dwnldTxRcrds
-#' @title Download and parse taxonomic records
-#' @description Downloads taxonomic records from a vector
-#' of IDs. Parses the returned records to control for
-#' lowest rank.
-#' @return List of taxonomic records
-#' @param txids Vector of taxonomic IDs
-#' @param ps Parameter list
-dwnldTxRcrds <- function(txids, ps) {
-  # TODO: add nsqs info
-  # TODO: drop all records below given rank
-  btchDwnldTxRcrds(txids=txids, ps=ps)
-}
-
-#' @name genTxDct
+#' @name taxdict_gen
 #' @title Generate taxonomic dictionary
 #' @description Takes a vector of txids and a list
 #' of taxonomic records and returns a taxonomic dictionary.
-#' @return TxDct
+#' @return TaxDct
 #' @param txids Vector of taxonomic IDs
 #' @param rcrds List of taxonomic records
-genTxDct <- function(txids, rcrds) {
+taxdict_gen <- function(txids, rcrds) {
   # TODO: allow paraphyly
   # identify pre-node IDs
   # based upon: https://github.com/DomBennett/treeman/wiki/trmn-format
@@ -106,6 +93,6 @@ genTxDct <- function(txids, rcrds) {
   # create tax tree
   txtr <- taxonomic_tree_generate(prinds=prinds, trids=trids, root=root_trid)
   # create tax dict
-  new('DictionaryTaxon', txids=txids, rcrds=list2env(rcrds), txtr=txtr,
+  new('TaxDct', txids=txids, rcrds=list2env(rcrds), txtr=txtr,
       prnt=root, indx=indx)
 }

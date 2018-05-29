@@ -99,3 +99,5 @@ btchDwnldSqRcrds <- function(txid, ps, drct=FALSE, lvl=0) {
   }
   allsqs
 }
+
+

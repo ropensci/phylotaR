@@ -47,11 +47,11 @@ Phylota table contains sequences and clusters information.
 
 \item{\code{txids}}{IDs of all taxa}
 
-\item{\code{sqs}}{All sequence records as ArchiveSequence}
+\item{\code{sqs}}{All sequence records as SeqArc}
 
-\item{\code{cls}}{All cluster records as ArchiveCluster}
+\item{\code{cls}}{All cluster records as ClusterArc}
 
-\item{\code{DictionaryTaxon}}{Taxonomic dictionary as DictionaryTaxon}
+\item{\code{TaxDict}}{Taxonomic dictionary as TaxDict}
 
 \item{\code{prnt_id}}{Parent taxonomic ID}
 

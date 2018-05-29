@@ -1,4 +1,4 @@
-#' @name taxonomic_tree_generate
+#' @name taxtree_gen
 #' @title Generate taxonomic tree
 #' @description Generate a taxonomic tree for
 #' easy look up of taxonomic parents and descendants.
@@ -9,9 +9,9 @@
 #' @importClassesFrom treeman TreeMan
 #' @noRd
 #' @return TreeMan class
-taxonomic_tree_generate <- function(prinds, trids, root) {
+taxtree_gen <- function(prinds, trids, root) {
   .add <- function(i) {
-    nd <- vector("list", length=4)
+    nd <- vector("list", length = 4)
     names(nd) <- c('id', 'ptid', 'prid', 'spn')
     nd[['id']] <- trids[i]
     nd[['prid']] <- trids[prinds[i]]

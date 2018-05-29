@@ -97,7 +97,7 @@ clusterarc_check <- function(object) {
 setClass('ClusterArc', representation = representation(
   ids = 'vector',
   cls = 'list'),
-  validity = archive_cluster_check)
+  validity = clusterarc_check)
 
 #' @rdname ClusterArc-class
 #' @exportMethod as.character
@@ -277,7 +277,7 @@ setClass('SeqArc', representation = representation(
   nambgs = 'vector',
   txids = 'vector',
   sqs = 'list'),
-  validity = archive_sequence_check)
+  validity = seqarc_check)
 
 #' @rdname SeqArc-class
 #' @exportMethod as.character
@@ -376,7 +376,7 @@ setClass('TaxRec', representation = representation(
   rnk = 'character',
   lng = 'list',
   prnt = 'character'),
-  validity = record_taxon_check)
+  validity = taxrec_check)
 
 #' @rdname TaxRec-class
 #' @exportMethod as.character
@@ -443,7 +443,7 @@ setClass('TaxDict', representation = representation(
   rcrds = 'environment',
   txtr = 'TreeMan',
   prnt = 'character'),
-  validity = dictionary_taxon_check)
+  validity = taxdict_check)
 
 #' @rdname TaxDict-class
 #' @exportMethod as.character
