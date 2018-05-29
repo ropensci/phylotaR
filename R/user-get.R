@@ -11,19 +11,19 @@
 #' @param keep_higher Keep higher taxonomic ranks?
 #' @return vector
 #' @export
-get_ntaxa <- function(phylota, cid=NULL, sid=NULL,
-                      rnk=NULL, keep_higher=FALSE) {
+get_ntaxa <- function(phylota, cid = NULL, sid = NULL,
+                      rnk = NULL, keep_higher = FALSE) {
   count <- function(sids) {
-    txids <- get_txids(phylota=phylota, sid=sids,
-                       rnk=rnk, keep_higher=keep_higher)
+    txids <- get_txids(phylota = phylota, sid = sids,
+                       rnk = rnk, keep_higher = keep_higher)
     length(unique(txids))
   }
   get_sids_and_count <- function(cid) {
     cl <- phylota@cls[[cid]]
     count(cl@sids)
   }
-  if(!is.null(sid)) {
-    return(count(sids=sid))
+  if (!is.null(sid)) {
+    return(count(sids = sid))
   }
   vapply(cid, get_sids_and_count, integer(1))
 }
@@ -48,16 +48,16 @@ get_ntaxa <- function(phylota, cid=NULL, sid=NULL,
 #' If FALSE, these sequences will return ''.
 #' @return vector
 #' @export
-get_txids <- function(phylota, cid=NULL, sid=NULL,
-                      txids=NULL, rnk=NULL,
-                      keep_higher=FALSE) {
+get_txids <- function(phylota, cid = NULL, sid = NULL,
+                      txids = NULL, rnk = NULL,
+                      keep_higher = FALSE) {
   get <- function(txid) {
     tx <- phylota@txdct@rcrds[[txid]]
     rnks <- tx@lng[['rnks']]
     ids <- tx@lng[['ids']]
     mtch <- which(rnk == rnks)
-    if(length(mtch) == 0) {
-      if(keep_higher) {
+    if (length(mtch) == 0) {
+      if (keep_higher) {
         # if no match, use lowest available rank
         mtch <- length(rnks)
       } else {
@@ -66,16 +66,16 @@ get_txids <- function(phylota, cid=NULL, sid=NULL,
     }
     ids[[mtch[[1]]]]
   }
-  if(is.null(txids)) {
-    if(!is.null(cid)) {
+  if (is.null(txids)) {
+    if (!is.null(cid)) {
       cl <- phylota@cls[[cid]]
       sid <- cl@sids
     }
-    txids <- get_sq_slot(phylota=phylota,
-                         sid=sid,
-                         slt_nm='txid')
+    txids <- get_sq_slot(phylota = phylota,
+                         sid = sid,
+                         slt_nm = 'txid')
   }
-  if(is.null(rnk)) {
+  if (is.null(rnk)) {
     return(txids)
   }
   vapply(txids, get, '')
@@ -109,14 +109,14 @@ get_nsqs <- function(phylota, cid) {
 #' @return vector
 #' @export
 # TODO: GCR
-get_sq_slot <- function(phylota, cid=NULL, sid=NULL,
-                        slt_nm=list_sqrcrd_slots()) {
+get_sq_slot <- function(phylota, cid = NULL, sid = NULL,
+                        slt_nm = list_sqrcrd_slots()) {
   get <- function(sid) {
     i <- which(sid == phylota@sqs@ids)
     sq <- phylota@sqs@sqs[[i]]
     slot(sq, slt_nm)
   }
-  if(!is.null(cid)) {
+  if (!is.null(cid)) {
     cl <- phylota@cls[[cid]]
     sid <- cl@sids
   }
@@ -134,7 +134,7 @@ get_sq_slot <- function(phylota, cid=NULL, sid=NULL,
 #' @return vector
 #' @export
 get_cl_slot <- function(phylota, cid,
-                        slt_nm=list_clrcrd_slots()) {
+                        slt_nm = list_clrcrd_slots()) {
   get <- function(cid) {
     i <- which(cid == phylota@cls@ids)
     cl <- phylota@cls@cls[[i]]
@@ -154,7 +154,7 @@ get_cl_slot <- function(phylota, cid,
 #' @return vector or list
 #' @export
 get_tx_slot <- function(phylota, txid,
-                        slt_nm=list_txrcrd_slots()) {
+                        slt_nm = list_txrcrd_slots()) {
   get <- function(txid) {
     tx <- phylota@txdct@rcrds[[txid]]
     slot(tx, slt_nm)

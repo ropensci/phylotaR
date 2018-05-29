@@ -49,37 +49,37 @@ drop_cls <- function(phylota, cid) {
 #' @param greatest Greatest of lowest for each choose_by function
 #' @return phylota
 #' @export
-drop_by_rank <- function(phylota, rnk='species',
-                         keep_higher=FALSE, n=10,
-                         choose_by=c('pambgs', 'age',
-                                     'nncltds'),
-                         greatest=c(FALSE, FALSE, TRUE)) {
+drop_by_rank <- function(phylota, rnk = 'species',
+                         keep_higher = FALSE, n = 10,
+                         choose_by = c('pambgs', 'age',
+                                       'nncltds'),
+                         greatest = c(FALSE, FALSE, TRUE)) {
   slct <- function(txid) {
     pssbls <- sids[txid == txids]
-    for(i in seq_along(choose_by)) {
-      vals <- get_sq_slot(phylota=phylota, sid=pssbls,
-                          slt_nm=choose_by[[i]])
+    for (i in seq_along(choose_by)) {
+      vals <- get_sq_slot(phylota = phylota, sid = pssbls,
+                          slt_nm = choose_by[[i]])
       names(vals) <- pssbls
       mx_n <- ifelse(length(vals) > n, n, length(vals))
-      vals <- sort(x=vals, decreasing=greatest[i])[1:mx_n]
+      vals <- sort(x = vals, decreasing = greatest[i])[1:mx_n]
       pssbls <- names(vals)
     }
     pssbls
   }
   pull <- !choose_by %in% list_sqrcrd_slots()
-  if(any(pull)) {
+  if (any(pull)) {
     stop(paste0('[', choose_by[pull], '] not in SqRcrd.'))
   }
-  for(cid in phylota@cids) {
-    txids <- get_txids(phylota=phylota, cid=cid, 
-                       rnk=rnk, keep_higher=keep_higher)
+  for (cid in phylota@cids) {
+    txids <- get_txids(phylota = phylota, cid = cid, 
+                       rnk = rnk, keep_higher = keep_higher)
     sids <- phylota@cls[[cid]]@sids
     pull <- txids != ''
     sids <- sids[pull]
     txids <- txids[pull]
     unqids <- unique(txids)
     keep <- unlist(lapply(unqids, slct))
-    phylota <- drop_sqs(phylota=phylota, cid=cid, sid=keep)
+    phylota <- drop_sqs(phylota = phylota, cid = cid, sid = keep)
   }
   phylota
 }
