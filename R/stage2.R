@@ -1,3 +1,23 @@
+#' @name download_run
+#' @title Download 
+#' @description Download sequences
+#' @param wd Working directory
+#' @export
+download_run <- function(wd) {
+  ps <- ldPrmtrs(wd)
+  msg <- paste0('Starting stage DOWNLOAD: [', Sys.time(), ']')
+  .stgMsg(ps  =  ps, msg  =  msg)
+  info(lvl  =  1, ps  =  ps, 'Identifying suitable clades ...')
+  txdct <- ldObj(wd  =  wd, nm  =  'txdct')
+  clds_ids <- cldIdntfy(txdct  =  txdct, ps  =  ps)
+  info(lvl  =  1, ps  =  ps, 'Identified [', length(clds_ids),
+       '] suitable clades.')
+  info(lvl  =  1, ps  =  ps, 'Downloading hierarchically ...')
+  dwnldSqRcrds(txids  =  clds_ids, txdct  =  txdct, ps  =  ps)
+  msg <- paste0('Completed stage DOWNLOAD: [', Sys.time(), ']')
+  .stgMsg(ps  =  ps, msg  =  msg)
+}
+
 #' @name cldIdntfy
 #' @title Get all node IDs that will be processed
 #' @description All nodes with less than maximum number

@@ -1,3 +1,20 @@
+#' @name clusters2_run
+#' @title Cluster2
+#' @description Cluster the clusters
+#' @param wd Working directory
+#' @export
+clusters2_run <- function(wd) {
+  ps <- ldPrmtrs(wd)
+  # stage print
+  msg <- paste0('Starting stage CLUSTER^2: [', Sys.time(), ']')
+  .stgMsg(ps = ps, msg = msg)
+  # generate clusters
+  clstrClstrs(ps = ps)
+  # stage print
+  msg <- paste0('Completed stage CLUSTER^2: [', Sys.time(), ']')
+  .stgMsg(ps = ps, msg = msg)
+}
+
 #' @name clstrClstrs
 #' @title Cluster sets of clusters identified in cluster stage
 #' @description Loads cluster sets from cache. Extracts seed sequences

@@ -1,3 +1,20 @@
+#' @name clusters_run
+#' @title Cluster
+#' @description Identify sequence clusters
+#' for an initial PhyLoTa cluster table
+#' generated
+#' @param wd Working directory
+#' @export
+clusters_run <- function(wd) {
+  ps <- ldPrmtrs(wd)
+  msg <- paste0('Starting stage CLUSTER: [', Sys.time(), ']')
+  .stgMsg(ps  =  ps, msg  =  msg)
+  txdct <- ldObj(wd  =  wd, nm  =  'txdct')
+  calcClstrs(ps  =  ps, txdct  =  txdct)
+  msg <- paste0('Completed stage CLUSTER: [', Sys.time(), ']')
+  .stgMsg(ps  =  ps, msg  =  msg)
+}
+
 #' @name calcClstrs
 #' @title Calculate clusters for all sequences in WD
 #' @description Loop through downloaded sequences

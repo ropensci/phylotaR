@@ -1,6 +1,4 @@
-# TODO: sometimes entrez hangs, create a timeout
-
-#' @name srchNCch
+#' @name search_and_cache
 #' @title Run rentrez function and cache results
 #' @description Safely run a rentrez function.
 #' If the query fails, the function will retry.
@@ -10,13 +8,13 @@
 #' @param args rentrez function arguments, list
 #' @param fnm rentrez function name
 #' @param ps Parameters
-srchNCch <- function(func, args, fnm, ps) {
-  res <- ldNcbiCch(fnm=fnm, args=args, wd=ps[['wd']])
-  if(!is.null(res)) {
+search_and_cache <- function(func, args, fnm, ps) {
+  res <- ldNcbiCch(fnm = fnm, args = args, wd = ps[['wd']])
+  if (!is.null(res)) {
     return(res)
   }
-  res <- safeSrch(func=func, args=args, fnm=fnm, ps=ps)
-  svNcbiCch(fnm=fnm, args=args, wd=ps[['wd']], obj=res)
+  res <- safeSrch(func = func, args = args, fnm = fnm, ps = ps)
+  svNcbiCch(fnm = fnm, args = args, wd = ps[['wd']], obj = res)
   res
 }
 
@@ -34,9 +32,9 @@ safeSrch <- function(func, args, fnm, ps) {
     # limit query to 1 hour
     # TODO: allow user interruption with tryCatch?
     query <- try(R.utils::withTimeout(do.call(func, args),
-                                      timeout=3600),
-                 silent=TRUE)
-    #query <- try(do.call(func, args), silent=TRUE)
+                                      timeout = 3600),
+                 silent = TRUE)
+    #query <- try(do.call(func, args), silent = TRUE)
     if(chckSrchObj(query)) {
       res <- query
       break
@@ -46,7 +44,7 @@ safeSrch <- function(func, args, fnm, ps) {
                query[[1]])) {
         stop(query[[1]])
       }
-      info(lvl=1, ps=ps, "Retrying in [", wt_tm, "s] for [",
+      info(lvl = 1, ps = ps, "Retrying in [", wt_tm, "s] for [",
            fnm, ']')
       Sys.sleep(wt_tm)
     }
@@ -61,11 +59,11 @@ safeSrch <- function(func, args, fnm, ps) {
 #' returned from rentrez function is as expected.
 #' @param obj Object returned from rentrez function
 chckSrchObj <- function(obj) {
-  if(inherits(x=obj, what='try-error')) {
+  if(inherits(x = obj, what = 'try-error')) {
     return(FALSE)
   }
-  if(length(obj) == 1 & inherits(x=obj, what='character')) {
-    if(grepl(pattern='timeout', x=obj)) {
+  if(length(obj)  =  =  1 & inherits(x = obj, what = 'character')) {
+    if(grepl(pattern = 'timeout', x = obj)) {
       return(FALSE)
     }
   }

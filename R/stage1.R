@@ -1,3 +1,24 @@
+#' @name taxise_run
+#' @title Run taxise stage
+#' @description TODO
+#' @param wd Working directory
+#' @details Object will be cached.
+#' @export
+taxise_run <- function(wd) {
+  # TODO: allow a user to have their own taxids and/or tax tree
+  ps <- ldPrmtrs(wd)
+  msg <- paste0('Starting stage TAXISE: [', Sys.time(), ']')
+  .stgMsg(ps = ps, msg = msg)
+  info(lvl = 1, ps = ps, 'Searching taxonomic IDs ...')
+  txids <- getTxids(ps = ps)
+  info(lvl = 1, ps = ps, 'Downloading taxonomic records ...')
+  rcrds <- dwnldTxRcrds(txids = txids, ps = ps)
+  info(lvl = 1, ps = ps, 'Generating taxonomic dictionary ...')
+  txdct <- genTxDct(rcrds = rcrds, txids = txids)
+  svObj(wd = wd, obj = txdct, nm = 'txdct')
+  msg <- paste0('Completed stage TAXISE: [', Sys.time(), ']')
+  .stgMsg(ps = ps, msg = msg)
+}
 
 #' @name getTxids
 #' @title Searches for descendent taxonomic IDs
@@ -10,7 +31,7 @@ getTxids <- function(ps, retmax = 1E4) {
   # TODO: handle multiple txids
   trm <- paste0('txid', ps[['txid']],'[Subtree]')
   args <- list(db = 'taxonomy', term = trm, retmax = retmax)
-  srch_rs <- srchNCch(func = rentrez::entrez_search,
+  srch_rs <- search_and_cache(func = rentrez::entrez_search,
                       args = args, fnm = 'search', ps = ps)
   txcnt <- srch_rs[['count']]
   txids <- srch_rs[['ids']]
