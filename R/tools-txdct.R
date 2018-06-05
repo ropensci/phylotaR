@@ -9,72 +9,35 @@
 #' @importClassesFrom treeman TreeMan
 #' @noRd
 #' @return TreeMan class
-taxtree_gen <- function(prinds, trids, root) {
+taxtree_gen <- function(prinds, ids, root, ps) {
   .add <- function(i) {
     nd <- vector("list", length = 4)
     names(nd) <- c('id', 'ptid', 'prid', 'spn')
-    nd[['id']] <- trids[i]
-    nd[['prid']] <- trids[prinds[i]]
+    nd[['id']] <- ids[i]
+    nd[['prid']] <- ids[prinds[i]]
     nd[['ptid']] <- ptids[ptnds_pool == i]
     nd[['spn']] <- 1
     nd
   }
-  nonroot_i <- trids != root
+  nonroot_i <- ids != root
   nnds <- length(prinds)
   tinds <- which(!1:nnds %in% prinds)
   ptnds_pool <- prinds[nonroot_i]
-  ptids <- trids[nonroot_i]
+  ptids <- ids[nonroot_i]
   ndlst <- lapply(1:nnds, .add)
-  names(ndlst) <- trids
-  tree <- new('TreeMan', ndlst = ndlst, root = root,
-              wtxnyms = FALSE, ndmtrx = NULL,
-              prinds = prinds, tinds = tinds)
-  treeman::checkNdlst(ndlst, root)
-  treeman::fastCheckTreeMan
-  treeman::updateSlts(tree)
-}
-
-#' @name trid_to_txid
-#' @title Get taxonomic ID from tree ID
-#' @description Return taxonomic ID for taxonomic
-#' tree ID in taxonomic dictionary.
-#' @return Character or vector
-#' @param id trid
-#' @param dictionary DictionaryTaxon
-#' @noRd
-trid_to_txid <- function(trid, dictionary) {
-  dictionary@txids[match(trid, dictionary@indx)]
-}
-
-#' @name txid_to_trid
-#' @title Get tree ID from taxonomic ID
-#' @description Return taxonomic tree ID from taxonomic
-#' ID in dictionary.
-#' @return Character or vector
-#' @param id txid
-#' @param dictionary DictionaryTaxon
-#' @noRd
-txid_to_trid <- function(txid, dictionary) {
-  as.character(dictionary@indx[match(txid, dictionary@txids)])
-}
-
-#' @name txid_singletons_get
-#' @title Get equivalent singleton IDs
-#' @description For a given taxonomic ID, return all the
-#' equivalent singleton IDs.
-#' @return Character vector
-#' @param txid txid
-#' @param dictionary DictionaryTaxon
-#' @details phylotaR drops all singleton nodes from
-#' the NCBI taxonomy upon initiation. To retrieve all
-#' the singleton IDs for an ID use this function.
-#' Singletons are defined as nodes in the hierarchy
-#' that do not split.
-#' @noRd
-txid_singletons_get <- function(txid, dictionary) {
-  trid <- as.character(dictionary@indx[match(txid, dictionary@txids)])
-  sngltns <- dictionary@txids[trid == dictionary@indx]
-  sngltns[sngltns != txid]
+  names(ndlst) <- ids
+  tree <- treeman::twoer()
+  tree@ndlst <- ndlst
+  tree@root <- root
+  tree@wtxnyms <- FALSE
+  tree@ndmtrx <- NULL
+  tree@prinds <- prinds
+  tree@tinds <- tinds
+  tree <- treeman::updateSlts(tree)
+  if(!treeman::checkNdlst(tree@ndlst, tree@root)) {
+    error(ps=ps, 'Invalid taxonomy')
+  }
+  tree
 }
 
 #' @name txid_rank_get
@@ -84,7 +47,7 @@ txid_singletons_get <- function(txid, dictionary) {
 #' @param txid txid
 #' @param dictionary DictionaryTaxon
 #' @noRd
-txid_rank_get <- function(txid, dictionary) {
+rank_get <- function(txid, dictionary) {
   dictionary@rcrds[[txid]]@rnk
 }
 
@@ -97,16 +60,14 @@ txid_rank_get <- function(txid, dictionary) {
 #' @param dictionary DictionaryTaxon
 #' @param direct T/F, return only direct descedants?
 #' @noRd
-txid_descendants_get <- function(txid, dictionary, direct=FALSE) {
-  trid <- txid_to_trid(txid = txid, dictionary = dictionary)
+descendants_get <- function(id, txdct, direct=FALSE) {
   if (direct) {
-    tr_ptids <- treeman::getNdSlt(tree = dictionary@txtr,
-                                  slt_nm = 'ptid', id = trid)
+    ptids <- treeman::getNdSlt(tree = txdct@txtr, slt_nm = 'ptid',
+                               id = id)
   } else {
-    tr_ptids <- treeman::getNdPtids(tree = dictionary@txtr, id = trid)
+    ptids <- treeman::getNdPtids(tree = txdct@txtr, id = id)
   }
-  
-  trid_to_txid(trid = tr_ptids, dictionary = dictionary)
+  ptids
 }
 
 #' @name txid_parent_get
@@ -116,14 +77,13 @@ txid_descendants_get <- function(txid, dictionary, direct=FALSE) {
 #' @param txid txid(s)
 #' @param dictionary DictionaryTaxon
 #' @noRd
-txid_parent_get <- function(txid, dictionary) {
-  trid <- txid_to_trid(txid = txid, dictionary = dictionary)
-  if (length(trid) > 1) {
-    res <- treeman::getPrnt(tree = dictionary@txtr,
-                            ids = unique(trid))
+parent_get <- function(id, txdct) {
+  if (length(id) > 1) {
+    res <- treeman::getPrnt(tree = txdct@txtr,
+                            ids = unique(id))
   } else {
-    res <- treeman::getNdSlt(tree = dictionary@txtr,
-                             slt_nm = 'prid', id = trid)
+    res <- treeman::getNdSlt(tree = txdct@txtr,
+                             slt_nm = 'prid', id = id)
   }
-  trid_to_txid(trid = res, dictionary = dictionary)
+  res
 }

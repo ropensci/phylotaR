@@ -7,6 +7,7 @@
 #' @param ps Parameter list
 tax_download <- function(ids, ps) {
   rcrds <- vector('list', length = length(ids))
+  names(rcrds) <- ids
   args <- list(db = "taxonomy", id = ids, rettype = 'xml')
   rw_rcrds <- search_and_cache(func = rentrez::entrez_fetch,
                                fnm = 'fetch', args = args, ps = ps)
@@ -33,7 +34,8 @@ tax_download <- function(ids, ps) {
                 scnm = rw_rcrd[['ScientificName']],
                 cmnm = cmnm, rnk = rw_rcrd[['Rank']],
                 lng = lng, prnt = rw_rcrd[['ParentTaxId']])
-    rcrds[[i]] <- rcrd
+    rcrds[[rcrd@id]] <- rcrd
   }
   rcrds
 }
+

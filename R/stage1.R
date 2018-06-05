@@ -3,6 +3,7 @@
 #' @description TODO
 #' @param wd Working directory
 #' @details Object will be cached.
+#' @return NULL
 #' @export
 taxise_run <- function(wd) {
   # TODO: allow a user to have their own taxids and/or tax tree
@@ -15,7 +16,7 @@ taxise_run <- function(wd) {
   rcrds <- batcher(ids = txids, func = tax_download, ps = ps,
                    lvl = 2)
   info(lvl = 1, ps = ps, 'Generating taxonomic dictionary ...')
-  txdct <- taxdict_gen(rcrds = rcrds, txids = txids)
+  txdct <- taxdict_gen(rcrds = rcrds, txids = txids, ps = ps)
   svObj(wd = wd, obj = txdct, nm = 'txdct')
   msg <- paste0('Completed stage TAXISE: [', Sys.time(), ']')
   .stgMsg(ps = ps, msg = msg)
@@ -57,42 +58,21 @@ txids_get <- function(ps, retmax = 1E4) {
 #' @return TaxDct
 #' @param txids Vector of taxonomic IDs
 #' @param rcrds List of taxonomic records
-taxdict_gen <- function(txids, rcrds) {
+taxdict_gen <- function(txids, rcrds, ps) {
   # TODO: allow paraphyly
   # identify pre-node IDs
   # based upon: https://github.com/DomBennett/treeman/wiki/trmn-format
-  # drop singletons
   # create index to recover original IDs, indx
   prids <- vapply(txids, function(x) rcrds[[x]]@prnt, '')
   names(prids) <- NULL
   root_bool <- !prids %in% txids
   root <- txids[root_bool]
   prids[root_bool] <- root
-  root_trid <- as.character(which(root_bool))
-  trids <- seq_along(txids)
-  n_ptnds <- table(prids)
-  to_drop <- NULL
-  while(any(n_ptnds == 1)) {
-    # get singletons
-    sngltns <- names(n_ptnds)[n_ptnds == 1]
-    sngltns_indx <- match(sngltns, txids)
-    sngltns_trids <- match(sngltns, prids)
-    # replace singleton prid in tree IDs
-    trids[sngltns_indx] <- sngltns_trids
-    # replace singleton prid in prids
-    prids[sngltns_trids] <- prids[sngltns_indx]
-    to_drop <- c(to_drop, sngltns)
-    n_ptnds <- table(prids)
-  }
-  indx <- trids
-  to_drop <- !txids %in% to_drop
-  prids <- prids[to_drop]
-  trids <- as.character(trids[to_drop])
-  prinds <- match(prids, txids[to_drop])
+  prinds <- match(prids, txids)
   prinds <- as.integer(prinds)
   # create tax tree
-  txtr <- taxonomic_tree_generate(prinds=prinds, trids=trids, root=root_trid)
+  txtr <- taxtree_gen(prinds=prinds, ids=txids, root=root, ps = ps)
   # create tax dict
-  new('TaxDct', txids=txids, rcrds=list2env(rcrds), txtr=txtr,
-      prnt=root, indx=indx)
+  new('TaxDict', txids=txids, rcrds=list2env(rcrds), txtr=txtr,
+      prnt=root)
 }

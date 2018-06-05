@@ -419,8 +419,7 @@ setMethod('summary', c('object' = 'TaxRec'),
 taxdict_check <- function(object) {
   length(object@txids) ==
     length(ls(object@rcrds)) &
-    length(object@txids) ==
-    length(object@indx)
+    length(object@txids)
 }
 #' @name TaxDict-class
 #' @aliases TaxDict-method
@@ -435,11 +434,9 @@ taxdict_check <- function(object) {
 #' @slot rcrds Environment of records
 #' @slot prnt Parent taxonomic ID
 #' @slot txtr Taxonomic tree
-#' @slot indx Taxonomic ID index for tree IDs
 #' @exportClass TaxDict
 setClass('TaxDict', representation = representation(
   txids = 'vector',
-  indx = 'vector',
   rcrds = 'environment',
   txtr = 'TreeMan',
   prnt = 'character'),
