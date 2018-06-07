@@ -2,9 +2,10 @@
 % Please edit documentation in R/tools-system.R
 \name{cmdLn}
 \alias{cmdLn}
+\alias{cmdln}
 \title{Run a command via terminal/command prompt}
 \usage{
-cmdLn(cmd, args, lgfl = NULL)
+cmdln(cmd, args, lgfl = NULL)
 }
 \arguments{
 \item{cmd}{Command to be run}

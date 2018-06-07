@@ -2,9 +2,10 @@
 % Please edit documentation in R/tools-cache.R
 \name{ldPrmtrs}
 \alias{ldPrmtrs}
+\alias{parameters_load}
 \title{Load paramters from cache}
 \usage{
-ldPrmtrs(wd)
+parameters_load(wd)
 }
 \arguments{
 \item{wd}{Working directory}

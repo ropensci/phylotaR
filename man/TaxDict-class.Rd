@@ -44,7 +44,5 @@ tree and NCBI taxonomy data for all taxonomic IDs.
 \item{\code{prnt}}{Parent taxonomic ID}
 
 \item{\code{txtr}}{Taxonomic tree}
-
-\item{\code{indx}}{Taxonomic ID index for tree IDs}
 }}
 

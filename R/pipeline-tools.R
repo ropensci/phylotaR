@@ -4,8 +4,8 @@
 #' @param wd Working directory
 #' @param ncbi_execs File directories for NCBI tools, see \code{blast_setup()}
 #' @param ... Set parameters, see parameters()
-#' @seealso
-#' \link{parameters}, \link{blast_setup}
+#' @return NULL
+#' @noRd
 parameters_setup <- function(wd, ncbi_execs, ...) {
   if (!file.exists(wd)) {
     stop(paste0('Invalid `wd`. [', wd, '] does not exist.'))
@@ -46,14 +46,14 @@ parameters_setup <- function(wd, ncbi_execs, ...) {
 
 #' @name blast_setup
 #' @title Ensures NCBI BLAST tools are installed
-#' @description Ensures NCBI BLAST executables are installed on the 
-#' system. Tests version number of BLAST tools.
+#' @description Ensures NCBI BLAST executables are installed on the system. Tests
+#' version number of BLAST tools.
 #' @param d Directory to NCBI BLAST tools
 #' @param wd Working directory
 #' @param v v, T/F
 #' @details BLAST tools must be version >=2.0
-#' @seealso
-#' \link{parameters_setup}
+#' @noRd
+#' @return list
 blast_setup <- function(d, v, wd) {
   .log(v = v, wd = wd, 'Checking for valid NCBI BLAST+ Tools ...\n')
   sccdd <- TRUE
@@ -95,6 +95,13 @@ blast_setup <- function(d, v, wd) {
   ncbi_execs
 }
 
+#' @name stage_args_check
+#' @title Check stage arguments
+#' @description Ensures stage arguments are valid, raises an error if not.
+#' @param to ending stage
+#' @param frm starting stage
+#' @noRd
+#' @return character, stage message
 stage_args_check <- function(to, frm) {
   if (to < 1 | frm < 1) {
     stop('Total stages to run cannot be less than 1.')
@@ -112,14 +119,14 @@ stage_args_check <- function(to, frm) {
 
 #' @name stages_run
 #' @title Sequentially run each stage
-#' @description Runs stages from \code{frm} to \code{to}.
-#' Records stage progress in cache.
+#' @description Runs stages from \code{frm} to \code{to}. Records stage progress in cache.
 #' @param wd Working directory
 #' @param to Total number of stages to run
 #' @param frm Starting stage to run from
 #' @param stgs_msg Printout stage message for log
 #' @param rstrt Restarting, T/F
-#' @export
+#' @return NULL
+#' @noRd
 stages_run <- function(wd, to, frm, stgs_msg, rstrt=FALSE) {
   .run <- function() {
     if (frm <= 1 & to >= 1) {
@@ -151,7 +158,7 @@ stages_run <- function(wd, to, frm, stgs_msg, rstrt=FALSE) {
       progress_save(wd, 'cluster2')
     }
   }
-  ps <- ldPrmtrs(wd)
+  ps <- parameters_load(wd)
   # header log
   if (rstrt) {
     msg <- paste0('Restarting pipeline on [', .Platform$OS.type,

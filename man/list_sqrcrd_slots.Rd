@@ -2,9 +2,10 @@
 % Please edit documentation in R/phylotaR.R
 \name{list_sqrcrd_slots}
 \alias{list_sqrcrd_slots}
+\alias{list_seqrec_slots}
 \title{List all SqRcrd slots}
 \usage{
-list_sqrcrd_slots()
+list_seqrec_slots()
 }
 \value{
 vector

@@ -2,9 +2,10 @@
 % Please edit documentation in R/phylotaR.R
 \name{list_clrcrd_slots}
 \alias{list_clrcrd_slots}
+\alias{list_clusterrec_slots}
 \title{List all ClRcrd slots}
 \usage{
-list_clrcrd_slots()
+list_clusterrec_slots()
 }
 \value{
 vector

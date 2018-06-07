@@ -2,9 +2,10 @@
 % Please edit documentation in R/tools-cache.R
 \name{rstPrgrss}
 \alias{rstPrgrss}
+\alias{progress_reset}
 \title{Reset progress}
 \usage{
-rstPrgrss(wd, stg)
+progress_reset(wd, stg)
 }
 \arguments{
 \item{wd}{Working directory}

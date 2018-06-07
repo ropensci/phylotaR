@@ -2,9 +2,10 @@
 % Please edit documentation in R/tools-cache.R
 \name{svGIs}
 \alias{svGIs}
+\alias{sids_save}
 \title{Save GIs to cache}
 \usage{
-svGIs(wd, txid, gis)
+sids_save(wd, txid, gis)
 }
 \arguments{
 \item{wd}{Working directory}

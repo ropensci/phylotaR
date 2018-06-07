@@ -2,9 +2,10 @@
 % Please edit documentation in R/tools-cache.R
 \name{svNcbiCch}
 \alias{svNcbiCch}
+\alias{ncbicache_save}
 \title{Save NCBI query result to cache}
 \usage{
-svNcbiCch(fnm, args, wd, obj)
+ncbicache_save(fnm, args, wd, obj)
 }
 \arguments{
 \item{fnm}{NCBI Entrez function name}

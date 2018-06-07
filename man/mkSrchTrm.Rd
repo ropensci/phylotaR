@@ -2,9 +2,10 @@
 % Please edit documentation in R/tools-entrez.R
 \name{mkSrchTrm}
 \alias{mkSrchTrm}
+\alias{searchterm_gen}
 \title{Construct GenBank Search Term}
 \usage{
-mkSrchTrm(txid, ps, drct = FALSE)
+searchterm_gen(txid, ps, drct = FALSE)
 }
 \arguments{
 \item{txid}{Taxonomic ID}

@@ -2,9 +2,10 @@
 % Please edit documentation in R/tools-cache.R
 \name{ldGIs}
 \alias{ldGIs}
+\alias{sids_load}
 \title{Load GIs from cache}
 \usage{
-ldGIs(wd, txid)
+sids_load(wd, txid)
 }
 \arguments{
 \item{wd}{Working directory}

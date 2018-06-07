@@ -2,9 +2,10 @@
 % Please edit documentation in R/stage4-tools.R
 \name{blstSeeds}
 \alias{blstSeeds}
+\alias{seeds_blast}
 \title{BLAST seed sequences}
 \usage{
-blstSeeds(sqs, ps)
+seeds_blast(sqs, ps)
 }
 \arguments{
 \item{sqs}{All seed sequences to be BLASTed}

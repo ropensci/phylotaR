@@ -2,9 +2,10 @@
 % Please edit documentation in R/stage2-tools.R
 \name{hrrchcDwnld}
 \alias{hrrchcDwnld}
+\alias{hierarchic_download}
 \title{Hierarchically get sequences for a txid}
 \usage{
-hrrchcDwnld(txid, txdct, ps, lvl = 0)
+hierarchic_download(txid, txdct, ps, lvl = 0)
 }
 \arguments{
 \item{txid}{Taxonomic node ID, numeric}

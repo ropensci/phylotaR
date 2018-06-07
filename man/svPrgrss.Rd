@@ -2,9 +2,10 @@
 % Please edit documentation in R/tools-cache.R
 \name{svPrgrss}
 \alias{svPrgrss}
+\alias{progress_save}
 \title{Save current progress}
 \usage{
-svPrgrss(wd, stg)
+progress_save(wd, stg)
 }
 \arguments{
 \item{wd}{Working directory}

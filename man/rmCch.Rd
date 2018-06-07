@@ -2,9 +2,10 @@
 % Please edit documentation in R/tools-cache.R
 \name{rmCch}
 \alias{rmCch}
+\alias{cache_rm}
 \title{Delete a cache}
 \usage{
-rmCch(wd)
+cache_rm(wd)
 }
 \arguments{
 \item{wd}{Working directory}

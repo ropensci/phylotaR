@@ -2,18 +2,19 @@
 % Please edit documentation in R/stage3-tools.R
 \name{genClRcrds}
 \alias{genClRcrds}
-\title{Generate list of Clstrs}
+\alias{clusterrec_gen}
+\title{Generate list of clusters}
 \usage{
-genClRcrds(clstr_lst, txid, sqs, typ)
+clusterrec_gen(cluster_list, txid, sqs, typ)
 }
 \arguments{
-\item{clstr_lst}{List of list of cluster descriptions}
-
 \item{txid}{Taxonomic node ID}
 
 \item{sqs}{Sequnece records}
 
 \item{typ}{Subtree of direct?}
+
+\item{cluster_lst}{List of list of cluster descriptions}
 }
 \description{
 Takes a list of lists of cluster descriptions,

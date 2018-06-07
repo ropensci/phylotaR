@@ -2,9 +2,10 @@
 % Please edit documentation in R/tools-blast.R
 \name{mkBlstDB}
 \alias{mkBlstDB}
+\alias{blastdb_gen}
 \title{Make a BLAST database}
 \usage{
-mkBlstDB(sqs, dbfl, ps)
+blastdb_gen(sqs, dbfl, ps)
 }
 \arguments{
 \item{sqs}{Sequences}

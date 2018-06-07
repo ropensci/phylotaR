@@ -1,12 +1,13 @@
-#' @name clusterAll
+#' @name cluster_all
 #' @title Hierarchically cluster all sequences of a txid
-#' @description Identifies all direct and subtree clusters
-#' for a taxonomic ID.
+#' @description Identifies all direct and subtree clusters for a taxonomic ID.
 #' @param txid Taxonomic ID
 #' @param sqs Sequence object of all downloaded sequences
-#' @param txdct PhyLoTa table
+#' @param txdct Taxonomic dictionary
 #' @param ps Parameters
 #' @param lvl Log level
+#' @return ClusterArc
+#' @noRd
 cluster_all <- function(txid, sqs, txdct, ps, lvl=0) {
   dds <- descendants_get(id = txid, txdct = txdct, direct = TRUE)
   all_clusters <- cluster_subtree(txid = txid, sqs = sqs, txdct = txdct,
@@ -21,17 +22,17 @@ cluster_all <- function(txid, sqs, txdct, ps, lvl=0) {
   all_clusters
 }
 
-#' @name clusterSbtr
+#' @name cluster_subtree
 #' @title Cluster all sequences descending from a txid
-#' @description Identifies clusters from sequences associated
-#' with a txid and all its descendants. Clusters returned by
-#' this function will thus be of cl_type 'subtree'.
+#' @description Identifies clusters from sequences associated with a txid and all its
+#' descendants. Clusters returned by this function will thus be of cl_type 'subtree'.
 #' @param txid Taxonomic ID
 #' @param sqs Sequence object of all downloaded sequences
 #' @param txdct Taxonomic dictionary
 #' @param dds Vector of direct descendants
 #' @param ps Parameters
 #' @param lvl Log level
+#' @return ClusterArc
 cluster_subtree <- function(txid, sqs, txdct, dds, ps, lvl) {
   all_clusters <- clusterarc_gen(list())
   rnk <- rank_get(txid = txid, txdct = txdct)

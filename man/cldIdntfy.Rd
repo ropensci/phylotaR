@@ -2,9 +2,10 @@
 % Please edit documentation in R/stage2.R
 \name{cldIdntfy}
 \alias{cldIdntfy}
+\alias{clade_select}
 \title{Get all node IDs that will be processed}
 \usage{
-cldIdntfy(txdct, ps)
+clade_select(txdct, ps)
 }
 \arguments{
 \item{txdct}{TxDct}

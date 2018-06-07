@@ -2,9 +2,10 @@
 % Please edit documentation in R/tools-cache.R
 \name{intPrgrss}
 \alias{intPrgrss}
+\alias{progress_init}
 \title{Initialise progress list in cache}
 \usage{
-intPrgrss(wd)
+progress_init(wd)
 }
 \arguments{
 \item{wd}{Working directory}

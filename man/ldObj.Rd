@@ -2,9 +2,10 @@
 % Please edit documentation in R/tools-cache.R
 \name{ldObj}
 \alias{ldObj}
+\alias{obj_load}
 \title{Load a named object from the cache}
 \usage{
-ldObj(wd, nm)
+obj_load(wd, nm)
 }
 \arguments{
 \item{wd}{Working directory}

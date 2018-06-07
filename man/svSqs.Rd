@@ -2,9 +2,10 @@
 % Please edit documentation in R/tools-cache.R
 \name{svSqs}
 \alias{svSqs}
+\alias{sqs_save}
 \title{Save sequences to cache}
 \usage{
-svSqs(wd, txid, sqs)
+sqs_save(wd, txid, sqs)
 }
 \arguments{
 \item{wd}{Working directory}

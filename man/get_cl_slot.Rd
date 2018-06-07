@@ -4,7 +4,7 @@
 \alias{get_cl_slot}
 \title{Get slot data for each cluster record}
 \usage{
-get_cl_slot(phylota, cid, slt_nm = list_clrcrd_slots())
+get_cl_slot(phylota, cid, slt_nm = list_clusterrec_slots())
 }
 \arguments{
 \item{phylota}{Phylota object}

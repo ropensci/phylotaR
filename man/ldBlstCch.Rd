@@ -2,9 +2,10 @@
 % Please edit documentation in R/tools-cache.R
 \name{ldBlstCch}
 \alias{ldBlstCch}
+\alias{blastcache_load}
 \title{Load BLAST results from cache}
 \usage{
-ldBlstCch(sids, wd)
+blastcache_load(sids, wd)
 }
 \arguments{
 \item{sids}{Sequence IDs}

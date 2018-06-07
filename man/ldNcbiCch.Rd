@@ -2,9 +2,10 @@
 % Please edit documentation in R/tools-cache.R
 \name{ldNcbiCch}
 \alias{ldNcbiCch}
+\alias{ncbicache_load}
 \title{Retrieve cached NCBI query}
 \usage{
-ldNcbiCch(fnm, args, wd)
+ncbicache_load(fnm, args, wd)
 }
 \arguments{
 \item{fnm}{NCBI Entrez function name}

@@ -2,9 +2,10 @@
 % Please edit documentation in R/phylotaR.R
 \name{list_txrcrd_slots}
 \alias{list_txrcrd_slots}
+\alias{list_taxrec_slots}
 \title{List all TxRcrd slots}
 \usage{
-list_txrcrd_slots()
+list_taxrec_slots()
 }
 \value{
 vector

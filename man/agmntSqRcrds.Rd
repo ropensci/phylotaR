@@ -2,9 +2,10 @@
 % Please edit documentation in R/stage2-tools.R
 \name{agmntSqRcrds}
 \alias{agmntSqRcrds}
+\alias{seqrec_augment}
 \title{Augment sequence records list}
 \usage{
-agmntSqRcrds(sqs, txdct)
+seqrec_augment(sqs, txdct)
 }
 \arguments{
 \item{sqs}{List of SqRcrds}

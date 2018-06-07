@@ -2,9 +2,10 @@
 % Please edit documentation in R/tools-cache.R
 \name{svBlstCch}
 \alias{svBlstCch}
+\alias{blastcache_save}
 \title{Save BLAST results to cache}
 \usage{
-svBlstCch(sids, wd, obj)
+blastcache_save(sids, wd, obj)
 }
 \arguments{
 \item{sids}{Sequence IDs}

@@ -4,7 +4,7 @@
 \alias{get_tx_slot}
 \title{Get slot data for each taxon record}
 \usage{
-get_tx_slot(phylota, txid, slt_nm = list_txrcrd_slots())
+get_tx_slot(phylota, txid, slt_nm = list_taxrec_slots())
 }
 \arguments{
 \item{phylota}{Phylota object}

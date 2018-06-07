@@ -2,9 +2,10 @@
 % Please edit documentation in R/tools-cache.R
 \name{svObj}
 \alias{svObj}
+\alias{obj_save}
 \title{Aave a named object in the cache}
 \usage{
-svObj(wd, obj, nm)
+obj_save(wd, obj, nm)
 }
 \arguments{
 \item{wd}{Working directory}

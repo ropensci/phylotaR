@@ -1,11 +1,12 @@
-#' @name hrrchcDwnld
+#' @name hierarchic_download
 #' @title Hierarchically get sequences for a txid
-#' @description Looks up and downloads sequences for a
-#' taxonomic ID.
+#' @description Looks up and downloads sequences for a taxonomic ID.
 #' @param txid Taxonomic node ID, numeric
 #' @param txdct Taxonomic dictionary
 #' @param ps parameters
 #' @param lvl Log level
+#' @noRd
+#' @return Vector of SeqRecs
 hierarchic_download <- function(txid, txdct, ps, lvl=0) {
   # get subtree counts if that is smaller than ps[['mdlthrs']]
   # or if there are no direct descendants
@@ -29,11 +30,13 @@ hierarchic_download <- function(txid, txdct, ps, lvl=0) {
   sqs
 }
 
-#' @name agmntSqRcrds
+#' @name seqrec_augment
 #' @title Augment sequence records list
-#' @description Convert to sqsrcrds and add taxids
+#' @description Add taxids to records and convert to archive.
 #' @param sqs List of SqRcrds
 #' @param txdct Taxonomic Dictionary
+#' @return SeqArc
+#' @noRd
 seqrec_augment <- function(sqs, txdct) {
   # txids are not downloaded as part of sequence, added here
   txdct_nms <- vapply(txdct@rcrds, function(x) x@scnm, '')
@@ -47,12 +50,13 @@ seqrec_augment <- function(sqs, txdct) {
 }
 
 #' @title seqrec_get
-#' @description Downloads sequences from GenBank in 500 ID batches.
+#' @description Downloads sequences from GenBank in batches.
 #' @param txid NCBI taxonomic ID
 #' @param drct Node-level only or subtree as well? Default FALSE.
 #' @param ps parameters
 #' @param lvl Log level
 #' @return Vector of sequence records
+#' @noRd
 seqrec_get <- function(txid, ps, drct=FALSE, lvl=0) {
   # test w/ golden moles 9389
   downloader <- function(ids, ps) {

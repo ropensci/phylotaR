@@ -4,7 +4,7 @@
 \alias{taxdict_gen}
 \title{Generate taxonomic dictionary}
 \usage{
-taxdict_gen(txids, rcrds)
+taxdict_gen(txids, rcrds, ps)
 }
 \arguments{
 \item{txids}{Vector of taxonomic IDs}

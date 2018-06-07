@@ -4,7 +4,7 @@
 \alias{get_sq_slot}
 \title{Get slot data for each sequence}
 \usage{
-get_sq_slot(phylota, cid = NULL, sid = NULL, slt_nm = list_sqrcrd_slots())
+get_sq_slot(phylota, cid = NULL, sid = NULL, slt_nm = list_seqrec_slots())
 }
 \arguments{
 \item{phylota}{Phylota object}

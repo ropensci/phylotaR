@@ -2,9 +2,10 @@
 % Please edit documentation in R/tools-cache.R
 \name{rdPrgrss}
 \alias{rdPrgrss}
+\alias{progress_read}
 \title{Read the progress from cache}
 \usage{
-rdPrgrss(wd)
+progress_read(wd)
 }
 \arguments{
 \item{wd}{Working directory}

@@ -2,9 +2,10 @@
 % Please edit documentation in R/tools-entrez.R
 \name{nSqs}
 \alias{nSqs}
+\alias{sqs_count}
 \title{Count number of sequences for txid}
 \usage{
-nSqs(txid, ps, drct = FALSE)
+sqs_count(txid, ps, drct = FALSE)
 }
 \arguments{
 \item{txid}{Taxonomic ID}

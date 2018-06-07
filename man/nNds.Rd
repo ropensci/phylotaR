@@ -2,9 +2,10 @@
 % Please edit documentation in R/tools-entrez.R
 \name{nNds}
 \alias{nNds}
+\alias{txnds_count}
 \title{Count number of descending taxonomic nodes}
 \usage{
-nNds(txid, ps)
+txnds_count(txid, ps)
 }
 \arguments{
 \item{txid}{Taxonomic ID}

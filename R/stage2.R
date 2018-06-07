@@ -1,8 +1,12 @@
 #' @name download_run
-#' @title Download 
-#' @description Download sequences
+#' @title Run download stage
+#' @description Run the second stage of phylotaR, download. This stage
+#' downloads sequences for all nodes with sequence numbers less than mxsqs.
+#' It hierarchically traverses the taxonomy for each node and downloads
+#' direct and subtree sequences for all descendants.
 #' @param wd Working directory
 #' @export
+#' @return NULL
 download_run <- function(wd) {
   ps <- parameters_load(wd)
   msg <- paste0('Starting stage DOWNLOAD: [', Sys.time(), ']')
@@ -18,12 +22,14 @@ download_run <- function(wd) {
   .stgMsg(ps = ps, msg = msg)
 }
 
-#' @name cldIdntfy
+#' @name clade_select
 #' @title Get all node IDs that will be processed
 #' @description All nodes with less than maximum number
 #' of nodes and sequences.
 #' @param txdct TxDct
 #' @param ps Parameters
+#' @return vector of txids
+#' @noRd
 clade_select <- function(txdct, ps) {
   res <- vector()
   queue <- ps[['txid']]
@@ -57,6 +63,8 @@ clade_select <- function(txdct, ps) {
 #' @param txdct Taxonomic dictionary
 #' @param ps parameters
 #' @details Sequence downloads are cached.
+#' @return NULL
+#' @noRd
 seq_download <- function(txids, txdct, ps) {
   # TODO: add overwrite arg
   sqcnt <- 0

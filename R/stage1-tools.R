@@ -1,10 +1,11 @@
 #' @name tax_download
-#' @title Download Taxonomic Records
+#' @title Download taxonomic records
 #' @description Downloads one batch of taxonomic
 #' records.
 #' @return list of list
 #' @param ids Vector of taxonomic IDs
 #' @param ps Parameter list
+#' @noRd
 tax_download <- function(ids, ps) {
   rcrds <- vector('list', length = length(ids))
   names(rcrds) <- ids

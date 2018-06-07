@@ -2,9 +2,10 @@
 % Please edit documentation in R/tools-cache.R
 \name{ldSqs}
 \alias{ldSqs}
+\alias{sqs_load}
 \title{Load sequences from cache}
 \usage{
-ldSqs(wd, txid)
+sqs_load(wd, txid)
 }
 \arguments{
 \item{wd}{Working directory}

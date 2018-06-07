@@ -6,6 +6,7 @@
 #' @title Default parameters
 #' @description Returns a parameter list with default
 #' parameter values.
+#' @return list
 #' @param wd The working directory where all output files are saved.
 #' @param txid Taxonomic group of interest, allows vectors.
 #' @param mkblstdb File path to makeblastdb
@@ -47,11 +48,8 @@ parameters <- function(wd='.', txid=numeric(), mkblstdb='', blstn='', v=FALSE, n
 #' @return vector
 #' @export
 list_ncbi_ranks <- function() {
-  c("superkingdom", "kingdom", "phylum",
-    "subphylum", "class", "superorder",
-    "order", "suborder", "infraorder",
-    "parvorder", "family", "genus",
-    "species", "subspecies")
+  c("superkingdom", "kingdom", "phylum", "subphylum", "class", "superorder", "order",
+    "suborder", "infraorder", "parvorder", "family", "genus", "species", "subspecies")
 }
 
 #' @name list_sqrcrd_slots

@@ -8,7 +8,8 @@ if (file.exists(wd)) {
   unlink(wd, recursive = TRUE)
 }
 dir.create(wd)
-setup(wd = wd, txid = '9479', ncbi_dr = ncbi_dr, v = TRUE)
+setup(wd = wd, txid = '9504', ncbi_dr = ncbi_dr, v = TRUE)
+run(wd)
 taxise_run(wd)
 download_run(wd)
 

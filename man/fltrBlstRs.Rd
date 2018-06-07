@@ -2,12 +2,13 @@
 % Please edit documentation in R/tools-blast.R
 \name{fltrBlstRs}
 \alias{fltrBlstRs}
+\alias{blast_filter}
 \title{Filter BLAST results}
 \usage{
-fltrBlstRs(blst_rs, ps)
+blast_filter(blast_res, ps)
 }
 \arguments{
-\item{blst_rs}{BLAST results}
+\item{blast_res}{BLAST results}
 
 \item{ps}{Parameters}
 }

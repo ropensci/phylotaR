@@ -1,8 +1,11 @@
 #' @name taxise_run
 #' @title Run taxise stage
-#' @description TODO
+#' @description Run the first stage of phylotaR, taxise. This looks up
+#' all descendant taxonomic nodes for a given taxonomic ID. It then
+#' looks up relevant taxonomic information and generates a taxonomic
+#' dictionary for user interaction after phylotaR has completed.
 #' @param wd Working directory
-#' @details Object will be cached.
+#' @details Objects will be cached.
 #' @return NULL
 #' @export
 taxise_run <- function(wd) {
@@ -29,6 +32,8 @@ taxise_run <- function(wd) {
 #' @return Vector of txids
 #' @param ps Parameter list
 #' @param retmax integer, maximum number of IDs to return per query
+#' @return vector of ids
+#' @noRd
 txids_get <- function(ps, retmax = 1E4) {
   # TODO: handle multiple txids
   trm <- paste0('txid', ps[['txid']],'[Subtree]')
@@ -58,6 +63,8 @@ txids_get <- function(ps, retmax = 1E4) {
 #' @return TaxDct
 #' @param txids Vector of taxonomic IDs
 #' @param rcrds List of taxonomic records
+#' @noRd
+#' @return TaxDict
 taxdict_gen <- function(txids, rcrds, ps) {
   # TODO: allow paraphyly
   # identify pre-node IDs

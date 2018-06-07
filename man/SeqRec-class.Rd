@@ -49,8 +49,6 @@ Sequence is stored as raw. Use rawToChar().
 
 \item{\code{url}}{URL}
 
-\item{\code{gi}}{GI}
-
 \item{\code{txid}}{Taxonomic ID of source taxon}
 
 \item{\code{orgnsm}}{Scientific name of source taxon}

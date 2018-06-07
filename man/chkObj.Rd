@@ -2,9 +2,10 @@
 % Please edit documentation in R/tools-cache.R
 \name{chkObj}
 \alias{chkObj}
+\alias{obj_check}
 \title{Check if an object exists}
 \usage{
-chkObj(wd, nm)
+obj_check(wd, nm)
 }
 \arguments{
 \item{wd}{Working directory}

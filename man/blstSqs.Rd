@@ -2,9 +2,10 @@
 % Please edit documentation in R/stage3-tools.R
 \name{blstSqs}
 \alias{blstSqs}
+\alias{blast_sqs}
 \title{BLAST All vs All}
 \usage{
-blstSqs(txid, typ, sqs, ps, lvl)
+blast_sqs(txid, typ, sqs, ps, lvl)
 }
 \arguments{
 \item{txid}{Taxonomic node ID, numeric}

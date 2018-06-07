@@ -2,9 +2,10 @@
 % Please edit documentation in R/tools-blast.R
 \name{blstN}
 \alias{blstN}
+\alias{blastn_run}
 \title{BLAST all vs all}
 \usage{
-blstN(dbfl, outfl, ps)
+blastn_run(dbfl, outfl, ps)
 }
 \arguments{
 \item{dbfl}{Database file}

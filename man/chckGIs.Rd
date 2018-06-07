@@ -2,9 +2,10 @@
 % Please edit documentation in R/tools-cache.R
 \name{chckGIs}
 \alias{chckGIs}
+\alias{sids_check}
 \title{Check if GIs exist}
 \usage{
-chckGIs(wd, txid)
+sids_check(wd, txid)
 }
 \arguments{
 \item{wd}{Working directory}
