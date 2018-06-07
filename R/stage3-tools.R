@@ -7,16 +7,16 @@
 #' @param txdct PhyLoTa table
 #' @param ps Parameters
 #' @param lvl Log level
-clstrAll <- function(txid, sqs, txdct, ps, lvl=0) {
-  dds <- getDDs(id=txid, txdct=txdct)
-  all_clstrs <- clstrSbtr(txid=txid, sqs=sqs, txdct=txdct,
-                          ps=ps, dds=dds, lvl=lvl+1)
-  for(dd in dds) {
-    info(lvl=lvl+2, ps=ps, "Processing [id ", txid,
+cluster_all <- function(txid, sqs, txdct, ps, lvl=0) {
+  dds <- descendants_get(id = txid, txdct = txdct, direct = TRUE)
+  all_clstrs <- cluster_subtree(txid = txid, sqs = sqs, txdct = txdct,
+                                ps = ps, dds = dds, lvl = lvl + 1)
+  for (dd in dds) {
+    info(lvl = lvl + 2, ps = ps, "Processing [id ", txid,
          "] child [id ", dd, "]")
-    dd_clstrs <- clstrAll(txid=dd, txdct=txdct,
-                          sqs=sqs, ps=ps, lvl=lvl+1)
-    all_clstrs <- jnBxs(all_clstrs, dd_clstrs)
+    dd_clstrs <- cluster_all(txid = dd, txdct = txdct,
+                             sqs = sqs, ps = ps, lvl = lvl + 1)
+    all_clstrs <- clusterarc_join(all_clstrs, dd_clstrs)
   }
   all_clstrs
 }
@@ -32,29 +32,28 @@ clstrAll <- function(txid, sqs, txdct, ps, lvl=0) {
 #' @param dds Vector of direct descendants
 #' @param ps Parameters
 #' @param lvl Log level
-clstrSbtr <- function(txid, sqs, txdct, dds, ps, lvl) {
-  all_clstrs <- genClRcrdBx(list())
-  rnk <- getRnk(id=txid, txdct=txdct)
-  info(lvl=lvl+1, ps=ps, "Generating subtree clusters for [id ",
+cluster_subtree <- function(txid, sqs, txdct, dds, ps, lvl) {
+  all_clstrs <- clusterarc_gen(list())
+  rnk <- rank_get(txid = txid, txdct = txdct)
+  info(lvl = lvl + 1, ps = ps, "Generating subtree clusters for [id ",
        txid, "(", rnk, ")]")
-  if(length(dds) > 0) {
-    drct_clstrs <- clstrDrct(txid, ps=ps, txdct=txdct,
-                             sqs=sqs, lvl=lvl)
-    all_clstrs <- jnBxs(all_clstrs, drct_clstrs)
+  if (length(dds) > 0) {
+    drct_clstrs <- cluster_direct(txid, ps = ps, txdct = txdct,
+                                  sqs = sqs, lvl = lvl)
+    all_clstrs <- clusterarc_join(all_clstrs, drct_clstrs)
   }
-  txids <- getADs(id=txid, txdct=txdct)
+  txids <- descendants_get(id = txid, txdct = txdct, direct = FALSE)
   all_sq_txids <- sqs@txids
   sids <- sqs@ids[which(all_sq_txids %in% as.character(txids))]
-  if(length(sids) < 3) {
-    info(lvl=lvl+3, ps=ps, "[", length(sids), " sqs]",
+  if (length(sids) < 3) {
+    info(lvl = lvl + 3, ps = ps, "[", length(sids), " sqs]",
          " -- too few sequences, cannot make clusters")
     return(all_clstrs)
   }
   sqs_prt <- sqs[sids]
-  sbtr_clstrs <- clstrSqs(txid=txid, sqs=sqs_prt,
-                          typ='subtree',
-                          ps=ps, lvl=lvl)
-  jnBxs(all_clstrs, sbtr_clstrs)
+  sbtr_clstrs <- cluster_seqs(txid = txid, sqs = sqs_prt,
+                              typ = 'subtree', ps = ps, lvl = lvl)
+  clusterarc_join(all_clstrs, sbtr_clstrs)
 }
 
 #' @name clstrDrct
@@ -69,22 +68,21 @@ clstrSbtr <- function(txid, sqs, txdct, dds, ps, lvl) {
 #' @param txdct PhyLoTa table
 #' @param ps Parameters
 #' @param lvl Log level
-clstrDrct <- function(txid, sqs, txdct, ps, lvl) {
-  all_clstrs <- genClRcrdBx(list())
-  rnk <- getRnk(id=txid, txdct=txdct)
-  info(lvl=lvl+1, ps=ps, "Generating direct clusters for [id ",
+cluster_direct <- function(txid, sqs, txdct, ps, lvl) {
+  all_clstrs <- clusterarc_gen(list())
+  rnk <- rank_get(txid = txid, txdct = txdct)
+  info(lvl = lvl + 1, ps = ps, "Generating direct clusters for [id ",
        txid, "(", rnk, ")]")
   all_sq_txids <- sqs@txids
   sids <- sqs@ids[all_sq_txids %in% as.character(txid)]
-  info(lvl=lvl+2, ps=ps, "[", length(sids), " sqs]")
-  if(length(sids) < 3) {
-    info(lvl=lvl+3, ps=ps,
-         "Too few sequences, cannot make clusters")
+  info(lvl = lvl + 2, ps = ps, "[", length(sids), " sqs]")
+  if (length(sids) < 3) {
+    info(lvl = lvl + 3, ps = ps, "Too few sequences, cannot make clusters")
     return(all_clstrs)
   }
   sqs_prt <- sqs[sids]
-  clstrSqs(txid=txid, sqs=sqs_prt, typ='direct',
-           ps=ps, lvl=lvl)
+  cluster_seqs(txid = txid, sqs = sqs_prt, typ = 'direct',
+           ps = ps, lvl = lvl)
 }
 
 #' @name clstrSqs
@@ -96,20 +94,18 @@ clstrDrct <- function(txid, sqs, txdct, ps, lvl) {
 #' @param ps Parameters
 #' @param typ Direct or Subtree?
 #' @param lvl Log level
-clstrSqs <- function(txid, sqs, ps, lvl,
-                     typ=c('direct', 'subtree', 'paraphyly')) {
+cluster_seqs <- function(txid, sqs, ps, lvl,
+                         typ=c('direct', 'subtree', 'paraphyly')) {
   typ <- match.arg(typ)
-  info(lvl=lvl+1, ps=ps, "BLASTing [", length(sqs@ids),
+  info(lvl = lvl + 1, ps = ps, "BLASTing [", length(sqs@ids),
        " sqs] ....")
-  blst_rs <- blstSqs(txid=txid, typ=typ, sqs=sqs, ps=ps, lvl=lvl)
-  if(is.null(blst_rs)) {
+  blast_res <- blast_seqs(txid = txid, typ = typ, sqs = sqs, ps = ps, lvl = lvl)
+  if (is.null(blast_res)) {
     return(NULL)
   }
-  clstr_lst <- clstrBlstRs(blst_rs=blst_rs)
-  cl_rcrds <- genClRcrds(clstr_lst=clstr_lst, txid=txid,
-                         sqs=sqs, typ=typ)
-  info(lvl=lvl+1, ps=ps, "Identified [", length(cl_rcrds@ids),
-       "] clusters")
+  cluster_list <- blast_cluster(blast_res = blast_res)
+  cl_rcrds <- clusterrec_gen(cluster_list = cluster_list, txid = txid, sqs = sqs, typ = typ)
+  info(lvl = lvl + 1, ps = ps, "Identified [", length(cl_rcrds@ids), "] clusters")
   cl_rcrds
 }
 
@@ -122,25 +118,25 @@ clstrSqs <- function(txid, sqs, ps, lvl,
 #' @param sqs Sequences
 #' @param lvl Log level
 #' @param ps Parameters
-blstSqs <- function(txid, typ, sqs, ps, lvl) {
-  blst_rs <- ldBlstCch(sqs@ids, wd=ps[['wd']])
-  if(is.null(blst_rs)) {
+blast_seqs <- function(txid, typ, sqs, ps, lvl) {
+  blast_res <- ldBlstCch(sqs@ids, wd = ps[['wd']])
+  if (is.null(blast_res)) {
     dbfl <- paste0('taxon-', txid, '-typ-', typ,
                    '-db.fa')
     outfl <- paste0('taxon-', txid, '-typ-', typ,
                     '-blastout.txt')
-    mkBlstDB(sqs=sqs, dbfl=dbfl, ps=ps)
-    blst_rs <- blstN(dbfl=dbfl, outfl=outfl, ps=ps)
-    if(is.null(blst_rs)) {
-      blst_rs <- NA
+    blastdb_gen(sqs = sqs, dbfl = dbfl, ps = ps)
+    blast_res <- blastn_run(dbfl = dbfl, outfl = outfl, ps = ps)
+    if (is.null(blast_res)) {
+      blast_res <- NA
     }
-    svBlstCch(sqs@ids, wd=ps[['wd']], obj=blst_rs)
+    svBlstCch(sqs@ids, wd = ps[['wd']], obj = blast_res)
   }
   # TODO: Not so elegant
-  if(any(is.na(blst_rs))) {
+  if (any(is.na(blast_res))) {
     return(NULL)
   }
-  fltrBlstRs(blst_rs=blst_rs, ps=ps)
+  blast_filter(blast_res = blast_res, ps = ps)
 }
 
 #' @name clstrBlstRs
@@ -149,23 +145,22 @@ blstSqs <- function(txid, typ, sqs, ps, lvl) {
 #' BLAST results. Identifies seed sequence.
 #' @return List of list
 #' @param blst_rs BLAST results
-clstrBlstRs <- function(blst_rs) {
-  g <- igraph::graph.data.frame(blst_rs[ ,c("query.id",
-                                            "subject.id")],
-                                directed=FALSE)
-  clstrs <- igraph::clusters(g)
-  clstrs <- clstrs[['membership']]
-  clstr_lst <- lapply(unique(clstrs), function(x) {
-    list('sids'=sort(names(clstrs)[which(clstrs==x)]))
+blast_cluster <- function(blast_res) {
+  g <- igraph::graph.data.frame(blast_res[ ,c("query.id", "subject.id")],
+                                directed = FALSE)
+  clusters <- igraph::clusters(g)
+  clusters <- clusters[['membership']]
+  cluster_list <- lapply(unique(clusters), function(x) {
+    list('sids' = sort(names(clusters)[which(clusters == x)]))
   })
   degrees <- igraph::degree(g)
-  clstr_lst <- lapply(clstr_lst, function(cl){
-    idx <- order(degrees[cl[['sids']]], decreasing=TRUE)[1]
+  cluster_list <- lapply(cluster_list, function(cl){
+    idx <- order(degrees[cl[['sids']]], decreasing = TRUE)[1]
     # index of most connected component
     cl[['seed']] <- cl[['sids']][idx]
     cl
   })
-  clstr_lst
+  cluster_list
 }
 
 #' @name genClRcrds
@@ -176,33 +171,33 @@ clstrBlstRs <- function(blst_rs) {
 #' @param txid Taxonomic node ID
 #' @param sqs Sequnece records
 #' @param typ Subtree of direct?
-genClRcrds <- function(clstr_lst, txid, sqs, typ) {
-  cl_rcrds <- vector('list', length=length(clstr_lst))
-  for(i in seq_along(clstr_lst)) {
-    cl <- clstr_lst[[i]]
+clusterrec_gen <- function(cluster_list, txid, sqs, typ) {
+  cl_rcrds <- vector('list', length = length(cluster_list))
+  for (i in seq_along(cluster_list)) {
+    cl <- cluster_list[[i]]
     cl_sqs <- sqs[cl[['sids']]]
     nsqs <- length(cl[['sids']])
     ntx <- length(unique(cl_sqs@txids))
-    cl_rcrd <- new('ClRcrd', sids=cl[['sids']],
-                   txids=cl_sqs@txids, nsqs=nsqs,
-                   ntx=ntx, typ=typ,
-                   prnt=as.character(txid),
-                   seed=cl[['seed']])
+    cl_rcrd <- new('ClusterRec', sids = cl[['sids']],
+                   txids = cl_sqs@txids, nsqs = nsqs,
+                   ntx = ntx, typ = typ,
+                   prnt = as.character(txid),
+                   seed = cl[['seed']])
     cl_rcrds[[i]] <- cl_rcrd
   }
-  genClRcrdBx(cl_rcrds)
+  clusterarc_gen(cl_rcrds)
 }
 
-#' @name archive_cluster_generate
+#' @name archive_cluster_gen
 #' @title Generate ArchiveCluster container class
 #' @description Takes a list of RecordCluster classes, returns an ArchiveCluster.
 #' @param clstr_rcrds list of RecordCluster classes
 #' @return ArchiveCluster
 #' @noRd
-archive_cluster_generate <- function(clstr_rcrds) {
+clusterarc_gen <- function(clstr_rcrds) {
   ids <- as.character(seq_along(clstr_rcrds) - 1)
   names(clstr_rcrds) <- ids
-  new('ArchiveCluster', ids = ids, cls = clstr_rcrds)
+  new('ClusterArc', ids = ids, cls = clstr_rcrds)
 }
 
 #' @name archive_cluster_join
@@ -213,6 +208,6 @@ archive_cluster_generate <- function(clstr_rcrds) {
 #' @param ac_2 ArchiveCluster
 #' @return ArchiveCluster
 #' @noRd
-archive_cluster_join <- function(ac_1, ac_2) {
-  archive_cluster_generate(c(ac_1@cls, ac_2@cls))
+clusterarc_join <- function(ac_1, ac_2) {
+  clusterarc_gen(c(ac_1@cls, ac_2@cls))
 }

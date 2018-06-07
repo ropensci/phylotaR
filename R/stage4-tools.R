@@ -3,15 +3,15 @@
 #' @description Runs all-v-all blast for seed sequences.
 #' @param sqs All seed sequences to be BLASTed
 #' @param ps Parameters
-blstSeeds <- function(sqs, ps) {
+seeds_blast <- function(sqs, ps) {
   info(lvl=2, ps=ps, "BLASTing [", length(sqs@ids),
        " sqs]")
   dbfl <- 'seeds-db.fa'
   outfl <- 'seeds-db-blastout.txt'
   file.path(ps[['wd']], 'blast', dbfl)
-  mkBlstDB(sqs, dbfl=dbfl, ps=ps)
-  blst_rs <- blstN(dbfl=dbfl, outfl=outfl, ps=ps)
-  blst_rs
+  blastdb_gen(sqs, dbfl=dbfl, ps=ps)
+  blst_res <- blastn_run(dbfl=dbfl, outfl=outfl, ps=ps)
+  blst_res
 }
 
 #' @name jnClstrs
@@ -24,7 +24,7 @@ blstSeeds <- function(sqs, ps) {
 #' @param seed_ids Seed sequence IDs
 #' @param all_clstrs List of all clusters
 #' @param ps Parameters
-jnClstrs <- function(blst_rs, seed_ids, all_clstrs, ps) {
+clusters_join <- function(blast_res, seed_ids, all_clstrs, ps) {
   join <- function(x) {
     pull <- seed_ids %in% x[['sids']]
     jnd_clstr <- all_clstrs[pull]
@@ -40,13 +40,13 @@ jnClstrs <- function(blst_rs, seed_ids, all_clstrs, ps) {
     clstr[['txids']] <- clstr[['txids']][pull]
     clstr
   }
-  pull <- blst_rs[['query.id']] != blst_rs[['subject.id']] &
-    blst_rs[['qcovs']] > ps[['mncvrg']]
-  blst_rs <- blst_rs[pull, ]
-  clstr_lst <- clstrBlstRs(blst_rs=blst_rs)
-  info(lvl=2, ps=ps, "Identified [", length(clstr_lst),
+  pull <- blast_res[['query.id']] != blast_res[['subject.id']] &
+    blast_res[['qcovs']] > ps[['mncvrg']]
+  blast_res <- blast_res[pull, ]
+  clustr_list <- blast_cluster(blast_res = blast_res)
+  info(lvl = 2, ps = ps, "Identified [", length(clustr_list),
        "] clusters")
-  lapply(clstr_lst, join)
+  lapply(clustr_list, join)
 }
 
 #' @name mrgClstrs
@@ -56,17 +56,17 @@ jnClstrs <- function(blst_rs, seed_ids, all_clstrs, ps) {
 #' txdct is required for parent look-up.
 #' @param jnd_clstrs List of joined cluster records
 #' @param txdct Taxonomic dictionary
-mrgClstrs <- function(jnd_clstrs, txdct) {
-  mrg_clstrs <- vector('list', length=length(jnd_clstrs))
-  for(i in seq_along(jnd_clstrs)) {
+clusters_merge <- function(jnd_clstrs, txdct) {
+  mrg_clstrs <- vector('list', length = length(jnd_clstrs))
+  for (i in seq_along(jnd_clstrs)) {
     cl <- jnd_clstrs[[i]]
-    prnt <- getPrnt(id=cl[['txids']], txdct=txdct)
+    prnt <- parent_get(id = cl[['txids']], txdct = txdct)
     nsqs <- length(cl[['sids']])
     ntx <- length(unique(cl[['txids']]))
-    cl_rcrd <- new('ClRcrd', sids=cl[['sids']],
-                   txids=cl[['txids']], nsqs=nsqs,
-                   ntx=ntx, typ='merged',
-                   prnt=prnt, seed=cl[['seed']])
+    cl_rcrd <- new('ClusterRec', sids = cl[['sids']],
+                   txids = cl[['txids']], nsqs = nsqs,
+                   ntx = ntx, typ = 'merged',
+                   prnt = prnt, seed = cl[['seed']])
     mrg_clstrs[[i]] <- cl_rcrd
   }
   mrg_clstrs
@@ -78,13 +78,13 @@ mrgClstrs <- function(jnd_clstrs, txdct) {
 #' ID determined by the number of sequences
 #' in each cluster.
 #' @param clstr_rcrds List of clusters
-rnmbrClstrs <- function(clstr_rcrds) {
+clusters_renumber <- function(clstr_rcrds) {
   nsqs <- vapply(clstr_rcrds, function(x) length(x@sids),
                  numeric(1))
   ord <- order(nsqs, decreasing=TRUE)
   clstr_rcrds <- clstr_rcrds[ord]
-  for(i in seq_along(clstr_rcrds)) {
+  for (i in seq_along(clstr_rcrds)) {
     clstr_rcrds[[i]]@id <- as.integer(i - 1)
   }
-  genClRcrdBx(clstr_rcrds)
+  clusterarc_gen(clstr_rcrds)
 }

@@ -11,20 +11,20 @@ hierarchic_download <- function(txid, txdct, ps, lvl=0) {
   # or if there are no direct descendants
   dds <- descendants_get(id = txid, txdct = txdct, direct = TRUE)
   subtree_count <- seqs_count(txid, drct = FALSE, ps = ps)
-  if(subtree_count <= ps[['mdlthrs']] | length(dds) == 0) {
-    info(lvl=2+lvl, ps=ps, "+ whole subtree ...")
-    sqs <- seqrec_get(txid=txid, drct=FALSE, ps=ps, lvl=lvl)
+  if (subtree_count <= ps[['mdlthrs']] | length(dds) == 0) {
+    info(lvl = 2 + lvl, ps = ps, "+ whole subtree ...")
+    sqs <- seqrec_get(txid = txid, drct = FALSE, ps = ps, lvl = lvl)
     return(sqs)
   }
   # 1st direct sqs from focal taxon, then from DDs
-  info(lvl=2+lvl, ps=ps, "+ direct ...")
-  sqs <- seqrec_get(txid=txid, drct=TRUE, ps=ps, lvl=lvl)
-  info(lvl=2+lvl, ps=ps, "+ by child ...")
-  for(dd in dds) {
+  info(lvl = 2 + lvl, ps = ps, "+ direct ...")
+  sqs <- seqrec_get(txid = txid, drct = TRUE, ps = ps, lvl = lvl)
+  info(lvl = 2 + lvl, ps = ps, "+ by child ...")
+  for (dd in dds) {
     lvl <- lvl + 1
-    info(lvl=2+lvl, ps=ps, "Working on child [id ", dd,"]")
-    sqs <- c(sqs, hierarchic_download(txid=dd, txdct=txdct,
-                              ps=ps, lvl=lvl))
+    info(lvl = 2 + lvl, ps = ps, "Working on child [id ", dd,"]")
+    sqs <- c(sqs, hierarchic_download(txid = dd, txdct = txdct,
+                              ps = ps, lvl = lvl))
   }
   sqs
 }
@@ -40,7 +40,7 @@ seqrec_augment <- function(sqs, txdct) {
   txdct_ids <- vapply(txdct@rcrds, function(x) x@id, '')
   sqs_nms <- vapply(sqs, function(x) x@orgnsm, '')
   sqs_ids <- txdct_ids[match(sqs_nms, txdct_nms)]
-  for(i in seq_along(sqs)) {
+  for (i in seq_along(sqs)) {
     sqs[[i]]@txid <- as.character(sqs_ids[[i]])
   }
   seqarc_gen(sqs)
@@ -56,27 +56,32 @@ seqrec_augment <- function(sqs, txdct) {
 seqrec_get <- function(txid, ps, drct=FALSE, lvl=0) {
   # test w/ golden moles 9389
   downloader <- function(ids, ps) {
-    ftch_args <- list(db="nucleotide",
-                      rettype='gbwithparts',
-                      retmode='text', id=ids)
-    search_and_cache(func=rentrez::entrez_fetch,
-                     args=ftch_args, fnm='fetch',
-                     ps=ps)
+    ftch_args <- list(db = "nucleotide",
+                      rettype = 'gbwithparts',
+                      retmode = 'xml', id = ids)
+    search_and_cache(func = rentrez::entrez_fetch,
+                     args = ftch_args, fnm = 'fetch',
+                     ps = ps)
   }
   # get accessions
-  sids <- sids_get(txid=txid, drct=drct, ps=ps)
+  sids <- sids_get(txid = txid, drct = drct, ps = ps)
   if (length(sids) < 1) {
     return(list())
   }
-  if(length(sids) > ps[['mdlthrs']]) {
-    info(lvl=lvl+3, ps=ps, "More than [", ps[['mdlthrs']],
+  if (length(sids) > ps[['mdlthrs']]) {
+    info(lvl = lvl + 3, ps = ps, "More than [", ps[['mdlthrs']],
          ' sqs] available. Choosing at random.')
-    sids <- sids[sample(1:length(sids), size=ps[['mdlthrs']],
-                        replace=FALSE)]
+    sids <- sids[sample(1:length(sids), size = ps[['mdlthrs']],
+                        replace = FALSE)]
   }
-  info(lvl=lvl+3, ps=ps, "Getting [", length(sids), " sqs] ...")
+  info(lvl = lvl + 3, ps = ps, "Getting [", length(sids), " sqs] ...")
   # return whole GB record
   raw_recs <- batcher(sids, func = downloader, ps = ps, lvl = lvl + 4)
   #  split up by feature, return SeqRecs
-  seqrec_convert(rw_rcrds = raw_recs)
+  seqrecs <- numeric()
+  for (i in seq_along(raw_recs)) {
+    seqrecs <- c(seqrec_convert(raw_recs = raw_recs[[i]], ps = ps),
+                 seqrecs)
+  }
+  seqrecs
 }

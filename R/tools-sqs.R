@@ -1,47 +1,46 @@
-# TODO: switch to text for restez integration
+# TODO: switch to text for restez integration, vectorise
 #' @name seqrec_convert
 #' @title Convert raw Entrez gbwithparts record to SqRcrds
 #' @description Parses returned sequences features with Entrez,
 #' returns a SqRcrd for each raw record.
-#' @param rw_rcrds Raw records returned from Entrez fetch
+#' @param raw_recs Raw records returned from Entrez fetch
 #' @param gis GIs of each fectched record
 #' @param ps Parameters list
-seqrec_convert <- function(rw_rcrds, ps) {
+seqrec_convert <- function(raw_recs, ps) {
   # gis <- '558614019'
-  # rw_rcrds <- rentrez::entrez_fetch(db="nucleotide",
-  #                                   rettype='gbwithparts',
-  #                                   retmode='xml',
-  #                                   id=gis)
+  # raw_recs <- rentrez::entrez_fetch(db = "nucleotide",
+  #                                   rettype = 'gbwithparts',
+  #                                   retmode = 'xml',
+  #                                   id = gis)
   res <- NULL
-  rcrds <- try(XML::xmlToList(rw_rcrds), silent=TRUE)
-  if(inherits(rcrds, 'try-error')) {
-    msg <- paste0('XML parsing error with the following GIs:\n[',
-                  paste0(gis, collapse=','), ']\nSkipping...\n',
-                  '(This can occur with GenBank data. ',
+  rcrds <- try(XML::xmlToList(raw_recs), silent = TRUE)
+  if (inherits(rcrds, 'try-error')) {
+    msg <- paste0('XML parsing error:',
+                  'This can occur with GenBank data. ',
                   'Try pipeline again to see if warning reoccurs. ',
-                  'If it does, contact maintainer.)')
-    warn(ps=ps, msg)
+                  'If it does, contact maintainer.')
+    warn(ps = ps, msg)
     return(NULL)
   }
-  for(i in seq_along(rcrds)) {
+  for (i in seq_along(rcrds)) {
     rcrd <- rcrds[[i]]
     # for debugging.... save last record
-    svObj(wd=ps[['wd']], obj=rcrd, nm='last_seqrec')
+    svObj(wd = ps[['wd']], obj = rcrd, nm = 'last_seqrec')
     wftrs <-  FALSE
     # key info
     accssn <- rcrd[['GBSeq_primary-accession']]
     vrsn <- rcrd[["GBSeq_accession-version"]]
     ml_typ <- rcrd[['GBSeq_moltype']]
-    if(is.null(ml_typ)) {
+    if (is.null(ml_typ)) {
       # ml_typ not always recorded, e.g. NR_040059
       ml_typ <- ''
     }
     sq <- rcrd[['GBSeq_sequence']]
     create_date <- rcrd[["GBSeq_create-date"]]
     create_date <- as.Date(create_date,
-                           format="%d-%b-%Y")
+                           format = "%d-%b-%Y")
     age <- as.integer(ps[['date']] - create_date)
-    if(is.null(sq)) {
+    if (is.null(sq)) {
       # master records have no sequences
       # e.g. https://www.ncbi.nlm.nih.gov/nuccore/1283191328
       next
@@ -50,53 +49,53 @@ seqrec_convert <- function(rw_rcrds, ps) {
     orgnsm <- rcrd[['GBSeq_organism']]
     ftr_tbl <- rcrd[['GBSeq_feature-table']]
     kywrds <- vapply(rcrd[['GBSeq_keywords']], '[', '')
-    kywrds <- paste0(kywrds, collapse=' | ')
+    kywrds <- paste0(kywrds, collapse = ' | ')
     # extract features
-    for(ftr in ftr_tbl) {
+    for (ftr in ftr_tbl) {
       # TODO: perhaps make sure locations don't overlap
-      if(grepl('^source$', ftr[['GBFeature_key']],
-               ignore.case=TRUE)) {
+      if (grepl('^source$', ftr[['GBFeature_key']],
+               ignore.case = TRUE)) {
         next
       }
       lctn <- ftr[['GBFeature_location']]
       lctn <- gsub('[^0-9\\.]', '', lctn)
-      if(nchar(lctn) == 0) {
+      if (nchar(lctn) == 0) {
         next
       }
-      strtstp <- strsplit(x=lctn, split='\\.\\.')[[1]]
-      if(length(strtstp) != 2) {
+      strtstp <- strsplit(x = lctn, split = '\\.\\.')[[1]]
+      if (length(strtstp) != 2) {
         next
       }
       strtstp <- as.numeric(strtstp)
       sqlngth <- strtstp[2] - strtstp[1]
-      if(all(strtstp == c(1, nchar(sq)))) {
+      if (all(strtstp == c(1, nchar(sq)))) {
         # feature should not span entire sequence
         next
       }
-      if(sqlngth > ps[['mnsql']] & sqlngth < ps[['mxsql']]) {
+      if (sqlngth > ps[['mnsql']] & sqlngth < ps[['mxsql']]) {
         ftr_nm <- ftr[['GBFeature_quals']][[
           'GBQualifier']][['GBQualifier_value']]
-        if(is.null(ftr_nm)) {
+        if (is.null(ftr_nm)) {
           ftr_nm <- ftr[['GBFeature_key']]
         }
-        tmp <- substr(x=sq, start=strtstp[1], stop=strtstp[2])
-        seqrec <- seqrec_gen(accssn=accssn, lctn=lctn, age=age,
-                             orgnsm=orgnsm, txid='', vrsn=vrsn, sq=tmp,
-                             dfln=dfln, ml_typ=ml_typ, nm=ftr_nm,
-                             rcrd_typ='feature')
+        tmp <- substr(x = sq, start = strtstp[1], stop = strtstp[2])
+        seqrec <- seqrec_gen(accssn = accssn, lctn = lctn, age = age,
+                             orgnsm = orgnsm, txid = '', vrsn = vrsn, sq = tmp,
+                             dfln = dfln, ml_typ = ml_typ, nm = ftr_nm,
+                             rcrd_typ = 'feature')
         res <- c(res, seqrec)
         wftrs <- TRUE
       }
     }
     # if no features, add entire sequence
-    if(!wftrs) {
+    if (!wftrs) {
       sqlngth <- as.numeric(rcrd[['GBSeq_length']])
-      if(sqlngth < ps[['mxsql']]) {
-        seqrec <- seqrec_gen(accssn=accssn, txid='', nm=kywrds,
-                             orgnsm=orgnsm, sq=sq, dfln=dfln,
-                             ml_typ=ml_typ, rcrd_typ='whole',
-                             vrsn=vrsn, age=age)
-        res <- c(res, sq_rcrd)
+      if (sqlngth < ps[['mxsql']]) {
+        seqrec <- seqrec_gen(accssn = accssn, txid = '', nm = kywrds,
+                             orgnsm = orgnsm, sq = sq, dfln = dfln,
+                             ml_typ = ml_typ, rcrd_typ = 'whole',
+                             vrsn = vrsn, age = age)
+        res <- c(res, seqrec)
       }
     }
   }
@@ -129,16 +128,16 @@ seqrec_gen <- function(accssn, nm, txid, sq, dfln, orgnsm, ml_typ,
   }
   url <- paste0('https://www.ncbi.nlm.nih.gov/nuccore/', id)
   nncltds <- nchar(sq)
-  unambsq <- gsub(pattern='[^atcgATCG]', replacement='',
-                  x=sq)[[1]]
+  unambsq <- gsub(pattern = '[^atcgATCG]', replacement = '',
+                  x = sq)[[1]]
   nambgs <- nncltds - nchar(unambsq)
   pambgs <- nambgs/nncltds
-  gcr <- gregexpr(pattern='[^cgCG]', text=unambsq)[[1]]
+  gcr <- gregexpr(pattern = '[^cgCG]', text = unambsq)[[1]]
   gcr <- length(gcr)/nchar(unambsq)
-  new('SeqRec', accssn=accssn, nm=nm, sq=charToRaw(sq),
-      dfln=dfln, ml_typ=ml_typ, rcrd_typ=rcrd_typ, vrsn=vrsn, id=id,
-      url=url, nncltds=nncltds, nambgs=nambgs, orgnsm=orgnsm,
-      txid=txid, pambgs=pambgs, gcr=gcr, age=age)
+  new('SeqRec', accssn = accssn, nm = nm, sq = charToRaw(sq),
+      dfln = dfln, ml_typ = ml_typ, rcrd_typ = rcrd_typ, vrsn = vrsn, id = id,
+      url = url, nncltds = nncltds, nambgs = nambgs, orgnsm = orgnsm,
+      txid = txid, pambgs = pambgs, gcr = gcr, age = age)
 }
 
 #' @name seqarc_gen
@@ -150,6 +149,6 @@ seqarc_gen <- function(seqrecs) {
   nncltds <- vapply(seqrecs, function(x) x@nncltds, 1)
   ids <- vapply(seqrecs, function(x) x@id, '')
   txids <- vapply(seqrecs, function(x) x@txid, '')
-  new('SeqArc', ids=ids, nncltds=nncltds, nambgs=nambgs,
-      txids=txids, sqs=seqrecs)
+  new('SeqArc', ids = ids, nncltds = nncltds, nambgs = nambgs,
+      txids = txids, sqs = seqrecs)
 }

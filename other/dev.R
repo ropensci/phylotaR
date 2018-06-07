@@ -10,3 +10,5 @@ if (file.exists(wd)) {
 dir.create(wd)
 setup(wd = wd, txid = '9479', ncbi_dr = ncbi_dr, v = TRUE)
 taxise_run(wd)
+download_run(wd)
+

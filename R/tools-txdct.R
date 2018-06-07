@@ -47,8 +47,8 @@ taxtree_gen <- function(prinds, ids, root, ps) {
 #' @param txid txid
 #' @param dictionary DictionaryTaxon
 #' @noRd
-rank_get <- function(txid, dictionary) {
-  dictionary@rcrds[[txid]]@rnk
+rank_get <- function(txid, txdct) {
+  txdct@rcrds[[txid]]@rnk
 }
 
 #' @name txid_descendants_get

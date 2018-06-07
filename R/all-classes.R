@@ -340,7 +340,7 @@ setMethod('[', c('SeqArc', 'character', 'missing', 'missing'),
           function(x, i, j, ..., drop = TRUE) {
             pull <- i %in% x@ids
             if (all(pull)) {
-              return(archive_sequence_generate(x@sqs[x@ids %in% i]))
+              return(seqarc_gen(x@sqs[x@ids %in% i]))
             }
             mssng <- paste0(i[!pull], collapse = ', ')
             stop(paste0('[', mssng , '] not in records'))
