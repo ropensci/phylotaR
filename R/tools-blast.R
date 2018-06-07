@@ -22,7 +22,7 @@ blastdb_gen <- function(sqs, dbfl, ps) {
   }
   args <- c('-in', fl, '-dbtype', 'nucl')
   info(lvl = 3, ps = ps, "Running makeblastdb")
-  res <- cmdLn(cmd = ps[['mkblstdb']], args = args,
+  res <- cmdln(cmd = ps[['mkblstdb']], args = args,
                lgfl = fl)
   if (res != 0) {
     error(ps = ps, paste0('makeblastdb failed to run. Check BLAST log files.'))
@@ -63,7 +63,7 @@ blastn_run <- function(dbfl, outfl, ps) {
             '-dust', 'no', '-strand', 'plus', '-evalue', ps[['mxevl']],
             '-out', outfl)
   info(lvl = 3, ps = ps, "Running blastn")
-  res <- cmdLn(cmd = ps[['blstn']], args = args, lgfl = dbfl)
+  res <- cmdln(cmd = ps[['blstn']], args = args, lgfl = dbfl)
   if (res != 0) {
     error(ps = ps, 'blastn failed to run. Check BLAST log files.')
   }

@@ -10,24 +10,24 @@
 #' @param lgfl File to which stdout/err will be written
 #' @details Note, stdout/err are returned as 'raw'. Use rawToChar() to
 #' convert to characters.
-cmdLn <- function(cmd, args, lgfl=NULL) {
-  if(!is.null(lgfl)) {
+cmdln <- function(cmd, args, lgfl=NULL) {
+  if (!is.null(lgfl)) {
     # remove any filetype and replace with .log
     lgfl <- paste0(sub('\\.[^.]+$', '', lgfl), '.log')
-    res <- try(sys::exec_wait(cmd=cmd, args=args,
-                              std_out=lgfl, std_err=lgfl),
-               silent=TRUE)
-    if(inherits(res, 'try-error')) {
-      cat(as.character(res), file=lgfl)
+    res <- try(sys::exec_wait(cmd = cmd, args = args,
+                              std_out = lgfl, std_err = lgfl),
+               silent = TRUE)
+    if (inherits(res, 'try-error')) {
+      cat(as.character(res), file = lgfl)
       res <- 1
     }
   } else {
-    res <- try(sys::exec_internal(cmd=cmd, args=args),
-               silent=TRUE)
-    if(inherits(res, 'try-error')) {
+    res <- try(sys::exec_internal(cmd = cmd, args = args),
+               silent = TRUE)
+    if (inherits(res, 'try-error')) {
       stderr <- charToRaw(as.character(res))
-      res <- list('status'=1, 'stderr'=stderr,
-                  'stdout'=charToRaw(''))
+      res <- list('status' = 1, 'stderr' = stderr,
+                  'stdout' = charToRaw(''))
     }
   }
   res

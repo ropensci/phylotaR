@@ -110,7 +110,7 @@ get_nsqs <- function(phylota, cid) {
 #' @export
 # TODO: GCR
 get_sq_slot <- function(phylota, cid = NULL, sid = NULL,
-                        slt_nm = list_sqrcrd_slots()) {
+                        slt_nm = list_seqrec_slots()) {
   get <- function(sid) {
     i <- which(sid == phylota@sqs@ids)
     sq <- phylota@sqs@sqs[[i]]
@@ -121,7 +121,7 @@ get_sq_slot <- function(phylota, cid = NULL, sid = NULL,
     sid <- cl@sids
   }
   slt_nm <- match.arg(slt_nm)
-  expctd <- new(getSlots('SqRcrd')[[slt_nm]], 1)
+  expctd <- new(getSlots('SeqRec')[[slt_nm]], 1)
   vapply(sid, get, expctd)
 }
 
@@ -134,14 +134,14 @@ get_sq_slot <- function(phylota, cid = NULL, sid = NULL,
 #' @return vector
 #' @export
 get_cl_slot <- function(phylota, cid,
-                        slt_nm = list_clrcrd_slots()) {
+                        slt_nm = list_clusterrec_slots()) {
   get <- function(cid) {
     i <- which(cid == phylota@cls@ids)
     cl <- phylota@cls@cls[[i]]
     slot(cl, slt_nm)
   }
   slt_nm <- match.arg(slt_nm)
-  expctd <- new(getSlots('ClRcrd')[[slt_nm]], 1)
+  expctd <- new(getSlots('ClusterRec')[[slt_nm]], 1)
   vapply(cid, get, expctd)
 }
 
@@ -154,12 +154,12 @@ get_cl_slot <- function(phylota, cid,
 #' @return vector or list
 #' @export
 get_tx_slot <- function(phylota, txid,
-                        slt_nm = list_txrcrd_slots()) {
+                        slt_nm = list_taxrec_slots()) {
   get <- function(txid) {
     tx <- phylota@txdct@rcrds[[txid]]
     slot(tx, slt_nm)
   }
   slt_nm <- match.arg(slt_nm)
-  expctd <- new(getSlots('TxRcrd')[[slt_nm]], 1)
+  expctd <- new(getSlots('TaxRec')[[slt_nm]], 1)
   vapply(txid, get, expctd)
 }

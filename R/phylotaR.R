@@ -31,14 +31,10 @@
 #' @param mncvrg The maximum percentile coverage defining an overlapping BLAST hit.
 #' Sequences with BLAST matches with lower values are not considered orthologous.
 #' @export
-parameters <-function(wd='.', txid=numeric(),
-                      mkblstdb='', blstn='',
-                      v=FALSE, ncps=1,
-                      mxnds=100000, mdlthrs=3000,
-                      mnsql=250, mxsql=2000, 
-                      mxrtry=100, mxsqs=50000,
-                      mxevl=1.0e-10, mncvrg=51,
-                      btchsz=300, date=Sys.Date()) {
+parameters <- function(wd='.', txid=numeric(), mkblstdb='', blstn='', v=FALSE, ncps=1,
+                       mxnds=100000, mdlthrs=3000, mnsql=250, mxsql=2000, mxrtry=100,
+                       mxsqs=50000, mxevl=1.0e-10, mncvrg=51, btchsz=300,
+                       date=Sys.Date()) {
   ps <- as.list(environment())
   ps[['wt_tms']] <- c(1, 3, 6, 10, 60, 300)
   ps
@@ -64,8 +60,8 @@ list_ncbi_ranks <- function() {
 #' available SqRcrd slots.
 #' @return vector
 #' @export
-list_sqrcrd_slots <- function() {
-  slt_typs <- getSlots('SqRcrd')
+list_seqrec_slots <- function() {
+  slt_typs <- getSlots('SeqRec')
   pull <- slt_typs %in% c('character', 'integer', 'raw', 'numeric')
   names(slt_typs[pull])
 }
@@ -76,8 +72,8 @@ list_sqrcrd_slots <- function() {
 #' available ClRcrd slots.
 #' @return vector
 #' @export
-list_clrcrd_slots <- function() {
-  slt_typs <- getSlots('ClRcrd')
+list_clusterrec_slots <- function() {
+  slt_typs <- getSlots('ClusterRec')
   pull <- slt_typs %in% c('character', 'integer', 'raw', 'numeric')
   names(slt_typs[pull])
 }
@@ -88,8 +84,8 @@ list_clrcrd_slots <- function() {
 #' available TxRcrd slots.
 #' @return vector
 #' @export
-list_txrcrd_slots <- function() {
-  slt_typs <- getSlots('TxRcrd')
+list_taxrec_slots <- function() {
+  slt_typs <- getSlots('TaxRec')
   pull <- slt_typs %in% c('character', 'integer', 'raw', 'numeric')
   names(slt_typs[pull])
 }
