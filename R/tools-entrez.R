@@ -41,7 +41,7 @@ txnds_count <- function(txid, ps) {
 #' @param txid Taxonomic ID
 #' @param ps parameters
 #' @param drct Node-level only or subtree as well? Default FALSE.
-seqs_count <- function(txid, ps, drct=FALSE) {
+sqs_count <- function(txid, ps, drct=FALSE) {
   trm <- searchterm_gen(txid = txid, ps = ps, drct = drct)
   args <- list(db = 'nucleotide', retmax = 0, term = trm)
   res <- search_and_cache(func = rentrez::entrez_search,
@@ -82,13 +82,13 @@ sids_get <- function(txid, drct, ps, retmax=100,
   srch <- safely_connect(func = rentrez::entrez_search,
                          args = args, fnm = 'search',
                          ps = ps)
-  nseqs <- srch[['count']]
+  nsqs <- srch[['count']]
   ids <- NULL
-  if (nseqs > hrdmx) {
-    ret_strts <- sample(seq(1, (nseqs-retmax), retmax),
+  if (nsqs > hrdmx) {
+    ret_strts <- sample(seq(1, (nsqs - retmax), retmax),
                         round(hrdmx/retmax), replace = FALSE)
   } else {
-    ret_strts <- seq(1, (nseqs-retmax), retmax)
+    ret_strts <- seq(1, (nsqs - retmax), retmax)
   }
   rsrch <- FALSE
   for (ret_strt in ret_strts) {

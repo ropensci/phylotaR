@@ -8,14 +8,14 @@
 #' @export
 read_phylota <- function(wd) {
   if (!file.exists(file.path(wd, 'cache',
-                            'clstrs_sqs.RData'))) {
+                            'clusters_sqs.RData'))) {
     msg <- paste0('Data file not found in [', wd,
                   '].\nAre you sure pipeline has completed?')
     stop(msg)
   }
-  clstrs_sqs <- ldObj(wd, nm = 'clstrs_sqs')
-  cls <- clstrs_sqs[['clstrs']]
-  sqs <- clstrs_sqs[['sqs']]
+  clusters_sqs <- ldObj(wd, nm = 'clusters_sqs')
+  cls <- clusters_sqs[['clusters']]
+  sqs <- clusters_sqs[['sqs']]
   # TODO: how does this occur?
   # prevent dups
   non_dups <- which(!duplicated(sqs@ids))

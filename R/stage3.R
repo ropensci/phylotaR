@@ -15,7 +15,7 @@ clusters_run <- function(wd) {
   .stgMsg(ps = ps, msg = msg)
 }
 
-#' @name calcClstrs
+#' @name calcclusters
 #' @title Calculate clusters for all sequences in WD
 #' @description Loop through downloaded sequences
 #' for each clade and hierarchically find clusters
@@ -31,7 +31,7 @@ clusters_calc <- function(txdct, ps) {
     sq_fl <- sq_fls[i]
     # TODO: use the cache tool
     clfl <- file.path(file.path(file.path(ps[['wd']], 'cache',
-                                          'clstrs', sq_fl)))
+                                          'clusters', sq_fl)))
     if (file.exists(clfl)) {
       next
     }
@@ -39,10 +39,10 @@ clusters_calc <- function(txdct, ps) {
                                             'sqs', sq_fl)))
     txid <- as.character(sub('\\.RData', '', sq_fl))
     info(lvl = 1, ps = ps, "Working on [id ", txid, "]")
-    clstrs <- cluster_all(txid = txid, sqs = sqs, txdct = txdct,
+    clusters <- cluster_all(txid = txid, sqs = sqs, txdct = txdct,
                            ps = ps)
-    if (length(clstrs@ids) > 0) {
-      svClstrs(wd = ps[['wd']], txid = txid, clstrs = clstrs)
+    if (length(clusters@ids) > 0) {
+      svclusters(wd = ps[['wd']], txid = txid, clusters = clusters)
     } else {
       fld <- c(fld, i)
     }
@@ -59,10 +59,10 @@ clusters_calc <- function(txdct, ps) {
       all_sqs <- c(all_sqs, sqs@sqs)
     }
     all_sqs <- seqarc_gen(all_sqs)
-    clstrs <- cluster_seqs(txid = '', sqs = all_sqs, ps = ps,
+    clusters <- cluster_sqs(txid = '', sqs = all_sqs, ps = ps,
                            lvl = 1, typ = 'paraphyly')
-    if (length(clstrs@ids) > 0) {
-      svClstrs(wd = ps[['wd']], txid = 'paraphyly', clstrs = clstrs)
+    if (length(clusters@ids) > 0) {
+      svclusters(wd = ps[['wd']], txid = 'paraphyly', clusters = clusters)
       svSqs(wd = ps[['wd']], txid = 'paraphyly', sqs = all_sqs)
     }
   }

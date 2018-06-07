@@ -30,7 +30,7 @@ clade_select <- function(txdct, ps) {
   while (length(queue) > 0) {
     tmp_id <- head(queue, 1)
     queue <- tail(queue, length(queue) - 1)
-    sqcnt <- seqs_count(txid = tmp_id, ps = ps)
+    sqcnt <- sqs_count(txid = tmp_id, ps = ps)
     ndcnt <- txnds_count(txid = tmp_id, ps = ps)
     mx_pssbl_sqcnt <- ps[['mdlthrs']] * ndcnt
     sqcnt <- ifelse(sqcnt > mx_pssbl_sqcnt, mx_pssbl_sqcnt,
