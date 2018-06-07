@@ -8,11 +8,11 @@
 #' @param txid Taxonomic ID
 #' @param ps Parameter list
 #' @param drct Node-level only or subtree as well? Default FALSE.
-mkSrchTrm <- function(txid, ps, drct=FALSE) {
+searchterm_gen <- function(txid, ps, drct=FALSE) {
   org_trm <- ifelse(drct, '[Organism:noexp]',
                      '[Organism:exp]' )
-  avd1 <- ' NOT predicted[TI] NOT "whole genome shotgun"[TI] NOT unverified[TI]'
-  avd2 <- ' NOT "synthetic construct"[Organism]'
+  avd1 <- ' NOT predicted[TI] NOT "whole genome shotgun"[TI]'
+  avd2 <- ' NOT unverified[TI] NOT "synthetic construct"[Organism]'
   paste0('(txid', txid, org_trm, ' AND ', ps[['mnsql']],
          ':100000[SLEN])', avd1, avd2)
 }
@@ -25,12 +25,12 @@ mkSrchTrm <- function(txid, ps, drct=FALSE) {
 #' of ID.
 #' @param txid Taxonomic ID
 #' @param ps Parameters
-nNds <- function(txid, ps) {
+txnds_count <- function(txid, ps) {
   trm <- paste0('txid', txid, '[Subtree]')
   args <- list(db='taxonomy', retmax=0, term=trm)
-  res <- srchNCch(func=rentrez::entrez_search,
-                  args=args, fnm='search',
-                  ps=ps)
+  res <- search_and_cache(func=rentrez::entrez_search,
+                          args=args, fnm='search',
+                          ps=ps)
   res[['count']]
 }
 
@@ -41,15 +41,14 @@ nNds <- function(txid, ps) {
 #' @param txid Taxonomic ID
 #' @param ps parameters
 #' @param drct Node-level only or subtree as well? Default FALSE.
-nSqs <- function(txid, ps, drct=FALSE) {
-  trm <- mkSrchTrm(txid=txid, ps=ps, drct=drct)
+seqs_count <- function(txid, ps, drct=FALSE) {
+  trm <- searchterm_gen(txid=txid, ps=ps, drct=drct)
   args <- list(db='nucleotide', retmax=0, term=trm)
-  res <- srchNCch(func=rentrez::entrez_search,
-                  args=args, fnm='search',
-                  ps=ps)
+  res <- search_and_cache(func=rentrez::entrez_search,
+                          args=args, fnm='search',
+                          ps=ps)
   res[['count']]
 }
-
 
 #' @title Return random set of sequence IDs
 #' @description For a given txid return a random set of 
@@ -71,46 +70,47 @@ nSqs <- function(txid, ps, drct=FALSE) {
 #' @param hrdmx Absolute maximum number of sequence IDs to download
 #' in a single query.
 #' @return vector ot IDs
-getGIs <- function(txid, drct, sqcnt, ps, retmax=100,
-                   hrdmx=100000) {
+sids_get <- function(txid, drct, ps, retmax=100,
+                     hrdmx=100000) {
   if(chckGIs(wd=ps[['wd']], txid=txid)) {
     return(ldGIs(wd=ps[['wd']], txid=txid))
   }
-  trm <- mkSrchTrm(txid=txid, ps=ps, drct=drct)
-  if(sqcnt <= hrdmx) {
-    args <- list(db='nucleotide', retmax=sqcnt, term=trm)
-    srch <- srchNCch(func=rentrez::entrez_search,
-                     args=args, fnm='search',
-                     ps=ps)
-    return(srch[['ids']])
-  }
-  srch_args <- list(db='nucleotide', term=trm,
-                    use_history=TRUE, retmax=0)
+  # search
+  trm <- searchterm_gen(txid=txid, ps=ps, drct=drct)
+  args <- list(db='nucleotide', retmax=0, term=trm,
+               use_history=TRUE)
+  srch <- safely_connect(func=rentrez::entrez_search,
+                         args=args, fnm='search',
+                         ps=ps)
+  nseqs <- srch[['count']]
   ids <- NULL
-  ret_strts <- sample(seq(1, (sqcnt-retmax), retmax),
-                      round(hrdmx/retmax), replace=FALSE)
-  rsrch <- TRUE
+  if (nseqs > hrdmx) {
+    ret_strts <- sample(seq(1, (nseqs-retmax), retmax),
+                        round(hrdmx/retmax), replace=FALSE)
+  } else {
+    ret_strts <- seq(1, (nseqs-retmax), retmax)
+  }
+  rsrch <- FALSE
   for(ret_strt in ret_strts) {
     mxtry <- 3
     for(i in 1:mxtry) {
       # use webobject, search without cache
       if(rsrch) {
-        srch <- safeSrch(func=rentrez::entrez_search,
-                         args=srch_args, fnm='search',
-                         ps=ps)
+        srch <- safely_connect(func=rentrez::entrez_search,
+                               args=args, fnm='search',
+                               ps=ps)
       }
       ftch_args <- list(db='nucleotide',
                         web_history=srch[['web_history']],
                         retmax=retmax,
-                        rettype='GI',
+                        rettype='acc',
                         retstart=ret_strt)
       id_ftch <- try(do.call(what=rentrez::entrez_fetch,
                              args=ftch_args), silent=TRUE)
       if(inherits(id_ftch, 'try-error')) {
         rsrch <- TRUE
         if(i == mxtry) {
-          error(ps=ps, 'Failed to get IDs for model organism [',
-                txid, ']')
+          error(ps=ps, 'Failed to get IDs for [', txid, ']')
         }
       }
       rsrch <- FALSE

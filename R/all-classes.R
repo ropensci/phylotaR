@@ -179,7 +179,6 @@ setMethod('[', c('ClusterArc', 'character', 'missing', 'missing'),
 #' @slot accssn Accession
 #' @slot vrsn Accession version
 #' @slot url URL
-#' @slot gi GI
 #' @slot txid Taxonomic ID of source taxon
 #' @slot orgnsm Scientific name of source taxon
 #' @slot sq Sequence
@@ -197,7 +196,6 @@ setClass('SeqRec', representation = representation(
   nm = 'character',
   accssn = 'character',
   vrsn = 'character',
-  gi = 'character',
   url = 'character',
   txid = 'character',
   orgnsm = 'character',

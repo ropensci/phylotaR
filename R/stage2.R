@@ -9,11 +9,11 @@ download_run <- function(wd) {
   .stgMsg(ps  =  ps, msg  =  msg)
   info(lvl  =  1, ps  =  ps, 'Identifying suitable clades ...')
   txdct <- ldObj(wd  =  wd, nm  =  'txdct')
-  clds_ids <- cldIdntfy(txdct  =  txdct, ps  =  ps)
+  clds_ids <- clade_select(txdct  =  txdct, ps  =  ps)
   info(lvl  =  1, ps  =  ps, 'Identified [', length(clds_ids),
        '] suitable clades.')
   info(lvl  =  1, ps  =  ps, 'Downloading hierarchically ...')
-  dwnldSqRcrds(txids  =  clds_ids, txdct  =  txdct, ps  =  ps)
+  seq_download(txids  =  clds_ids, txdct  =  txdct, ps  =  ps)
   msg <- paste0('Completed stage DOWNLOAD: [', Sys.time(), ']')
   .stgMsg(ps  =  ps, msg  =  msg)
 }
@@ -24,14 +24,14 @@ download_run <- function(wd) {
 #' of nodes and sequences.
 #' @param txdct TxDct
 #' @param ps Parameters
-cldIdntfy <- function(txdct, ps) {
+clade_select <- function(txdct, ps) {
   res <- vector()
   queue <- ps[['txid']]
   while(length(queue) > 0) {
     tmp_id <- head(queue, 1)
     queue <- tail(queue, length(queue)-1)
-    sqcnt <- nSqs(txid=tmp_id, ps=ps)
-    ndcnt <- nNds(txid=tmp_id, ps=ps)
+    sqcnt <- seqs_count(txid=tmp_id, ps=ps)
+    ndcnt <- txnds_count(txid=tmp_id, ps=ps)
     mx_pssbl_sqcnt <- ps[['mdlthrs']] * ndcnt
     sqcnt <- ifelse(sqcnt > mx_pssbl_sqcnt, mx_pssbl_sqcnt,
                     sqcnt)
@@ -41,14 +41,15 @@ cldIdntfy <- function(txdct, ps) {
       info(lvl=2, ps=ps, "[", sqcnt, " sqs] and [",
            ndcnt, " nds] for clade [id ",
            tmp_id, "] - searching descendants instead ...")
-      queue <- c(queue, getDDs(id=as.character(tmp_id),
-                               txdct=txdct))
+      queue <- c(queue,
+                 descendants_get(id=as.character(tmp_id),
+                                 direct = TRUE, txdct=txdct))
     }
   }
   res
 }
 
-#' @name dwnldSqRcrds
+#' @name seq_download
 #' @title Download sequences for txids
 #' @description Look up and download all sequences for
 #' given taxonomic IDs.
@@ -56,7 +57,7 @@ cldIdntfy <- function(txdct, ps) {
 #' @param txdct Taxonomic dictionary
 #' @param ps parameters
 #' @details Sequence downloads are cached.
-dwnldSqRcrds <- function(txids, txdct, ps) {
+seq_download <- function(txids, txdct, ps) {
   # TODO: add overwrite arg
   sqcnt <- 0
   for(i in seq_along(txids)) {
@@ -69,10 +70,10 @@ dwnldSqRcrds <- function(txids, txdct, ps) {
     info(lvl=1, ps=ps,
          "Working on parent [id ", txid, "]: [", i, "/",
          length(txids), "] ...")
-    sqs <- hrrchcDwnld(txid=txid, txdct=txdct, ps=ps)
+    sqs <- hierarchic_download(txid=txid, txdct=txdct, ps=ps)
     if(length(sqs) > 0) {
       sqcnt <- sqcnt + length(sqs)
-      sqs <- agmntSqRcrds(sqs=sqs, txdct=txdct)
+      sqs <- seqrec_augment(sqs=sqs, txdct=txdct)
       svSqs(wd=ps[['wd']], txid=txid, sqs=sqs)
     }
   }

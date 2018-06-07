@@ -1,11 +1,12 @@
-#' @name rwRcrd2SqRcrd
+# TODO: switch to text for restez integration
+#' @name seqrec_convert
 #' @title Convert raw Entrez gbwithparts record to SqRcrds
 #' @description Parses returned sequences features with Entrez,
 #' returns a SqRcrd for each raw record.
 #' @param rw_rcrds Raw records returned from Entrez fetch
 #' @param gis GIs of each fectched record
 #' @param ps Parameters list
-rwRcrd2SqRcrd <- function(rw_rcrds, gis, ps) {
+seqrec_convert <- function(rw_rcrds, ps) {
   # gis <- '558614019'
   # rw_rcrds <- rentrez::entrez_fetch(db="nucleotide",
   #                                   rettype='gbwithparts',
@@ -14,18 +15,18 @@ rwRcrd2SqRcrd <- function(rw_rcrds, gis, ps) {
   res <- NULL
   rcrds <- try(XML::xmlToList(rw_rcrds), silent=TRUE)
   if(inherits(rcrds, 'try-error')) {
-    msg <- paste0('XML parsing error with one or more of the following GIs:\n[',
+    msg <- paste0('XML parsing error with the following GIs:\n[',
                   paste0(gis, collapse=','), ']\nSkipping...\n',
                   '(This can occur with GenBank data. ',
-                  'Trying restarting pipeline to see if warning reoccurs. ',
+                  'Try pipeline again to see if warning reoccurs. ',
                   'If it does, contact maintainer.)')
     warn(ps=ps, msg)
     return(NULL)
   }
   for(i in seq_along(rcrds)) {
-    # for debugging.... save last GI
-    svObj(wd=ps[['wd']], obj=gis[[i]], nm='last_gi')
     rcrd <- rcrds[[i]]
+    # for debugging.... save last record
+    svObj(wd=ps[['wd']], obj=rcrd, nm='last_seqrec')
     wftrs <-  FALSE
     # key info
     accssn <- rcrd[['GBSeq_primary-accession']]
@@ -79,12 +80,11 @@ rwRcrd2SqRcrd <- function(rw_rcrds, gis, ps) {
           ftr_nm <- ftr[['GBFeature_key']]
         }
         tmp <- substr(x=sq, start=strtstp[1], stop=strtstp[2])
-        sq_rcrd <- genSqRcrd(accssn=accssn, lctn=lctn, age=age,
-                             orgnsm=orgnsm, txid='',
-                             vrsn=vrsn, sq=tmp, dfln=dfln,
-                             gi=gis[[i]], ml_typ=ml_typ,
-                             nm=ftr_nm, rcrd_typ='feature')
-        res <- c(res, sq_rcrd)
+        seqrec <- seqrec_gen(accssn=accssn, lctn=lctn, age=age,
+                             orgnsm=orgnsm, txid='', vrsn=vrsn, sq=tmp,
+                             dfln=dfln, ml_typ=ml_typ, nm=ftr_nm,
+                             rcrd_typ='feature')
+        res <- c(res, seqrec)
         wftrs <- TRUE
       }
     }
@@ -92,12 +92,10 @@ rwRcrd2SqRcrd <- function(rw_rcrds, gis, ps) {
     if(!wftrs) {
       sqlngth <- as.numeric(rcrd[['GBSeq_length']])
       if(sqlngth < ps[['mxsql']]) {
-        sq_rcrd <- genSqRcrd(accssn=accssn, txid='',
-                             nm=kywrds, gi=gis[[i]],
-                             orgnsm=orgnsm, sq=sq,
-                             dfln=dfln, ml_typ=ml_typ,
-                             rcrd_typ='whole', vrsn=vrsn,
-                             age=age)
+        seqrec <- seqrec_gen(accssn=accssn, txid='', nm=kywrds,
+                             orgnsm=orgnsm, sq=sq, dfln=dfln,
+                             ml_typ=ml_typ, rcrd_typ='whole',
+                             vrsn=vrsn, age=age)
         res <- c(res, sq_rcrd)
       }
     }
@@ -107,7 +105,7 @@ rwRcrd2SqRcrd <- function(rw_rcrds, gis, ps) {
   res[nondups]
 }
 
-#' @name genSqRcrd
+#' @name seqrec_gen
 #' @title Generate SqRcrd
 #' @description Creates an S4 SqRcrd
 #' @param accssn Accession ID
@@ -122,9 +120,8 @@ rwRcrd2SqRcrd <- function(rw_rcrds, gis, ps) {
 #' @param vrsn Accession version
 #' @param age Number of days since upload
 #' @param lctn Location numbers for features, e.g. '1..200'
-genSqRcrd <- function(accssn, gi, nm, txid, sq, dfln,
-                      orgnsm, ml_typ, rcrd_typ,
-                      vrsn, age, lctn=NULL) {
+seqrec_gen <- function(accssn, nm, txid, sq, dfln, orgnsm, ml_typ,
+                       rcrd_typ, vrsn, age, lctn=NULL) {
   if(is.null(lctn)) {
     id <- vrsn
   } else {
@@ -138,21 +135,21 @@ genSqRcrd <- function(accssn, gi, nm, txid, sq, dfln,
   pambgs <- nambgs/nncltds
   gcr <- gregexpr(pattern='[^cgCG]', text=unambsq)[[1]]
   gcr <- length(gcr)/nchar(unambsq)
-  new('SqRcrd', accssn=accssn, gi=gi, nm=nm, sq=charToRaw(sq),
+  new('SeqRec', accssn=accssn, nm=nm, sq=charToRaw(sq),
       dfln=dfln, ml_typ=ml_typ, rcrd_typ=rcrd_typ, vrsn=vrsn, id=id,
       url=url, nncltds=nncltds, nambgs=nambgs, orgnsm=orgnsm,
       txid=txid, pambgs=pambgs, gcr=gcr, age=age)
 }
 
-#' @name genSqRcrdBx
+#' @name seqarc_gen
 #' @title Generate SqRcrdBx
 #' @description Creates an S4 SqRcrdBx from list of SqRcrds
 #' @param sqs List of SqRcrds
-genSqRcrdBx <- function(sqs) {
-  nambgs <- vapply(sqs, function(x) x@nambgs, 1)
-  nncltds <- vapply(sqs, function(x) x@nncltds, 1)
-  ids <- vapply(sqs, function(x) x@id, '')
-  txids <- vapply(sqs, function(x) x@txid, '')
-  new('SqRcrdBx', ids=ids, nncltds=nncltds, nambgs=nambgs,
-      txids=txids, sqs=sqs)
+seqarc_gen <- function(seqrecs) {
+  nambgs <- vapply(seqrecs, function(x) x@nambgs, 1)
+  nncltds <- vapply(seqrecs, function(x) x@nncltds, 1)
+  ids <- vapply(seqrecs, function(x) x@id, '')
+  txids <- vapply(seqrecs, function(x) x@txid, '')
+  new('SeqArc', ids=ids, nncltds=nncltds, nambgs=nambgs,
+      txids=txids, sqs=seqrecs)
 }
