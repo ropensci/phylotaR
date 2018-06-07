@@ -1,16 +1,15 @@
 # TODO: lots of duplicated lines, break into small functions.
-
 #' @name intPrgrss
 #' @title Initialise progress list in cache
 #' @description Creates a progress list recording each
 #' stage run in cache
 #' @param wd Working directory
-intPrgrss <- function(wd) {
+progress_init <- function(wd) {
   prgrss <- rep(FALSE, 4)
   names(prgrss) <- c('taxise', 'download',
-                     'cluster', 'align')
+                     'cluster', 'cluster2')
   fl <- file.path(wd, 'cache', 'progress.RData')
-  saveRDS(object=prgrss, file=fl)
+  saveRDS(object = prgrss, file = fl)
 }
 
 #' @name svPrgrss
@@ -18,11 +17,11 @@ intPrgrss <- function(wd) {
 #' @description Stores the pipeline progress in the cache.
 #' @param wd Working directory
 #' @param stg Stage
-svPrgrss <- function(wd, stg) {
+progress_save <- function(wd, stg) {
   fl <- file.path(wd, 'cache', 'progress.RData')
-  prgrss <- readRDS(file=fl)
+  prgrss <- readRDS(file = fl)
   prgrss[[stg]] <- TRUE
-  saveRDS(object=prgrss, file=fl)
+  saveRDS(object = prgrss, file = fl)
 }
 
 #' @name rstPrgrss
@@ -32,21 +31,21 @@ svPrgrss <- function(wd, stg) {
 #' mark stages 'download', 'cluster' and 'align' as un-run.
 #' @param wd Working directory
 #' @param stg Stage to which the pipeline will be reset
-rstPrgrss <- function(wd, stg) {
+progress_reset <- function(wd, stg) {
   fl <- file.path(wd, 'cache', 'progress.RData')
-  prgrss <- readRDS(file=fl)
+  prgrss <- readRDS(file = fl)
   i <- which(names(prgrss) == stg)
   prgrss[i:length(prgrss)] <- FALSE
-  saveRDS(object=prgrss, file=fl)
+  saveRDS(object = prgrss, file = fl)
 }
 
 #' @name rdPrgrss
 #' @title Read the progress from cache
 #' @description Return the last completed stage using the cache.
 #' @param wd Working directory
-rdPrgrss <- function(wd) {
+progress_read <- function(wd) {
   fl <- file.path(wd, 'cache', 'progress.RData')
-  prgrss <- readRDS(file=fl)
+  prgrss <- readRDS(file = fl)
   names(prgrss)[sum(prgrss) + 1]
 }
 
@@ -57,13 +56,13 @@ rdPrgrss <- function(wd) {
 #' @param ovrwrt Overwrite existing cache? Default FALSE.
 #' @details Warning: overwriting with this function will
 #' delete the existing cache.
-setUpCch <- function(ps, ovrwrt=FALSE) {
+cache_setup <- function(ps, ovrwrt = FALSE) {
   d <- file.path(ps[['wd']], 'cache')
-  if(file.exists(d)) {
-    if(!ovrwrt) {
-      stop('Cache already exists, ovrwrt=FALSE.')
+  if (file.exists(d)) {
+    if (!ovrwrt) {
+      stop('Cache already exists, ovrwrt = FALSE.')
     } else {
-      rmCch(ps[['wd']])
+      cache_rm(ps[['wd']])
     }
   }
   dir.create(d)
@@ -83,8 +82,8 @@ setUpCch <- function(ps, ovrwrt=FALSE) {
   dir.create(file.path(d, 'clusters'))
   dir.create(file.path(d, 'sqs'))
   dir.create(file.path(d, 'blast'))
-  saveRDS(object=ps,
-          file=file.path(d, 'prmtrs.RData'))
+  saveRDS(object = ps,
+          file = file.path(d, 'prmtrs.RData'))
 }
 
 #' @name ldPrmtrs
@@ -92,10 +91,10 @@ setUpCch <- function(ps, ovrwrt=FALSE) {
 #' @description Parameters are held in cache, use
 #' this function to load parameters set for a wd.
 #' @param wd Working directory
-ldPrmtrs <- function(wd) {
+parameters_load <- function(wd) {
   fl <- file.path(wd, 'cache', 'prmtrs.RData')
-  if(file.exists(fl)) {
-    ps <- readRDS(file=fl)
+  if (file.exists(fl)) {
+    ps <- readRDS(file = fl)
   } else {
     stop('Cache does not exist.')
   }
@@ -107,7 +106,7 @@ ldPrmtrs <- function(wd) {
 #' @description Check if an object exists in the cache.
 #' @param wd Working directory
 #' @param nm Object name
-chkObj <- function(wd, nm) {
+obj_check <- function(wd, nm) {
   fl <- file.path(wd, 'cache', paste0(nm, '.RData'))
   file.exists(fl)
 }
@@ -118,13 +117,13 @@ chkObj <- function(wd, nm) {
 #' as stored by \code{svObj}
 #' @param wd Working directory
 #' @param nm Object name
-ldObj <- function(wd, nm) {
+obj_load <- function(wd, nm) {
   fl <- file.path(wd, 'cache', paste0(nm, '.RData'))
-  if(!file.exists(fl)) {
+  if (!file.exists(fl)) {
     stop(paste0('No [', nm, '] in [',
                 wd, '] cache.'))
   }
-  readRDS(file=fl)
+  readRDS(file = fl)
 }
 
 #' @name svObj
@@ -134,23 +133,23 @@ ldObj <- function(wd, nm) {
 #' @param wd Working directory
 #' @param obj Object
 #' @param nm Object name
-svObj <- function(wd, obj, nm) {
+obj_save <- function(wd, obj, nm) {
   d <- file.path(wd, 'cache')
-  if(!file.exists(d)) {
+  if (!file.exists(d)) {
     dir.create(d)
   }
   fl <- file.path(wd, 'cache', paste0(nm, '.RData'))
-  saveRDS(object=obj, file=fl)
+  saveRDS(object = obj, file = fl)
 }
 
 #' @name rmCch
 #' @title Delete a cache
 #' @description Deletes a cache from a wd.
 #' @param wd Working directory
-rmCch <- function(wd) {
+cache_rm <- function(wd) {
   d <- file.path(wd, 'cache')
-  if(file.exists(d)) {
-    unlink(d, recursive=TRUE)
+  if (file.exists(d)) {
+    unlink(d, recursive = TRUE)
   }
 }
 
@@ -162,18 +161,18 @@ rmCch <- function(wd) {
 #' @param sqs Sequences
 #' @details Used within the \code{dwnld} function. Saves
 #' sequence data by txid in cache.
-svSqs <- function(wd, txid, sqs) {
+sqs_save <- function(wd, txid, sqs) {
   # TODO: avoid overwriting
   d <- file.path(wd, 'cache')
-  if(!file.exists(d)) {
+  if (!file.exists(d)) {
     stop('Cache does not exist.')
   }
   d <- file.path(d, 'sqs')
-  if(!file.exists(d)) {
+  if (!file.exists(d)) {
     dir.create(d)
   }
   fl <- file.path(d, paste0(txid, '.RData'))
-  saveRDS(object=sqs, file=fl)
+  saveRDS(object = sqs, file = fl)
 }
 
 #' @name ldSqs
@@ -182,20 +181,20 @@ svSqs <- function(wd, txid, sqs) {
 #' \code{dwnld} function.
 #' @param wd Working directory
 #' @param txid Taxonomic ID, numeric
-ldSqs <- function(wd, txid) {
+sqs_load <- function(wd, txid) {
   d <- file.path(wd, 'cache')
-  if(!file.exists(d)) {
+  if (!file.exists(d)) {
     stop('Cache does not exist.')
   }
   d <- file.path(d, 'sqs')
-  if(!file.exists(d)) {
+  if (!file.exists(d)) {
     stop('`sqs` not in cache. Have you run the download stage?')
   }
   fl <- file.path(d, paste0(txid, '.RData'))
-  if(!file.exists(fl)) {
+  if (!file.exists(fl)) {
     stop(paste0('[', txid, '] not in `sqs` of cache.'))
   }
-  readRDS(file=fl)
+  readRDS(file = fl)
 }
 
 #' @name chckGIs
@@ -204,7 +203,7 @@ ldSqs <- function(wd, txid) {
 #' downloaded for a txid
 #' @param wd Working directory
 #' @param txid Taxonomic ID, numeric
-chckGIs <- function(wd, txid) {
+sids_check <- function(wd, txid) {
   d <- file.path(wd, 'cache', 'gis')
   fl <- file.path(d, paste0(txid, '.RData'))
   file.exists(fl)
@@ -216,17 +215,17 @@ chckGIs <- function(wd, txid) {
 #' @param wd Working directory
 #' @param txid Taxonomic ID, numeric
 #' @param gis GIs
-svGIs <- function(wd, txid, gis) {
+sids_save <- function(wd, txid, gis) {
   d <- file.path(wd, 'cache')
-  if(!file.exists(d)) {
+  if (!file.exists(d)) {
     stop('Cache does not exist.')
   }
   d <- file.path(d, 'gis')
-  if(!file.exists(d)) {
+  if (!file.exists(d)) {
     dir.create(d)
   }
   fl <- file.path(d, paste0(txid, '.RData'))
-  saveRDS(object=gis, file=fl)
+  saveRDS(object = gis, file = fl)
 }
 
 #' @name ldGIs
@@ -235,20 +234,20 @@ svGIs <- function(wd, txid, gis) {
 #' \code{getGIs} function.
 #' @param wd Working directory
 #' @param txid Taxonomic ID, numeric
-ldGIs <- function(wd, txid) {
+sids_load <- function(wd, txid) {
   d <- file.path(wd, 'cache')
-  if(!file.exists(d)) {
+  if (!file.exists(d)) {
     stop('Cache does not exist.')
   }
   d <- file.path(d, 'gis')
-  if(!file.exists(d)) {
+  if (!file.exists(d)) {
     stop('`gis` not in cache. Have you run the download stage?')
   }
   fl <- file.path(d, paste0(txid, '.RData'))
-  if(!file.exists(fl)) {
+  if (!file.exists(fl)) {
     stop(paste0('[', txid, '] not in `gis` of cache.'))
   }
-  readRDS(file=fl)
+  readRDS(file = fl)
 }
 
 #' @name svclusters
@@ -257,17 +256,17 @@ ldGIs <- function(wd, txid) {
 #' @param wd Working directory
 #' @param txid Taxonomic ID, numeric
 #' @param clusters cluster list
-svclusters <- function(wd, txid, clusters) {
+clusters_save <- function(wd, txid, clusters) {
   d <- file.path(wd, 'cache')
-  if(!file.exists(d)) {
+  if (!file.exists(d)) {
     stop('Cache does not exist.')
   }
   d <- file.path(d, 'clusters')
-  if(!file.exists(d)) {
+  if (!file.exists(d)) {
     dir.create(d)
   }
   fl <- file.path(d, paste0(txid, '.RData'))
-  saveRDS(object=clusters, file=fl)
+  saveRDS(object = clusters, file = fl)
 }
 
 #' @name ldNcbiCch
@@ -276,16 +275,16 @@ svclusters <- function(wd, txid, clusters) {
 #' @param fnm NCBI Entrez function name
 #' @param args Args used for function
 #' @param wd Working directory
-ldNcbiCch <- function(fnm, args, wd) {
+ncbicache_load <- function(fnm, args, wd) {
   flpth <- file.path(wd, 'cache', 'ncbi',
                      fnm, args[['db']])
   fldctnry_pth <- file.path(flpth, 'fldctnry.RData')
-  if(file.exists(fldctnry_pth)) {
+  if (file.exists(fldctnry_pth)) {
     fldctnry <- readRDS(fldctnry_pth)
   } else {
     return(NULL)
   }
-  if(fnm == 'search') {
+  if (fnm == 'search') {
     id <- paste0('TERM_', args[['term']],
                  '_RETSTART_', args[['retstart']],
                  '_RETMAX_', args[['retmax']])
@@ -295,12 +294,12 @@ ldNcbiCch <- function(fnm, args, wd) {
     pull <- sapply(fldctnry, function(x) all(id %in% x) &
                      all(x %in% id))
   }
-  if(sum(pull) == 0) {
+  if (sum(pull) == 0) {
     return(NULL)
   }
   flnm <- paste0(which(pull), '.RData')
   flpth <- file.path(flpth, flnm)
-  readRDS(file=flpth)
+  readRDS(file = flpth)
 }
 
 #' @name svNcbiCch
@@ -311,16 +310,16 @@ ldNcbiCch <- function(fnm, args, wd) {
 #' @param args Args used for function
 #' @param wd Working directory
 #' @param obj NCBI query result
-svNcbiCch <- function(fnm, args, wd, obj) {
+ncbicache_save <- function(fnm, args, wd, obj) {
   flpth <- file.path(wd, 'cache', 'ncbi',
                      fnm, args[['db']])
   fldctnry_pth <- file.path(flpth, 'fldctnry.RData')
-  if(file.exists(fldctnry_pth)) {
+  if (file.exists(fldctnry_pth)) {
     fldctnry <- readRDS(fldctnry_pth)
   } else {
     fldctnry <- list()
   }
-  if(fnm == 'search') {
+  if (fnm == 'search') {
     # construct unique identifier from args
     id <- paste0('TERM_', args[['term']],
                  '_RETSTART_', args[['retstart']],
@@ -332,8 +331,8 @@ svNcbiCch <- function(fnm, args, wd, obj) {
   fldctnry[[length(fldctnry) + 1]] <- id
   flnm <- paste0(length(fldctnry), '.RData')
   flpth <- file.path(flpth, flnm)
-  saveRDS(object=obj, file=flpth)
-  saveRDS(object=fldctnry, file=fldctnry_pth)
+  saveRDS(object = obj, file = flpth)
+  saveRDS(object = fldctnry, file = fldctnry_pth)
 }
 
 #' @name ldBlstCch
@@ -341,29 +340,29 @@ svNcbiCch <- function(fnm, args, wd, obj) {
 #' @description Run to load cached BLAST results.
 #' @param sids Sequence IDs
 #' @param wd Working dir
-ldBlstCch <- function(sids, wd) {
+blastcache_load <- function(sids, wd) {
   # fldctnry contains all the IDs of the sequences used in a BLAST
   fldctnry_pth <- file.path(wd, 'cache', 'blast',
                             'fldctnry.RData')
-  if(file.exists(fldctnry_pth)) {
+  if (file.exists(fldctnry_pth)) {
     fldctnry <- readRDS(fldctnry_pth)
   } else {
     return(NULL)
   }
   pull <- sapply(fldctnry, function(x) all(sids %in% x))
-  if(sum(pull) == 0) {
+  if (sum(pull) == 0) {
     return(NULL)
   }
-  if(sum(pull) == 0) {
+  if (sum(pull) == 0) {
     flnm <- paste0(which(pull), '.RData')
     flpth <- file.path(wd, 'cache', 'blast', flnm)
-    return(readRDS(file=flpth))
+    return(readRDS(file = flpth))
   }
   pssbls <- which(pull)
   lngs <- sapply(fldctnry[pssbls], length)
   flnm <- paste0(pssbls[which.min(lngs)], '.RData')
   flpth <- file.path(wd, 'cache', 'blast', flnm)
-  blst_rs <- readRDS(file=flpth)
+  blst_rs <- readRDS(file = flpth)
   pull <- blst_rs[['query.id']] %in% sids &
     blst_rs[['subject.id']] %in% sids
   blst_rs[pull, ]
@@ -376,10 +375,10 @@ ldBlstCch <- function(sids, wd) {
 #' @param sids Sequence IDs
 #' @param wd Working dir
 #' @param obj BLAST result
-svBlstCch <- function(sids, wd, obj) {
+blastcache_save <- function(sids, wd, obj) {
   # fldctnry contains all the IDs of the sequences used in a BLAST
   fldctnry_pth <- file.path(wd, 'cache', 'blast', 'fldctnry.RData')
-  if(file.exists(fldctnry_pth)) {
+  if (file.exists(fldctnry_pth)) {
     fldctnry <- readRDS(fldctnry_pth)
   } else {
     fldctnry <- list()
@@ -387,6 +386,6 @@ svBlstCch <- function(sids, wd, obj) {
   fldctnry[[length(fldctnry) + 1]] <- sids
   flnm <- paste0(length(fldctnry), '.RData')
   flpth <- file.path(wd, 'cache', 'blast', flnm)
-  saveRDS(object=obj, file=flpth)
-  saveRDS(object=fldctnry, file=fldctnry_pth)
+  saveRDS(object = obj, file = flpth)
+  saveRDS(object = fldctnry, file = fldctnry_pth)
 }

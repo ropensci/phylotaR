@@ -4,7 +4,7 @@
 #' @param wd Working directory
 #' @export
 clusters2_run <- function(wd) {
-  ps <- ldPrmtrs(wd)
+  ps <- parameters_load(wd)
   # stage print
   msg <- paste0('Starting stage CLUSTER^2: [', Sys.time(), ']')
   .stgMsg(ps = ps, msg = msg)
@@ -47,7 +47,7 @@ cluster2_calc <- function(ps) {
     jnd_clusters <- clusters_join(blast_res = blast_res, ps = ps,
                                 seed_ids = seed_ids,
                                 all_clusters = all_clusters)
-    txdct <- ldObj(wd = ps[['wd']], nm = 'txdct')
+    txdct <- obj_load(wd = ps[['wd']], nm = 'txdct')
     mrg_clusters <- clusters_merge(jnd_clusters = jnd_clusters,
                                  txdct = txdct)
     all_clusters <- c(all_clusters, mrg_clusters)
@@ -62,7 +62,7 @@ cluster2_calc <- function(ps) {
   # returns cluster record box
   all_clusters <- clusters_renumber(cluster_rcrds = all_clusters)
   info(lvl = 1, ps = ps, 'Saving ...')
-  svObj(wd = ps[['wd']], obj = list('clusters' = all_clusters,
+  obj_save(wd = ps[['wd']], obj = list('clusters' = all_clusters,
                                 'sqs' = all_sqs),
         nm = 'clusters_sqs')
 }

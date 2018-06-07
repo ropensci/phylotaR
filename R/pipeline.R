@@ -59,7 +59,7 @@ run <- function(wd, nstages=4) {
 #' @export
 #' @seealso \code{\link{run}}
 restart <- function(wd, nstages=4) {
-  stg <- rdPrgrss(wd)
+  stg <- progress_read(wd)
   if (is.na(stg)) {
     stop('Pipeline already complete. Use `reset()` to re-run pipeline.')
   }
@@ -83,16 +83,16 @@ restart <- function(wd, nstages=4) {
 #' @export
 #' @seealso \code{\link{restart}}, \code{\link{setParameters}}
 reset <- function(wd, stage, hard=FALSE) {
-  if(!stage %in% c('taxise', 'download', 'cluster', 'cluster2')) {
+  if (!stage %in% c('taxise', 'download', 'cluster', 'cluster2')) {
     stop('Invalid stage name.')
   }
-  ps <- ldPrmtrs(wd)
+  ps <- parameters_load(wd)
   # TODO: hard/soft
-  rstPrgrss(wd=wd, stg=stage)
+  progress_reset(wd = wd, stg = stage)
   msg <- paste0('Reset pipeline to [', stage, ']')
-  brdr <- paste0(rep('-', nchar(msg)), collapse='')
+  brdr <- paste0(rep('-', nchar(msg)), collapse = '')
   msg <- paste0(brdr, '\n', msg, '\n', brdr)
-  info(ps=ps, lvl=1, msg)
+  info(ps = ps, lvl = 1, msg)
 }
 
 #' @name parameters_reset
@@ -104,19 +104,19 @@ reset <- function(wd, stage, hard=FALSE) {
 #' @export
 parameters_reset <- function(wd, parameters, values) {
   # TODO: make parameters an object with pre-defined parameter types
-  ps <- ldPrmtrs(wd)
-  for(i in 1:length(parameters)) {
+  ps <- parameters_load(wd)
+  for (i in 1:length(parameters)) {
     ps[[parameters[i]]] <- values[[i]]
   }
-  svObj(wd=wd, obj=ps, nm='prmtrs')
+  obj_save(wd = wd, obj = ps, nm = 'prmtrs')
   msg <- paste0('The following parameters have been reset:')
-  brdr <- paste0(rep('-', nchar(msg)), collapse='')
-  info(lvl=1, ps=ps, paste0(brdr, '\n', msg))
+  brdr <- paste0(rep('-', nchar(msg)), collapse = '')
+  info(lvl = 1, ps = ps, paste0(brdr, '\n', msg))
   mxnchrs <- max(sapply(parameters, nchar)) + 3
-  for(prmtr in parameters) {
-    spcr <- paste0(rep(' ', mxnchrs - nchar(prmtr)), collapse='')
+  for (prmtr in parameters) {
+    spcr <- paste0(rep(' ', mxnchrs - nchar(prmtr)), collapse = '')
     prmtr_msg <- paste0(prmtr, spcr, '[', ps[[prmtr]], ']')
-    info(lvl=2, ps=ps, prmtr_msg)
+    info(lvl = 2, ps = ps, prmtr_msg)
   }
-  info(lvl=1, ps=ps, brdr)
+  info(lvl = 1, ps = ps, brdr)
 }

@@ -4,11 +4,11 @@
 #' @param wd Working directory
 #' @export
 download_run <- function(wd) {
-  ps <- ldPrmtrs(wd)
+  ps <- parameters_load(wd)
   msg <- paste0('Starting stage DOWNLOAD: [', Sys.time(), ']')
   .stgMsg(ps = ps, msg = msg)
   info(lvl = 1, ps = ps, 'Identifying suitable clades ...')
-  txdct <- ldObj(wd = wd, nm = 'txdct')
+  txdct <- obj_load(wd = wd, nm = 'txdct')
   clds_ids <- clade_select(txdct = txdct, ps = ps)
   info(lvl = 1, ps = ps, 'Identified [', length(clds_ids),
        '] suitable clades.')
@@ -74,7 +74,7 @@ seq_download <- function(txids, txdct, ps) {
     if (length(sqs) > 0) {
       sqcnt <- sqcnt + length(sqs)
       sqs <- seqrec_augment(sqs = sqs, txdct = txdct)
-      svSqs(wd = ps[['wd']], txid = txid, sqs = sqs)
+      sqs_save(wd = ps[['wd']], txid = txid, sqs = sqs)
     }
   }
   info(lvl = 1, ps = ps, "Successfully downloaded [",

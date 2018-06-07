@@ -72,8 +72,8 @@ sqs_count <- function(txid, ps, drct=FALSE) {
 #' @return vector ot IDs
 sids_get <- function(txid, drct, ps, retmax=100,
                      hrdmx=100000) {
-  if (chckGIs(wd = ps[['wd']], txid = txid)) {
-    return(ldGIs(wd = ps[['wd']], txid = txid))
+  if (sids_check(wd = ps[['wd']], txid = txid)) {
+    return(sids_load(wd = ps[['wd']], txid = txid))
   }
   # search
   trm <- searchterm_gen(txid = txid, ps = ps, drct = drct)
@@ -118,6 +118,6 @@ sids_get <- function(txid, drct, ps, retmax=100,
     }
     ids <- c(ids, strsplit(id_ftch, '\n')[[1]])
   }
-  svGIs(wd = ps[['wd']], txid = txid, gis = ids)
+  sids_save(wd = ps[['wd']], txid = txid, gis = ids)
   ids
 }

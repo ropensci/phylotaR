@@ -25,7 +25,7 @@ seqrec_convert <- function(raw_recs, ps) {
   for (i in seq_along(rcrds)) {
     rcrd <- rcrds[[i]]
     # for debugging.... save last record
-    svObj(wd = ps[['wd']], obj = rcrd, nm = 'last_seqrec')
+    obj_save(wd = ps[['wd']], obj = rcrd, nm = 'last_seqrec')
     wftrs <-  FALSE
     # key info
     accssn <- rcrd[['GBSeq_primary-accession']]

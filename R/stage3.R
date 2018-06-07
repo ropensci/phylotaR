@@ -6,10 +6,10 @@
 #' @param wd Working directory
 #' @export
 clusters_run <- function(wd) {
-  ps <- ldPrmtrs(wd)
+  ps <- parameters_load(wd)
   msg <- paste0('Starting stage CLUSTER: [', Sys.time(), ']')
   .stgMsg(ps = ps, msg = msg)
-  txdct <- ldObj(wd = wd, nm = 'txdct')
+  txdct <- obj_load(wd = wd, nm = 'txdct')
   clusters_calc(ps = ps, txdct = txdct)
   msg <- paste0('Completed stage CLUSTER: [', Sys.time(), ']')
   .stgMsg(ps = ps, msg = msg)
@@ -42,7 +42,7 @@ clusters_calc <- function(txdct, ps) {
     clusters <- cluster_all(txid = txid, sqs = sqs, txdct = txdct,
                            ps = ps)
     if (length(clusters@ids) > 0) {
-      svclusters(wd = ps[['wd']], txid = txid, clusters = clusters)
+      clusters_save(wd = ps[['wd']], txid = txid, clusters = clusters)
     } else {
       fld <- c(fld, i)
     }
@@ -62,8 +62,8 @@ clusters_calc <- function(txdct, ps) {
     clusters <- cluster_sqs(txid = '', sqs = all_sqs, ps = ps,
                            lvl = 1, typ = 'paraphyly')
     if (length(clusters@ids) > 0) {
-      svclusters(wd = ps[['wd']], txid = 'paraphyly', clusters = clusters)
-      svSqs(wd = ps[['wd']], txid = 'paraphyly', sqs = all_sqs)
+      clusters_save(wd = ps[['wd']], txid = 'paraphyly', clusters = clusters)
+      sqs_save(wd = ps[['wd']], txid = 'paraphyly', sqs = all_sqs)
     }
   }
 }

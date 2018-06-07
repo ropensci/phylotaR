@@ -40,8 +40,8 @@ parameters_setup <- function(wd, ncbi_execs, ...) {
     prmtr_msg <- paste0(pnm, spcr, '[', ps[[pnm]], ']')
     info(lvl = 2, ps = ps, prmtr_msg)
   }
-  setUpCch(ps = ps)
-  intPrgrss(wd = wd)
+  cache_setup(ps = ps)
+  progress_init(wd = wd)
 }
 
 #' @name blast_setup
@@ -127,28 +127,28 @@ stages_run <- function(wd, to, frm, stgs_msg, rstrt=FALSE) {
         cat('... Taxise\n')
       }
       taxise_run(wd)
-      svPrgrss(wd, 'taxise')
+      progress_save(wd, 'taxise')
     }
     if (frm <= 2 & to >= 2) {
       if (!ps[['v']]) {
         cat('... Download\n')
       }
       download_run(wd)
-      svPrgrss(wd, 'download')
+      progress_save(wd, 'download')
     }
     if (frm <= 3 & to >= 3) {
       if (!ps[['v']]) {
         cat('... Cluster\n')
       }
       clusters_run(wd)
-      svPrgrss(wd, 'cluster')
+      progress_save(wd, 'cluster')
     }
     if (frm <= 4 & to >= 4) {
       if (!ps[['v']]) {
         cat('... Cluster2\n')
       }
       clusters2_run(wd)
-      svPrgrss(wd, 'align')
+      progress_save(wd, 'cluster2')
     }
   }
   ps <- ldPrmtrs(wd)

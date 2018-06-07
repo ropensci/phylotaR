@@ -13,7 +13,7 @@ read_phylota <- function(wd) {
                   '].\nAre you sure pipeline has completed?')
     stop(msg)
   }
-  clusters_sqs <- ldObj(wd, nm = 'clusters_sqs')
+  clusters_sqs <- obj_load(wd, nm = 'clusters_sqs')
   cls <- clusters_sqs[['clusters']]
   sqs <- clusters_sqs[['sqs']]
   # TODO: how does this occur?
@@ -23,7 +23,7 @@ read_phylota <- function(wd) {
   txids <- sort(unique(sqs@txids))
   sids <- sort(unique(sqs@ids))
   cids <- cls@ids
-  txdct <- ldObj(wd, nm = 'txdct')
+  txdct <- obj_load(wd, nm = 'txdct')
   prnt_id <- txdct@prnt
   prnt_nm <- txdct@rcrds[[prnt_id]]@scnm
   phylota <- new('PhyLoTa', sqs = sqs, cls = cls,

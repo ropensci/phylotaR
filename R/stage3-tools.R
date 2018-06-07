@@ -119,7 +119,7 @@ cluster_sqs <- function(txid, sqs, ps, lvl,
 #' @param lvl Log level
 #' @param ps Parameters
 blast_sqs <- function(txid, typ, sqs, ps, lvl) {
-  blast_res <- ldBlstCch(sqs@ids, wd = ps[['wd']])
+  blast_res <- blastcache_load(sqs@ids, wd = ps[['wd']])
   if (is.null(blast_res)) {
     dbfl <- paste0('taxon-', txid, '-typ-', typ,
                    '-db.fa')
@@ -130,7 +130,7 @@ blast_sqs <- function(txid, typ, sqs, ps, lvl) {
     if (is.null(blast_res)) {
       blast_res <- NA
     }
-    svBlstCch(sqs@ids, wd = ps[['wd']], obj = blast_res)
+    blastcache_save(sqs@ids, wd = ps[['wd']], obj = blast_res)
   }
   # TODO: Not so elegant
   if (any(is.na(blast_res))) {

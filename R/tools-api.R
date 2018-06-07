@@ -9,12 +9,12 @@
 #' @param fnm rentrez function name
 #' @param ps Parameters
 search_and_cache <- function(func, args, fnm, ps) {
-  res <- ldNcbiCch(fnm = fnm, args = args, wd = ps[['wd']])
+  res <- ncbicache_load(fnm = fnm, args = args, wd = ps[['wd']])
   if (!is.null(res)) {
     return(res)
   }
   res <- safely_connect(func = func, args = args, fnm = fnm, ps = ps)
-  svNcbiCch(fnm = fnm, args = args, wd = ps[['wd']], obj = res)
+  ncbicache_save(fnm = fnm, args = args, wd = ps[['wd']], obj = res)
   res
 }
 

@@ -7,7 +7,7 @@
 #' @export
 taxise_run <- function(wd) {
   # TODO: allow a user to have their own taxids and/or tax tree
-  ps <- ldPrmtrs(wd)
+  ps <- parameters_load(wd)
   msg <- paste0('Starting stage TAXISE: [', Sys.time(), ']')
   .stgMsg(ps = ps, msg = msg)
   info(lvl = 1, ps = ps, 'Searching taxonomic IDs ...')
@@ -17,7 +17,7 @@ taxise_run <- function(wd) {
                    lvl = 2)
   info(lvl = 1, ps = ps, 'Generating taxonomic dictionary ...')
   txdct <- taxdict_gen(rcrds = rcrds, txids = txids, ps = ps)
-  svObj(wd = wd, obj = txdct, nm = 'txdct')
+  obj_save(wd = wd, obj = txdct, nm = 'txdct')
   msg <- paste0('Completed stage TAXISE: [', Sys.time(), ']')
   .stgMsg(ps = ps, msg = msg)
 }
