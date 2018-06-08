@@ -29,19 +29,17 @@ plot_phylota_treemap(phylota, cids = NULL, txids = NULL, cnms = cids,
 geom_object
 }
 \description{
-Treemaps show relative size with boxes.
-The user can explore which taxa or clusters are most
-represented either by sequence or cluster number.
-If cluster IDs are provided, the plot is made for
-clusters. If taxonomic IDs are provided, the plot
-is made for taxa.
+Treemaps show relative size with boxes. The user can
+explore which taxa or clusters are most represented either by
+sequence or cluster number. If cluster IDs are provided, the plot
+is made for clusters. If taxonomic IDs are provided, the plot is
+made for taxa.
 }
 \details{
-The function can take a long time to run for
-large PhyLoTa objects over many taxonomic IDs because
-searches are made across lineages.
-The idea of the function is to assess the data
-dominance of specific clusters and taxa.
+The function can take a long time to run for large PhyLoTa
+objects over many taxonomic IDs because searches are made across
+lineages. The idea of the function is to assess the data dominance
+of specific clusters and taxa.
 }
 \examples{
 data("tinamous")
@@ -56,6 +54,24 @@ txids <- txids[txids ! =  '']
 txids <- unique(txids)
 txnms <- get_tx_slot(tinamous, txids, slt_nm = 'scnm')
 p <- plot_phylota_treemap(phylota = tinamous, txids = txids,
-                          txnms = txnms, area = 'nsq', fill = 'ncl')
+                          txnms = txnms, area = 'nsq',
+                          fill = 'ncl')
 print(p)
+}
+\seealso{
+Other tools-public: \code{\link{calc_mad}},
+  \code{\link{calc_wrdfrq}}, \code{\link{drop_by_rank}},
+  \code{\link{drop_cls}}, \code{\link{drop_sqs}},
+  \code{\link{get_clstr_slot}}, \code{\link{get_nsqs}},
+  \code{\link{get_ntaxa}}, \code{\link{get_sq_slot}},
+  \code{\link{get_tx_slot}}, \code{\link{get_txids}},
+  \code{\link{is_txid_in_clstr}},
+  \code{\link{is_txid_in_sq}},
+  \code{\link{list_clstrrec_slots}},
+  \code{\link{list_ncbi_ranks}},
+  \code{\link{list_seqrec_slots}},
+  \code{\link{list_taxrec_slots}},
+  \code{\link{plot_phylota_pa}},
+  \code{\link{read_phylota}}, \code{\link{write_phylota}},
+  \code{\link{write_sqs}}
 }

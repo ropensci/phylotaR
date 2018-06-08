@@ -1,11 +1,12 @@
 # TODO: switch to text for restez integration, vectorise
 #' @name seqrec_convert
-#' @title Convert raw Entrez gbwithparts record to SqRcrds
+#' @title Convert raw Entrez gbwithparts record to SeqRecs
 #' @description Parses returned sequences features with Entrez,
-#' returns a SqRcrd for each raw record.
+#' returns a SeqRec for each raw record.
 #' @param raw_recs Raw records returned from Entrez fetch
-#' @param gis GIs of each fectched record
 #' @param ps Parameters list
+#' @family run-private
+#' @return SeqRecs
 seqrec_convert <- function(raw_recs, ps) {
   # gis <- '558614019'
   # raw_recs <- rentrez::entrez_fetch(db = "nucleotide",
@@ -13,8 +14,8 @@ seqrec_convert <- function(raw_recs, ps) {
   #                                   retmode = 'xml',
   #                                   id = gis)
   res <- NULL
-  rcrds <- try(XML::xmlToList(raw_recs), silent = TRUE)
-  if (inherits(rcrds, 'try-error')) {
+  recs <- try(XML::xmlToList(raw_recs), silent = TRUE)
+  if (inherits(recs, 'try-error')) {
     msg <- paste0('XML parsing error:',
                   'This can occur with GenBank data. ',
                   'Try pipeline again to see if warning reoccurs. ',
@@ -22,21 +23,21 @@ seqrec_convert <- function(raw_recs, ps) {
     warn(ps = ps, msg)
     return(NULL)
   }
-  for (i in seq_along(rcrds)) {
-    rcrd <- rcrds[[i]]
+  for (i in seq_along(recs)) {
+    rec <- recs[[i]]
     # for debugging.... save last record
-    obj_save(wd = ps[['wd']], obj = rcrd, nm = 'last_seqrec')
+    obj_save(wd = ps[['wd']], obj = rec, nm = 'last_seqrec')
     wftrs <-  FALSE
     # key info
-    accssn <- rcrd[['GBSeq_primary-accession']]
-    vrsn <- rcrd[["GBSeq_accession-version"]]
-    ml_typ <- rcrd[['GBSeq_moltype']]
+    accssn <- rec[['GBSeq_primary-accession']]
+    vrsn <- rec[["GBSeq_accession-version"]]
+    ml_typ <- rec[['GBSeq_moltype']]
     if (is.null(ml_typ)) {
       # ml_typ not always recorded, e.g. NR_040059
       ml_typ <- ''
     }
-    sq <- rcrd[['GBSeq_sequence']]
-    create_date <- rcrd[["GBSeq_create-date"]]
+    sq <- rec[['GBSeq_sequence']]
+    create_date <- rec[["GBSeq_create-date"]]
     create_date <- as.Date(create_date,
                            format = "%d-%b-%Y")
     age <- as.integer(ps[['date']] - create_date)
@@ -45,10 +46,10 @@ seqrec_convert <- function(raw_recs, ps) {
       # e.g. https://www.ncbi.nlm.nih.gov/nuccore/1283191328
       next
     }
-    dfln <- rcrd[['GBSeq_definition']]
-    orgnsm <- rcrd[['GBSeq_organism']]
-    ftr_tbl <- rcrd[['GBSeq_feature-table']]
-    kywrds <- vapply(rcrd[['GBSeq_keywords']], '[', '')
+    dfln <- rec[['GBSeq_definition']]
+    orgnsm <- rec[['GBSeq_organism']]
+    ftr_tbl <- rec[['GBSeq_feature-table']]
+    kywrds <- vapply(rec[['GBSeq_keywords']], '[', '')
     kywrds <- paste0(kywrds, collapse = ' | ')
     # extract features
     for (ftr in ftr_tbl) {
@@ -82,18 +83,18 @@ seqrec_convert <- function(raw_recs, ps) {
         seqrec <- seqrec_gen(accssn = accssn, lctn = lctn, age = age,
                              orgnsm = orgnsm, txid = '', vrsn = vrsn, sq = tmp,
                              dfln = dfln, ml_typ = ml_typ, nm = ftr_nm,
-                             rcrd_typ = 'feature')
+                             rec_typ = 'feature')
         res <- c(res, seqrec)
         wftrs <- TRUE
       }
     }
     # if no features, add entire sequence
     if (!wftrs) {
-      sqlngth <- as.numeric(rcrd[['GBSeq_length']])
+      sqlngth <- as.numeric(rec[['GBSeq_length']])
       if (sqlngth < ps[['mxsql']]) {
         seqrec <- seqrec_gen(accssn = accssn, txid = '', nm = kywrds,
                              orgnsm = orgnsm, sq = sq, dfln = dfln,
-                             ml_typ = ml_typ, rcrd_typ = 'whole',
+                             ml_typ = ml_typ, rec_typ = 'whole',
                              vrsn = vrsn, age = age)
         res <- c(res, seqrec)
       }
@@ -105,23 +106,24 @@ seqrec_convert <- function(raw_recs, ps) {
 }
 
 #' @name seqrec_gen
-#' @title Generate SqRcrd
-#' @description Creates an S4 SqRcrd
+#' @title Generate sequence record
+#' @description Creates an S4 SeqRec
 #' @param accssn Accession ID
-#' @param gi GI
 #' @param nm Sequence name
 #' @param txid Taxonomic ID of source organism
 #' @param sq Sequence
 #' @param dfln Defintion line
 #' @param orgnsm Source organism name
 #' @param ml_typ Molecule type
-#' @param rcrd_typ Sequence record type
+#' @param rec_typ Sequence record type
 #' @param vrsn Accession version
 #' @param age Number of days since upload
 #' @param lctn Location numbers for features, e.g. '1..200'
+#' @return SeqRec
+#' @family run-private
 seqrec_gen <- function(accssn, nm, txid, sq, dfln, orgnsm, ml_typ,
-                       rcrd_typ, vrsn, age, lctn=NULL) {
-  if(is.null(lctn)) {
+                       rec_typ, vrsn, age, lctn=NULL) {
+  if (is.null(lctn)) {
     id <- vrsn
   } else {
     id <- paste0(vrsn, '/', lctn)
@@ -135,15 +137,17 @@ seqrec_gen <- function(accssn, nm, txid, sq, dfln, orgnsm, ml_typ,
   gcr <- gregexpr(pattern = '[^cgCG]', text = unambsq)[[1]]
   gcr <- length(gcr)/nchar(unambsq)
   new('SeqRec', accssn = accssn, nm = nm, sq = charToRaw(sq),
-      dfln = dfln, ml_typ = ml_typ, rcrd_typ = rcrd_typ, vrsn = vrsn, id = id,
+      dfln = dfln, ml_typ = ml_typ, rec_typ = rec_typ, vrsn = vrsn, id = id,
       url = url, nncltds = nncltds, nambgs = nambgs, orgnsm = orgnsm,
       txid = txid, pambgs = pambgs, gcr = gcr, age = age)
 }
 
 #' @name seqarc_gen
-#' @title Generate SqRcrdBx
-#' @description Creates an S4 SqRcrdBx from list of SqRcrds
-#' @param sqs List of SqRcrds
+#' @title Generate sequence archive
+#' @description Creates an S4 SeqArc from list of SeqRecs
+#' @param sqs List of SeqRecs
+#' @return SeqArc
+#' @family run-private
 seqarc_gen <- function(seqrecs) {
   nambgs <- vapply(seqrecs, function(x) x@nambgs, 1)
   nncltds <- vapply(seqrecs, function(x) x@nncltds, 1)

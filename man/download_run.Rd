@@ -2,7 +2,7 @@
 % Please edit documentation in R/stage2.R
 \name{download_run}
 \alias{download_run}
-\title{Download}
+\title{Run download stage}
 \usage{
 download_run(wd)
 }
@@ -10,5 +10,8 @@ download_run(wd)
 \item{wd}{Working directory}
 }
 \description{
-Download sequences
+Run the second stage of phylotaR, download. This stage
+downloads sequences for all nodes with sequence numbers less than
+mxsqs. It hierarchically traverses the taxonomy for each node and
+downloads direct and subtree sequences for all descendants.
 }

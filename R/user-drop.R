@@ -7,6 +7,7 @@
 #' @param sid Sequence ID(s) to be kept
 #' @return phylota
 #' @export
+#' @family tools-public
 drop_sqs <- function(phylota, cid, sid) {
   indx <- which(phylota@cls@ids == cid)
   cl <- phylota@cls@cls[[indx]]
@@ -27,6 +28,7 @@ drop_sqs <- function(phylota, cid, sid) {
 #' @param cid Cluster ID(s) to be kept
 #' @return phylota
 #' @export
+#' @family tools-public
 drop_cls <- function(phylota, cid) {
   phylota@cls <- phylota@cls[cid]
   phylota@cids <- cid
@@ -49,10 +51,10 @@ drop_cls <- function(phylota, cid) {
 #' @param greatest Greatest of lowest for each choose_by function
 #' @return phylota
 #' @export
+#' @family tools-public
 drop_by_rank <- function(phylota, rnk = 'species',
                          keep_higher = FALSE, n = 10,
-                         choose_by = c('pambgs', 'age',
-                                       'nncltds'),
+                         choose_by = c('pambgs', 'age', 'nncltds'),
                          greatest = c(FALSE, FALSE, TRUE)) {
   slct <- function(txid) {
     pssbls <- sids[txid == txids]
@@ -66,9 +68,9 @@ drop_by_rank <- function(phylota, rnk = 'species',
     }
     pssbls
   }
-  pull <- !choose_by %in% list_sqrcrd_slots()
+  pull <- !choose_by %in% list_seqrec_slots()
   if (any(pull)) {
-    stop(paste0('[', choose_by[pull], '] not in SqRcrd.'))
+    stop(paste0('[', choose_by[pull], '] not in SeqRec'))
   }
   for (cid in phylota@cids) {
     txids <- get_txids(phylota = phylota, cid = cid, 

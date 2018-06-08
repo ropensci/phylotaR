@@ -2,7 +2,7 @@
 % Please edit documentation in R/stage4.R
 \name{clusters2_run}
 \alias{clusters2_run}
-\title{Cluster2}
+\title{Run the cluster2 stage}
 \usage{
 clusters2_run(wd)
 }
@@ -10,5 +10,17 @@ clusters2_run(wd)
 \item{wd}{Working directory}
 }
 \description{
-Cluster the clusters
+Run the fourth stage of the phylotaR pipeline,
+cluster2. Identify clusters at higher taxonomic levels by
+merging sister clusters.
+}
+\seealso{
+Other run-public: \code{\link{ClstrArc-class}},
+  \code{\link{ClstrRec-class}},
+  \code{\link{Phylota-class}}, \code{\link{SeqArc-class}},
+  \code{\link{SeqRec-class}}, \code{\link{TaxDict-class}},
+  \code{\link{TaxRec-class}}, \code{\link{clusters_run}},
+  \code{\link{parameters_reset}}, \code{\link{reset}},
+  \code{\link{restart}}, \code{\link{run}},
+  \code{\link{setup}}, \code{\link{taxise_run}}
 }

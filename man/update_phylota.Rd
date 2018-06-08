@@ -7,9 +7,15 @@
 update_phylota(phylota)
 }
 \arguments{
-\item{phylota}{Phylota object}
+\item{phylota}{Phylota}
+}
+\value{
+Phylota
 }
 \description{
-After change, run to update
-slots.
+After change, run to update slots.
+}
+\seealso{
+Other tools-private: \code{\link{mk_txid_in_sq_mtrx}},
+  \code{\link{summary_phylota}}
 }

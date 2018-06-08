@@ -1,47 +1,51 @@
-#' @name cluster_all
+#' @name clstr_all
 #' @title Hierarchically cluster all sequences of a txid
-#' @description Identifies all direct and subtree clusters for a taxonomic ID.
+#' @description Identifies all direct and subtree clusters for a
+#' taxonomic ID.
 #' @param txid Taxonomic ID
 #' @param sqs Sequence object of all downloaded sequences
 #' @param txdct Taxonomic dictionary
 #' @param ps Parameters
 #' @param lvl Log level
-#' @return ClusterArc
-#' @noRd
-cluster_all <- function(txid, sqs, txdct, ps, lvl=0) {
+#' @return ClstrArc
+#' @family run-private
+clstr_all <- function(txid, sqs, txdct, ps, lvl=0) {
   dds <- descendants_get(id = txid, txdct = txdct, direct = TRUE)
-  all_clusters <- cluster_subtree(txid = txid, sqs = sqs, txdct = txdct,
-                                ps = ps, dds = dds, lvl = lvl + 1)
+  all_clstrs <- clstr_subtree(txid = txid, sqs = sqs,
+                                  txdct = txdct, ps = ps, dds = dds,
+                                  lvl = lvl + 1)
   for (dd in dds) {
     info(lvl = lvl + 2, ps = ps, "Processing [id ", txid,
          "] child [id ", dd, "]")
-    dd_clusters <- cluster_all(txid = dd, txdct = txdct,
+    dd_clstrs <- clstr_all(txid = dd, txdct = txdct,
                              sqs = sqs, ps = ps, lvl = lvl + 1)
-    all_clusters <- clusterarc_join(all_clusters, dd_clusters)
+    all_clstrs <- clstrarc_join(all_clstrs, dd_clstrs)
   }
-  all_clusters
+  all_clstrs
 }
 
-#' @name cluster_subtree
+#' @name clstr_subtree
+#' @family run-private
 #' @title Cluster all sequences descending from a txid
-#' @description Identifies clusters from sequences associated with a txid and all its
-#' descendants. Clusters returned by this function will thus be of cl_type 'subtree'.
+#' @description Identifies clusters from sequences associated with a
+#' txid and all its descendants. Clusters returned by this function
+#' will thus be of cl_type 'subtree'.
 #' @param txid Taxonomic ID
 #' @param sqs Sequence object of all downloaded sequences
 #' @param txdct Taxonomic dictionary
 #' @param dds Vector of direct descendants
 #' @param ps Parameters
 #' @param lvl Log level
-#' @return ClusterArc
-cluster_subtree <- function(txid, sqs, txdct, dds, ps, lvl) {
-  all_clusters <- clusterarc_gen(list())
+#' @return ClstrArc
+clstr_subtree <- function(txid, sqs, txdct, dds, ps, lvl) {
+  all_clstrs <- clstrarc_gen(list())
   rnk <- rank_get(txid = txid, txdct = txdct)
   info(lvl = lvl + 1, ps = ps, "Generating subtree clusters for [id ",
        txid, "(", rnk, ")]")
   if (length(dds) > 0) {
-    drct_clusters <- cluster_direct(txid, ps = ps, txdct = txdct,
-                                  sqs = sqs, lvl = lvl)
-    all_clusters <- clusterarc_join(all_clusters, drct_clusters)
+    drct_clstrs <- clstr_direct(txid, ps = ps, txdct = txdct,
+                                sqs = sqs, lvl = lvl)
+    all_clstrs <- clstrarc_join(all_clstrs, drct_clstrs)
   }
   txids <- descendants_get(id = txid, txdct = txdct, direct = FALSE)
   all_sq_txids <- sqs@txids
@@ -49,28 +53,30 @@ cluster_subtree <- function(txid, sqs, txdct, dds, ps, lvl) {
   if (length(sids) < 3) {
     info(lvl = lvl + 3, ps = ps, "[", length(sids), " sqs]",
          " -- too few sequences, cannot make clusters")
-    return(all_clusters)
+    return(all_clstrs)
   }
   sqs_prt <- sqs[sids]
-  sbtr_clusters <- cluster_sqs(txid = txid, sqs = sqs_prt,
+  sbtr_clstrs <- clstr_sqs(txid = txid, sqs = sqs_prt,
                              typ = 'subtree', ps = ps, lvl = lvl)
-  clusterarc_join(all_clusters, sbtr_clusters)
+  clstrarc_join(all_clstrs, sbtr_clstrs)
 }
 
-#' @name clusterDrct
+#' @name clstr_direct
+#' @family run-private
 #' @title Cluster sequences directly associated with txid
 #' @description In GenBank certain sequences may only be associated
 #' with a higher level taxon (e.g. genus, family ...). This function
 #' generates clusters from these sequences, alone. This function
 #' identifies such sequences in the sequence object and generates
-#' a list of clusters of cl_type 'Node'.
+#' a list of clusters of cl_type 'direct'.
 #' @param txid Taxonomic ID
 #' @param sqs Sequence object of all downloaded sequences
-#' @param txdct PhyLoTa table
+#' @param txdct Taxonomic dictionary
 #' @param ps Parameters
 #' @param lvl Log level
-cluster_direct <- function(txid, sqs, txdct, ps, lvl) {
-  all_clusters <- clusterarc_gen(list())
+#' @return ClstrArc
+clstr_direct <- function(txid, sqs, txdct, ps, lvl) {
+  all_clstrs <- clstrarc_gen(list())
   rnk <- rank_get(txid = txid, txdct = txdct)
   info(lvl = lvl + 1, ps = ps, "Generating direct clusters for [id ",
        txid, "(", rnk, ")]")
@@ -78,47 +84,55 @@ cluster_direct <- function(txid, sqs, txdct, ps, lvl) {
   sids <- sqs@ids[all_sq_txids %in% as.character(txid)]
   info(lvl = lvl + 2, ps = ps, "[", length(sids), " sqs]")
   if (length(sids) < 3) {
-    info(lvl = lvl + 3, ps = ps, "Too few sequences, cannot make clusters")
-    return(all_clusters)
+    info(lvl = lvl + 3, ps = ps,
+         "Too few sequences, cannot make clusters")
+    return(all_clstrs)
   }
   sqs_prt <- sqs[sids]
-  cluster_sqs(txid = txid, sqs = sqs_prt, typ = 'direct',
+  clstr_sqs(txid = txid, sqs = sqs_prt, typ = 'direct',
               ps = ps, lvl = lvl)
 }
 
-#' @name clusterSqs
+#' @name clstr_sqs
 #' @title Identify clusters from sequences
 #' @description Given a sequence object, this function will generate
 #' a list of cluster objects using BLAST
 #' @param txid Taxonomic ID
 #' @param sqs Sequence object of sequences to be BLASTed
 #' @param ps Parameters
-#' @param typ Direct or Subtree?
+#' @param typ Direct, subtree or paraphyly?
 #' @param lvl Log level
-cluster_sqs <- function(txid, sqs, ps, lvl,
+#' @family run-private
+clstr_sqs <- function(txid, sqs, ps, lvl,
                          typ=c('direct', 'subtree', 'paraphyly')) {
   typ <- match.arg(typ)
   info(lvl = lvl + 1, ps = ps, "BLASTing [", length(sqs@ids),
        " sqs] ....")
-  blast_res <- blast_sqs(txid = txid, typ = typ, sqs = sqs, ps = ps, lvl = lvl)
+  blast_res <- blast_sqs(txid = txid, typ = typ, sqs = sqs, ps = ps,
+                         lvl = lvl)
   if (is.null(blast_res)) {
     return(NULL)
   }
-  cluster_list <- blast_cluster(blast_res = blast_res)
-  cl_rcrds <- clusterrec_gen(cluster_list = cluster_list, txid = txid, sqs = sqs, typ = typ)
-  info(lvl = lvl + 1, ps = ps, "Identified [", length(cl_rcrds@ids), "] clusters")
-  cl_rcrds
+  clstr_list <- blast_clstr(blast_res = blast_res)
+  clstrrecs <- clstrrec_gen(clstr_list = clstr_list,
+                                txid = txid, sqs = sqs, typ = typ)
+  info(lvl = lvl + 1, ps = ps, "Identified [",
+       length(clstrrecs@ids), "] clusters")
+  clstrrecs
 }
 
-#' @name blstSqs
+# TODO: update this function to make it generic
+#' @name blast_sqs
 #' @title BLAST All vs All
-#' @description Return blast results from
-#' BLASTing all vs all for given sequences
+#' @description Return BLAST results from BLASTing all vs all for
+#' given sequences. Returns NULL if no BLAST results generated.
 #' @param txid Taxonomic node ID, numeric
 #' @param typ Cluster type, 'direct' or 'subtree'
 #' @param sqs Sequences
 #' @param lvl Log level
 #' @param ps Parameters
+#' @family run-private
+#' @return blast_res data.frame or NULL
 blast_sqs <- function(txid, typ, sqs, ps, lvl) {
   blast_res <- blastcache_load(sqs@ids, wd = ps[['wd']])
   if (is.null(blast_res)) {
@@ -140,75 +154,79 @@ blast_sqs <- function(txid, typ, sqs, ps, lvl) {
   blast_filter(blast_res = blast_res, ps = ps)
 }
 
-#' @name clusterBlstRs
+#' @name blast_clstr
 #' @title Cluster BLAST Results
-#' @description Find single-linkage clusters from
-#' BLAST results. Identifies seed sequence.
+#' @description Find single-linkage clusters from BLAST results.
+#' Identifies seed sequence.
 #' @return List of list
 #' @param blst_rs BLAST results
-blast_cluster <- function(blast_res) {
+#' @return list of cluster descriptions
+#' @family run-private
+blast_clstr <- function(blast_res) {
   g <- igraph::graph.data.frame(blast_res[ ,c("query.id", "subject.id")],
                                 directed = FALSE)
-  clusters <- igraph::clusters(g)
-  clusters <- clusters[['membership']]
-  cluster_list <- lapply(unique(clusters), function(x) {
-    list('sids' = sort(names(clusters)[which(clusters == x)]))
+  clstrs <- igraph::clusters(g)
+  clstrs <- clstrs[['membership']]
+  clstr_list <- lapply(unique(clstrs), function(x) {
+    list('sids' = sort(names(clstrs)[which(clstrs == x)]))
   })
   degrees <- igraph::degree(g)
-  cluster_list <- lapply(cluster_list, function(cl){
+  clstr_list <- lapply(clstr_list, function(cl){
     idx <- order(degrees[cl[['sids']]], decreasing = TRUE)[1]
     # index of most connected component
     cl[['seed']] <- cl[['sids']][idx]
     cl
   })
-  cluster_list
+  clstr_list
 }
 
-#' @name genClRcrds
+#' @name clstrrec_gen
 #' @title Generate list of clusters
-#' @description Takes a list of lists of cluster descriptions,
-#' returns a ClRcrdBx.
-#' @param cluster_lst List of list of cluster descriptions
+#' @description Takes a list of lists of cluster descriptions
+#' and generates ClstrRecs.
+#' @param clstr_lst List of list of cluster descriptions
 #' @param txid Taxonomic node ID
-#' @param sqs Sequnece records
-#' @param typ Subtree of direct?
-clusterrec_gen <- function(cluster_list, txid, sqs, typ) {
-  cl_rcrds <- vector('list', length = length(cluster_list))
-  for (i in seq_along(cluster_list)) {
-    cl <- cluster_list[[i]]
+#' @param sqs Sequence records
+#' @param typ Cluster type
+#' @family run-private
+#' @return list of ClstrRecs
+clstrrec_gen <- function(clstr_list, txid, sqs, typ) {
+  clstrrecs <- vector('list', length = length(clstr_list))
+  for (i in seq_along(clstr_list)) {
+    cl <- clstr_list[[i]]
     cl_sqs <- sqs[cl[['sids']]]
     nsqs <- length(cl[['sids']])
     ntx <- length(unique(cl_sqs@txids))
-    cl_rcrd <- new('ClusterRec', sids = cl[['sids']],
-                   txids = cl_sqs@txids, nsqs = nsqs,
-                   ntx = ntx, typ = typ,
-                   prnt = as.character(txid),
-                   seed = cl[['seed']])
-    cl_rcrds[[i]] <- cl_rcrd
+    clstrrec <- new('ClstrRec', sids = cl[['sids']],
+                    txids = cl_sqs@txids, nsqs = nsqs,
+                    ntx = ntx, typ = typ,
+                    prnt = as.character(txid),
+                    seed = cl[['seed']])
+    clstrrecs[[i]] <- clstrrec
   }
-  clusterarc_gen(cl_rcrds)
+  clstrarc_gen(clstrrecs)
 }
 
-#' @name archive_cluster_gen
-#' @title Generate ArchiveCluster container class
-#' @description Takes a list of RecordCluster classes, returns an ArchiveCluster.
-#' @param cluster_rcrds list of RecordCluster classes
-#' @return ArchiveCluster
-#' @noRd
-clusterarc_gen <- function(cluster_rcrds) {
-  ids <- as.character(seq_along(cluster_rcrds) - 1)
-  names(cluster_rcrds) <- ids
-  new('ClusterArc', ids = ids, cls = cluster_rcrds)
+#' @name clstrarc_gen
+#' @title Generate cluster archive container class
+#' @description Takes a list of ClstrRecs, returns a ClstrArc.
+#' @param clstrrecs list of ClstrRecs
+#' @return ClstrArc
+#' @family run-private
+clstrarc_gen <- function(clstrrecs) {
+  ids <- as.character(seq_along(clstrrecs) - 1)
+  names(clstrrecs) <- ids
+  new('ClstrArc', ids = ids, cls = clstrrecs)
 }
 
-#' @name archive_cluster_join
-#' @title Join two ArchiveCluster classes
-#' @description Take two ArchiveCluster classes and join them into
-#' a single ArchiveCluster
-#' @param ac_1 ArchiveCluster
-#' @param ac_2 ArchiveCluster
-#' @return ArchiveCluster
-#' @noRd
-clusterarc_join <- function(ac_1, ac_2) {
-  clusterarc_gen(c(ac_1@cls, ac_2@cls))
+#' @name clstrarc_join
+#' @title Join two cluster archive
+#' @description Take two ClstrArc classes and join them into a single
+#' ClstrArc.
+#' @param ac_1 ClstrArc
+#' @param ac_2 ClstrArc
+#' @return ClstrArc
+#' @family run-private
+clstrarc_join <- function(ac_1, ac_2) {
+  clstrarc_gen(c(ac_1@cls, ac_2@cls))
 }

@@ -1,10 +1,11 @@
-#' @name mkBlstDB
-#' @title Make a BLAST database
-#' @description Generate BLAST database in wd 
-#' for given sequences.
+#' @name blastdb_gen
+#' @title Generate a BLAST database
+#' @description Generate BLAST database in wd for given sequences.
 #' @param sqs Sequences
 #' @param dbfl Outfile for database
 #' @param ps Parameters
+#' @return NULL
+#' @family run-private
 blastdb_gen <- function(sqs, dbfl, ps) {
   if (length(sqs@sqs) < 2) {
     error(ps = ps, 'Need more than 2 sequences for BLAST.')
@@ -37,13 +38,15 @@ blastdb_gen <- function(sqs, dbfl, ps) {
   NULL
 }
 
-#' @name blstN
-#' @title BLAST all vs all
-#' @description Use \code{blastn} to BLAST all vs all using
-#' a BLAST database
+#' @name blastn_run
+#' @title Launch blastn
+#' @description Use \code{blastn} to BLAST all-vs-all using a BLAST
+#' database.
 #' @param dbfl Database file
 #' @param outfl Output file
 #' @param ps Parameters
+#' @family run-private
+#' @return NULL
 blastn_run <- function(dbfl, outfl, ps) {
   blst_d <- file.path(ps[['wd']], 'blast')
   if (!file.exists(blst_d)) {
@@ -60,8 +63,8 @@ blastn_run <- function(dbfl, outfl, ps) {
     outfmt <- "6 qseqid sseqid pident length evalue qcovs qcovhsp"
   }
   args <- c('-query', dbfl, '-db', dbfl, '-outfmt', outfmt,
-            '-dust', 'no', '-strand', 'plus', '-evalue', ps[['mxevl']],
-            '-out', outfl)
+            '-dust', 'no', '-strand', 'plus', '-evalue',
+            ps[['mxevl']], '-out', outfl)
   info(lvl = 3, ps = ps, "Running blastn")
   res <- cmdln(cmd = ps[['blstn']], args = args, lgfl = dbfl)
   if (res != 0) {
@@ -77,26 +80,30 @@ blastn_run <- function(dbfl, outfl, ps) {
   }
   blast_res <- read.table(outfl)
   colnames(blast_res) <- c('query.id', 'subject.id', 'identity',
-                         'alignment.length', 'evalue',
-                         'qcovs', 'qcovhsp')
+                           'alignment.length', 'evalue',
+                           'qcovs', 'qcovhsp')
   blast_res
 }
 
 # FILTER NOTES
 # First filter out HSPs with lower than min.coverage
 # Get query-subject pairs with too low coverage
-# Remove both, query-subject and subject-query pair of low coverage hits!!
-# Otherwise, we will end up with clusters with uneven sequence lengths!
+# Remove both, query-subject and subject-query pair of low coverage
+# hits!! Otherwise, we will end up with clusters with uneven sequence
+# lengths!
 # TODO does it make a difference to filter for qcovhsp ??
-#' @name fltrBlstRs
+#' @name blast_filter
 #' @title Filter BLAST results
-#' @description Given a BLAST output, filters query-subject pairs such
-#' that only HSPs with a coverage greater than \code{mncvrg} (specified
-#' in the pipeline parameters) remain. Filters both: query-subject and
-#' subject-query pairs, if one of the coverages is insufficient. HSP
-#' coverage is obtained from the BLAST column \code{qcovs}.
+#' @description Given a BLAST output, filters query-subject pairs
+#' such that only HSPs with a coverage greater than \code{mncvrg}
+#' (specified in the pipeline parameters) remain. Filters both:
+#' query-subject and subject-query pairs, if one of the coverages is
+#' insufficient. HSP coverage is obtained from the BLAST column
+#' \code{qcovs}.
 #' @param blast_res BLAST results
 #' @param ps Parameters
+#' @return data.frame blast res
+#' @family run-private
 blast_filter <- function(blast_res, ps) {
   pull <- blast_res[['qcovs']] < ps[['mncvrg']]
   if (any(pull)) {

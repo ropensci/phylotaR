@@ -7,9 +7,9 @@
 #' @param v Verbose, T/F
 #' @param ... Additional parameters
 #' @export
+#' @family run-public
 #' @seealso \code{\link{parameters}}
-setup <- function(wd, txid, ncbi_dr='.', v=FALSE,
-                  ...) {
+setup <- function(wd, txid, ncbi_dr='.', v=FALSE, ...) {
   # header log
   msg <- paste0('phylotaR: Implementation of PhyLoTa in R [v',
                 packageVersion('phylotaR'), ']')
@@ -41,22 +41,24 @@ setup <- function(wd, txid, ncbi_dr='.', v=FALSE,
 #' functions below.
 #' @param wd Working directory
 #' @param nstages Number of total stages to run, max 4.
+#' @family run-public
 #' @export
-#' @seealso \code{\link{restart}}, \code{\link{runTaxise}},
-#' \code{\link{runDownload}}, \code{\link{runClusters}},
-#' \code{\link{runClusters2}}
+#' @seealso \code{\link{restart}}, \code{\link{taxise_run}},
+#' \code{\link{download_run}}, \code{\link{clusters_run}},
+#' \code{\link{clusters2_run}}
 run <- function(wd, nstages=4) {
   stgs_msg <- stage_args_check(frm = 1, to = nstages)
   stages_run(wd = wd, frm = 1, to = nstages, stgs_msg = stgs_msg)
 }
 
 #' @name restart
-#' @title Restart a PhyLoTa pipeline run
+#' @title Restart a phylotaR pipeline run
 #' @description Restarts the running of a pipeline
 #' as started with \code{run}.
 #' @param wd Working directory
 #' @param nstages Number of total stages to run, max 4.
 #' @export
+#' @family run-public
 #' @seealso \code{\link{run}}
 restart <- function(wd, nstages=4) {
   stg <- progress_read(wd)
@@ -80,8 +82,9 @@ restart <- function(wd, nstages=4) {
 #' @param wd Working directory
 #' @param stage Name of stage to which the pipeline will be reset
 #' @param hard T/F, delete all cached data?
+#' @family run-public
 #' @export
-#' @seealso \code{\link{restart}}, \code{\link{setParameters}}
+#' @seealso \code{\link{restart}}, \code{\link{parameters_reset}}
 reset <- function(wd, stage, hard=FALSE) {
   if (!stage %in% c('taxise', 'download', 'cluster', 'cluster2')) {
     stop('Invalid stage name.')
@@ -101,6 +104,7 @@ reset <- function(wd, stage, hard=FALSE) {
 #' @param wd Working directory
 #' @param parameters Parameters to be changed
 #' @param values New values for each parameter
+#' @family run-public
 #' @export
 parameters_reset <- function(wd, parameters, values) {
   # TODO: make parameters an object with pre-defined parameter types

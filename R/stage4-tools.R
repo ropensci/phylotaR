@@ -1,90 +1,95 @@
-#' @name blstSeeds
+#' @name seeds_blast
 #' @title BLAST seed sequences
 #' @description Runs all-v-all blast for seed sequences.
 #' @param sqs All seed sequences to be BLASTed
 #' @param ps Parameters
+#' @family run-private
+#' @return blast res data.frame
 seeds_blast <- function(sqs, ps) {
-  info(lvl=2, ps=ps, "BLASTing [", length(sqs@ids),
-       " sqs]")
+  info(lvl = 2, ps = ps, "BLASTing [", length(sqs@ids), " sqs]")
   dbfl <- 'seeds-db.fa'
   outfl <- 'seeds-db-blastout.txt'
   file.path(ps[['wd']], 'blast', dbfl)
-  blastdb_gen(sqs, dbfl=dbfl, ps=ps)
-  blst_res <- blastn_run(dbfl=dbfl, outfl=outfl, ps=ps)
-  blst_res
+  blastdb_gen(sqs, dbfl = dbfl, ps = ps)
+  blast_res <- blastn_run(dbfl = dbfl, outfl = outfl, ps = ps)
+  blast_res
 }
 
-#' @name jnclusters
+#' @name clstrs_join
 #' @title Join clusters for merging
-#' @description Uses seed sequence BLAST results and IDs
-#' to join clusters identifed as sisters into single clusters.
-#' Resulting object is of joined clusters, merging is required
-#' to reformat the clusters for subsequent analysis.
-#' @param blst_rs Seed sequence BLAST results
+#' @description Uses seed sequence BLAST results and IDs to join
+#' clusters identifed as sisters into single clusters. Resulting
+#' object is of joined clusters, merging is required to reformat the
+#' clusters for subsequent analysis.
+#' @param blast_res Seed sequence BLAST results
 #' @param seed_ids Seed sequence IDs
-#' @param all_clusters List of all clusters
+#' @param all_clstrs List of all clusters
 #' @param ps Parameters
-clusters_join <- function(blast_res, seed_ids, all_clusters, ps) {
+#' @family run-private
+#' @return list of joined clusters
+clstrs_join <- function(blast_res, seed_ids, all_clstrs, ps) {
   join <- function(x) {
     pull <- seed_ids %in% x[['sids']]
-    jnd_cluster <- all_clusters[pull]
-    nms <- slotNames(jnd_cluster[[1]])
-    cluster <- lapply(nms, function(nm)
-      unlist(lapply(jnd_cluster, function(cl) slot(cl, nm))))
-    names(cluster) <- nms
-    cluster[['typ']] <- 'merged'
-    cluster[['seed']] <- x[['seed']]
+    jnd_clstr <- all_clstrs[pull]
+    nms <- slotNames(jnd_clstr[[1]])
+    clstr <- lapply(nms, function(nm)
+      unlist(lapply(jnd_clstr, function(cl) slot(cl, nm))))
+    names(clstr) <- nms
+    clstr[['typ']] <- 'merged'
+    clstr[['seed']] <- x[['seed']]
     # ensure no dups seqs in joined cluster
-    pull <- !duplicated(cluster[['sids']])
-    cluster[['sids']] <- cluster[['sids']][pull]
-    cluster[['txids']] <- cluster[['txids']][pull]
-    cluster
+    pull <- !duplicated(clstr[['sids']])
+    clstr[['sids']] <- clstr[['sids']][pull]
+    clstr[['txids']] <- clstr[['txids']][pull]
+    clstr
   }
   pull <- blast_res[['query.id']] != blast_res[['subject.id']] &
     blast_res[['qcovs']] > ps[['mncvrg']]
   blast_res <- blast_res[pull, ]
-  cluster_list <- blast_cluster(blast_res = blast_res)
-  info(lvl = 2, ps = ps, "Identified [", length(cluster_list),
+  clstr_list <- blast_clstr(blast_res = blast_res)
+  info(lvl = 2, ps = ps, "Identified [", length(clstr_list),
        "] clusters")
-  lapply(cluster_list, join)
+  lapply(clstr_list, join)
 }
 
-#' @name mrgclusters
+#' @name clstrs_merge
 #' @title Merge joined clusters
-#' @description Takes a list of joined clusters and computes
-#' each data slot to create a single merged cluster.
-#' txdct is required for parent look-up.
-#' @param jnd_clusters List of joined cluster records
+#' @description Takes a list of joined clusters and computes each
+#' data slot to create a single merged cluster. txdct is required for
+#' parent look-up.
+#' @param jnd_clstrs List of joined clusters
 #' @param txdct Taxonomic dictionary
-clusters_merge <- function(jnd_clusters, txdct) {
-  mrg_clusters <- vector('list', length = length(jnd_clusters))
-  for (i in seq_along(jnd_clusters)) {
-    cl <- jnd_clusters[[i]]
+#' @return list of ClstrRecs
+#' @family run-private
+clstrs_merge <- function(jnd_clstrs, txdct) {
+  mrg_clstrs <- vector('list', length = length(jnd_clstrs))
+  for (i in seq_along(jnd_clstrs)) {
+    cl <- jnd_clstrs[[i]]
     prnt <- parent_get(id = cl[['txids']], txdct = txdct)
     nsqs <- length(cl[['sids']])
     ntx <- length(unique(cl[['txids']]))
-    cl_rcrd <- new('ClusterRec', sids = cl[['sids']],
-                   txids = cl[['txids']], nsqs = nsqs,
-                   ntx = ntx, typ = 'merged',
-                   prnt = prnt, seed = cl[['seed']])
-    mrg_clusters[[i]] <- cl_rcrd
+    clstrrec <- new('ClstrRec', sids = cl[['sids']],
+                      txids = cl[['txids']], nsqs = nsqs,
+                      ntx = ntx, typ = 'merged', prnt = prnt,
+                      seed = cl[['seed']])
+    mrg_clstrs[[i]] <- clstrrec
   }
-  mrg_clusters
+  mrg_clstrs
 }
 
-#' @name rnmbrclusters
-#' @title Renumbers cluster IDs
-#' @description Returns a ClRcrdBx with
-#' ID determined by the number of sequences
-#' in each cluster.
-#' @param cluster_rcrds List of clusters
-clusters_renumber <- function(cluster_rcrds) {
-  nsqs <- vapply(cluster_rcrds, function(x) length(x@sids),
-                 numeric(1))
-  ord <- order(nsqs, decreasing=TRUE)
-  cluster_rcrds <- cluster_rcrds[ord]
-  for (i in seq_along(cluster_rcrds)) {
-    cluster_rcrds[[i]]@id <- as.integer(i - 1)
+#' @name clstrs_renumber
+#' @title Renumber cluster IDs
+#' @description Returns a ClstrArc with ID determined by the number
+#' of sequences in each cluster.
+#' @param clstrrecs List of clusters
+#' @return ClstrArc
+#' @family run-private
+clstrs_renumber <- function(clstrrecs) {
+  nsqs <- vapply(clstrrecs, function(x) length(x@sids), numeric(1))
+  ord <- order(nsqs, decreasing = TRUE)
+  clstrrecs <- clstrrecs[ord]
+  for (i in seq_along(clstrrecs)) {
+    clstrrecs[[i]]@id <- as.integer(i - 1)
   }
-  clusterarc_gen(cluster_rcrds)
+  clstrarc_gen(clstrrecs)
 }

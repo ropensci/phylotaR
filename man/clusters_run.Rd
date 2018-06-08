@@ -2,7 +2,7 @@
 % Please edit documentation in R/stage3.R
 \name{clusters_run}
 \alias{clusters_run}
-\title{Cluster}
+\title{Run the cluster stage}
 \usage{
 clusters_run(wd)
 }
@@ -10,7 +10,19 @@ clusters_run(wd)
 \item{wd}{Working directory}
 }
 \description{
-Identify sequence clusters
-for an initial PhyLoTa cluster table
-generated
+Run the third stage of the phylotaR pipeline, cluster.
+This stage hierarchically traverses the taxonomy identifying all
+direct and subtree clusters from downloaded sequences. Any
+taxonomic nodes too small for cluster identification are placed
+into paraphyletic clusters.
+}
+\seealso{
+Other run-public: \code{\link{ClstrArc-class}},
+  \code{\link{ClstrRec-class}},
+  \code{\link{Phylota-class}}, \code{\link{SeqArc-class}},
+  \code{\link{SeqRec-class}}, \code{\link{TaxDict-class}},
+  \code{\link{TaxRec-class}}, \code{\link{clusters2_run}},
+  \code{\link{parameters_reset}}, \code{\link{reset}},
+  \code{\link{restart}}, \code{\link{run}},
+  \code{\link{setup}}, \code{\link{taxise_run}}
 }

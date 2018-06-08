@@ -1,13 +1,14 @@
 #' @name search_and_cache
 #' @title Run rentrez function and cache results
-#' @description Safely run a rentrez function.
-#' If the query fails, the function will retry.
-#' All query results are cached. To remove cached data
-#' use hard reset.
+#' @description Safely run a rentrez function. If the query fails, the
+#' function will retry. All query results are cached. To remove cached
+#' data use hard reset.
 #' @param func rentrez function
 #' @param args rentrez function arguments, list
 #' @param fnm rentrez function name
 #' @param ps Parameters
+#' @return rentrez function results
+#' @family run-private
 search_and_cache <- function(func, args, fnm, ps) {
   res <- ncbicache_load(fnm = fnm, args = args, wd = ps[['wd']])
   if (!is.null(res)) {
@@ -20,12 +21,14 @@ search_and_cache <- function(func, args, fnm, ps) {
 
 #' @name safely_connect
 #' @title Safely run rentrez function
-#' @description Safely run a rentrez function.
-#' If the query fails, the function will retry.
+#' @description Safely run a rentrez function. If the query fails,
+#' the function will retry.
 #' @param func rentrez function
 #' @param args rentrez function arguments, list
 #' @param fnm rentrez function name
 #' @param ps Parameters
+#' @return rentrez function results
+#' @family run-private
 safely_connect <- function(func, args, fnm, ps) {
   res <- NULL
   for (wt_tm in ps[['wt_tms']]) {
@@ -44,8 +47,8 @@ safely_connect <- function(func, args, fnm, ps) {
                query[[1]])) {
         stop(query[[1]])
       }
-      info(lvl = 1, ps = ps, "Retrying in [", wt_tm, "s] for [",
-           fnm, ']')
+      info(lvl = 1, ps = ps, "Retrying in [", wt_tm, "s] for [", fnm,
+           ']')
       Sys.sleep(wt_tm)
     }
   }
@@ -54,10 +57,12 @@ safely_connect <- function(func, args, fnm, ps) {
 
 
 #' @name download_obj_check
-#' @title Check an object returned from rentrez
-#' @description Returns T/F. Checks if object
-#' returned from rentrez function is as expected.
+#' @title Check an object returned from rentrez function
+#' @description Returns T/F. Checks if object returned from rentrez
+#' function is as expected.
 #' @param obj Object returned from rentrez function
+#' @return T/F
+#' @family run-private
 download_obj_check <- function(obj) {
   if (inherits(x = obj, what = 'try-error')) {
     return(FALSE)
@@ -72,13 +77,14 @@ download_obj_check <- function(obj) {
 
 #' @name batcher
 #' @title Download in batches
-#' @description Run downloader function in batches for
-#' sequences or taxonomic records
+#' @description Run downloader function in batches for sequences or
+#' taxonomic records
 #' @return Vector of records
 #' @param ids Vector of record ids
 #' @param func Downloader function
 #' @template pslvl
-#' @noRd
+#' @family run-private
+#' @return vector of rentrez function results
 batcher <- function(ids, func, ps, lvl = 0) {
   res <- NULL
   n <- length(ids)

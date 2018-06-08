@@ -16,3 +16,13 @@ parameters_reset(wd, parameters, values)
 \description{
 Reset parameters afater running \code{setUp()}.
 }
+\seealso{
+Other run-public: \code{\link{ClstrArc-class}},
+  \code{\link{ClstrRec-class}},
+  \code{\link{Phylota-class}}, \code{\link{SeqArc-class}},
+  \code{\link{SeqRec-class}}, \code{\link{TaxDict-class}},
+  \code{\link{TaxRec-class}}, \code{\link{clusters2_run}},
+  \code{\link{clusters_run}}, \code{\link{reset}},
+  \code{\link{restart}}, \code{\link{run}},
+  \code{\link{setup}}, \code{\link{taxise_run}}
+}

@@ -3,23 +3,23 @@
 #' @description Looks up and downloads sequences for a taxonomic ID.
 #' @param txid Taxonomic node ID, numeric
 #' @param txdct Taxonomic dictionary
-#' @param ps parameters
+#' @param ps Parameters
 #' @param lvl Log level
-#' @noRd
+#' @family run-private
 #' @return Vector of SeqRecs
 hierarchic_download <- function(txid, txdct, ps, lvl=0) {
   # get subtree counts if that is smaller than ps[['mdlthrs']]
   # or if there are no direct descendants
   dds <- descendants_get(id = txid, txdct = txdct, direct = TRUE)
-  subtree_count <- sqs_count(txid, drct = FALSE, ps = ps)
+  subtree_count <- sqs_count(txid, direct = FALSE, ps = ps)
   if (subtree_count <= ps[['mdlthrs']] | length(dds) == 0) {
     info(lvl = 2 + lvl, ps = ps, "+ whole subtree ...")
-    sqs <- seqrec_get(txid = txid, drct = FALSE, ps = ps, lvl = lvl)
+    sqs <- seqrec_get(txid = txid, direct = FALSE, ps = ps, lvl = lvl)
     return(sqs)
   }
   # 1st direct sqs from focal taxon, then from DDs
   info(lvl = 2 + lvl, ps = ps, "+ direct ...")
-  sqs <- seqrec_get(txid = txid, drct = TRUE, ps = ps, lvl = lvl)
+  sqs <- seqrec_get(txid = txid, direct = TRUE, ps = ps, lvl = lvl)
   info(lvl = 2 + lvl, ps = ps, "+ by child ...")
   for (dd in dds) {
     lvl <- lvl + 1
@@ -33,14 +33,14 @@ hierarchic_download <- function(txid, txdct, ps, lvl=0) {
 #' @name seqrec_augment
 #' @title Augment sequence records list
 #' @description Add taxids to records and convert to archive.
-#' @param sqs List of SqRcrds
+#' @param sqs List of SeqRecs
 #' @param txdct Taxonomic Dictionary
 #' @return SeqArc
-#' @noRd
+#' @family run-private
 seqrec_augment <- function(sqs, txdct) {
   # txids are not downloaded as part of sequence, added here
-  txdct_nms <- vapply(txdct@rcrds, function(x) x@scnm, '')
-  txdct_ids <- vapply(txdct@rcrds, function(x) x@id, '')
+  txdct_nms <- vapply(txdct@recs, function(x) x@scnm, '')
+  txdct_ids <- vapply(txdct@recs, function(x) x@id, '')
   sqs_nms <- vapply(sqs, function(x) x@orgnsm, '')
   sqs_ids <- txdct_ids[match(sqs_nms, txdct_nms)]
   for (i in seq_along(sqs)) {
@@ -52,12 +52,12 @@ seqrec_augment <- function(sqs, txdct) {
 #' @title seqrec_get
 #' @description Downloads sequences from GenBank in batches.
 #' @param txid NCBI taxonomic ID
-#' @param drct Node-level only or subtree as well? Default FALSE.
+#' @param direct Node-level only or subtree as well? Default FALSE.
 #' @param ps parameters
 #' @param lvl Log level
 #' @return Vector of sequence records
-#' @noRd
-seqrec_get <- function(txid, ps, drct=FALSE, lvl=0) {
+#' @family run-private
+seqrec_get <- function(txid, ps, direct=FALSE, lvl=0) {
   # test w/ golden moles 9389
   downloader <- function(ids, ps) {
     ftch_args <- list(db = "nucleotide",
@@ -68,7 +68,7 @@ seqrec_get <- function(txid, ps, drct=FALSE, lvl=0) {
                      ps = ps)
   }
   # get accessions
-  sids <- sids_get(txid = txid, drct = drct, ps = ps)
+  sids <- sids_get(txid = txid, direct = direct, ps = ps)
   if (length(sids) < 1) {
     return(list())
   }

@@ -1,11 +1,12 @@
 #' @name read_phylota
 #' @title Generate a PhyLoTa object in R
-#' @description Creates a PhyLoTa object containing
-#' information on clusters, sequences and taxonomy
-#' from the working directory of a completed pipeline.
+#' @description Creates a PhyLoTa object containing information on
+#' clusters, sequences and taxonomy from the working directory of a
+#' completed pipeline.
 #' @param wd Working directory
-#' @return phylota
+#' @return Phylota
 #' @export
+#' @family tools-public
 read_phylota <- function(wd) {
   if (!file.exists(file.path(wd, 'cache',
                             'clusters_sqs.RData'))) {
@@ -13,54 +14,52 @@ read_phylota <- function(wd) {
                   '].\nAre you sure pipeline has completed?')
     stop(msg)
   }
-  clusters_sqs <- obj_load(wd, nm = 'clusters_sqs')
-  cls <- clusters_sqs[['clusters']]
-  sqs <- clusters_sqs[['sqs']]
+  clstrs_sqs <- obj_load(wd, nm = 'clstrs_sqs')
+  clstrs <- clstrs_sqs[['clstrs']]
+  sqs <- clstrs_sqs[['sqs']]
   # TODO: how does this occur?
   # prevent dups
   non_dups <- which(!duplicated(sqs@ids))
-  sqs <- genSqRcrdBx(sqs@sqs[non_dups])
+  sqs <- seqarc_gen(sqs@sqs[non_dups])
   txids <- sort(unique(sqs@txids))
   sids <- sort(unique(sqs@ids))
-  cids <- cls@ids
+  cids <- clstrs@ids
   txdct <- obj_load(wd, nm = 'txdct')
   prnt_id <- txdct@prnt
-  prnt_nm <- txdct@rcrds[[prnt_id]]@scnm
-  phylota <- new('PhyLoTa', sqs = sqs, cls = cls,
-                 txids = txids, sids = sids,
-                 cids = cids, txdct = txdct,
+  prnt_nm <- txdct@recs[[prnt_id]]@scnm
+  phylota <- new('Phylota', sqs = sqs, clstrs = clstrs, txids = txids,
+                 sids = sids, cids = cids, txdct = txdct,
                  prnt_id = prnt_id, prnt_nm = prnt_nm)
   update_phylota(phylota)
 }
 
 #' @name write_phylota
 #' @title Write out PhyLoTa-like Table
-#' @description Create a PhyLoTa-like table
-#' from phylota object.
-#' @param phylota Phylota object
+#' @description Create a PhyLoTa-like table from phylota object.
+#' @param phylota Phylota
 #' @param outfile Output file
 #' @return NULL
 #' @export
+#' @family tools-public
 write_table <- function(phylota, outfile) {
   # TODO
 }
 
 #' @name write_sqs
 #' @title Write out sequences
-#' @description Write out sequences, as .fasta,
-#' for a given vector of IDs.
-#' @param phylota Phylota object
+#' @description Write out sequences, as .fasta, for a given vector of
+#' IDs.
+#' @param phylota Phylota
 #' @param outfile Output file
 #' @param sid Sequence ID(s)
 #' @param sq_nm Sequence name(s)
 #' @details 
-#' The user can control the output definition
-#' lines of the sequences using the sq_nm.
-#' By default sequences IDs are used.
-#' Note, ensure the sq_nm are in the same
-#' order as sid.
+#' The user can control the output definition lines of the sequences
+#' using the sq_nm. By default sequences IDs are used. Note, ensure
+#' the sq_nm are in the same order as sid.
 #' @return NULL
 #' @export
+#' @family tools-public
 write_sqs <- function(phylota, outfile,
                       sid, sq_nm = sid) {
   get <- function(i) {
@@ -110,14 +109,14 @@ write_sqs <- function(phylota, outfile,
 #' # plot
 #' print(p)  # easier to interpret
 #' @export
-plot_phylota_pa <- function(phylota, cids, txids,
-                            cnms = cids, txnms = txids) {
+#' @family tools-public
+plot_phylota_pa <- function(phylota, cids, txids, cnms = cids,
+                            txnms = txids) {
   mkdata <- function(cid) {
-    cl <- phylota@cls@cls[[which(cid == phylota@cids)]]
+    clstr <- phylota@clstrs@clstrs[[which(cid == phylota@cids)]]
     value <- apply(X = tis_mtrx[ ,cl@sids], 1, any)
     value <- as.numeric(value)
-    data.frame(txid = as.character(txids),
-               cid = cid, value = value)
+    data.frame(txid = as.character(txids), cid = cid, value = value)
   }
   value <- NULL
   # gen p_data
@@ -125,16 +124,12 @@ plot_phylota_pa <- function(phylota, cids, txids,
                                  txids = txids)
   p_data <- lapply(cids, mkdata)
   p_data <- do.call('rbind', p_data)
-  p_data[['cnm']] <- 
-    cnms[match(p_data[['cid']], cids)]
-  p_data[['txnm']] <- 
-    txnms[match(p_data[['txid']], txids)]
+  p_data[['cnm']] <- cnms[match(p_data[['cid']], cids)]
+  p_data[['txnm']] <- txnms[match(p_data[['txid']], txids)]
   # reorder
-  p_data[['cnm']] <- factor(p_data[['cnm']],
-                            levels = cnms,
+  p_data[['cnm']] <- factor(p_data[['cnm']], levels = cnms,
                             ordered = TRUE)
-  p_data[['txnm']] <- factor(p_data[['txnm']],
-                             levels = txnms,
+  p_data[['txnm']] <- factor(p_data[['txnm']], levels = txnms,
                              ordered = TRUE)
   # plot
   # https://stackoverflow.com/questions/9439256/how-can-i-handle-r-cmd-check-no-visible-binding-for-global-variable-notes-when
@@ -150,12 +145,11 @@ plot_phylota_pa <- function(phylota, cids, txids,
 
 #' @name plot_phylota_treemap
 #' @title Plot treemap of PhyLoTa object
-#' @description Treemaps show relative size with boxes.
-#' The user can explore which taxa or clusters are most
-#' represented either by sequence or cluster number.
-#' If cluster IDs are provided, the plot is made for
-#' clusters. If taxonomic IDs are provided, the plot
-#' is made for taxa.
+#' @description Treemaps show relative size with boxes. The user can
+#' explore which taxa or clusters are most represented either by
+#' sequence or cluster number. If cluster IDs are provided, the plot
+#' is made for clusters. If taxonomic IDs are provided, the plot is
+#' made for taxa.
 #' @param phylota PhyLoTa object
 #' @param cids Cluster IDs
 #' @param txids Taxonomic IDs
@@ -164,11 +158,10 @@ plot_phylota_pa <- function(phylota, cids, txids,
 #' @param with_labels Show names per box?
 #' @param area What determines the size per box?
 #' @param fill What determines the coloured fill per box?
-#' @details The function can take a long time to run for
-#' large PhyLoTa objects over many taxonomic IDs because
-#' searches are made across lineages.
-#' The idea of the function is to assess the data
-#' dominance of specific clusters and taxa.
+#' @details The function can take a long time to run for large PhyLoTa
+#' objects over many taxonomic IDs because searches are made across
+#' lineages. The idea of the function is to assess the data dominance
+#' of specific clusters and taxa.
 #' @return geom_object
 #' @examples 
 #' data("tinamous")
@@ -183,23 +176,25 @@ plot_phylota_pa <- function(phylota, cids, txids,
 #' txids <- unique(txids)
 #' txnms <- get_tx_slot(tinamous, txids, slt_nm = 'scnm')
 #' p <- plot_phylota_treemap(phylota = tinamous, txids = txids,
-#'                           txnms = txnms, area = 'nsq', fill = 'ncl')
+#'                           txnms = txnms, area = 'nsq',
+#'                           fill = 'ncl')
 #' print(p)
 #' @export
-plot_phylota_treemap <- function(phylota, cids = NULL,
-                                 txids = NULL, cnms = cids,
-                                 txnms = txids, with_labels = TRUE,
+#' @family tools-public
+plot_phylota_treemap <- function(phylota, cids = NULL, txids = NULL,
+                                 cnms = cids, txnms = txids,
+                                 with_labels = TRUE,
                                  area = c('ntx', 'nsq', 'ncl'),
                                  fill = c('NULL', 'typ', 'ntx',
                                         'nsq', 'ncl')) {
   mkcldata <- function(i) {
-    cl <- phylota@cls@cls[[which(cids[i] == phylota@cids)]]
-    data.frame(id = cids[i], label = cnms[i], nsq = cl@nsqs,
-               ntx = cl@ntx, typ = cl@typ)
+    clstr <- phylota@clstrs@clstrs[[which(cids[i] == phylota@cids)]]
+    data.frame(id = cids[i], label = cnms[i], nsq = clstr@nsqs,
+               ntx = clstr@ntx, typ = clstr@typ)
   }
   getcltxids <- function(i) {
-    cl <- phylota@cls@cls[[i]]
-    res <- cl@txids
+    clstr <- phylota@clstrs@clstrs[[i]]
+    res <- clstr@txids
     names(res) <- NULL
     res
   }
@@ -207,15 +202,13 @@ plot_phylota_treemap <- function(phylota, cids = NULL,
     anycltxids <- function(ids) {
       any(ids %in% all_ids)
     }
-    ads <- getADs(id = txids[i],
-                  txdct = phylota@txdct)
-    sngltns <- getSngltns(txid = txids[i], txdct = phylota@txdct)
-    all_ids <- c(ads, txids[i], sngltns)
+    ads <- descendants_get(id = txids[i], txdct = phylota@txdct,
+                           direct = FALSE)
+    all_ids <- c(ads, txids[i])
     nsq <- sum(sids_txids %in% all_ids)
-    ncl <- sum(vapply(cids_txids, anycltxids,
-                      logical(1)))
-    data.frame(id = txids[i], label = txnms[i],
-               nsq = nsq, ncl = ncl)
+    nclstr <- sum(vapply(cids_txids, anycltxids, logical(1)))
+    data.frame(id = txids[i], label = txnms[i], nsq = nsq,
+               ncl = nclstr)
   }
   area <- match.arg(area)
   fill <- match.arg(fill)
@@ -230,11 +223,10 @@ plot_phylota_treemap <- function(phylota, cids = NULL,
     stop('Either cids or txids not provided.')
   }
   p_data <- do.call('rbind', p_data)
-  p <- ggplot2::ggplot(p_data,
-                       ggplot2::aes_string(area = area,
-                                           fill = fill,
-                                           subgroup = 'label',
-                                           label = 'label')) +
+  p <- ggplot2::ggplot(p_data, ggplot2::aes_string(area = area,
+                                                   fill = fill,
+                                                   subgroup = 'label',
+                                                   label = 'label')) +
     treemapify::geom_treemap()
   if (with_labels) {
     p <- p + treemapify::geom_treemap_subgroup_text()
@@ -244,23 +236,23 @@ plot_phylota_treemap <- function(phylota, cids = NULL,
 
 #' @name mk_txid_in_sq_mtrx
 #' @title Return matrix of txid in sequence
-#' @description Searches through lineages of sequences'
-#' source organisms to determine whether each txid
-#' is represented by the sequence.
-#' @param phylota PhyLoTa object
+#' @description Searches through lineages of sequences' source
+#' organisms to determine whether each txid is represented by the
+#' sequence.
+#' @param phylota Phylota
 #' @param txids Taxonomic IDs
 #' @param sids Sequence IDs
 #' @return matrix
+#' @family tools-private
 mk_txid_in_sq_mtrx <- function(phylota, txids,
                                sids = phylota@sids) {
   is_txid_in_sqs <- function(txid) {
-    ads <- getADs(id = txid, txdct = phylota@txdct)
-    sngltns <- getSngltns(txid = txid, txdct = phylota@txdct)
-    all_ids <- c(ads, txid, sngltns)
+    ads <- descendants_get(id = txid, txdct = phylota@txdct,
+                           direct = FALSE)
+    all_ids <- c(ads, txid)
     sids_txids %in% all_ids
   }
-  sids_txids <- get_sq_slot(phylota, sid = sids,
-                            slt_nm = 'txid')
+  sids_txids <- get_sq_slot(phylota, sid = sids, slt_nm = 'txid')
   tis_mtrx <- do.call('rbind', lapply(txids, is_txid_in_sqs))
   colnames(tis_mtrx) <- sids
   rownames(tis_mtrx) <- txids
@@ -269,10 +261,9 @@ mk_txid_in_sq_mtrx <- function(phylota, txids,
 
 #' @name is_txid_in_sq
 #' @title Is txid in sequence?
-#' @description Checks if given txid is represented
-#' by sequence by looking at sequence source organism's
-#' lineage.
-#' @param phylota PhyLoTa object
+#' @description Checks if given txid is represented by sequence by
+#' looking at sequence source organism's lineage.
+#' @param phylota Phylota
 #' @param txid Taxonomic ID
 #' @param sid Sequence ID
 #' @return boolean
@@ -284,43 +275,45 @@ mk_txid_in_sq_mtrx <- function(phylota, txids,
 #' # expect true
 #' is_txid_in_sq(phylota = tinamous, txid = txid, sid = sid)
 #' @export
+#' @family tools-public
 is_txid_in_sq <- function(phylota, txid, sid) {
   sq <- phylota@sqs@sqs[[which(sid == phylota@sids)]]
-  sq_tx <-  phylota@txdct@rcrds[[sq@txid]]
+  sq_tx <-  phylota@txdct@recs[[sq@txid]]
   txid %in% sq_tx@lng[['ids']]
 }
 
-#' @name is_txid_in_cl
+#' @name is_txid_in_clstr
 #' @title Is txid in cluster?
-#' @description Checks if given txid is represented
-#' by any of the sequences of a cluster by searching
-#' through all the sequence search organism lineages.
-#' @param phylota PhyLoTa object
+#' @description Checks if given txid is represented by any of the
+#' sequences of a cluster by searching through all the sequence search
+#' organism lineages.
+#' @param phylota Phylota
 #' @param txid Taxonomic ID
 #' @param cid Cluster ID
 #' @return boolean
 #' @examples
 #' data(tinamous)
 #' cid <- tinamous@cids[[1]]
-#' cl <- tinamous[[cid]]
+#' clstr <- tinamous[[cid]]
 #' sq <- tinamous[[cl@sids[[1]]]]
 #' txid <- sq@txid
 #' # expect true
 #' is_txid_in_cl(phylota = tinamous, txid = txid, cid = cid)
 #' @export
-is_txid_in_cl <- function(phylota, txid, cid) {
-  cl <- phylota@cls@cls[[which(cid == phylota@cids)]]
-  bool <- vapply(cl@sids, is_txid_in_sq, logical(1),
+#' @family tools-public
+is_txid_in_clstr <- function(phylota, txid, cid) {
+  clstr <- phylota@clstrs@clstrs[[which(cid == phylota@cids)]]
+  bool <- vapply(clstr@sids, is_txid_in_sq, logical(1),
                  txid = txid, phylota = phylota)
   any(bool)
 }
 
-
 #' @name summary_phylota
 #' @title Summarise clusters in PhyLoTa Table
-#' @description Generates a summary data.frame
-#' from all clusters in PhyLoTa object.
+#' @description Generates a summary data.frame from all clusters in
+#' PhyLoTa object.
 #' @param phylota PhyLoTa object
+#' @family tools-private
 summary_phylota <- function(phylota) {
   print_frq_wrds <- function(wrd_prps, max_n = 2) {
     if (length(wrd_prps) == 0) {
@@ -330,12 +323,11 @@ summary_phylota <- function(phylota) {
                 length(wrd_prps))
     wrd_prps <- wrd_prps[1:n]
     wrd_prps <- signif(wrd_prps, digits = 1)
-    res <-  paste0(names(wrd_prps), ' (',
-                   wrd_prps, ')')
+    res <-  paste0(names(wrd_prps), ' (', wrd_prps, ')')
     paste0(res, collapse = ', ')
   }
   get_row <- function(cid) {
-    cl <- phylota@cls[[cid]]
+    clstr <- phylota@clstrs[[cid]]
     mad_scr <- calc_mad(phylota = phylota, cid = cid)
     sqlngth <- median(get_sq_slot(phylota = phylota,
                                   cid = cid,
@@ -346,8 +338,8 @@ summary_phylota <- function(phylota) {
     ftr_nms <- calc_wrdfrq(phylota = phylota, cid = cid,
                            type = 'nm', min_frq = 0)[[1]]
     ftr_nms <- print_frq_wrds(ftr_nms)
-    res <- c(cl@id, cl@typ, cl@seed, cl@prnt,
-             length(unique(cl@txids)), length(cl@sids),
+    res <- c(clstr@id, clstr@typ, clstr@seed, clstr@prnt,
+             length(unique(clstr@txids)), length(clstr@sids),
              sqlngth, mad_scr, dflns, ftr_nms)
     res
   }
@@ -367,21 +359,22 @@ summary_phylota <- function(phylota) {
 
 #' @name update_phylota
 #' @title Update slots
-#' @description After change, run to update
-#' slots.
-#' @param phylota Phylota object
+#' @description After change, run to update slots.
+#' @param phylota Phylota
+#' @family tools-private
+#' @return Phylota
 update_phylota <- function(phylota) {
   get_sids <- function(i) {
-    cl <- cls@cls[[i]]
-    cl@sids
+    clstr <- clstrs@clstrs[[i]]
+    clstr@sids
   }
   get_seeds <- function(i) {
-    cl <- cls@cls[[i]]
-    cl@seed
+    clstr <- clstrs@clstrs[[i]]
+    clstr@seed
   }
-  cls <- phylota@cls # cls informs all other slots
-  all_sids <- lapply(seq_along(cls@ids), get_sids)
-  all_seeds <- vapply(seq_along(cls@ids), get_seeds, '')
+  clstrs <- phylota@clstrs # clstrs informs all other slots
+  all_sids <- lapply(seq_along(clstrs@ids), get_sids)
+  all_seeds <- vapply(seq_along(clstrs@ids), get_seeds, '')
   all_sids <- unique(c(unlist(all_sids), all_seeds))
   sqs <- phylota@sqs
   sqs <- sqs[all_sids]

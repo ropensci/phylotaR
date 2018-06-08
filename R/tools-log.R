@@ -1,12 +1,12 @@
 # TODO: generate class for these?
-
 #' @name info
 #' @title Write info message to log
-#' @description Inform a user via log.txt of pipeline
-#' progress.
+#' @description Inform a user via log.txt of pipeline progress.
 #' @param lvl Number of message indentations, indicating code depth.
 #' @param ps Parameters
 #' @param ... Message elements for concatenating
+#' @family run-private
+#' @return NULL
 info <- function(lvl, ps, ...) {
   msg <- paste0(..., '\n')
   spcr <- paste0(rep('. ', lvl - 1), collapse = '')
@@ -20,6 +20,8 @@ info <- function(lvl, ps, ...) {
 #' halt pipeline.
 #' @param ps parameters
 #' @param ... Message elements for concatenating
+#' @family run-private
+#' @return NULL
 error <- function(ps, ...) {
   msg <- paste0('Error: ', ..., '\n')
   .log(v = FALSE, wd = ps[['wd']], msg = msg)
@@ -31,6 +33,8 @@ error <- function(ps, ...) {
 #' @description Inform a user if a potential error has occurred in log.txt.
 #' @param ps Parameters
 #' @param ... Message elements for concatenating
+#' @family run-private
+#' @return NULL
 warn <- function(ps, ...) {
   msg <- paste0('Warning: ', ..., '\n')
   .log(v = ps[['v']], wd = ps[['wd']], msg = msg)

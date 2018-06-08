@@ -3,6 +3,7 @@
 #' @importFrom utils head packageVersion read.table tail write.table
 
 #' @name parameters
+#' @family public-pipeline
 #' @title Default parameters
 #' @description Returns a parameter list with default
 #' parameter values.
@@ -15,8 +16,7 @@
 #' @param date Date when pipeline was initiated
 #' @param v Print progress statements to console?
 #' Statements will always be printed to log.txt.
-#' @param ncps The number of CPUs to run clustering in parallel.
-#' If 1, no parallelisation performed.
+#' @param ncps The number of threads to use in the local-alignment search tool.
 #' @param mxnds The maximum number of nodes descending from a taxonomic group.
 #' If there are more than this number, nodes at the lower taxonomic level are analysed.
 #' @param mdlthrs 'Model organism threshold'. Taxa with more sequences than this number
@@ -42,6 +42,7 @@ parameters <- function(wd='.', txid=numeric(), mkblstdb='', blstn='', v=FALSE, n
 }
 
 #' @name list_ncbi_ranks
+#' @family tools-public
 #' @title List all NCBI Ranks
 #' @description Returns a vector of all
 #' NCBI taxonomic ranks in descending order.
@@ -52,10 +53,11 @@ list_ncbi_ranks <- function() {
     "suborder", "infraorder", "parvorder", "family", "genus", "species", "subspecies")
 }
 
-#' @name list_sqrcrd_slots
-#' @title List all SqRcrd slots
+#' @name list_seqrec_slots
+#' @family tools-public
+#' @title List all SeqRec slots
 #' @description Returns a vector of all
-#' available SqRcrd slots.
+#' available SeqRec slots.
 #' @return vector
 #' @export
 list_seqrec_slots <- function() {
@@ -64,22 +66,24 @@ list_seqrec_slots <- function() {
   names(slt_typs[pull])
 }
 
-#' @name list_clrcrd_slots
-#' @title List all ClRcrd slots
+#' @name list_clstrrec_slots
+#' @family tools-public
+#' @title List all ClstrRec slots
 #' @description Returns a vector of all
-#' available ClRcrd slots.
+#' available ClstrRec slots.
 #' @return vector
 #' @export
-list_clusterrec_slots <- function() {
-  slt_typs <- getSlots('ClusterRec')
+list_clstrrec_slots <- function() {
+  slt_typs <- getSlots('ClstrRec')
   pull <- slt_typs %in% c('character', 'integer', 'raw', 'numeric')
   names(slt_typs[pull])
 }
 
-#' @name list_txrcrd_slots
-#' @title List all TxRcrd slots
+#' @name list_taxrec_slots
+#' @family tools-public
+#' @title List all TaxRec slots
 #' @description Returns a vector of all
-#' available TxRcrd slots.
+#' available TaxRec slots.
 #' @return vector
 #' @export
 list_taxrec_slots <- function() {

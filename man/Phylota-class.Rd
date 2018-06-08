@@ -49,7 +49,7 @@ Phylota table contains sequences and clusters information.
 
 \item{\code{sqs}}{All sequence records as SeqArc}
 
-\item{\code{cls}}{All cluster records as ClusterArc}
+\item{\code{cls}}{All cluster records as ClstrArc}
 
 \item{\code{TaxDict}}{Taxonomic dictionary as TaxDict}
 
@@ -58,3 +58,13 @@ Phylota table contains sequences and clusters information.
 \item{\code{prnt_nm}}{Parent taxonomic name}
 }}
 
+\seealso{
+Other run-public: \code{\link{ClstrArc-class}},
+  \code{\link{ClstrRec-class}}, \code{\link{SeqArc-class}},
+  \code{\link{SeqRec-class}}, \code{\link{TaxDict-class}},
+  \code{\link{TaxRec-class}}, \code{\link{clusters2_run}},
+  \code{\link{clusters_run}},
+  \code{\link{parameters_reset}}, \code{\link{reset}},
+  \code{\link{restart}}, \code{\link{run}},
+  \code{\link{setup}}, \code{\link{taxise_run}}
+}

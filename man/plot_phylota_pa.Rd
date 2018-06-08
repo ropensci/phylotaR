@@ -53,3 +53,20 @@ p <- plot_phylota_pa(phylota = cycads, cids = cycads@cids,
 # plot
 print(p)  # easier to interpret
 }
+\seealso{
+Other tools-public: \code{\link{calc_mad}},
+  \code{\link{calc_wrdfrq}}, \code{\link{drop_by_rank}},
+  \code{\link{drop_cls}}, \code{\link{drop_sqs}},
+  \code{\link{get_clstr_slot}}, \code{\link{get_nsqs}},
+  \code{\link{get_ntaxa}}, \code{\link{get_sq_slot}},
+  \code{\link{get_tx_slot}}, \code{\link{get_txids}},
+  \code{\link{is_txid_in_clstr}},
+  \code{\link{is_txid_in_sq}},
+  \code{\link{list_clstrrec_slots}},
+  \code{\link{list_ncbi_ranks}},
+  \code{\link{list_seqrec_slots}},
+  \code{\link{list_taxrec_slots}},
+  \code{\link{plot_phylota_treemap}},
+  \code{\link{read_phylota}}, \code{\link{write_phylota}},
+  \code{\link{write_sqs}}
+}

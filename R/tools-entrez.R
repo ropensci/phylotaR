@@ -1,16 +1,16 @@
-#' @name mkSrchTrm
+#' @name searchterm_gen
 #' @title Construct GenBank Search Term
-#' @description Construct search term for searching
-#' GenBank's nucleotide database.
-#' Limits the maximum size of sequences, avoids
-#' whole genome shotguns, predicted, unverified and
-#' synthetic sequences.
+#' @description Construct search term for searching GenBank's
+#' nucleotide database. Limits the maximum size of sequences, avoids
+#' whole genome shotguns, predicted, unverified and synthetic
+#' sequences.
 #' @param txid Taxonomic ID
 #' @param ps Parameter list
-#' @param drct Node-level only or subtree as well? Default FALSE.
-searchterm_gen <- function(txid, ps, drct = FALSE) {
-  org_trm <- ifelse(drct, '[Organism:noexp]',
-                     '[Organism:exp]' )
+#' @param direct Node-level only or subtree as well? Default FALSE.
+#' @family run-private
+#' @return character, search term
+searchterm_gen <- function(txid, ps, direct = FALSE) {
+  org_trm <- ifelse(direct, '[Organism:noexp]', '[Organism:exp]' )
   avd1 <- ' NOT predicted[TI] NOT "whole genome shotgun"[TI]'
   avd2 <- ' NOT unverified[TI] NOT "synthetic construct"[Organism]'
   paste0('(txid', txid, org_trm, ' AND ', ps[['mnsql']],
@@ -18,13 +18,14 @@ searchterm_gen <- function(txid, ps, drct = FALSE) {
 }
 
 
-#' @name nNds
+#' @name txnds_count
 #' @title Count number of descending taxonomic nodes
-#' @description Searches NCBI taxonomy and returns
-#' number of descendents taxonomic nodes (species, genera ...)
-#' of ID.
+#' @description Searches NCBI taxonomy and returns number of
+#' descendents taxonomic nodes (species, genera ...) of ID.
 #' @param txid Taxonomic ID
 #' @param ps Parameters
+#' @family run-private
+#' @return integer
 txnds_count <- function(txid, ps) {
   trm <- paste0('txid', txid, '[Subtree]')
   args <- list(db = 'taxonomy', retmax = 0, term = trm)
@@ -34,15 +35,17 @@ txnds_count <- function(txid, ps) {
   res[['count']]
 }
 
-#' @name nSqs
+#' @name sqs_count
 #' @title Count number of sequences for txid
-#' @description Return the number of sequences
-#' associated with a taxonomic ID on NCBI GenBank.
+#' @description Return the number of sequences associated with a
+#' taxonomic ID on NCBI GenBank.
 #' @param txid Taxonomic ID
 #' @param ps parameters
-#' @param drct Node-level only or subtree as well? Default FALSE.
-sqs_count <- function(txid, ps, drct=FALSE) {
-  trm <- searchterm_gen(txid = txid, ps = ps, drct = drct)
+#' @param direct Node-level only or subtree as well? Default FALSE.
+#' @family run-private
+#' @return integer
+sqs_count <- function(txid, ps, direct=FALSE) {
+  trm <- searchterm_gen(txid = txid, ps = ps, direct = direct)
   args <- list(db = 'nucleotide', retmax = 0, term = trm)
   res <- search_and_cache(func = rentrez::entrez_search,
                           args = args, fnm = 'search',
@@ -53,30 +56,29 @@ sqs_count <- function(txid, ps, drct=FALSE) {
 #' @title Return random set of sequence IDs
 #' @description For a given txid return a random set of 
 #' sequences associated.
-#' @details For model organisms downloading all IDs can a take long time
-#' or even cause an xml parsing error. For any search with more than
-#' hrdmx sequences, this function we will run multiple small searches
-#' downloading retmax seq IDs at a time with different retstart values
-#' to generate a semi-random vector of sequence IDs. For all other
-#' searches, all IDs will be retrieved.
-#' Note, it makes no sense for mdlthrs in parameters to be greater
-#' than hrdmx in this function.
+#' @details For model organisms downloading all IDs can a take long
+#' time or even cause an xml parsing error. For any search with more
+#' than hrdmx sequences, this function we will run multiple small
+#' searches downloading retmax seq IDs at a time with different
+#' retstart values to generate a semi-random vector of sequence IDs.
+#' For all other searches, all IDs will be retrieved. Note, it makes
+#' no sense for mdlthrs in parameters to be greater than hrdmx in this
+#' function.
 #' @param txid NCBI taxon identifier
-#' @param drct Node-level only or subtree as well? Default FALSE.
+#' @param direct Node-level only or subtree as well? Default FALSE.
 #' @param ps Parameters
-#' @param sqcnt Sequence count as determined with nSqs()
 #' @param retmax Maximum number of sequences when querying model
 #' organisms. The smaller the more random, the larger the faster.
 #' @param hrdmx Absolute maximum number of sequence IDs to download
 #' in a single query.
-#' @return vector ot IDs
-sids_get <- function(txid, drct, ps, retmax=100,
-                     hrdmx=100000) {
+#' @return vector of IDs
+#' @family run-private
+sids_get <- function(txid, direct, ps, retmax=100, hrdmx=100000) {
   if (sids_check(wd = ps[['wd']], txid = txid)) {
     return(sids_load(wd = ps[['wd']], txid = txid))
   }
   # search
-  trm <- searchterm_gen(txid = txid, ps = ps, drct = drct)
+  trm <- searchterm_gen(txid = txid, ps = ps, direct = direct)
   args <- list(db = 'nucleotide', retmax = 0, term = trm,
                use_history = TRUE)
   srch <- safely_connect(func = rentrez::entrez_search,
@@ -118,6 +120,6 @@ sids_get <- function(txid, drct, ps, retmax=100,
     }
     ids <- c(ids, strsplit(id_ftch, '\n')[[1]])
   }
-  sids_save(wd = ps[['wd']], txid = txid, gis = ids)
+  sids_save(wd = ps[['wd']], txid = txid, sids = ids)
   ids
 }

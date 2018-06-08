@@ -7,6 +7,7 @@
 #' @param wd Working directory
 #' @details Objects will be cached.
 #' @return NULL
+#' @family run-public
 #' @export
 taxise_run <- function(wd) {
   # TODO: allow a user to have their own taxids and/or tax tree
@@ -16,10 +17,9 @@ taxise_run <- function(wd) {
   info(lvl = 1, ps = ps, 'Searching taxonomic IDs ...')
   txids <- txids_get(ps = ps)
   info(lvl = 1, ps = ps, 'Downloading taxonomic records ...')
-  rcrds <- batcher(ids = txids, func = tax_download, ps = ps,
-                   lvl = 2)
+  recs <- batcher(ids = txids, func = tax_download, ps = ps, lvl = 2)
   info(lvl = 1, ps = ps, 'Generating taxonomic dictionary ...')
-  txdct <- taxdict_gen(rcrds = rcrds, txids = txids, ps = ps)
+  txdct <- taxdict_gen(recs = recs, txids = txids, ps = ps)
   obj_save(wd = wd, obj = txdct, nm = 'txdct')
   msg <- paste0('Completed stage TAXISE: [', Sys.time(), ']')
   .stgMsg(ps = ps, msg = msg)
@@ -33,7 +33,7 @@ taxise_run <- function(wd) {
 #' @param ps Parameter list
 #' @param retmax integer, maximum number of IDs to return per query
 #' @return vector of ids
-#' @noRd
+#' @family run-private
 txids_get <- function(ps, retmax = 1E4) {
   # TODO: handle multiple txids
   trm <- paste0('txid', ps[['txid']],'[Subtree]')
@@ -62,15 +62,15 @@ txids_get <- function(ps, retmax = 1E4) {
 #' of taxonomic records and returns a taxonomic dictionary.
 #' @return TaxDct
 #' @param txids Vector of taxonomic IDs
-#' @param rcrds List of taxonomic records
-#' @noRd
+#' @param recs List of taxonomic records
+#' @family run-private
 #' @return TaxDict
-taxdict_gen <- function(txids, rcrds, ps) {
+taxdict_gen <- function(txids, recs, ps) {
   # TODO: allow paraphyly
   # identify pre-node IDs
   # based upon: https://github.com/DomBennett/treeman/wiki/trmn-format
   # create index to recover original IDs, indx
-  prids <- vapply(txids, function(x) rcrds[[x]]@prnt, '')
+  prids <- vapply(txids, function(x) recs[[x]]@prnt, '')
   names(prids) <- NULL
   root_bool <- !prids %in% txids
   root <- txids[root_bool]
@@ -78,8 +78,9 @@ taxdict_gen <- function(txids, rcrds, ps) {
   prinds <- match(prids, txids)
   prinds <- as.integer(prinds)
   # create tax tree
-  txtr <- taxtree_gen(prinds=prinds, ids=txids, root=root, ps = ps)
+  txtr <- taxtree_gen(prinds = prinds, ids = txids, root = root,
+                      ps = ps)
   # create tax dict
-  new('TaxDict', txids=txids, rcrds=list2env(rcrds), txtr=txtr,
-      prnt=root)
+  new('TaxDict', txids = txids, recs = list2env(recs), txtr = txtr,
+      prnt = root)
 }

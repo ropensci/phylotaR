@@ -1,15 +1,14 @@
 #' @name calc_mad
 #' @title Calculate MAD score
-#' @description For all sequences in a cluster(s) the
-#' MAD score.
+#' @description For all sequences in a cluster(s) the MAD score.
 #' @param phylota Phylota object
-#' @param cid CLuster ID(s)
-#' @details MAD is a measure of the deviation in 
-#' sequence length of a cluster. Values range from 0 to
-#' 1. Clusters with values close to 1 have sequences with
-#' similar lengths.
+#' @param cid Cluster ID(s)
+#' @details MAD is a measure of the deviation in  sequence length of
+#' a cluster. Values range from 0 to 1. Clusters with values close to
+#' 1 have sequences with similar lengths.
 #' @return vector
 #' @export
+#' @family tools-public
 calc_mad <- function(phylota, cid) {
   calc <- function(cid) {
     sids <- phylota@cls[[cid]]@sids
@@ -23,22 +22,21 @@ calc_mad <- function(phylota, cid) {
 
 #' @name calc_wrdfrq
 #' @title Calculate word frequencies
-#' @description For all sequences in a cluster(s)
-#' calculate the frequency of separate words in
-#' either the sequnece definitions or the reported
-#' feature name.
+#' @description For all sequences in a cluster(s) calculate the
+#' frequency of separate words in either the sequnece definitions or
+#' the reported feature name.
 #' @param phylota Phylota object
-#' @param cid CLuster ID(s)
+#' @param cid Cluster ID(s)
 #' @param min_frq Minimum frequency
 #' @param min_nchar Minimum number of characters for a word
 #' @param type Definitions (dfln) or features (nm)
 #' @param ignr_pttrn Ignore pattern, REGEX for text to ignore.
-#' @details By default, anything that is not alphanumeric is 
-#' ignored.
-#' 'dfln' and 'nm' match the slot names in a SqRcrd, see
-#' list_sqrcrd_slots().
+#' @details By default, anything that is not alphanumeric is  ignored.
+#' 'dfln' and 'nm' match the slot names in a SeqRec, see
+#' list_seqrec_slots().
 #' @return list
 #' @export
+#' @family tools-public
 calc_wrdfrq <- function(phylota, cid, min_frq = 0.1,
                         min_nchar = 1, type = c('dfln', 'nm'),
                         ignr_pttrn = "[^a-z0-9]") {

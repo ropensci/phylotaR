@@ -21,8 +21,7 @@ parameters(wd = ".", txid = numeric(), mkblstdb = "", blstn = "",
 \item{v}{Print progress statements to console?
 Statements will always be printed to log.txt.}
 
-\item{ncps}{The number of CPUs to run clustering in parallel.
-If 1, no parallelisation performed.}
+\item{ncps}{The number of threads to use in the local-alignment search tool.}
 
 \item{mxnds}{The maximum number of nodes descending from a taxonomic group.
 If there are more than this number, nodes at the lower taxonomic level are analysed.}
@@ -49,6 +48,9 @@ Sequences with BLAST matches with lower values are not considered orthologous.}
 \item{btchsz}{Batch size when querying NCBI}
 
 \item{date}{Date when pipeline was initiated}
+}
+\value{
+list
 }
 \description{
 Returns a parameter list with default

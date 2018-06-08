@@ -5,7 +5,7 @@
 #' @param ncbi_execs File directories for NCBI tools, see \code{blast_setup()}
 #' @param ... Set parameters, see parameters()
 #' @return NULL
-#' @noRd
+#' @family run-private
 parameters_setup <- function(wd, ncbi_execs, ...) {
   if (!file.exists(wd)) {
     stop(paste0('Invalid `wd`. [', wd, '] does not exist.'))
@@ -52,7 +52,7 @@ parameters_setup <- function(wd, ncbi_execs, ...) {
 #' @param wd Working directory
 #' @param v v, T/F
 #' @details BLAST tools must be version >=2.0
-#' @noRd
+#' @family run-private
 #' @return list
 blast_setup <- function(d, v, wd) {
   .log(v = v, wd = wd, 'Checking for valid NCBI BLAST+ Tools ...\n')
@@ -100,7 +100,7 @@ blast_setup <- function(d, v, wd) {
 #' @description Ensures stage arguments are valid, raises an error if not.
 #' @param to ending stage
 #' @param frm starting stage
-#' @noRd
+#' @family run-private
 #' @return character, stage message
 stage_args_check <- function(to, frm) {
   if (to < 1 | frm < 1) {
@@ -126,7 +126,7 @@ stage_args_check <- function(to, frm) {
 #' @param stgs_msg Printout stage message for log
 #' @param rstrt Restarting, T/F
 #' @return NULL
-#' @noRd
+#' @family run-private
 stages_run <- function(wd, to, frm, stgs_msg, rstrt=FALSE) {
   .run <- function() {
     if (frm <= 1 & to >= 1) {

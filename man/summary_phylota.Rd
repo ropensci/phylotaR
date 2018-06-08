@@ -10,6 +10,10 @@ summary_phylota(phylota)
 \item{phylota}{PhyLoTa object}
 }
 \description{
-Generates a summary data.frame
-from all clusters in PhyLoTa object.
+Generates a summary data.frame from all clusters in
+PhyLoTa object.
+}
+\seealso{
+Other tools-private: \code{\link{mk_txid_in_sq_mtrx}},
+  \code{\link{update_phylota}}
 }

@@ -2,7 +2,7 @@
 % Please edit documentation in R/pipeline.R
 \name{restart}
 \alias{restart}
-\title{Restart a PhyLoTa pipeline run}
+\title{Restart a phylotaR pipeline run}
 \usage{
 restart(wd, nstages = 4)
 }
@@ -17,4 +17,14 @@ as started with \code{run}.
 }
 \seealso{
 \code{\link{run}}
+
+Other run-public: \code{\link{ClstrArc-class}},
+  \code{\link{ClstrRec-class}},
+  \code{\link{Phylota-class}}, \code{\link{SeqArc-class}},
+  \code{\link{SeqRec-class}}, \code{\link{TaxDict-class}},
+  \code{\link{TaxRec-class}}, \code{\link{clusters2_run}},
+  \code{\link{clusters_run}},
+  \code{\link{parameters_reset}}, \code{\link{reset}},
+  \code{\link{run}}, \code{\link{setup}},
+  \code{\link{taxise_run}}
 }

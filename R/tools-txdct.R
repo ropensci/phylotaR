@@ -7,7 +7,7 @@
 #' @param trids Vector of taxonomic IDs
 #' @param root ID of root taxon
 #' @importClassesFrom treeman TreeMan
-#' @noRd
+#' @family run-private
 #' @return TreeMan class
 taxtree_gen <- function(prinds, ids, root, ps) {
   .add <- function(i) {
@@ -40,26 +40,26 @@ taxtree_gen <- function(prinds, ids, root, ps) {
   tree
 }
 
-#' @name txid_rank_get
+#' @name rank_get
 #' @title Get rank
 #' @description Look-up taxonomic rank from dictionary.
-#' @return Character
+#' @return character
 #' @param txid txid
 #' @param dictionary DictionaryTaxon
-#' @noRd
+#' @family run-private
 rank_get <- function(txid, txdct) {
-  txdct@rcrds[[txid]]@rnk
+  txdct@recs[[txid]]@rnk
 }
 
-#' @name txid_descendants_get
-#' @title Get all descendants
-#' @description Look-up all taxonomic descendants of a node from
-#' taxonomic dictionary.
-#' @return Vector
+#' @name descendants_get
+#' @title Get descendants
+#' @description Look-up either direct or all taxonomic descendants of
+#' a node from taxonomic dictionary.
+#' @return vector
 #' @param txid txid
-#' @param dictionary DictionaryTaxon
+#' @param dictionary TaxDict
 #' @param direct T/F, return only direct descedants?
-#' @noRd
+#' @family run-private
 descendants_get <- function(id, txdct, direct=FALSE) {
   if (direct) {
     ptids <- treeman::getNdSlt(tree = txdct@txtr, slt_nm = 'ptid',
@@ -70,13 +70,14 @@ descendants_get <- function(id, txdct, direct=FALSE) {
   ptids
 }
 
-#' @name txid_parent_get
+#' @name parent_get
 #' @title Get taxonomic parent
-#' @description Look-up MRCA of taxonomic id(s) from taxonomic dictionary
+#' @description Look-up MRCA of taxonomic id(s) from taxonomic
+#' dictionary
 #' @return Character
 #' @param txid txid(s)
-#' @param dictionary DictionaryTaxon
-#' @noRd
+#' @param txdct TaxDict
+#' @family run-private
 parent_get <- function(id, txdct) {
   if (length(id) > 1) {
     res <- treeman::getPrnt(tree = txdct@txtr,

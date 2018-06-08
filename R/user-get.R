@@ -1,21 +1,22 @@
 #' @name get_ntaxa
 #' @title Count number of unique taxa
-#' @description Count the number of unique taxa
-#' represented by cluster(s) or sequences in phylota table
-#' Use rnk to specify a taxonomic level to count. If NULL
-#' counts will be made to the lowest level reported on NCBI.
+#' @description Count the number of unique taxa represented by
+#' cluster(s) or sequences in phylota table Use rnk to specify a
+#' taxonomic level to count. If NULL counts will be made to the lowest
+#' level reported on NCBI.
 #' @param phylota Phylota object
-#' @param cid CLuster ID(s)
+#' @param cid Cluster ID(s)
 #' @param sid Sequence ID(s)
 #' @param rnk Taxonomic rank
 #' @param keep_higher Keep higher taxonomic ranks?
 #' @return vector
 #' @export
-get_ntaxa <- function(phylota, cid = NULL, sid = NULL,
-                      rnk = NULL, keep_higher = FALSE) {
+#' @family tools-public
+get_ntaxa <- function(phylota, cid = NULL, sid = NULL, rnk = NULL,
+                      keep_higher = FALSE) {
   count <- function(sids) {
-    txids <- get_txids(phylota = phylota, sid = sids,
-                       rnk = rnk, keep_higher = keep_higher)
+    txids <- get_txids(phylota = phylota, sid = sids, rnk = rnk,
+                       keep_higher = keep_higher)
     length(unique(txids))
   }
   get_sids_and_count <- function(cid) {
@@ -30,29 +31,27 @@ get_ntaxa <- function(phylota, cid = NULL, sid = NULL,
 
 #' @name get_txids
 #' @title Get taxonomic IDs by rank
-#' @description Return taxonomic IDs for
-#' a vector of sequence IDs or all sequences in a cluster.
-#' User can specify what rank the IDs should be
-#' returned. If NULL, the lowest level is returned.
+#' @description Return taxonomic IDs for a vector of sequence IDs or
+#' all sequences in a cluster. User can specify what rank the IDs
+#' should be returned. If NULL, the lowest level is returned.
 #' @param phylota Phylota object
-#' @param cid CLuster ID
+#' @param cid Cluster ID
 #' @param sid Sequence ID(s)
 #' @param txids Vector of txids
 #' @param rnk Taxonomic rank
 #' @param keep_higher Keep higher taxonomic IDs?
-#' @details txids can either be provided by user or
-#' they can be determined for a vector of sids or for a
-#' cid.
-#' If keep_higher is TRUE, any sequence that has
-#' a identity that is higher than the given rank will be returned.
-#' If FALSE, these sequences will return ''.
+#' @details txids can either be provided by user or they can be
+#' determined for a vector of sids or for a cid.
+#' If keep_higher is TRUE, any sequence that has a identity that is
+#' higher than the given rank will be returned. If FALSE, these
+#' sequences will return ''.
 #' @return vector
 #' @export
-get_txids <- function(phylota, cid = NULL, sid = NULL,
-                      txids = NULL, rnk = NULL,
-                      keep_higher = FALSE) {
+#' @family tools-public
+get_txids <- function(phylota, cid = NULL, sid = NULL, txids = NULL,
+                      rnk = NULL, keep_higher = FALSE) {
   get <- function(txid) {
-    tx <- phylota@txdct@rcrds[[txid]]
+    tx <- phylota@txdct@recs[[txid]]
     rnks <- tx@lng[['rnks']]
     ids <- tx@lng[['ids']]
     mtch <- which(rnk == rnks)
@@ -71,8 +70,7 @@ get_txids <- function(phylota, cid = NULL, sid = NULL,
       cl <- phylota@cls[[cid]]
       sid <- cl@sids
     }
-    txids <- get_sq_slot(phylota = phylota,
-                         sid = sid,
+    txids <- get_sq_slot(phylota = phylota, sid = sid, 
                          slt_nm = 'txid')
   }
   if (is.null(rnk)) {
@@ -83,11 +81,12 @@ get_txids <- function(phylota, cid = NULL, sid = NULL,
 
 #' @name get_nsqs
 #' @title Count number of sequences
-#' @description Count the number of sequences in a cluster(s)
+#' @description Count the number of sequences in a cluster(s).
 #' @param phylota Phylota object
-#' @param cid CLuster ID(s)
+#' @param cid Cluster ID(s)
 #' @return vector
 #' @export
+#' @family tools-public
 get_nsqs <- function(phylota, cid) {
   count <- function(cid) {
     cl <- phylota@cls[[cid]]
@@ -98,16 +97,16 @@ get_nsqs <- function(phylota, cid) {
 
 #' @name get_sq_slot
 #' @title Get slot data for each sequence
-#' @description Get slot data for either or sequences
-#' in a cluster of a vector of sequence IDs.
-#' Use list_sqrcrd_slots() for a list of available
-#' slots.
+#' @description Get slot data for either or sequences in a cluster of
+#' a vector of sequence IDs. Use list_seqrec_slots() for a list of
+#' available slots.
 #' @param phylota Phylota object
 #' @param cid Cluster ID
 #' @param sid Sequence ID(s)
 #' @param slt_nm Slot name
 #' @return vector
 #' @export
+#' @family tools-public
 # TODO: GCR
 get_sq_slot <- function(phylota, cid = NULL, sid = NULL,
                         slt_nm = list_seqrec_slots()) {
@@ -125,23 +124,24 @@ get_sq_slot <- function(phylota, cid = NULL, sid = NULL,
   vapply(sid, get, expctd)
 }
 
-#' @name get_cl_slot
+#' @name get_clstr_slot
 #' @title Get slot data for each cluster record
 #' @description Get slot data for cluster(s)
 #' @param phylota Phylota object
 #' @param cid Cluster ID
 #' @param slt_nm Slot name
 #' @return vector
+#' @family tools-public
 #' @export
-get_cl_slot <- function(phylota, cid,
-                        slt_nm = list_clusterrec_slots()) {
+get_clstr_slot <- function(phylota, cid,
+                           slt_nm = list_clstrrec_slots()) {
   get <- function(cid) {
     i <- which(cid == phylota@cls@ids)
     cl <- phylota@cls@cls[[i]]
     slot(cl, slt_nm)
   }
   slt_nm <- match.arg(slt_nm)
-  expctd <- new(getSlots('ClusterRec')[[slt_nm]], 1)
+  expctd <- new(getSlots('ClstrRec')[[slt_nm]], 1)
   vapply(cid, get, expctd)
 }
 
@@ -153,10 +153,10 @@ get_cl_slot <- function(phylota, cid,
 #' @param slt_nm Slot name
 #' @return vector or list
 #' @export
-get_tx_slot <- function(phylota, txid,
-                        slt_nm = list_taxrec_slots()) {
+#' @family tools-public
+get_tx_slot <- function(phylota, txid, slt_nm = list_taxrec_slots()) {
   get <- function(txid) {
-    tx <- phylota@txdct@rcrds[[txid]]
+    tx <- phylota@txdct@recs[[txid]]
     slot(tx, slt_nm)
   }
   slt_nm <- match.arg(slt_nm)
