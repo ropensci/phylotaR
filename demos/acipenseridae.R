@@ -7,12 +7,12 @@ wd <- file.path(getwd(), 'demos', 'acipenseridae')
 ncbi_dr <- readLines(file.path('demos', 'ncbi_dr.txt'))
 
 # CREATE FOLDER, DELETE IF ALREADY EXISTS
-if(file.exists(wd)) {
-  unlink(wd, recursive=TRUE)
+if (file.exists(wd)) {
+  unlink(wd, recursive = TRUE)
 }
 dir.create(wd)
 
 # RUN PIPELINE
 txid <- 7900
-setUp(wd=wd, txid=txid, ncbi_dr=ncbi_dr, v=TRUE)
-run(wd=wd)
+setup(wd = wd, txid = txid, ncbi_dr = ncbi_dr, v = TRUE)
+run(wd = wd)
