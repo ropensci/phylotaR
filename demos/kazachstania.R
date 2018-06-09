@@ -16,3 +16,4 @@ dir.create(wd)
 txid <- 71245
 setup(wd = wd, txid = txid, ncbi_dr = ncbi_dr, v = TRUE)
 run(wd = wd)
+download_run(wd)
