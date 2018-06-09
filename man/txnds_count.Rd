@@ -15,8 +15,8 @@ txnds_count(txid, ps)
 integer
 }
 \description{
-Searches NCBI taxonomy and returns number of
-descendents taxonomic nodes (species, genera ...) of ID.
+Searches NCBI taxonomy and returns number of descendants
+taxonomic nodes (species, genera ...) of ID.
 }
 \seealso{
 Other run-private: \code{\link{batcher}},

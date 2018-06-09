@@ -9,7 +9,7 @@
 \alias{print,ClstrRec-method}
 \alias{str,ClstrRec-method}
 \alias{summary,ClstrRec-method}
-\title{ClstrRec-class}
+\title{Cluster record}
 \usage{
 \S4method{as.character}{ClstrRec}(x)
 

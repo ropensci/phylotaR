@@ -1,6 +1,6 @@
 #' @name read_phylota
-#' @title Generate a PhyLoTa object in R
-#' @description Creates a PhyLoTa object containing information on
+#' @title Generate a Phylota object in R
+#' @description Creates a Phylota object containing information on
 #' clusters, sequences and taxonomy from the working directory of a
 #' completed pipeline.
 #' @param wd Working directory
@@ -34,8 +34,8 @@ read_phylota <- function(wd) {
 }
 
 #' @name write_phylota
-#' @title Write out PhyLoTa-like Table
-#' @description Create a PhyLoTa-like table from phylota object.
+#' @title Write out Phylota-like Table
+#' @description Create a Phylota-like table from phylota object.
 #' @param phylota Phylota
 #' @param outfile Output file
 #' @return NULL
@@ -76,7 +76,7 @@ write_sqs <- function(phylota, outfile,
 #' @title Plot presence/absence matrix
 #' @description Plot presence/absence of taxa by each
 #' cluster in phylota object.
-#' @param phylota PhyLoTa object
+#' @param phylota Phylota object
 #' @param cids Vector of cluster IDs
 #' @param txids Vector of taxonomic IDs
 #' @param cnms Cluster names
@@ -144,13 +144,13 @@ plot_phylota_pa <- function(phylota, cids, txids, cnms = cids,
 }
 
 #' @name plot_phylota_treemap
-#' @title Plot treemap of PhyLoTa object
+#' @title Plot treemap of Phylota object
 #' @description Treemaps show relative size with boxes. The user can
 #' explore which taxa or clusters are most represented either by
 #' sequence or cluster number. If cluster IDs are provided, the plot
 #' is made for clusters. If taxonomic IDs are provided, the plot is
 #' made for taxa.
-#' @param phylota PhyLoTa object
+#' @param phylota Phylota object
 #' @param cids Cluster IDs
 #' @param txids Taxonomic IDs
 #' @param cnms Cluster names
@@ -158,7 +158,7 @@ plot_phylota_pa <- function(phylota, cids, txids, cnms = cids,
 #' @param with_labels Show names per box?
 #' @param area What determines the size per box?
 #' @param fill What determines the coloured fill per box?
-#' @details The function can take a long time to run for large PhyLoTa
+#' @details The function can take a long time to run for large Phylota
 #' objects over many taxonomic IDs because searches are made across
 #' lineages. The idea of the function is to assess the data dominance
 #' of specific clusters and taxa.
@@ -309,10 +309,10 @@ is_txid_in_clstr <- function(phylota, txid, cid) {
 }
 
 #' @name summary_phylota
-#' @title Summarise clusters in PhyLoTa Table
+#' @title Summarise clusters in Phylota Table
 #' @description Generates a summary data.frame from all clusters in
-#' PhyLoTa object.
-#' @param phylota PhyLoTa object
+#' Phylota object.
+#' @param phylota Phylota object
 #' @family tools-private
 summary_phylota <- function(phylota) {
   print_frq_wrds <- function(wrd_prps, max_n = 2) {

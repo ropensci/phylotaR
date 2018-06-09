@@ -21,8 +21,6 @@ setup(wd, txid, ncbi_dr = ".", v = FALSE, ...)
 Set up working directory with parameters.
 }
 \seealso{
-\code{\link{parameters}}
-
 Other run-public: \code{\link{ClstrArc-class}},
   \code{\link{ClstrRec-class}},
   \code{\link{Phylota-class}}, \code{\link{SeqArc-class}},

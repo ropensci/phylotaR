@@ -2,7 +2,7 @@
 % Please edit documentation in R/user-special.R
 \name{read_phylota}
 \alias{read_phylota}
-\title{Generate a PhyLoTa object in R}
+\title{Generate a Phylota object in R}
 \usage{
 read_phylota(wd)
 }
@@ -13,7 +13,7 @@ read_phylota(wd)
 Phylota
 }
 \description{
-Creates a PhyLoTa object containing information on
+Creates a Phylota object containing information on
 clusters, sequences and taxonomy from the working directory of a
 completed pipeline.
 }

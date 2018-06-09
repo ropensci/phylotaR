@@ -9,7 +9,7 @@
 \alias{print,TaxDict-method}
 \alias{str,TaxDict-method}
 \alias{summary,TaxDict-method}
-\title{TaxDict-class}
+\title{Taxonomic record dictionary}
 \usage{
 \S4method{as.character}{TaxDict}(x)
 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/stage1.R
 \name{txids_get}
 \alias{txids_get}
-\title{Searches for descendent taxonomic IDs}
+\title{Searches for descendant taxonomic IDs}
 \usage{
 txids_get(ps, retmax = 10000)
 }
@@ -17,8 +17,7 @@ Vector of txids
 vector of ids
 }
 \description{
-Searches NCBI taxonomy for all descendent
-taxonomic nodes.
+Searches NCBI taxonomy for all descendant taxonomic nodes.
 }
 \seealso{
 Other run-private: \code{\link{batcher}},

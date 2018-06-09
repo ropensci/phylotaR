@@ -15,7 +15,7 @@ progress_reset(wd, stg)
 Reset progress to an earlier completed stage.
 }
 \details{
-For example, resettting the progress to 'download'
+For example, resetting the progress to 'download'
 mark stages 'download', 'cluster' and 'cluster2' as un-run.
 }
 \seealso{

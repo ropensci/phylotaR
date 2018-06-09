@@ -14,7 +14,7 @@ parameters_reset(wd, parameters, values)
 \item{values}{New values for each parameter}
 }
 \description{
-Reset parameters afater running \code{setUp()}.
+Reset parameters after running \code{setup()}.
 }
 \seealso{
 Other run-public: \code{\link{ClstrArc-class}},

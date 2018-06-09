@@ -112,7 +112,7 @@ seqrec_convert <- function(raw_recs, ps) {
 #' @param nm Sequence name
 #' @param txid Taxonomic ID of source organism
 #' @param sq Sequence
-#' @param dfln Defintion line
+#' @param dfln Definition line
 #' @param orgnsm Source organism name
 #' @param ml_typ Molecule type
 #' @param rec_typ Sequence record type

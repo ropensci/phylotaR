@@ -149,7 +149,7 @@ get_clstr_slot <- function(phylota, cid,
 #' @title Get slot data for each taxon record
 #' @description Get slot data for taxa(s)
 #' @param phylota Phylota object
-#' @param txid Taxonnomic ID
+#' @param txid Taxonomic ID
 #' @param slt_nm Slot name
 #' @return vector or list
 #' @export

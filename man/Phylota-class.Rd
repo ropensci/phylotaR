@@ -10,7 +10,7 @@
 \alias{str,Phylota-method}
 \alias{summary,Phylota-method}
 \alias{[[,Phylota,character-method}
-\title{Phylota-class}
+\title{Phylota object}
 \usage{
 \S4method{as.character}{Phylota}(x)
 
@@ -36,7 +36,8 @@
 \item{i}{Either sid or cid}
 }
 \description{
-Phylota table contains sequences and clusters information.
+Phylota table contains all sequence, cluster and taxonomic
+information from a phylotaR pipeline run.
 }
 \section{Slots}{
 

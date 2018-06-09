@@ -9,7 +9,7 @@ rank_get(txid, txdct)
 \arguments{
 \item{txid}{txid}
 
-\item{dictionary}{DictionaryTaxon}
+\item{txdct}{TaxDict}
 }
 \value{
 character

@@ -9,7 +9,7 @@ get_tx_slot(phylota, txid, slt_nm = list_taxrec_slots())
 \arguments{
 \item{phylota}{Phylota object}
 
-\item{txid}{Taxonnomic ID}
+\item{txid}{Taxonomic ID}
 
 \item{slt_nm}{Slot name}
 }

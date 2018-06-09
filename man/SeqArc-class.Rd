@@ -11,7 +11,7 @@
 \alias{summary,SeqArc-method}
 \alias{[[,SeqArc,character-method}
 \alias{[,SeqArc,character,missing,missing-method}
-\title{SeqArc-class}
+\title{Sequence record archive}
 \usage{
 \S4method{as.character}{SeqArc}(x)
 

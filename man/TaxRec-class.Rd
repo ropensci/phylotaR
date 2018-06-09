@@ -9,7 +9,7 @@
 \alias{print,TaxRec-method}
 \alias{str,TaxRec-method}
 \alias{summary,TaxRec-method}
-\title{TaxRec-class}
+\title{Taxonomic record}
 \usage{
 \S4method{as.character}{TaxRec}(x)
 

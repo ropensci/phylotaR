@@ -20,8 +20,8 @@ searchterm_gen <- function(txid, ps, direct = FALSE) {
 
 #' @name txnds_count
 #' @title Count number of descending taxonomic nodes
-#' @description Searches NCBI taxonomy and returns number of
-#' descendents taxonomic nodes (species, genera ...) of ID.
+#' @description Searches NCBI taxonomy and returns number of descendants
+#' taxonomic nodes (species, genera ...) of ID.
 #' @param txid Taxonomic ID
 #' @param ps Parameters
 #' @family run-private

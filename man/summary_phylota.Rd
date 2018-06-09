@@ -2,16 +2,16 @@
 % Please edit documentation in R/user-special.R
 \name{summary_phylota}
 \alias{summary_phylota}
-\title{Summarise clusters in PhyLoTa Table}
+\title{Summarise clusters in Phylota Table}
 \usage{
 summary_phylota(phylota)
 }
 \arguments{
-\item{phylota}{PhyLoTa object}
+\item{phylota}{Phylota object}
 }
 \description{
 Generates a summary data.frame from all clusters in
-PhyLoTa object.
+Phylota object.
 }
 \seealso{
 Other tools-private: \code{\link{mk_txid_in_sq_mtrx}},

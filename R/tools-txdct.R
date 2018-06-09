@@ -45,7 +45,7 @@ taxtree_gen <- function(prinds, ids, root, ps) {
 #' @description Look-up taxonomic rank from dictionary.
 #' @return character
 #' @param txid txid
-#' @param dictionary DictionaryTaxon
+#' @param txdct TaxDict
 #' @family run-private
 rank_get <- function(txid, txdct) {
   txdct@recs[[txid]]@rnk
@@ -58,7 +58,7 @@ rank_get <- function(txid, txdct) {
 #' @return vector
 #' @param txid txid
 #' @param dictionary TaxDict
-#' @param direct T/F, return only direct descedants?
+#' @param direct T/F, return only direct descendants?
 #' @family run-private
 descendants_get <- function(id, txdct, direct=FALSE) {
   if (direct) {

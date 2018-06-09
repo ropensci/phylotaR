@@ -17,10 +17,10 @@ seeds_blast <- function(sqs, ps) {
 
 #' @name clstrs_join
 #' @title Join clusters for merging
-#' @description Uses seed sequence BLAST results and IDs to join
-#' clusters identifed as sisters into single clusters. Resulting
-#' object is of joined clusters, merging is required to reformat the
-#' clusters for subsequent analysis.
+#' @description Uses seed sequence BLAST results and IDs to join clusters
+#' identified as sisters into single clusters. Resulting object is of joined
+#' clusters, merging is required to reformat the clusters for subsequent
+#' analysis.
 #' @param blast_res Seed sequence BLAST results
 #' @param seed_ids Seed sequence IDs
 #' @param all_clstrs List of all clusters

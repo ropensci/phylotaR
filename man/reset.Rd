@@ -2,7 +2,7 @@
 % Please edit documentation in R/pipeline.R
 \name{reset}
 \alias{reset}
-\title{Reset a PhyLoTa pipeline run}
+\title{Reset a phylotaR pipeline run}
 \usage{
 reset(wd, stage, hard = FALSE)
 }
@@ -17,8 +17,6 @@ reset(wd, stage, hard = FALSE)
 Resets the pipeline to a specified stage.
 }
 \seealso{
-\code{\link{restart}}, \code{\link{parameters_reset}}
-
 Other run-public: \code{\link{ClstrArc-class}},
   \code{\link{ClstrRec-class}},
   \code{\link{Phylota-class}}, \code{\link{SeqArc-class}},

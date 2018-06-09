@@ -9,7 +9,7 @@
 \alias{print,SeqRec-method}
 \alias{str,SeqRec-method}
 \alias{summary,SeqRec-method}
-\title{SeqRec-class}
+\title{Sequence record}
 \usage{
 \S4method{as.character}{SeqRec}(x)
 

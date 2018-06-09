@@ -12,8 +12,6 @@ taxdict_gen(txids, recs, ps)
 \item{recs}{List of taxonomic records}
 }
 \value{
-TaxDct
-
 TaxDict
 }
 \description{

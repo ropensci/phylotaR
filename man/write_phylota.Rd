@@ -3,7 +3,7 @@
 \name{write_phylota}
 \alias{write_phylota}
 \alias{write_table}
-\title{Write out PhyLoTa-like Table}
+\title{Write out Phylota-like Table}
 \usage{
 write_table(phylota, outfile)
 }
@@ -13,7 +13,7 @@ write_table(phylota, outfile)
 \item{outfile}{Output file}
 }
 \description{
-Create a PhyLoTa-like table from phylota object.
+Create a Phylota-like table from phylota object.
 }
 \seealso{
 Other tools-public: \code{\link{calc_mad}},

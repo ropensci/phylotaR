@@ -2,7 +2,7 @@
 % Please edit documentation in R/tools-cache.R
 \name{parameters_load}
 \alias{parameters_load}
-\title{Load paramters from cache}
+\title{Load parameters from cache}
 \usage{
 parameters_load(wd)
 }

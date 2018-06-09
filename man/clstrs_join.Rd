@@ -19,10 +19,10 @@ clstrs_join(blast_res, seed_ids, all_clstrs, ps)
 list of joined clusters
 }
 \description{
-Uses seed sequence BLAST results and IDs to join
-clusters identifed as sisters into single clusters. Resulting
-object is of joined clusters, merging is required to reformat the
-clusters for subsequent analysis.
+Uses seed sequence BLAST results and IDs to join clusters
+identified as sisters into single clusters. Resulting object is of joined
+clusters, merging is required to reformat the clusters for subsequent
+analysis.
 }
 \seealso{
 Other run-private: \code{\link{batcher}},

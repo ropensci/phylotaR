@@ -8,7 +8,6 @@
 #' @param ... Additional parameters
 #' @export
 #' @family run-public
-#' @seealso \code{\link{parameters}}
 setup <- function(wd, txid, ncbi_dr='.', v=FALSE, ...) {
   # header log
   msg <- paste0('phylotaR: Implementation of PhyLoTa in R [v',
@@ -26,26 +25,19 @@ setup <- function(wd, txid, ncbi_dr='.', v=FALSE, ...) {
 }
 
 #' @name run
-#' @title Run PhyLoTa pipeline
-#' @description Run the entire PhyLoTa pipeline.
-#' All generated files will be stored in the wd.
-#' The process can be stopped at anytime and 
-#' restarted with \code{restart}.
-#' \code{nstages} must be a numeric value representing
-#' the number of stages that will be run. Stages are run
-#' in the following order:  1 - taxise, 2 - download,
-#' 3 - cluster and 4 - align.
-#' For example, specifying \code{nstages} = 3, will run
-#' taxise, download and cluster.
-#' Stages can also be run individually, see linked
-#' functions below.
+#' @title Run phylotaR pipeline
+#' @description Run the entire phylotaR pipeline. All generated files will be
+#' stored in the wd. The process can be stopped at anytime and  restarted with
+#' \code{restart}. \code{nstages} must be a numeric value representing the
+#' number of stages that will be run. Stages are run in the following order:
+#' 1 - taxise, 2 - download, 3 - cluster and 4 - align.
+#' 
+#' For example, specifying \code{nstages} = 3, will run taxise, download and
+#' cluster. Stages can also be run individually, see linked functions below.
 #' @param wd Working directory
 #' @param nstages Number of total stages to run, max 4.
 #' @family run-public
 #' @export
-#' @seealso \code{\link{restart}}, \code{\link{taxise_run}},
-#' \code{\link{download_run}}, \code{\link{clusters_run}},
-#' \code{\link{clusters2_run}}
 run <- function(wd, nstages=4) {
   stgs_msg <- stage_args_check(frm = 1, to = nstages)
   stages_run(wd = wd, frm = 1, to = nstages, stgs_msg = stgs_msg)
@@ -59,7 +51,6 @@ run <- function(wd, nstages=4) {
 #' @param nstages Number of total stages to run, max 4.
 #' @export
 #' @family run-public
-#' @seealso \code{\link{run}}
 restart <- function(wd, nstages=4) {
   stg <- progress_read(wd)
   if (is.na(stg)) {
@@ -77,14 +68,13 @@ restart <- function(wd, nstages=4) {
 }
 
 #' @name reset
-#' @title Reset a PhyLoTa pipeline run
+#' @title Reset a phylotaR pipeline run
 #' @description Resets the pipeline to a specified stage.
 #' @param wd Working directory
 #' @param stage Name of stage to which the pipeline will be reset
 #' @param hard T/F, delete all cached data?
 #' @family run-public
 #' @export
-#' @seealso \code{\link{restart}}, \code{\link{parameters_reset}}
 reset <- function(wd, stage, hard=FALSE) {
   if (!stage %in% c('taxise', 'download', 'cluster', 'cluster2')) {
     stop('Invalid stage name.')
@@ -100,7 +90,7 @@ reset <- function(wd, stage, hard=FALSE) {
 
 #' @name parameters_reset
 #' @title Change parameters in a working directory
-#' @description Reset parameters afater running \code{setUp()}.
+#' @description Reset parameters after running \code{setup()}.
 #' @param wd Working directory
 #' @param parameters Parameters to be changed
 #' @param values New values for each parameter

@@ -23,7 +23,7 @@ calc_mad <- function(phylota, cid) {
 #' @name calc_wrdfrq
 #' @title Calculate word frequencies
 #' @description For all sequences in a cluster(s) calculate the
-#' frequency of separate words in either the sequnece definitions or
+#' frequency of separate words in either the sequence definitions or
 #' the reported feature name.
 #' @param phylota Phylota object
 #' @param cid Cluster ID(s)

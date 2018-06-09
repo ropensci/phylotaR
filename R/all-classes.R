@@ -10,7 +10,7 @@
 #' @param object \code{ClstrRec} object
 #' @param max.level Maximum level of nesting for str()
 #' @param ... Further arguments for str()
-#' @title ClstrRec-class
+#' @title Cluster record
 #' @description Cluster record contains all information on a cluster.
 #' @slot id Cluster ID, integer
 #' @slot sids Sequence IDs
@@ -90,7 +90,7 @@ clstrarc_check <- function(object) {
 #' @param drop Unused
 #' @param max.level Maximum level of nesting for str()
 #' @param ... Further arguments for str()
-#' @title ClstrArc-class
+#' @title Cluster record archive
 #' @description Multiple cluster records.
 #' @slot ids Vector of cluster record IDs
 #' @slot cls List of ClstrArc named by ID
@@ -174,7 +174,7 @@ setMethod('[', c('ClstrArc', 'character', 'missing', 'missing'),
 #' @param object \code{SeqRec} object
 #' @param max.level Maximum level of nesting for str()
 #' @param ... Further arguments for str()
-#' @title SeqRec-class
+#' @title Sequence record
 #' @description Sequence record contains sequence data.
 #' @details Sequence is stored as raw. Use rawToChar().
 #' @slot id Unique ID
@@ -264,7 +264,7 @@ seqarc_check <- function(object) {
 #' @param drop Unused
 #' @param max.level Maximum level of nesting for str()
 #' @param ... Further arguments for str()
-#' @title SeqArc-class
+#' @title Sequence record archive
 #' @description Multiple sequence records containing sequence data.
 #' @details Sequences are stored as raw. Use rawToChar().
 #' @slot ids Vector of Sequence Record IDs
@@ -363,7 +363,7 @@ taxrec_check <- function(object) {
 #' @param object \code{TaxRec} object
 #' @param max.level Maximum level of nesting for str()
 #' @param ... Further arguments for str()
-#' @title TaxRec-class
+#' @title Taxonomic record
 #' @description Taxonomic dictionary contains a taxonomic
 #' tree and NCBI taxonomy data for all taxonomic IDs.
 #' @slot id Taxonomic ID
@@ -433,7 +433,7 @@ taxdict_check <- function(object) {
 #' @param object \code{TaxDict} object
 #' @param max.level Maximum level of nesting for str()
 #' @param ... Further arguments for str()
-#' @title TaxDict-class
+#' @title Taxonomic record dictionary
 #' @description Taxonomic dictionary contains a taxonomic
 #' tree and NCBI taxonomy data for all taxonomic IDs.
 #' @slot txids Taxonomic IDs of taxon records
@@ -500,8 +500,9 @@ phylota_check <- function(object) {
 #' @param i Either sid or cid
 #' @param max.level Maximum level of nesting for str()
 #' @param ... Further arguments for str()
-#' @title Phylota-class
-#' @description Phylota table contains sequences and clusters information.
+#' @title Phylota object
+#' @description Phylota table contains all sequence, cluster and taxonomic
+#' information from a phylotaR pipeline run.
 #' @slot cids IDs of all clusters
 #' @slot sids IDs of all sequences
 #' @slot txids IDs of all taxa

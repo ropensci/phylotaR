@@ -7,7 +7,7 @@
 plot_phylota_pa(phylota, cids, txids, cnms = cids, txnms = txids)
 }
 \arguments{
-\item{phylota}{PhyLoTa object}
+\item{phylota}{Phylota object}
 
 \item{cids}{Vector of cluster IDs}
 

@@ -2,14 +2,14 @@
 % Please edit documentation in R/user-special.R
 \name{plot_phylota_treemap}
 \alias{plot_phylota_treemap}
-\title{Plot treemap of PhyLoTa object}
+\title{Plot treemap of Phylota object}
 \usage{
 plot_phylota_treemap(phylota, cids = NULL, txids = NULL, cnms = cids,
   txnms = txids, with_labels = TRUE, area = c("ntx", "nsq", "ncl"),
   fill = c("NULL", "typ", "ntx", "nsq", "ncl"))
 }
 \arguments{
-\item{phylota}{PhyLoTa object}
+\item{phylota}{Phylota object}
 
 \item{cids}{Cluster IDs}
 
@@ -36,7 +36,7 @@ is made for clusters. If taxonomic IDs are provided, the plot is
 made for taxa.
 }
 \details{
-The function can take a long time to run for large PhyLoTa
+The function can take a long time to run for large Phylota
 objects over many taxonomic IDs because searches are made across
 lineages. The idea of the function is to assess the data dominance
 of specific clusters and taxa.

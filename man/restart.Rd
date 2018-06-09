@@ -16,8 +16,6 @@ Restarts the running of a pipeline
 as started with \code{run}.
 }
 \seealso{
-\code{\link{run}}
-
 Other run-public: \code{\link{ClstrArc-class}},
   \code{\link{ClstrRec-class}},
   \code{\link{Phylota-class}}, \code{\link{SeqArc-class}},

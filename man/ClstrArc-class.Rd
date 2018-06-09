@@ -11,7 +11,7 @@
 \alias{summary,ClstrArc-method}
 \alias{[[,ClstrArc,character-method}
 \alias{[,ClstrArc,character,missing,missing-method}
-\title{ClstrArc-class}
+\title{Cluster record archive}
 \usage{
 \S4method{as.character}{ClstrArc}(x)
 
