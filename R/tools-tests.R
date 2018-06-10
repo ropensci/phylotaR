@@ -25,3 +25,42 @@ cleanup <- function() {
     unlink('cache', recursive = TRUE)
   }
 }
+
+# efetch_mock <- function(db, rettype, id) {
+#   fasta_rand <- function() {
+#     seq <- sample(c('A', 'T', 'C', 'G'), size = 1000,
+#                   replace = TRUE)
+#     seq <- paste(seq, collapse = '')
+#     paste0('> rand0m.name.--jg82-5969\n', seq, '\n')
+#   }
+#   seqs <- ''
+#   for (i in 1:length(id)) {
+#     seqs <- paste0(seqs, fasta_rand())
+#   }
+#   seqs
+# }
+
+# esummary_mock <- function(db, id) {
+#   summary_rand <- function() {
+#     list(uid = NA, txid = NA, caption = NA,
+#          accessionversion = NA,
+#          slen = NA, createdate = NA, title = NA)
+#   }
+#   if (n == 1) {
+#     return(summary_rand())
+#   }
+#   summ <- vector('list', length = n)
+#   for (i in 1:length(id)) {
+#     summ[[i]] <- summary_rand()
+#   }
+#   summ
+# }
+
+# sids_get_mock <- function(...) {
+#   if (n == 0) {
+#     ids <- NULL
+#   } else {
+#     ids <- as.character(1:n)
+#   }
+#   ids
+# }
