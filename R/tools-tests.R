@@ -29,6 +29,24 @@ cleanup <- function() {
   }
 }
 
+#' @title Run cmdln for BLAST checking
+#' @description Use command arg to control returned output and testing function
+#' responses.
+#' @return list
+#' @noRd
+cmdln_blastcheck <- function(cmd, args, lgfl = NULL) {
+  if (grepl('makeblastdb', cmd)) {
+    out <- "makeblastdb: 2.7.1+\nPackage: blast 2.7.1, build Oct 18 2017 19:57"
+  }
+  if (grepl('blastn', cmd)) {
+    out <- "blastn: 2.7.1+\nPackage: blast 2.7.1, build Oct 18 2017 19:57"
+  }
+  if (grepl('wrngvrsn', cmd)) {
+    out <- "blastn: 1.6.1+\nPackage: blast 1.6.1, build Oct 18 2017 19:57"
+  }
+  list(status = 0, stdout = charToRaw(out), stderr = charToRaw(''))
+}
+
 # efetch_mock <- function(db, rettype, id) {
 #   fasta_rand <- function() {
 #     seq <- sample(c('A', 'T', 'C', 'G'), size = 1000,

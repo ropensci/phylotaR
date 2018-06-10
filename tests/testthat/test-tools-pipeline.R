@@ -1,33 +1,19 @@
 # LIBS
 library(testthat)
 
-# STUBS ----
-cmdln_mock <- function(cmd, args, lgfl = NULL) {
-  if (grepl('makeblastdb', cmd)) {
-    out <- c("makeblastdb: 2.7.1+\nPackage: blast 2.7.1, build Oct 18 2017 19:57:24")
-  }
-  if (grepl('blastn', cmd)) {
-    out <- c("blastn: 2.7.1+\nPackage: blast 2.7.1, build Oct 18 2017 19:57:24")
-  }
-  if (grepl('wrngvrsn', cmd)) {
-    out <- c("blastn: 1.6.1+\nPackage: blast 1.6.1, build Oct 18 2017 19:57:24")
-  }
-  list(status = 0, stdout = charToRaw(out), stderr = charToRaw(''))
-}
-
 # RUNNING
 context('Testing \'setup-tools\'')
 phylotaR:::cleanup()
 test_that('blast_setup() works', {
   # test with fake system
   res <- with_mock(
-    `phylotaR:::cmdln` = cmdln_mock,
+    `phylotaR:::cmdln` = phylotaR:::cmdln_blastcheck,
     phylotaR:::blast_setup(d  =  '.', v  =  FALSE, wd  =  NULL)
   )
   expect_true(length(res) == 2)
   # make sure wrong versions are flagged
   res <- with_mock(
-    `phylotaR:::cmdln`  =  cmdln_mock,
+    `phylotaR:::cmdln`  =  phylotaR:::cmdln_blastcheck,
     expect_error(phylotaR:::blast_setup(d  =  'wrngvrsn', v  =  FALSE,
                                         wd  =  NULL))
   )
@@ -54,7 +40,7 @@ test_that('stage_args_check() works', {
 })
 test_that('stages_run() works', {
   res <- with_mock(
-    `phylotaR::cmdln` = cmdln_mock,
+    `phylotaR::cmdln` = phylotaR:::cmdln_blastcheck,
     `phylotaR:::taxise_run` = function(...){NULL},
     `phylotaR:::download_run` = function(...){NULL},
     `phylotaR:::clusters_run` = function(...){NULL},
