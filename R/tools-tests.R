@@ -24,6 +24,9 @@ cleanup <- function() {
   if (file.exists('cache')) {
     unlink('cache', recursive = TRUE)
   }
+  if (file.exists('log.txt')) {
+    file.remove('log.txt')
+  }
 }
 
 # efetch_mock <- function(db, rettype, id) {
