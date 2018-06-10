@@ -58,7 +58,6 @@ safely_connect <- function(func, args, fnm, ps) {
   res
 }
 
-
 #' @name download_obj_check
 #' @title Check an object returned from rentrez function
 #' @description Returns T/F. Checks if object returned from rentrez
