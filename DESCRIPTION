@@ -23,9 +23,6 @@ Imports:
     treemapify,
     R.utils
 Suggests:
-    foreach,
-    doMC,
-    doSNOW,
     testthat,
     knitr,
     rmarkdown

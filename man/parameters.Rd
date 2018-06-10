@@ -4,7 +4,7 @@
 \alias{parameters}
 \title{Default parameters}
 \usage{
-parameters(wd = ".", txid = numeric(), mkblstdb = "", blstn = "",
+parameters(wd = ".", txid = character(), mkblstdb = "", blstn = "",
   v = FALSE, ncps = 1, mxnds = 1e+05, mdlthrs = 3000, mnsql = 250,
   mxsql = 2000, mxrtry = 100, mxsqs = 50000, mxevl = 1e-10,
   mncvrg = 51, btchsz = 300, date = Sys.Date())

@@ -22,7 +22,7 @@ Get slot data for cluster(s)
 \seealso{
 Other tools-public: \code{\link{calc_mad}},
   \code{\link{calc_wrdfrq}}, \code{\link{drop_by_rank}},
-  \code{\link{drop_cls}}, \code{\link{drop_sqs}},
+  \code{\link{drop_clstrs}}, \code{\link{drop_sqs}},
   \code{\link{get_nsqs}}, \code{\link{get_ntaxa}},
   \code{\link{get_sq_slot}}, \code{\link{get_tx_slot}},
   \code{\link{get_txids}}, \code{\link{is_txid_in_clstr}},

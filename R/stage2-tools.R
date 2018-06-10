@@ -60,12 +60,10 @@ seqrec_augment <- function(sqs, txdct) {
 seqrec_get <- function(txid, ps, direct=FALSE, lvl=0) {
   # test w/ golden moles 9389
   downloader <- function(ids, ps) {
-    ftch_args <- list(db = "nucleotide",
-                      rettype = 'gbwithparts',
+    ftch_args <- list(db = "nucleotide", rettype = 'gbwithparts',
                       retmode = 'xml', id = ids)
-    search_and_cache(func = rentrez::entrez_fetch,
-                     args = ftch_args, fnm = 'fetch',
-                     ps = ps)
+    search_and_cache(func = rentrez::entrez_fetch, args = ftch_args,
+                     fnm = 'fetch', ps = ps)
   }
   # get accessions
   sids <- sids_get(txid = txid, direct = direct, ps = ps)

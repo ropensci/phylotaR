@@ -31,7 +31,7 @@ clusters2_run <- function(wd) {
 clstr2_calc <- function(ps) {
   # TODO: break up to manageable blasting sizes
   info(lvl = 1, ps = ps, 'Loading clusters ...')
-  clstrpth <- file.path(ps[['wd']], 'cache', 'clusters')
+  clstrpth <- file.path(ps[['wd']], 'cache', 'clstrs')
   sqpth <- file.path(ps[['wd']], 'cache', 'sqs')
   clstrfls <- list.files(clstrpth)
   seeds <- NULL
@@ -40,7 +40,7 @@ clstr2_calc <- function(ps) {
     clstrs <- readRDS(file.path(clstrpth, clstrfls[i]))
     sqs <- readRDS(file.path(sqpth, clstrfls[i]))
     all_sqs <- c(all_sqs, sqs@sqs)
-    all_clstrs <- c(all_clstrs, clstrs@cls)
+    all_clstrs <- c(all_clstrs, clstrs@clstrs)
   }
   all_sqs <- seqarc_gen(all_sqs)
   if (length(clstrfls) > 1) {
@@ -51,14 +51,13 @@ clstr2_calc <- function(ps) {
     blast_res <- seeds_blast(sqs = seeds, ps = ps)
     info(lvl = 1, ps = ps, 'Merging ...')
     jnd_clstrs <- clstrs_join(blast_res = blast_res, ps = ps,
-                              seed_ids = seed_ids,
-                              all_clstrs = all_clstrs)
+                              seed_ids = seed_ids, all_clstrs = all_clstrs)
     txdct <- obj_load(wd = ps[['wd']], nm = 'txdct')
     mrg_clstrs <- clstrs_merge(jnd_clstrs = jnd_clstrs, txdct = txdct)
     all_clstrs <- c(all_clstrs, mrg_clstrs)
   } else {
-    info(lvl = 1, ps = ps,
-         'Done. Only one cluster set -- skipping cluster^2')
+    info(lvl = 1, ps = ps, 'Done. Only one cluster set',
+         ' -- skipping cluster^2')
   }
   info(lvl = 1, ps = ps, 'Dropping all clusters of < 3 sqs ...')
   nsqs <- vapply(all_clstrs, function(x) length(x@sids), 1L)

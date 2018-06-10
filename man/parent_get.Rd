@@ -7,9 +7,9 @@
 parent_get(id, txdct)
 }
 \arguments{
-\item{txdct}{TaxDict}
+\item{id}{txid(s)}
 
-\item{txid}{txid(s)}
+\item{txdct}{TaxDict}
 }
 \value{
 Character

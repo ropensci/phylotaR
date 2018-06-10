@@ -50,7 +50,7 @@ Multiple cluster records.
 \describe{
 \item{\code{ids}}{Vector of cluster record IDs}
 
-\item{\code{cls}}{List of ClstrArc named by ID}
+\item{\code{clstrs}}{List of ClstrArc named by ID}
 }}
 
 \seealso{

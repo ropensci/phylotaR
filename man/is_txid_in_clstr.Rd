@@ -25,15 +25,15 @@ organism lineages.
 data(tinamous)
 cid <- tinamous@cids[[1]]
 clstr <- tinamous[[cid]]
-sq <- tinamous[[cl@sids[[1]]]]
+sq <- tinamous[[clstr@sids[[1]]]]
 txid <- sq@txid
 # expect true
-is_txid_in_cl(phylota = tinamous, txid = txid, cid = cid)
+is_txid_in_clstr(phylota = tinamous, txid = txid, cid = cid)
 }
 \seealso{
 Other tools-public: \code{\link{calc_mad}},
   \code{\link{calc_wrdfrq}}, \code{\link{drop_by_rank}},
-  \code{\link{drop_cls}}, \code{\link{drop_sqs}},
+  \code{\link{drop_clstrs}}, \code{\link{drop_sqs}},
   \code{\link{get_clstr_slot}}, \code{\link{get_nsqs}},
   \code{\link{get_ntaxa}}, \code{\link{get_sq_slot}},
   \code{\link{get_tx_slot}}, \code{\link{get_txids}},

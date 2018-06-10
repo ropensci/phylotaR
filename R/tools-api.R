@@ -34,8 +34,7 @@ safely_connect <- function(func, args, fnm, ps) {
   for (wt_tm in ps[['wt_tms']]) {
     # limit query to 1 hour
     # TODO: allow user interruption with tryCatch?
-    query <- try(R.utils::withTimeout(do.call(func, args),
-                                      timeout = 3600),
+    query <- try(R.utils::withTimeout(do.call(func, args), timeout = 3600),
                  silent = TRUE)
     #query <- try(do.call(func, args), silent = TRUE)
     if (download_obj_check(query)) {
@@ -44,11 +43,15 @@ safely_connect <- function(func, args, fnm, ps) {
     } else {
       # ctrl+c
       if (grepl('Operation was aborted by an application callback',
-               query[[1]])) {
+                query[[1]])) {
         stop(query[[1]])
       }
-      info(lvl = 1, ps = ps, "Retrying in [", wt_tm, "s] for [", fnm,
-           ']')
+      # too large a request
+      if (grepl('the request is too large', query[[1]])) {
+        error(ps = ps, 'NCBI is limiting the size of your request. ',
+              'Consider reducing btchsz.')
+      }
+      info(lvl = 1, ps = ps, "Retrying in [", wt_tm, "s] for [", fnm, ']')
       Sys.sleep(wt_tm)
     }
   }

@@ -40,7 +40,7 @@ clstrs_calc <- function(txdct, ps) {
       next
     }
     sqs <- readRDS(file = file.path(file.path(ps[['wd']], 'cache',
-                                            'sqs', sq_fl)))
+                                              'sqs', sq_fl)))
     txid <- as.character(sub('\\.RData', '', sq_fl))
     info(lvl = 1, ps = ps, "Working on [id ", txid, "]")
     clstrs <- clstr_all(txid = txid, sqs = sqs, txdct = txdct,

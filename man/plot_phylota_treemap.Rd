@@ -50,7 +50,7 @@ print(p)
 # Plot taxa, size by n. sq, fill by ncl
 txids <- get_txids(tinamous, txids = tinamous@txids,
                    rnk = 'genus')
-txids <- txids[txids ! =  '']
+txids <- txids[txids !=  '']
 txids <- unique(txids)
 txnms <- get_tx_slot(tinamous, txids, slt_nm = 'scnm')
 p <- plot_phylota_treemap(phylota = tinamous, txids = txids,
@@ -61,7 +61,7 @@ print(p)
 \seealso{
 Other tools-public: \code{\link{calc_mad}},
   \code{\link{calc_wrdfrq}}, \code{\link{drop_by_rank}},
-  \code{\link{drop_cls}}, \code{\link{drop_sqs}},
+  \code{\link{drop_clstrs}}, \code{\link{drop_sqs}},
   \code{\link{get_clstr_slot}}, \code{\link{get_nsqs}},
   \code{\link{get_ntaxa}}, \code{\link{get_sq_slot}},
   \code{\link{get_tx_slot}}, \code{\link{get_txids}},

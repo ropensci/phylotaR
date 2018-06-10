@@ -96,10 +96,12 @@ seqrec_convert <- function(raw_recs, ps) {
                              orgnsm = orgnsm, sq = sq, dfln = dfln,
                              ml_typ = ml_typ, rec_typ = 'whole',
                              vrsn = vrsn, age = age)
-        res <- c(res, seqrec)
       }
     }
   }
+  # filter out ambiguous sequences and dups
+  nonambgs <- vapply(res, function(x) x@pambgs < 0.1, logical(1))
+  res <- res[nonambgs]
   ids <- vapply(res, function(x) x@id, '')
   nondups <- !duplicated(ids)
   res[nondups]
@@ -145,7 +147,7 @@ seqrec_gen <- function(accssn, nm, txid, sq, dfln, orgnsm, ml_typ,
 #' @name seqarc_gen
 #' @title Generate sequence archive
 #' @description Creates an S4 SeqArc from list of SeqRecs
-#' @param sqs List of SeqRecs
+#' @param seqrecs List of SeqRecs
 #' @return SeqArc
 #' @family run-private
 seqarc_gen <- function(seqrecs) {

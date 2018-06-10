@@ -9,9 +9,11 @@ taxtree_gen(prinds, ids, root, ps)
 \arguments{
 \item{prinds}{Vector of integers indicating preceding node.}
 
+\item{ids}{Vector of taxonomic IDs}
+
 \item{root}{ID of root taxon}
 
-\item{trids}{Vector of taxonomic IDs}
+\item{ps}{Parameters list}
 }
 \value{
 TreeMan

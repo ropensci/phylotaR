@@ -20,8 +20,8 @@ get_ntaxa <- function(phylota, cid = NULL, sid = NULL, rnk = NULL,
     length(unique(txids))
   }
   get_sids_and_count <- function(cid) {
-    cl <- phylota@cls[[cid]]
-    count(cl@sids)
+    clstr <- phylota@clstrs[[cid]]
+    count(clstr@sids)
   }
   if (!is.null(sid)) {
     return(count(sids = sid))
@@ -67,8 +67,8 @@ get_txids <- function(phylota, cid = NULL, sid = NULL, txids = NULL,
   }
   if (is.null(txids)) {
     if (!is.null(cid)) {
-      cl <- phylota@cls[[cid]]
-      sid <- cl@sids
+      clstr <- phylota@clstrs[[cid]]
+      sid <- clstr@sids
     }
     txids <- get_sq_slot(phylota = phylota, sid = sid, 
                          slt_nm = 'txid')
@@ -89,8 +89,8 @@ get_txids <- function(phylota, cid = NULL, sid = NULL, txids = NULL,
 #' @family tools-public
 get_nsqs <- function(phylota, cid) {
   count <- function(cid) {
-    cl <- phylota@cls[[cid]]
-    length(cl@sids)
+    clstr <- phylota@clstrs[[cid]]
+    length(clstr@sids)
   }
   vapply(cid, count, 1L)
 }
@@ -116,8 +116,8 @@ get_sq_slot <- function(phylota, cid = NULL, sid = NULL,
     slot(sq, slt_nm)
   }
   if (!is.null(cid)) {
-    cl <- phylota@cls[[cid]]
-    sid <- cl@sids
+    clstr <- phylota@clstrs[[cid]]
+    sid <- clstr@sids
   }
   slt_nm <- match.arg(slt_nm)
   expctd <- new(getSlots('SeqRec')[[slt_nm]], 1)
@@ -136,9 +136,9 @@ get_sq_slot <- function(phylota, cid = NULL, sid = NULL,
 get_clstr_slot <- function(phylota, cid,
                            slt_nm = list_clstrrec_slots()) {
   get <- function(cid) {
-    i <- which(cid == phylota@cls@ids)
-    cl <- phylota@cls@cls[[i]]
-    slot(cl, slt_nm)
+    i <- which(cid == phylota@clstrs@ids)
+    clstr <- phylota@clstrs@clstrs[[i]]
+    slot(clstr, slt_nm)
   }
   slt_nm <- match.arg(slt_nm)
   expctd <- new(getSlots('ClstrRec')[[slt_nm]], 1)

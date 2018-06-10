@@ -25,25 +25,23 @@ Plot presence/absence of taxa by each
 cluster in phylota object.
 }
 \details{
-Cluster names and taxonomic names
-can be given to the function, by default IDs are used.
+Cluster names and taxonomic names can be given to the function, by
+default IDs are used.
 }
 \examples{
 library(phylotaR)
 data(cycads)
 # drop all but first ten
-cycads <- drop_cls(cycads, cycads@cids[1:10])
+cycads <- drop_clstrs(cycads, cycads@cids[1:10])
 # plot all
 p <- plot_phylota_pa(phylota = cycads, cids = cycads@cids,
                      txids = cycads@txids)
 print(p)  # lots of information, difficult to interpret
 # get genus-level taxonomic names
-genus_txids <- get_txids(cycads,
-                         txids = cycads@txids,
-                         rnk = 'genus')
+genus_txids <- get_txids(cycads, txids = cycads@txids, rnk = 'genus')
 genus_txids <- unique(genus_txids)
 # dropping missing
-genus_txids <- genus_txids[genus_txids ! =  '']
+genus_txids <- genus_txids[genus_txids !=  '']
 genus_nms <- get_tx_slot(cycads, genus_txids, slt_nm = 'scnm')
 # make alphabetical for plotting
 genus_nms <- sort(genus_nms, decreasing = TRUE)
@@ -56,7 +54,7 @@ print(p)  # easier to interpret
 \seealso{
 Other tools-public: \code{\link{calc_mad}},
   \code{\link{calc_wrdfrq}}, \code{\link{drop_by_rank}},
-  \code{\link{drop_cls}}, \code{\link{drop_sqs}},
+  \code{\link{drop_clstrs}}, \code{\link{drop_sqs}},
   \code{\link{get_clstr_slot}}, \code{\link{get_nsqs}},
   \code{\link{get_ntaxa}}, \code{\link{get_sq_slot}},
   \code{\link{get_tx_slot}}, \code{\link{get_txids}},

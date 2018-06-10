@@ -62,9 +62,8 @@ blastn_run <- function(dbfl, outfl, ps) {
   } else {
     outfmt <- "6 qseqid sseqid pident length evalue qcovs qcovhsp"
   }
-  args <- c('-query', dbfl, '-db', dbfl, '-outfmt', outfmt,
-            '-dust', 'no', '-strand', 'plus', '-evalue',
-            ps[['mxevl']], '-out', outfl)
+  args <- c('-query', dbfl, '-db', dbfl, '-outfmt', outfmt, '-dust', 'no',
+            '-strand', 'plus', '-evalue', ps[['mxevl']], '-out', outfl)
   info(lvl = 3, ps = ps, "Running blastn")
   res <- cmdln(cmd = ps[['blstn']], args = args, lgfl = dbfl)
   if (res != 0) {

@@ -7,11 +7,11 @@
 descendants_get(id, txdct, direct = FALSE)
 }
 \arguments{
-\item{direct}{T/F, return only direct descedants?}
+\item{id}{txid}
 
-\item{txid}{txid}
+\item{txdct}{TaxDict}
 
-\item{dictionary}{TaxDict}
+\item{direct}{T/F, return only direct descendants?}
 }
 \value{
 vector

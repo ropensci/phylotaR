@@ -16,7 +16,7 @@ Run the entire phylotaR pipeline. All generated files will be
 stored in the wd. The process can be stopped at anytime and  restarted with
 \code{restart}. \code{nstages} must be a numeric value representing the
 number of stages that will be run. Stages are run in the following order:
-1 - taxise, 2 - download, 3 - cluster and 4 - align.
+1 - taxise, 2 - download, 3 - cluster and 4 - cluster2.
 
 For example, specifying \code{nstages} = 3, will run taxise, download and
 cluster. Stages can also be run individually, see linked functions below.

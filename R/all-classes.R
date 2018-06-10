@@ -79,7 +79,7 @@ setMethod('summary', c('object' = 'ClstrRec'),
 
 # ClstrArc ----
 clstrarc_check <- function(object) {
-  length(object@ids) == length(object@cls)
+  length(object@ids) == length(object@clstrs)
 }
 #' @name ClstrArc-class
 #' @aliases ClstrArc-method
@@ -93,12 +93,12 @@ clstrarc_check <- function(object) {
 #' @title Cluster record archive
 #' @description Multiple cluster records.
 #' @slot ids Vector of cluster record IDs
-#' @slot cls List of ClstrArc named by ID
+#' @slot clstrs List of ClstrArc named by ID
 #' @family run-public
 #' @exportClass ClstrArc
 setClass('ClstrArc', representation = representation(
   ids = 'vector',
-  cls = 'list'),
+  clstrs = 'list'),
   validity = clstrarc_check)
 
 #' @rdname ClstrArc-class
@@ -148,7 +148,7 @@ setMethod('[[', c('ClstrArc', 'character'),
           function(x, i) {
             pull <- which(x@ids %in% i)
             if (length(pull) == 1) {
-              return(x@cls[[pull[1]]])
+              return(x@clstrs[[pull[1]]])
             }
             stop(paste0('[', i , '] not in records'))
           })
@@ -158,7 +158,7 @@ setMethod('[', c('ClstrArc', 'character', 'missing', 'missing'),
           function(x, i, j, ..., drop = TRUE) {
             pull <- i %in% x@ids
             if (all(pull)) {
-              x <- clstrarc_gen(x@cls[x@ids %in% i])
+              x <- clstrarc_gen(x@clstrs[x@ids %in% i])
               x@ids <- i
               return(x)
             }
@@ -488,9 +488,9 @@ setMethod('summary', c('object' = 'TaxDict'),
 
 # Phylota ----
 phylota_check <- function(object) {
-  length(object@cids) == length(object@cls@cls) &
+  length(object@cids) == length(object@clstrs@clstrs) &
     length(object@sids) == length(object@sqs@sqs) &
-    all(object@txids %in% object@TaxDict@txids)
+    all(object@txids %in% object@txdct@txids)
 }
 #' @name Phylota-class
 #' @family run-public
@@ -507,8 +507,8 @@ phylota_check <- function(object) {
 #' @slot sids IDs of all sequences
 #' @slot txids IDs of all taxa
 #' @slot sqs All sequence records as SeqArc
-#' @slot cls All cluster records as ClstrArc
-#' @slot TaxDict Taxonomic dictionary as TaxDict
+#' @slot clstrs All cluster records as ClstrArc
+#' @slot txdct Taxonomic dictionary as TaxDict
 #' @slot prnt_id Parent taxonomic ID
 #' @slot prnt_nm Parent taxonomic name
 #' @exportClass Phylota
@@ -516,9 +516,9 @@ setClass('Phylota', representation = representation(
   cids = 'vector',
   txids = 'vector',
   sids = 'vector',
-  TaxDict = 'TaxDict',
+  txdct = 'TaxDict',
   sqs = 'SeqArc',
-  cls = 'ClstrArc',
+  clstrs = 'ClstrArc',
   prnt_id = 'character',
   prnt_nm = 'character'),
   validity = phylota_check)
@@ -574,7 +574,7 @@ setMethod('[[', c('Phylota', 'character'),
           function(x, i) {
             pull <- which(x@cids %in% i)
             if (length(pull) == 1) {
-              return(x@cls@cls[[pull[1]]])
+              return(x@clstrs@clstrs[[pull[1]]])
             }
             pull <- which(x@sids %in% i)
             if (length(pull) == 1) {

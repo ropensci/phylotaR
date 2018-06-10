@@ -9,18 +9,18 @@
 #' @export
 #' @family tools-public
 drop_sqs <- function(phylota, cid, sid) {
-  indx <- which(phylota@cls@ids == cid)
-  cl <- phylota@cls@cls[[indx]]
-  pull <- cl@sids %in% sid
-  cl@sids <- cl@sids[pull]
-  cl@nsqs <- length(cl@sids)
-  cl@txids <- cl@txids[pull]
-  cl@ntx <- length(unique(cl@txids))
-  phylota@cls@cls[[indx]] <- cl
+  indx <- which(phylota@clstrs@ids == cid)
+  clstr <- phylota@clstrs@clstrs[[indx]]
+  pull <- clstr@sids %in% sid
+  clstr@sids <- clstr@sids[pull]
+  clstr@nsqs <- length(clstr@sids)
+  clstr@txids <- clstr@txids[pull]
+  clstr@ntx <- length(unique(clstr@txids))
+  phylota@cls@cls[[indx]] <- clstr
   update_phylota(phylota)
 }
 
-#' @name drop_cls
+#' @name drop_clstrs
 #' @title Drop cluster records from phylota object
 #' @description Drops all clusters except those
 #' identified by user.
@@ -29,8 +29,8 @@ drop_sqs <- function(phylota, cid, sid) {
 #' @return phylota
 #' @export
 #' @family tools-public
-drop_cls <- function(phylota, cid) {
-  phylota@cls <- phylota@cls[cid]
+drop_clstrs <- function(phylota, cid) {
+  phylota@clstrs <- phylota@clstrs[cid]
   phylota@cids <- cid
   update_phylota(phylota)
 }

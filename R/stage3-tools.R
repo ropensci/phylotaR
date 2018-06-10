@@ -136,10 +136,8 @@ clstr_sqs <- function(txid, sqs, ps, lvl,
 blast_sqs <- function(txid, typ, sqs, ps, lvl) {
   blast_res <- blastcache_load(sqs@ids, wd = ps[['wd']])
   if (is.null(blast_res)) {
-    dbfl <- paste0('taxon-', txid, '-typ-', typ,
-                   '-db.fa')
-    outfl <- paste0('taxon-', txid, '-typ-', typ,
-                    '-blastout.txt')
+    dbfl <- paste0('taxon-', txid, '-typ-', typ, '-db.fa')
+    outfl <- paste0('taxon-', txid, '-typ-', typ, '-blastout.txt')
     blastdb_gen(sqs = sqs, dbfl = dbfl, ps = ps)
     blast_res <- blastn_run(dbfl = dbfl, outfl = outfl, ps = ps)
     if (is.null(blast_res)) {
@@ -159,7 +157,7 @@ blast_sqs <- function(txid, typ, sqs, ps, lvl) {
 #' @description Find single-linkage clusters from BLAST results.
 #' Identifies seed sequence.
 #' @return List of list
-#' @param blst_rs BLAST results
+#' @param blast_res BLAST results
 #' @return list of cluster descriptions
 #' @family run-private
 blast_clstr <- function(blast_res) {
@@ -184,7 +182,7 @@ blast_clstr <- function(blast_res) {
 #' @title Generate list of clusters
 #' @description Takes a list of lists of cluster descriptions
 #' and generates ClstrRecs.
-#' @param clstr_lst List of list of cluster descriptions
+#' @param clstr_list List of list of cluster descriptions
 #' @param txid Taxonomic node ID
 #' @param sqs Sequence records
 #' @param typ Cluster type
@@ -193,15 +191,15 @@ blast_clstr <- function(blast_res) {
 clstrrec_gen <- function(clstr_list, txid, sqs, typ) {
   clstrrecs <- vector('list', length = length(clstr_list))
   for (i in seq_along(clstr_list)) {
-    cl <- clstr_list[[i]]
-    cl_sqs <- sqs[cl[['sids']]]
-    nsqs <- length(cl[['sids']])
-    ntx <- length(unique(cl_sqs@txids))
-    clstrrec <- new('ClstrRec', sids = cl[['sids']],
-                    txids = cl_sqs@txids, nsqs = nsqs,
+    clstr <- clstr_list[[i]]
+    clstr_sqs <- sqs[clstr[['sids']]]
+    nsqs <- length(clstr[['sids']])
+    ntx <- length(unique(clstr_sqs@txids))
+    clstrrec <- new('ClstrRec', sids = clstr[['sids']],
+                    txids = clstr_sqs@txids, nsqs = nsqs,
                     ntx = ntx, typ = typ,
                     prnt = as.character(txid),
-                    seed = cl[['seed']])
+                    seed = clstr[['seed']])
     clstrrecs[[i]] <- clstrrec
   }
   clstrarc_gen(clstrrecs)
@@ -216,7 +214,7 @@ clstrrec_gen <- function(clstr_list, txid, sqs, typ) {
 clstrarc_gen <- function(clstrrecs) {
   ids <- as.character(seq_along(clstrrecs) - 1)
   names(clstrrecs) <- ids
-  new('ClstrArc', ids = ids, cls = clstrrecs)
+  new('ClstrArc', ids = ids, clstrs = clstrrecs)
 }
 
 #' @name clstrarc_join
@@ -228,5 +226,5 @@ clstrarc_gen <- function(clstrrecs) {
 #' @return ClstrArc
 #' @family run-private
 clstrarc_join <- function(ac_1, ac_2) {
-  clstrarc_gen(c(ac_1@cls, ac_2@cls))
+  clstrarc_gen(c(ac_1@clstrs, ac_2@clstrs))
 }

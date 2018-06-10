@@ -8,8 +8,7 @@
 #' @export
 #' @family tools-public
 read_phylota <- function(wd) {
-  if (!file.exists(file.path(wd, 'cache',
-                            'clusters_sqs.RData'))) {
+  if (!file.exists(file.path(wd, 'cache', 'clstrs_sqs.RData'))) {
     msg <- paste0('Data file not found in [', wd,
                   '].\nAre you sure pipeline has completed?')
     stop(msg)
@@ -28,8 +27,8 @@ read_phylota <- function(wd) {
   prnt_id <- txdct@prnt
   prnt_nm <- txdct@recs[[prnt_id]]@scnm
   phylota <- new('Phylota', sqs = sqs, clstrs = clstrs, txids = txids,
-                 sids = sids, cids = cids, txdct = txdct,
-                 prnt_id = prnt_id, prnt_nm = prnt_nm)
+                 sids = sids, cids = cids, txdct = txdct, prnt_id = prnt_id,
+                 prnt_nm = prnt_nm)
   update_phylota(phylota)
 }
 
@@ -81,25 +80,23 @@ write_sqs <- function(phylota, outfile,
 #' @param txids Vector of taxonomic IDs
 #' @param cnms Cluster names
 #' @param txnms Taxonomic names
-#' @details Cluster names and taxonomic names
-#' can be given to the function, by default IDs are used.
+#' @details Cluster names and taxonomic names can be given to the function, by
+#' default IDs are used.
 #' @return geom_object
 #' @examples
 #' library(phylotaR)
 #' data(cycads)
 #' # drop all but first ten
-#' cycads <- drop_cls(cycads, cycads@cids[1:10])
+#' cycads <- drop_clstrs(cycads, cycads@cids[1:10])
 #' # plot all
 #' p <- plot_phylota_pa(phylota = cycads, cids = cycads@cids,
 #'                      txids = cycads@txids)
 #' print(p)  # lots of information, difficult to interpret
 #' # get genus-level taxonomic names
-#' genus_txids <- get_txids(cycads,
-#'                          txids = cycads@txids,
-#'                          rnk = 'genus')
+#' genus_txids <- get_txids(cycads, txids = cycads@txids, rnk = 'genus')
 #' genus_txids <- unique(genus_txids)
 #' # dropping missing
-#' genus_txids <- genus_txids[genus_txids ! =  '']
+#' genus_txids <- genus_txids[genus_txids !=  '']
 #' genus_nms <- get_tx_slot(cycads, genus_txids, slt_nm = 'scnm')
 #' # make alphabetical for plotting
 #' genus_nms <- sort(genus_nms, decreasing = TRUE)
@@ -110,11 +107,10 @@ write_sqs <- function(phylota, outfile,
 #' print(p)  # easier to interpret
 #' @export
 #' @family tools-public
-plot_phylota_pa <- function(phylota, cids, txids, cnms = cids,
-                            txnms = txids) {
+plot_phylota_pa <- function(phylota, cids, txids, cnms = cids, txnms = txids) {
   mkdata <- function(cid) {
     clstr <- phylota@clstrs@clstrs[[which(cid == phylota@cids)]]
-    value <- apply(X = tis_mtrx[ ,cl@sids], 1, any)
+    value <- apply(X = tis_mtrx[, clstr@sids], 1, any)
     value <- as.numeric(value)
     data.frame(txid = as.character(txids), cid = cid, value = value)
   }
@@ -172,7 +168,7 @@ plot_phylota_pa <- function(phylota, cids, txids, cnms = cids,
 #' # Plot taxa, size by n. sq, fill by ncl
 #' txids <- get_txids(tinamous, txids = tinamous@txids,
 #'                    rnk = 'genus')
-#' txids <- txids[txids ! =  '']
+#' txids <- txids[txids !=  '']
 #' txids <- unique(txids)
 #' txnms <- get_tx_slot(tinamous, txids, slt_nm = 'scnm')
 #' p <- plot_phylota_treemap(phylota = tinamous, txids = txids,
@@ -295,10 +291,10 @@ is_txid_in_sq <- function(phylota, txid, sid) {
 #' data(tinamous)
 #' cid <- tinamous@cids[[1]]
 #' clstr <- tinamous[[cid]]
-#' sq <- tinamous[[cl@sids[[1]]]]
+#' sq <- tinamous[[clstr@sids[[1]]]]
 #' txid <- sq@txid
 #' # expect true
-#' is_txid_in_cl(phylota = tinamous, txid = txid, cid = cid)
+#' is_txid_in_clstr(phylota = tinamous, txid = txid, cid = cid)
 #' @export
 #' @family tools-public
 is_txid_in_clstr <- function(phylota, txid, cid) {

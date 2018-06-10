@@ -32,11 +32,12 @@
 #' @param mncvrg The maximum percentile coverage defining an overlapping BLAST hit.
 #' Sequences with BLAST matches with lower values are not considered orthologous.
 #' @export
-parameters <- function(wd='.', txid=numeric(), mkblstdb='', blstn='', v=FALSE, ncps=1,
+parameters <- function(wd='.', txid=character(), mkblstdb='', blstn='', v=FALSE, ncps=1,
                        mxnds=100000, mdlthrs=3000, mnsql=250, mxsql=2000, mxrtry=100,
                        mxsqs=50000, mxevl=1.0e-10, mncvrg=51, btchsz=300,
                        date=Sys.Date()) {
   ps <- as.list(environment())
+  ps[['txid']] <- as.character(ps[['txid']])
   ps[['wt_tms']] <- c(1, 3, 6, 10, 60, 300)
   ps
 }

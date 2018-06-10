@@ -81,16 +81,22 @@ sids_get <- function(txid, direct, ps, retmax=100, hrdmx=100000) {
   trm <- searchterm_gen(txid = txid, ps = ps, direct = direct)
   args <- list(db = 'nucleotide', retmax = 0, term = trm,
                use_history = TRUE)
-  srch <- safely_connect(func = rentrez::entrez_search,
-                         args = args, fnm = 'search',
-                         ps = ps)
+  srch <- safely_connect(func = rentrez::entrez_search, args = args,
+                         fnm = 'search', ps = ps)
   nsqs <- srch[['count']]
+  if (nsqs == 0) {
+    return(NULL)
+  }
   ids <- NULL
   if (nsqs > hrdmx) {
-    ret_strts <- sample(seq(1, (nsqs - retmax), retmax),
-                        round(hrdmx/retmax), replace = FALSE)
+    ret_strts <- sample(seq(1, (nsqs - retmax), retmax), round(hrdmx/retmax),
+                        replace = FALSE)
   } else {
-    ret_strts <- seq(1, (nsqs - retmax), retmax)
+    if (nsqs < retmax) {
+      ret_strts <- 1
+    } else {
+      ret_strts <- seq(1, (nsqs - retmax), retmax)
+    }
   }
   rsrch <- FALSE
   for (ret_strt in ret_strts) {
@@ -98,17 +104,13 @@ sids_get <- function(txid, direct, ps, retmax=100, hrdmx=100000) {
     for (i in 1:mxtry) {
       # use webobject, search without cache
       if (rsrch) {
-        srch <- safely_connect(func = rentrez::entrez_search,
-                               args = args, fnm = 'search',
-                               ps = ps)
+        srch <- safely_connect(func = rentrez::entrez_search, args = args,
+                               fnm = 'search', ps = ps)
       }
-      ftch_args <- list(db = 'nucleotide',
-                        web_history = srch[['web_history']],
-                        retmax = retmax,
-                        rettype = 'acc',
-                        retstart = ret_strt)
-      id_ftch <- try(do.call(what = rentrez::entrez_fetch,
-                             args = ftch_args), silent = TRUE)
+      ftch_args <- list(db = 'nucleotide', web_history = srch[['web_history']],
+                        retmax = retmax, rettype = 'acc', retstart = ret_strt)
+      id_ftch <- try(do.call(what = rentrez::entrez_fetch, args = ftch_args),
+                     silent = TRUE)
       if (inherits(id_ftch, 'try-error')) {
         rsrch <- TRUE
         if (i == mxtry) {

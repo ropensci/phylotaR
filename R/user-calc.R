@@ -11,7 +11,7 @@
 #' @family tools-public
 calc_mad <- function(phylota, cid) {
   calc <- function(cid) {
-    sids <- phylota@cls[[cid]]@sids
+    sids <- phylota@clstrs[[cid]]@sids
     sqlns <- get_sq_slot(phylota = phylota,
                          sid = sids,
                          slt_nm = 'nncltds')
@@ -41,7 +41,7 @@ calc_wrdfrq <- function(phylota, cid, min_frq = 0.1,
                         min_nchar = 1, type = c('dfln', 'nm'),
                         ignr_pttrn = "[^a-z0-9]") {
   calc <- function(cid) {
-    sids <- phylota@cls[[cid]]@sids
+    sids <- phylota@clstrs[[cid]]@sids
     wrds <- get_sq_slot(phylota = phylota,
                         sid = sids,
                         slt_nm = type)

@@ -61,6 +61,7 @@ txids_get <- function(ps, retmax = 1E4) {
 #' of taxonomic records and returns a taxonomic dictionary.
 #' @param txids Vector of taxonomic IDs
 #' @param recs List of taxonomic records
+#' @param ps Parameters list
 #' @family run-private
 #' @return TaxDict
 taxdict_gen <- function(txids, recs, ps) {

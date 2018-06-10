@@ -10,6 +10,8 @@ taxdict_gen(txids, recs, ps)
 \item{txids}{Vector of taxonomic IDs}
 
 \item{recs}{List of taxonomic records}
+
+\item{ps}{Parameters list}
 }
 \value{
 TaxDict

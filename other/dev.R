@@ -1,6 +1,6 @@
 
 devtools::load_all('~/Coding/phylotaR')
-
+library(phylotaR)
 
 ncbi_dr <- file.path('NCBI', 'bin')
 wd <- 'aotus'

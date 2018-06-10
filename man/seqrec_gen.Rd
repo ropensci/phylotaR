@@ -16,7 +16,7 @@ seqrec_gen(accssn, nm, txid, sq, dfln, orgnsm, ml_typ, rec_typ, vrsn, age,
 
 \item{sq}{Sequence}
 
-\item{dfln}{Defintion line}
+\item{dfln}{Definition line}
 
 \item{orgnsm}{Source organism name}
 

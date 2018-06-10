@@ -7,7 +7,7 @@
 seqarc_gen(seqrecs)
 }
 \arguments{
-\item{sqs}{List of SeqRecs}
+\item{seqrecs}{List of SeqRecs}
 }
 \value{
 SeqArc

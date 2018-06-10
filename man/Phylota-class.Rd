@@ -50,9 +50,9 @@ information from a phylotaR pipeline run.
 
 \item{\code{sqs}}{All sequence records as SeqArc}
 
-\item{\code{cls}}{All cluster records as ClstrArc}
+\item{\code{clstrs}}{All cluster records as ClstrArc}
 
-\item{\code{TaxDict}}{Taxonomic dictionary as TaxDict}
+\item{\code{txdct}}{Taxonomic dictionary as TaxDict}
 
 \item{\code{prnt_id}}{Parent taxonomic ID}
 

@@ -7,13 +7,13 @@
 clstrrec_gen(clstr_list, txid, sqs, typ)
 }
 \arguments{
+\item{clstr_list}{List of list of cluster descriptions}
+
 \item{txid}{Taxonomic node ID}
 
 \item{sqs}{Sequence records}
 
 \item{typ}{Cluster type}
-
-\item{clstr_lst}{List of list of cluster descriptions}
 }
 \value{
 list of ClstrRecs

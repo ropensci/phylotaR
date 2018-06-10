@@ -34,7 +34,7 @@ youngest, then by sequence length.
 }
 \seealso{
 Other tools-public: \code{\link{calc_mad}},
-  \code{\link{calc_wrdfrq}}, \code{\link{drop_cls}},
+  \code{\link{calc_wrdfrq}}, \code{\link{drop_clstrs}},
   \code{\link{drop_sqs}}, \code{\link{get_clstr_slot}},
   \code{\link{get_nsqs}}, \code{\link{get_ntaxa}},
   \code{\link{get_sq_slot}}, \code{\link{get_tx_slot}},

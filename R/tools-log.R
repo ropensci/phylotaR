@@ -23,9 +23,9 @@ info <- function(lvl, ps, ...) {
 #' @family run-private
 #' @return NULL
 error <- function(ps, ...) {
-  msg <- paste0('Error: ', ..., '\n')
+  msg <- paste0(..., '\n')
   .log(v = FALSE, wd = ps[['wd']], msg = msg)
-  stop(msg)
+  stop(msg, call. = FALSE)
 }
 
 #' @name warn

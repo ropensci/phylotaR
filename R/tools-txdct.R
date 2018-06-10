@@ -4,8 +4,9 @@
 #' easy look up of taxonomic parents and descendants.
 #' @return TreeMan
 #' @param prinds Vector of integers indicating preceding node.
-#' @param trids Vector of taxonomic IDs
+#' @param ids Vector of taxonomic IDs
 #' @param root ID of root taxon
+#' @param ps Parameters list
 #' @importClassesFrom treeman TreeMan
 #' @family run-private
 #' @return TreeMan class
@@ -56,8 +57,8 @@ rank_get <- function(txid, txdct) {
 #' @description Look-up either direct or all taxonomic descendants of
 #' a node from taxonomic dictionary.
 #' @return vector
-#' @param txid txid
-#' @param dictionary TaxDict
+#' @param id txid
+#' @param txdct TaxDict
 #' @param direct T/F, return only direct descendants?
 #' @family run-private
 descendants_get <- function(id, txdct, direct=FALSE) {
@@ -75,7 +76,7 @@ descendants_get <- function(id, txdct, direct=FALSE) {
 #' @description Look-up MRCA of taxonomic id(s) from taxonomic
 #' dictionary
 #' @return Character
-#' @param txid txid(s)
+#' @param id txid(s)
 #' @param txdct TaxDict
 #' @family run-private
 parent_get <- function(id, txdct) {

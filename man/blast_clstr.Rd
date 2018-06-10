@@ -7,7 +7,7 @@
 blast_clstr(blast_res)
 }
 \arguments{
-\item{blst_rs}{BLAST results}
+\item{blast_res}{BLAST results}
 }
 \value{
 List of list
