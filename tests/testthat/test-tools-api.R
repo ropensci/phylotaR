@@ -10,10 +10,10 @@ ps[['wt_tms']] <- c(0, 0)
 # RUNNING
 phylotaR:::cleanup()
 context('Testing \'tools-api\'')
-test_that('phylotaR::obj_check() works', {
+test_that('download_obj_check() works', {
   expect_false(phylotaR:::download_obj_check(xml_tmout))
 })
-test_that('phylotaR:::safely_connect(fnm = search) works', {
+test_that('safely_connect(fnm = search) works', {
   phylotaR:::cache_setup(ps  =  ps)
   args <- list('term'  =  'ncbi search term', 'db'  =  'nucleotide', 'x')
   myfunc <- function(...) {
@@ -33,7 +33,7 @@ test_that('phylotaR:::safely_connect(fnm = search) works', {
   expect_null(res)
 })
 phylotaR:::cleanup()
-test_that('phylotaR:::safely_connect(fnm = fetch) works', {
+test_that('safely_connect(fnm = fetch) works', {
   phylotaR:::cache_setup(ps = ps)
   args <- list('id' = c(1, 2), 'db' = 'nucleotide', 'x')
   myfunc <- function(...) {
@@ -53,7 +53,7 @@ test_that('phylotaR:::safely_connect(fnm = fetch) works', {
   expect_null(res)
 })
 phylotaR:::cleanup()
-test_that('phylotaR:::batcher() works', {
+test_that('batcher() works', {
   phylotaR:::cache_setup(ps = ps)
   res <- phylotaR:::batcher(ids = 1:10, func = function(ids, ps) {
     return(ids)

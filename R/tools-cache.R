@@ -49,7 +49,7 @@ progress_reset <- function(wd, stg) {
 #' @description Return the last completed stage using the cache.
 #' @param wd Working directory
 #' @family run-private
-#' @return vector of stage names
+#' @return stage name, character, or NA is complete
 progress_read <- function(wd) {
   fl <- file.path(wd, 'cache', 'progress.RData')
   prgrss <- readRDS(file = fl)

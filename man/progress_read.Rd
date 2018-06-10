@@ -10,7 +10,7 @@ progress_read(wd)
 \item{wd}{Working directory}
 }
 \value{
-vector of stage names
+stage name, character, or NA is complete
 }
 \description{
 Return the last completed stage using the cache.
