@@ -51,7 +51,7 @@ parameters_setup <- function(wd, ncbi_execs, ...) {
 #' @param d Directory to NCBI BLAST tools
 #' @param wd Working directory
 #' @param v v, T/F
-#' @details BLAST tools must be version >=2.0
+#' @details BLAST tools must be version >= 2.0
 #' @family run-private
 #' @return list
 blast_setup <- function(d, v, wd) {
@@ -65,9 +65,8 @@ blast_setup <- function(d, v, wd) {
     if (res[['status']] != 0) {
       tst <- FALSE
       stderr <- rawToChar(res[['stderr']])
-      .log(v = v, wd = wd, paste0('Failed to run: [', ech,
-                                  ']. Reason:\n', '[',
-                                  stderr, ']'))
+      .log(v = v, wd = wd, paste0('Failed to run: [', ech, ']. Reason:\n',
+                                  '[', stderr, ']'))
       sccdd <- FALSE
     } else {
       # test version
@@ -90,8 +89,7 @@ blast_setup <- function(d, v, wd) {
     .log(v = v, wd = wd, paste0('Error:', msg))
     stop(msg)
   }
-  ncbi_execs <- list('mkblstdb' = mkblstdb,
-                     'blstn' = blstn)
+  ncbi_execs <- list('mkblstdb' = mkblstdb, 'blstn' = blstn)
   ncbi_execs
 }
 
@@ -119,7 +117,8 @@ stage_args_check <- function(to, frm) {
 
 #' @name stages_run
 #' @title Sequentially run each stage
-#' @description Runs stages from \code{frm} to \code{to}. Records stage progress in cache.
+#' @description Runs stages from \code{frm} to \code{to}. Records stage progress
+#' in cache.
 #' @param wd Working directory
 #' @param to Total number of stages to run
 #' @param frm Starting stage to run from
@@ -176,15 +175,13 @@ stages_run <- function(wd, to, frm, stgs_msg, rstrt=FALSE) {
     # ctrl+c
     if (grepl('Operation was aborted by an application callback',
               errmsg[[1]])) {
-      msg <- paste0('---- Halted by user [', Sys.time(),
-                    '] ----')
+      msg <- paste0('---- Halted by user [', Sys.time(), '] ----')
       .log(v = ps[['v']], wd = ps[['wd']], msg)
       stop(msg)
     }
     # unexpected pipeline error
-    msg <- paste0('Unexpected ', errmsg[[1]], '\n',
-                  'Occurred [', Sys.time(), ']\n',
-                  'Contact package maintainer for help.\n')
+    msg <- paste0('Unexpected ', errmsg[[1]], '\n', 'Occurred [', Sys.time(),
+                  ']\n', 'Contact package maintainer for help.\n')
     .log(v = ps[['v']], wd = ps[['wd']], msg)
     stop(msg)
   }
