@@ -24,8 +24,11 @@ cleanup <- function() {
   if (file.exists('cache')) {
     unlink('cache', recursive = TRUE)
   }
-  if (file.exists('log.txt')) {
-    file.remove('log.txt')
+  fls <- c('log.txt', 'log.log')
+  for (fl in fls) {
+    if (file.exists(fl)) {
+      file.remove(fl)
+    }
   }
 }
 
