@@ -11,7 +11,7 @@ blastn_run(dbfl, outfl, ps)
 
 \item{outfl}{Output file}
 
-\item{ps}{Parameters}
+\item{ps}{Parameters list, generated with parameters()}
 }
 \description{
 Use \code{blastn} to BLAST all-vs-all using a BLAST

@@ -9,7 +9,7 @@ txnds_count(txid, ps)
 \arguments{
 \item{txid}{Taxonomic ID}
 
-\item{ps}{Parameters}
+\item{ps}{Parameters list, generated with parameters()}
 }
 \value{
 integer

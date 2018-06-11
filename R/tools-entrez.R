@@ -5,7 +5,7 @@
 #' whole genome shotguns, predicted, unverified and synthetic
 #' sequences.
 #' @param txid Taxonomic ID
-#' @param ps Parameter list
+#' @template ps
 #' @param direct Node-level only or subtree as well? Default FALSE.
 #' @family run-private
 #' @return character, search term
@@ -23,7 +23,7 @@ searchterm_gen <- function(txid, ps, direct = FALSE) {
 #' @description Searches NCBI taxonomy and returns number of descendants
 #' taxonomic nodes (species, genera ...) of ID.
 #' @param txid Taxonomic ID
-#' @param ps Parameters
+#' @template ps
 #' @family run-private
 #' @return integer
 txnds_count <- function(txid, ps) {
@@ -40,7 +40,7 @@ txnds_count <- function(txid, ps) {
 #' @description Return the number of sequences associated with a
 #' taxonomic ID on NCBI GenBank.
 #' @param txid Taxonomic ID
-#' @param ps parameters
+#' @template ps
 #' @param direct Node-level only or subtree as well? Default FALSE.
 #' @family run-private
 #' @return integer
@@ -66,7 +66,7 @@ sqs_count <- function(txid, ps, direct=FALSE) {
 #' function.
 #' @param txid NCBI taxon identifier
 #' @param direct Node-level only or subtree as well? Default FALSE.
-#' @param ps Parameters
+#' @template ps
 #' @param retmax Maximum number of sequences when querying model
 #' organisms. The smaller the more random, the larger the faster.
 #' @param hrdmx Absolute maximum number of sequence IDs to download

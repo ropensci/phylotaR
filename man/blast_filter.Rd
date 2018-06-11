@@ -9,7 +9,7 @@ blast_filter(blast_res, ps)
 \arguments{
 \item{blast_res}{BLAST results}
 
-\item{ps}{Parameters}
+\item{ps}{Parameters list, generated with parameters()}
 }
 \value{
 data.frame blast res

@@ -7,7 +7,7 @@
 clstr2_calc(ps)
 }
 \arguments{
-\item{ps}{Parameters}
+\item{ps}{Parameters list, generated with parameters()}
 }
 \description{
 Loads cluster sets from cache. Extracts seed sequences

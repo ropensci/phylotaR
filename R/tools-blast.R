@@ -3,7 +3,7 @@
 #' @description Generate BLAST database in wd for given sequences.
 #' @param sqs Sequences
 #' @param dbfl Outfile for database
-#' @param ps Parameters
+#' @template ps
 #' @return NULL
 #' @family run-private
 blastdb_gen <- function(sqs, dbfl, ps) {
@@ -44,7 +44,7 @@ blastdb_gen <- function(sqs, dbfl, ps) {
 #' database.
 #' @param dbfl Database file
 #' @param outfl Output file
-#' @param ps Parameters
+#' @template ps
 #' @family run-private
 #' @return NULL
 blastn_run <- function(dbfl, outfl, ps) {
@@ -100,7 +100,7 @@ blastn_run <- function(dbfl, outfl, ps) {
 #' insufficient. HSP coverage is obtained from the BLAST column
 #' \code{qcovs}.
 #' @param blast_res BLAST results
-#' @param ps Parameters
+#' @template ps
 #' @return data.frame blast res
 #' @family run-private
 blast_filter <- function(blast_res, ps) {

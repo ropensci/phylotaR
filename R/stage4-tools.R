@@ -2,7 +2,7 @@
 #' @title BLAST seed sequences
 #' @description Runs all-v-all blast for seed sequences.
 #' @param sqs All seed sequences to be BLASTed
-#' @param ps Parameters
+#' @template ps
 #' @family run-private
 #' @return blast res data.frame
 seeds_blast <- function(sqs, ps) {
@@ -24,7 +24,7 @@ seeds_blast <- function(sqs, ps) {
 #' @param blast_res Seed sequence BLAST results
 #' @param seed_ids Seed sequence IDs
 #' @param all_clstrs List of all clusters
-#' @param ps Parameters
+#' @template ps
 #' @family run-private
 #' @return list of joined clusters
 clstrs_join <- function(blast_res, seed_ids, all_clstrs, ps) {

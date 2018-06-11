@@ -11,9 +11,10 @@ batcher(ids, func, ps, lvl = 0)
 
 \item{func}{Downloader function}
 
-\item{ps}{Parameters}
+\item{ps}{Parameters list, generated with parameters()}
 
-\item{lvl}{Log level}
+\item{lvl}{Integer, number of message indentations indicating code
+depth.}
 }
 \value{
 Vector of records

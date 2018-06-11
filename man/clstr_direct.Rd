@@ -13,9 +13,10 @@ clstr_direct(txid, sqs, txdct, ps, lvl)
 
 \item{txdct}{Taxonomic dictionary}
 
-\item{ps}{Parameters}
+\item{ps}{Parameters list, generated with parameters()}
 
-\item{lvl}{Log level}
+\item{lvl}{Integer, number of message indentations indicating code
+depth.}
 }
 \value{
 ClstrArc

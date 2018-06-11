@@ -15,9 +15,10 @@ clstr_subtree(txid, sqs, txdct, dds, ps, lvl)
 
 \item{dds}{Vector of direct descendants}
 
-\item{ps}{Parameters}
+\item{ps}{Parameters list, generated with parameters()}
 
-\item{lvl}{Log level}
+\item{lvl}{Integer, number of message indentations indicating code
+depth.}
 }
 \value{
 ClstrArc

@@ -11,7 +11,7 @@ seq_download(txids, txdct, ps)
 
 \item{txdct}{Taxonomic dictionary}
 
-\item{ps}{parameters}
+\item{ps}{Parameters list, generated with parameters()}
 }
 \description{
 Look up and download all sequences for

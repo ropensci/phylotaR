@@ -4,7 +4,7 @@
 #' records.
 #' @return list of list
 #' @param ids Vector of taxonomic IDs
-#' @param ps Parameter list
+#' @template ps
 #' @family run-private
 tax_download <- function(ids, ps) {
   recs <- vector('list', length = length(ids))

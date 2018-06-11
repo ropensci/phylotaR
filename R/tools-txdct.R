@@ -6,7 +6,7 @@
 #' @param prinds Vector of integers indicating preceding node.
 #' @param ids Vector of taxonomic IDs
 #' @param root ID of root taxon
-#' @param ps Parameters list
+#' @template ps
 #' @importClassesFrom treeman TreeMan
 #' @family run-private
 #' @return TreeMan class

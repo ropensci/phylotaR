@@ -7,7 +7,7 @@
 error(ps, ...)
 }
 \arguments{
-\item{ps}{parameters}
+\item{ps}{Parameters list, generated with parameters()}
 
 \item{...}{Message elements for concatenating}
 }

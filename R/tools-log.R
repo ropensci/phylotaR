@@ -2,8 +2,8 @@
 #' @name info
 #' @title Write info message to log
 #' @description Inform a user via log.txt of pipeline progress.
-#' @param lvl Number of message indentations, indicating code depth.
-#' @param ps Parameters
+#' @template lvl
+#' @template ps
 #' @param ... Message elements for concatenating
 #' @family run-private
 #' @return NULL
@@ -18,7 +18,7 @@ info <- function(lvl, ps, ...) {
 #' @title Write error message to log
 #' @description Inform a user if an error has occurred in log.txt,
 #' halt pipeline.
-#' @param ps parameters
+#' @template ps
 #' @param ... Message elements for concatenating
 #' @family run-private
 #' @return NULL
@@ -31,7 +31,7 @@ error <- function(ps, ...) {
 #' @name warn
 #' @title Write warning message to log
 #' @description Inform a user if a potential error has occurred in log.txt.
-#' @param ps Parameters
+#' @template ps
 #' @param ... Message elements for concatenating
 #' @family run-private
 #' @return NULL

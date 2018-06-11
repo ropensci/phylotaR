@@ -9,7 +9,7 @@ clstrs_calc(txdct, ps)
 \arguments{
 \item{txdct}{Taxonomic dictionary}
 
-\item{ps}{Parameters}
+\item{ps}{Parameters list, generated with parameters()}
 }
 \description{
 Loop through downloaded sequences for each clade and

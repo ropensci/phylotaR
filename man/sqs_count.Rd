@@ -9,7 +9,7 @@ sqs_count(txid, ps, direct = FALSE)
 \arguments{
 \item{txid}{Taxonomic ID}
 
-\item{ps}{parameters}
+\item{ps}{Parameters list, generated with parameters()}
 
 \item{direct}{Node-level only or subtree as well? Default FALSE.}
 }

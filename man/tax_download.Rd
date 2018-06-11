@@ -9,7 +9,7 @@ tax_download(ids, ps)
 \arguments{
 \item{ids}{Vector of taxonomic IDs}
 
-\item{ps}{Parameter list}
+\item{ps}{Parameters list, generated with parameters()}
 }
 \value{
 list of list

@@ -18,7 +18,8 @@ stages_run(wd, to, frm, stgs_msg, rstrt = FALSE)
 \item{rstrt}{Restarting, T/F}
 }
 \description{
-Runs stages from \code{frm} to \code{to}. Records stage progress in cache.
+Runs stages from \code{frm} to \code{to}. Records stage progress
+in cache.
 }
 \seealso{
 Other run-private: \code{\link{batcher}},

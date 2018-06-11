@@ -11,7 +11,7 @@ blastdb_gen(sqs, dbfl, ps)
 
 \item{dbfl}{Outfile for database}
 
-\item{ps}{Parameters}
+\item{ps}{Parameters list, generated with parameters()}
 }
 \description{
 Generate BLAST database in wd for given sequences.

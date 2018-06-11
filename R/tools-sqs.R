@@ -4,7 +4,7 @@
 #' @description Parses returned sequences features with Entrez,
 #' returns a SeqRec for each raw record.
 #' @param raw_recs Raw records returned from Entrez fetch
-#' @param ps Parameters list
+#' @template ps
 #' @family run-private
 #' @return SeqRecs
 seqrec_convert <- function(raw_recs, ps) {

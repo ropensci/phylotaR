@@ -3,8 +3,8 @@
 #' @description Looks up and downloads sequences for a taxonomic ID.
 #' @param txid Taxonomic node ID, numeric
 #' @param txdct Taxonomic dictionary
-#' @param ps Parameters
-#' @param lvl Log level
+#' @template ps
+#' @template lvl
 #' @family run-private
 #' @return Vector of SeqRecs
 hierarchic_download <- function(txid, txdct, ps, lvl=0) {
@@ -53,8 +53,8 @@ seqrec_augment <- function(sqs, txdct) {
 #' @description Downloads sequences from GenBank in batches.
 #' @param txid NCBI taxonomic ID
 #' @param direct Node-level only or subtree as well? Default FALSE.
-#' @param ps parameters
-#' @param lvl Log level
+#' @template ps
+#' @template lvl
 #' @return Vector of sequence records
 #' @family run-private
 seqrec_get <- function(txid, ps, direct=FALSE, lvl=0) {

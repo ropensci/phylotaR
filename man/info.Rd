@@ -7,9 +7,10 @@
 info(lvl, ps, ...)
 }
 \arguments{
-\item{lvl}{Number of message indentations, indicating code depth.}
+\item{lvl}{Integer, number of message indentations indicating code
+depth.}
 
-\item{ps}{Parameters}
+\item{ps}{Parameters list, generated with parameters()}
 
 \item{...}{Message elements for concatenating}
 }

@@ -9,7 +9,7 @@ clade_select(txdct, ps)
 \arguments{
 \item{txdct}{TxDct}
 
-\item{ps}{Parameters}
+\item{ps}{Parameters list, generated with parameters()}
 }
 \value{
 vector of txids

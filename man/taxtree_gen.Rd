@@ -13,7 +13,7 @@ taxtree_gen(prinds, ids, root, ps)
 
 \item{root}{ID of root taxon}
 
-\item{ps}{Parameters list}
+\item{ps}{Parameters list, generated with parameters()}
 }
 \value{
 TreeMan

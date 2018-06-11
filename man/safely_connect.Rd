@@ -13,7 +13,7 @@ safely_connect(func, args, fnm, ps)
 
 \item{fnm}{rentrez function name}
 
-\item{ps}{Parameters}
+\item{ps}{Parameters list, generated with parameters()}
 }
 \value{
 rentrez function results

@@ -7,7 +7,7 @@
 txids_get(ps, retmax = 10000)
 }
 \arguments{
-\item{ps}{Parameter list}
+\item{ps}{Parameters list, generated with parameters()}
 
 \item{retmax}{integer, maximum number of IDs to return per query}
 }

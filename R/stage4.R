@@ -25,7 +25,7 @@ clusters2_run <- function(wd) {
 #' and runs all-v-all BLAST of seeds to identify sister clusters.
 #' Sisters are then merged. An object of all sequences and clusters
 #' is then saved in cache.
-#' @param ps Parameters
+#' @template ps
 #' @return NULL
 #' @family run-private
 clstr2_calc <- function(ps) {

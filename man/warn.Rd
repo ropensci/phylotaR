@@ -7,7 +7,7 @@
 warn(ps, ...)
 }
 \arguments{
-\item{ps}{Parameters}
+\item{ps}{Parameters list, generated with parameters()}
 
 \item{...}{Message elements for concatenating}
 }

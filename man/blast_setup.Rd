@@ -21,7 +21,7 @@ Ensures NCBI BLAST executables are installed on the system. Tests
 version number of BLAST tools.
 }
 \details{
-BLAST tools must be version >=2.0
+BLAST tools must be version >= 2.0
 }
 \seealso{
 Other run-private: \code{\link{batcher}},

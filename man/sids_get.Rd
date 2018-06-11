@@ -11,7 +11,7 @@ sids_get(txid, direct, ps, retmax = 100, hrdmx = 1e+05)
 
 \item{direct}{Node-level only or subtree as well? Default FALSE.}
 
-\item{ps}{Parameters}
+\item{ps}{Parameters list, generated with parameters()}
 
 \item{retmax}{Maximum number of sequences when querying model
 organisms. The smaller the more random, the larger the faster.}

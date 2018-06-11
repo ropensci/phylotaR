@@ -11,7 +11,7 @@ taxdict_gen(txids, recs, ps)
 
 \item{recs}{List of taxonomic records}
 
-\item{ps}{Parameters list}
+\item{ps}{Parameters list, generated with parameters()}
 }
 \value{
 TaxDict

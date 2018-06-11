@@ -5,8 +5,8 @@
 #' @param txid Taxonomic ID
 #' @param sqs Sequence object of all downloaded sequences
 #' @param txdct Taxonomic dictionary
-#' @param ps Parameters
-#' @param lvl Log level
+#' @template ps
+#' @template lvl
 #' @return ClstrArc
 #' @family run-private
 clstr_all <- function(txid, sqs, txdct, ps, lvl=0) {
@@ -34,8 +34,8 @@ clstr_all <- function(txid, sqs, txdct, ps, lvl=0) {
 #' @param sqs Sequence object of all downloaded sequences
 #' @param txdct Taxonomic dictionary
 #' @param dds Vector of direct descendants
-#' @param ps Parameters
-#' @param lvl Log level
+#' @template ps
+#' @template lvl
 #' @return ClstrArc
 clstr_subtree <- function(txid, sqs, txdct, dds, ps, lvl) {
   all_clstrs <- clstrarc_gen(list())
@@ -72,8 +72,8 @@ clstr_subtree <- function(txid, sqs, txdct, dds, ps, lvl) {
 #' @param txid Taxonomic ID
 #' @param sqs Sequence object of all downloaded sequences
 #' @param txdct Taxonomic dictionary
-#' @param ps Parameters
-#' @param lvl Log level
+#' @template ps
+#' @template lvl
 #' @return ClstrArc
 clstr_direct <- function(txid, sqs, txdct, ps, lvl) {
   all_clstrs <- clstrarc_gen(list())
@@ -99,9 +99,9 @@ clstr_direct <- function(txid, sqs, txdct, ps, lvl) {
 #' a list of cluster objects using BLAST
 #' @param txid Taxonomic ID
 #' @param sqs Sequence object of sequences to be BLASTed
-#' @param ps Parameters
+#' @template ps
 #' @param typ Direct, subtree or paraphyly?
-#' @param lvl Log level
+#' @template lvl
 #' @family run-private
 clstr_sqs <- function(txid, sqs, ps, lvl,
                          typ=c('direct', 'subtree', 'paraphyly')) {
@@ -129,8 +129,8 @@ clstr_sqs <- function(txid, sqs, ps, lvl,
 #' @param txid Taxonomic node ID, numeric
 #' @param typ Cluster type, 'direct' or 'subtree'
 #' @param sqs Sequences
-#' @param lvl Log level
-#' @param ps Parameters
+#' @template lvl
+#' @template ps
 #' @family run-private
 #' @return blast_res data.frame or NULL
 blast_sqs <- function(txid, typ, sqs, ps, lvl) {

@@ -27,7 +27,7 @@ download_run <- function(wd) {
 #' @description All nodes with less than maximum number
 #' of nodes and sequences.
 #' @param txdct TxDct
-#' @param ps Parameters
+#' @template ps
 #' @return vector of txids
 #' @family run-private
 clade_select <- function(txdct, ps) {
@@ -61,7 +61,7 @@ clade_select <- function(txdct, ps) {
 #' given taxonomic IDs.
 #' @param txids Taxonomic node IDs, numeric vector
 #' @param txdct Taxonomic dictionary
-#' @param ps parameters
+#' @template ps
 #' @details Sequence downloads are cached.
 #' @return NULL
 #' @family run-private

@@ -29,7 +29,7 @@ taxise_run <- function(wd) {
 #' @title Searches for descendant taxonomic IDs
 #' @description Searches NCBI taxonomy for all descendant taxonomic nodes.
 #' @return Vector of txids
-#' @param ps Parameter list
+#' @template ps
 #' @param retmax integer, maximum number of IDs to return per query
 #' @return vector of ids
 #' @family run-private
@@ -61,7 +61,7 @@ txids_get <- function(ps, retmax = 1E4) {
 #' of taxonomic records and returns a taxonomic dictionary.
 #' @param txids Vector of taxonomic IDs
 #' @param recs List of taxonomic records
-#' @param ps Parameters list
+#' @template ps
 #' @family run-private
 #' @return TaxDict
 taxdict_gen <- function(txids, recs, ps) {

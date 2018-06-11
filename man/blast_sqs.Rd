@@ -13,9 +13,10 @@ blast_sqs(txid, typ, sqs, ps, lvl)
 
 \item{sqs}{Sequences}
 
-\item{ps}{Parameters}
+\item{ps}{Parameters list, generated with parameters()}
 
-\item{lvl}{Log level}
+\item{lvl}{Integer, number of message indentations indicating code
+depth.}
 }
 \value{
 blast_res data.frame or NULL

@@ -9,7 +9,7 @@ seeds_blast(sqs, ps)
 \arguments{
 \item{sqs}{All seed sequences to be BLASTed}
 
-\item{ps}{Parameters}
+\item{ps}{Parameters list, generated with parameters()}
 }
 \value{
 blast res data.frame

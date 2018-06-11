@@ -9,11 +9,12 @@ seqrec_get(txid, ps, direct = FALSE, lvl = 0)
 \arguments{
 \item{txid}{NCBI taxonomic ID}
 
-\item{ps}{parameters}
+\item{ps}{Parameters list, generated with parameters()}
 
 \item{direct}{Node-level only or subtree as well? Default FALSE.}
 
-\item{lvl}{Log level}
+\item{lvl}{Integer, number of message indentations indicating code
+depth.}
 }
 \value{
 Vector of sequence records

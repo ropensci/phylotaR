@@ -23,7 +23,7 @@ clusters_run <- function(wd) {
 #' @description Loop through downloaded sequences for each clade and
 #' hierarchically find clusters using BLAST.
 #' @param txdct Taxonomic dictionary
-#' @param ps Parameters
+#' @template ps
 #' @family run-private
 #' @return NULL
 clstrs_calc <- function(txdct, ps) {

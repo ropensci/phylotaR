@@ -6,7 +6,7 @@
 #' @param func rentrez function
 #' @param args rentrez function arguments, list
 #' @param fnm rentrez function name
-#' @param ps Parameters
+#' @template ps
 #' @return rentrez function results
 #' @family run-private
 search_and_cache <- function(func, args, fnm, ps) {
@@ -26,7 +26,7 @@ search_and_cache <- function(func, args, fnm, ps) {
 #' @param func rentrez function
 #' @param args rentrez function arguments, list
 #' @param fnm rentrez function name
-#' @param ps Parameters
+#' @template ps
 #' @return rentrez function results
 #' @family run-private
 safely_connect <- function(func, args, fnm, ps) {
@@ -84,7 +84,8 @@ download_obj_check <- function(obj) {
 #' @return Vector of records
 #' @param ids Vector of record ids
 #' @param func Downloader function
-#' @template pslvl
+#' @template ps
+#' @template lvl
 #' @family run-private
 #' @return vector of rentrez function results
 batcher <- function(ids, func, ps, lvl = 0) {

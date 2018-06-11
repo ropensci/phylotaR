@@ -13,7 +13,7 @@ clstrs_join(blast_res, seed_ids, all_clstrs, ps)
 
 \item{all_clstrs}{List of all clusters}
 
-\item{ps}{Parameters}
+\item{ps}{Parameters list, generated with parameters()}
 }
 \value{
 list of joined clusters

@@ -9,7 +9,7 @@ searchterm_gen(txid, ps, direct = FALSE)
 \arguments{
 \item{txid}{Taxonomic ID}
 
-\item{ps}{Parameter list}
+\item{ps}{Parameters list, generated with parameters()}
 
 \item{direct}{Node-level only or subtree as well? Default FALSE.}
 }

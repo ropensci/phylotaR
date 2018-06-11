@@ -11,9 +11,10 @@ hierarchic_download(txid, txdct, ps, lvl = 0)
 
 \item{txdct}{Taxonomic dictionary}
 
-\item{ps}{Parameters}
+\item{ps}{Parameters list, generated with parameters()}
 
-\item{lvl}{Log level}
+\item{lvl}{Integer, number of message indentations indicating code
+depth.}
 }
 \value{
 Vector of SeqRecs

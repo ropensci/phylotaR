@@ -9,7 +9,7 @@ seqrec_convert(raw_recs, ps)
 \arguments{
 \item{raw_recs}{Raw records returned from Entrez fetch}
 
-\item{ps}{Parameters list}
+\item{ps}{Parameters list, generated with parameters()}
 }
 \value{
 SeqRecs

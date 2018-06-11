@@ -11,9 +11,10 @@ clstr_sqs(txid, sqs, ps, lvl, typ = c("direct", "subtree", "paraphyly"))
 
 \item{sqs}{Sequence object of sequences to be BLASTed}
 
-\item{ps}{Parameters}
+\item{ps}{Parameters list, generated with parameters()}
 
-\item{lvl}{Log level}
+\item{lvl}{Integer, number of message indentations indicating code
+depth.}
 
 \item{typ}{Direct, subtree or paraphyly?}
 }
