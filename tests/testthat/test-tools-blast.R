@@ -1,53 +1,56 @@
-# # LIBS
-# library(testthat)
-# 
-# # VARS
-# data('blst_rs')
-# wd <- getwd()
-# if(grepl('testthat', wd)) {
-#   data_d <- file.path('data')
-# } else {
-#   # for running test at package level
-#   data_d <- file.path('tests', 'testthat',
-#                        'data')
-# }
-# ps <- parameters()
-# ps[['wd']] <- data_d
-# 
-# # FUNCTIONS
-# # stubs
-# mckCmdLn <- function(cmd, args, lgfl=NULL) {
-#   0
-# }
-# 
-# # RUNNING
-# context('Testing \'blast-tools\'')
-# test_that('mkBlstDB() works', {
-#   # res <- with_mock(
-#   #   `phylotaR:::cmdLn`=mckCmdLn,
-#   #   mkBlstDB(sqs=sqs, dbfl='testdb', ps=ps)
-#   # )
-#   # expect_null(res)
-# })
-# test_that('blstN() works', {
-#   # res <- with_mock(
-#   #   `phylotaR:::cmdLn`=mckCmdLn,
-#   #   blstN(dbfl='testdb', outfl='testblstn', ps=ps)
-#   # )
-#   # nms <- colnames(res)
-#   # expect_true(all(nms %in% names(blst_rs)))
-# })
-# test_that('fltrBlstRs() works', {
-#   blst_rs <- blst_rs[-1, ]
-#   rnd <- sample(2:nrow(blst_rs), 2)
-#   blst_rs[rnd, 'qcovs'] <- 48
-#   res <- phylotaR:::fltrBlstRs(blst_rs=blst_rs, ps=ps)
-#   expect_true(nrow(res) < nrow(blst_rs))
-#   # make sure rnd and its sq/qs pair is not present
-#   frst <- blst_rs[rnd[1], 'query.id'] == res[['query.id']] &
-#     blst_rs[rnd[1], 'subject.id'] == res[['subject.id']]
-#   expect_false(any(frst))
-#   scnd <- blst_rs[rnd[1], 'subject.id'] == res[['query.id']] &
-#     blst_rs[rnd[1], 'query.id'] == res[['subject.id']]
-#   expect_false(any(scnd))
-# })
+# LIBS
+library(testthat)
+
+# VARS
+blast_res <- readRDS(file = phylotaR:::datadir_get(
+  file.path('blast', 'blast_res.rds')))
+ps <- parameters()
+ps[['wd']] <- phylotaR:::datadir_get('')
+
+# RUNNING
+context('Testing \'blast-tools\'')
+test_that('blastdb_gen() works', {
+  sqs <- NULL
+  for (i in 1:10) {
+    itext <- as.character(i)
+    sqs <- c(phylotaR:::seqrec_gen(accssn = itext, nm = itext,
+                                   txid = itext, sq = 'ATCG',
+                                   dfln = 'deflin', orgnsm = '',
+                                   ml_typ = 'DNA', rec_typ = 'full',
+                                   vrsn = itext, age = 1L), sqs)
+  }
+  sqs <- phylotaR:::seqarc_gen(sqs)
+  res <- with_mock(
+    `phylotaR:::cmdln` = function(...) 0,
+    phylotaR:::blastdb_gen(sqs = sqs, dbfl = 'testdb', ps = ps)
+  )
+  expect_null(res)
+  res <- with_mock(
+    `phylotaR:::cmdln` = function(...) 1,
+    expect_error(phylotaR:::blastdb_gen(sqs = sqs, dbfl = 'testdb',
+                                        ps = ps))
+  )
+})
+test_that('blastn_run() works', {
+  res <- with_mock(
+    `phylotaR:::cmdln` = function(...) 0,
+    phylotaR:::blastn_run(dbfl = 'testdb', outfl = 'testblstn',
+                          ps = ps)
+  )
+  nms <- colnames(res)
+  expect_true(all(nms %in% names(blast_res)))
+})
+test_that('blast_filter() works', {
+  blast_res <- blast_res[-1, ]
+  rnd <- sample(2:nrow(blast_res), 2)
+  blast_res[rnd, 'qcovs'] <- 48
+  res <- phylotaR:::blast_filter(blast_res = blast_res, ps = ps)
+  expect_true(nrow(res) < nrow(blast_res))
+  # make sure rnd and its sq/qs pair is not present
+  frst <- blast_res[rnd[1], 'query.id'] == res[['query.id']] &
+    blast_res[rnd[1], 'subject.id'] == res[['subject.id']]
+  expect_false(any(frst))
+  scnd <- blast_res[rnd[1], 'subject.id'] == res[['query.id']] &
+    blast_res[rnd[1], 'query.id'] == res[['subject.id']]
+  expect_false(any(scnd))
+})

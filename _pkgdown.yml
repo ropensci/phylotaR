@@ -101,10 +101,6 @@ reference:
     - clstrs_join
     - clstrs_merge
     - clstrs_renumber
-- title: Data (private)
-  desc: Internal data used for testing and examples.
-  contents:
-    - blst_rs
 - title: Misc (private)
   desc: Miscellaneous internal functions, use `phylotaR:::` to access.
   contents:
