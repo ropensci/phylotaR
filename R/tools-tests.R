@@ -4,7 +4,7 @@
 #' @param subdir Subdirectory within the datadir
 #' @return filepath, character
 #' @noRd
-datadir_get <- function(subdir = NULL) {
+datadir_get <- function(subdir = '') {
   wd <- getwd()
   if (grepl('testthat', wd)) {
     datadir <- 'data'
@@ -48,6 +48,27 @@ cmdln_blastcheck <- function(cmd, args, lgfl = NULL) {
     out <- "blastn: 1.6.1+\nPackage: blast 1.6.1, build Oct 18 2017 19:57"
   }
   list(status = 0, stdout = charToRaw(out), stderr = charToRaw(''))
+}
+
+#' @title Generate fake SeqArc
+#' @description Generate fake sequence archive for testing.
+#' @param n Number of sequences
+#' @param l Length of sequences
+#' @return SeqArc
+#' @noRd
+testsqs_gen <- function(n=100, l=1000) {
+  sqs <- NULL
+  for (i in 1:n) {
+    itext <- as.character(i)
+    sqstrng <- sample(c('A', 'T', 'C', 'G'), size = l, replace = TRUE)
+    sqstrng <- paste(sqstrng, collapse = '')
+    sqs <- c(phylotaR:::seqrec_gen(accssn = itext, nm = itext,
+                                   txid = itext, sq = sqstrng,
+                                   dfln = 'deflin', orgnsm = '',
+                                   ml_typ = 'DNA', rec_typ = 'full',
+                                   vrsn = itext, age = 1L), sqs)
+  }
+  phylotaR:::seqarc_gen(sqs)
 }
 
 # efetch_mock <- function(db, rettype, id) {

@@ -10,16 +10,7 @@ ps[['wd']] <- phylotaR:::datadir_get('')
 # RUNNING
 context('Testing \'blast-tools\'')
 test_that('blastdb_gen() works', {
-  sqs <- NULL
-  for (i in 1:10) {
-    itext <- as.character(i)
-    sqs <- c(phylotaR:::seqrec_gen(accssn = itext, nm = itext,
-                                   txid = itext, sq = 'ATCG',
-                                   dfln = 'deflin', orgnsm = '',
-                                   ml_typ = 'DNA', rec_typ = 'full',
-                                   vrsn = itext, age = 1L), sqs)
-  }
-  sqs <- phylotaR:::seqarc_gen(sqs)
+  sqs <- testsqs_gen(n = 100)
   res <- with_mock(
     `phylotaR:::cmdln` = function(...) 0,
     phylotaR:::blastdb_gen(sqs = sqs, dbfl = 'testdb', ps = ps)

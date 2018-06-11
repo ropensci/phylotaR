@@ -14,7 +14,7 @@ searchterm_gen <- function(txid, ps, direct = FALSE) {
   avd1 <- ' NOT predicted[TI] NOT "whole genome shotgun"[TI]'
   avd2 <- ' NOT unverified[TI] NOT "synthetic construct"[Organism]'
   paste0('(txid', txid, org_trm, ' AND ', ps[['mnsql']],
-         ':100000[SLEN])', avd1, avd2)
+         ':', ps[['mxsql']], '[SLEN])', avd1, avd2)
 }
 
 
