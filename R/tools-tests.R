@@ -35,8 +35,8 @@ cleanup <- function() {
 }
 
 #' @title Run cmdln for BLAST checking
-#' @description Use command arg to control returned output and testing
-#' function responses.
+#' @description Use command arg to control returned output and testing function
+#' responses.
 #' @return list
 #' @noRd
 cmdln_blastcheck <- function(cmd, args, lgfl = NULL) {

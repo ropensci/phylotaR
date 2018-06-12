@@ -221,10 +221,10 @@ clstrarc_gen <- function(clstrrecs) {
 #' @title Join two cluster archive
 #' @description Take two ClstrArc classes and join them into a single
 #' ClstrArc.
-#' @param ac_1 ClstrArc
-#' @param ac_2 ClstrArc
+#' @param clstrarc_1 ClstrArc
+#' @param clstrarc_2 ClstrArc
 #' @return ClstrArc
 #' @family run-private
-clstrarc_join <- function(ac_1, ac_2) {
-  clstrarc_gen(c(ac_1@clstrs, ac_2@clstrs))
+clstrarc_join <- function(clstrarc_1, clstrarc_2) {
+  clstrarc_gen(c(clstrarc_1@clstrs, clstrarc_2@clstrs))
 }

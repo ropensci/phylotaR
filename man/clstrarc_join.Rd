@@ -4,12 +4,12 @@
 \alias{clstrarc_join}
 \title{Join two cluster archive}
 \usage{
-clstrarc_join(ac_1, ac_2)
+clstrarc_join(clstrarc_1, clstrarc_2)
 }
 \arguments{
-\item{ac_1}{ClstrArc}
+\item{clstrarc_1}{ClstrArc}
 
-\item{ac_2}{ClstrArc}
+\item{clstrarc_2}{ClstrArc}
 }
 \value{
 ClstrArc

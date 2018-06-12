@@ -3,7 +3,7 @@ library(testthat)
 
 # VARS
 blast_res <- readRDS(file = phylotaR:::datadir_get(
-  file.path('blast', 'blast_res.rds')))
+  file.path('blast', 'blast_res.rda')))
 ps <- parameters()
 ps[['wd']] <- phylotaR:::datadir_get('')
 

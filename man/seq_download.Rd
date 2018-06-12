@@ -14,8 +14,8 @@ seq_download(txids, txdct, ps)
 \item{ps}{Parameters list, generated with parameters()}
 }
 \description{
-Look up and download all sequences for
-given taxonomic IDs.
+Look up and download all sequences for given
+taxonomic IDs.
 }
 \details{
 Sequence downloads are cached.
