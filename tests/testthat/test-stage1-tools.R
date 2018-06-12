@@ -22,7 +22,7 @@ test_that('tax_download() works', {
 phylotaR:::cleanup()
 
 
-# # Example raw_recs ----
+# # Example raw_txrecs ----
 # search_obj <- rentrez::entrez_search(db = 'taxonomy', retmax = 0,
 #                                      term = 'txid2759[Subtree]',
 #                                      use_history = TRUE)

@@ -12,6 +12,7 @@ hierarchic_download <- function(txid, txdct, ps, lvl=0) {
   # or if there are no direct descendants
   dds <- descendants_get(id = txid, txdct = txdct, direct = TRUE)
   subtree_count <- sqs_count(txid, direct = FALSE, ps = ps)
+  print(length(dds))
   if (subtree_count <= ps[['mdlthrs']] | length(dds) == 0) {
     info(lvl = 2 + lvl, ps = ps, "+ whole subtree ...")
     sqs <- seqrec_get(txid = txid, direct = FALSE, ps = ps, lvl = lvl)
@@ -25,7 +26,7 @@ hierarchic_download <- function(txid, txdct, ps, lvl=0) {
     lvl <- lvl + 1
     info(lvl = 2 + lvl, ps = ps, "Working on child [id ", dd,"]")
     sqs <- c(sqs, hierarchic_download(txid = dd, txdct = txdct,
-                              ps = ps, lvl = lvl))
+                                      ps = ps, lvl = lvl))
   }
   sqs
 }
