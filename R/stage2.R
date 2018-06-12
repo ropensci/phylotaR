@@ -39,17 +39,15 @@ clade_select <- function(txdct, ps) {
     sqcnt <- sqs_count(txid = tmp_id, ps = ps)
     ndcnt <- txnds_count(txid = tmp_id, ps = ps)
     mx_pssbl_sqcnt <- ps[['mdlthrs']] * ndcnt
-    sqcnt <- ifelse(sqcnt > mx_pssbl_sqcnt, mx_pssbl_sqcnt,
-                    sqcnt)
+    sqcnt <- ifelse(sqcnt > mx_pssbl_sqcnt, mx_pssbl_sqcnt, sqcnt)
     if (sqcnt <= ps[['mxsqs']] & ndcnt <= ps[['mxnds']]) {
       res <- c(res, tmp_id)
     } else {
-      info(lvl = 2, ps = ps, "[", sqcnt, " sqs] and [",
-           ndcnt, " nds] for clade [id ",
-           tmp_id, "] - searching descendants instead ...")
-      queue <- c(queue,
-                 descendants_get(id = as.character(tmp_id),
-                                 direct = TRUE, txdct = txdct))
+      info(lvl = 2, ps = ps, "[", sqcnt, " sqs] and [", ndcnt,
+           " nds] for clade [id ", tmp_id,
+           "] - searching descendants instead ...")
+      queue <- c(queue, descendants_get(id = as.character(tmp_id),
+                                        direct = TRUE, txdct = txdct))
     }
   }
   res
@@ -57,8 +55,8 @@ clade_select <- function(txdct, ps) {
 
 #' @name seq_download
 #' @title Download sequences for txids
-#' @description Look up and download all sequences for
-#' given taxonomic IDs.
+#' @description Look up and download all sequences for given
+#' taxonomic IDs.
 #' @param txids Taxonomic node IDs, numeric vector
 #' @param txdct Taxonomic dictionary
 #' @template ps
@@ -75,9 +73,8 @@ seq_download <- function(txids, txdct, ps) {
     if (file.exists(sqfl)) {
       next
     }
-    info(lvl = 1, ps = ps,
-         "Working on parent [id ", txid, "]: [", i, "/",
-         length(txids), "] ...")
+    info(lvl = 1, ps = ps, "Working on parent [id ", txid, "]: [", i,
+         "/", length(txids), "] ...")
     sqs <- hierarchic_download(txid = txid, txdct = txdct, ps = ps)
     if (length(sqs) > 0) {
       sqcnt <- sqcnt + length(sqs)
@@ -85,6 +82,6 @@ seq_download <- function(txids, txdct, ps) {
       sqs_save(wd = ps[['wd']], txid = txid, sqs = sqs)
     }
   }
-  info(lvl = 1, ps = ps, "Successfully downloaded [",
-       sqcnt, " sqs] in total.")
+  info(lvl = 1, ps = ps, "Successfully downloaded [", sqcnt,
+       " sqs] in total.")
 }
