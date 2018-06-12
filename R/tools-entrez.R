@@ -89,8 +89,8 @@ sids_get <- function(txid, direct, ps, retmax=100, hrdmx=100000) {
   }
   ids <- NULL
   if (nsqs > hrdmx) {
-    ret_strts <- sample(seq(1, (nsqs - retmax), retmax), round(hrdmx/retmax),
-                        replace = FALSE)
+    ret_strts <- sample(seq(1, (nsqs - retmax), retmax),
+                        round(hrdmx/retmax), replace = FALSE)
   } else {
     if (nsqs <= retmax) {
       ret_strts <- 1

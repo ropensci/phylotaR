@@ -21,6 +21,6 @@ test_that('list_clstrrec_slots() works', {
   expect_true('id' %in% slts)
 })
 test_that('list_taxrec_slots() works', {
-  ranks <- list_taxrec_slots()
+  slts <- list_taxrec_slots()
   expect_true('id' %in% slts)
 })
