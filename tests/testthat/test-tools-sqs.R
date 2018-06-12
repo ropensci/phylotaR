@@ -3,7 +3,7 @@ library(phylotaR)
 library(testthat)
 
 # DATA
-raw_recs <- readRDS(phylotaR:::datadir_get('raw_recs.rda'))
+raw_recs <- readRDS(phylotaR:::datadir_get('raw_seqrecs.rda'))
 ps <- parameters()
 
 # RUNNING

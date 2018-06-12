@@ -92,7 +92,7 @@ seqrec_convert <- function(raw_recs, ps) {
     if (!wftrs) {
       sqlngth <- as.numeric(rec[['GBSeq_length']])
       if (sqlngth < ps[['mxsql']]) {
-        seqrec <- phylotaR:::seqrec_gen(accssn = accssn, txid = '', nm = kywrds,
+        seqrec <- seqrec_gen(accssn = accssn, txid = '', nm = kywrds,
                              orgnsm = orgnsm, sq = sq, dfln = dfln,
                              ml_typ = ml_typ, rec_typ = 'whole',
                              vrsn = vrsn, age = age)

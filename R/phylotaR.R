@@ -50,8 +50,9 @@ parameters <- function(wd='.', txid=character(), mkblstdb='', blstn='', v=FALSE,
 #' @return vector
 #' @export
 list_ncbi_ranks <- function() {
-  c("superkingdom", "kingdom", "phylum", "subphylum", "class", "superorder", "order",
-    "suborder", "infraorder", "parvorder", "family", "genus", "species", "subspecies")
+  c("superkingdom", "kingdom", "phylum", "subphylum", "class",
+    "superorder", "order", "suborder", "infraorder", "parvorder",
+    "family", "genus", "species", "subspecies")
 }
 
 #' @name list_seqrec_slots

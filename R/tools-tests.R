@@ -62,13 +62,12 @@ testsqs_gen <- function(n=100, l=1000) {
     itext <- as.character(i)
     sqstrng <- sample(c('A', 'T', 'C', 'G'), size = l, replace = TRUE)
     sqstrng <- paste(sqstrng, collapse = '')
-    sqs <- c(phylotaR:::seqrec_gen(accssn = itext, nm = itext,
-                                   txid = itext, sq = sqstrng,
-                                   dfln = 'deflin', orgnsm = '',
-                                   ml_typ = 'DNA', rec_typ = 'full',
-                                   vrsn = itext, age = 1L), sqs)
+    sqs <- c(seqrec_gen(accssn = itext, nm = itext, txid = itext,
+                        sq = sqstrng, dfln = 'deflin', orgnsm = '',
+                        ml_typ = 'DNA', rec_typ = 'full',
+                        vrsn = itext, age = 1L), sqs)
   }
-  phylotaR:::seqarc_gen(sqs)
+  seqarc_gen(sqs)
 }
 
 # efetch_mock <- function(db, rettype, id) {
