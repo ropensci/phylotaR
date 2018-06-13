@@ -73,3 +73,16 @@
 #   # expect_null(res)
 # })
 # cleanUp()
+
+#   with_mock(
+#     `phylotaR:::setUpNcbiTools`=mckSetupNcbiTools,
+#     `phylotaR:::ldObj`=mckFun,
+#     `phylotaR:::clstrClstrs`=mckFun,
+#     phylotaR::setUp(wd='.', txid=9606),
+#     phylotaR::runClusters2(wd='.')
+#   )
+#   lglns <- readLines('log.txt')
+#   expect_true(grepl('Completed stage',
+#                     lglns[length(lglns) - 1]))
+# })
+# cleanUp()

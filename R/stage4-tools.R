@@ -47,8 +47,7 @@ clstrs_join <- function(blast_res, seed_ids, all_clstrs, ps) {
     blast_res[['qcovs']] > ps[['mncvrg']]
   blast_res <- blast_res[pull, ]
   clstr_list <- blast_clstr(blast_res = blast_res)
-  info(lvl = 2, ps = ps, "Identified [", length(clstr_list),
-       "] clusters")
+  info(lvl = 2, ps = ps, "Identified [", length(clstr_list), "] clusters")
   lapply(clstr_list, join)
 }
 
