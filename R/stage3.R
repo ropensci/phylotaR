@@ -34,17 +34,14 @@ clstrs_calc <- function(txdct, ps) {
   for (i in seq_along(sq_fls)) {
     sq_fl <- sq_fls[i]
     # TODO: use the cache tool
-    clfl <- file.path(file.path(file.path(ps[['wd']], 'cache',
-                                          'clusters', sq_fl)))
+    clfl <- file.path(ps[['wd']], 'cache', 'clusters', sq_fl)
     if (file.exists(clfl)) {
       next
     }
-    sqs <- readRDS(file = file.path(file.path(ps[['wd']], 'cache',
-                                              'sqs', sq_fl)))
+    sqs <- readRDS(file = file.path(ps[['wd']], 'cache', 'sqs', sq_fl))
     txid <- as.character(sub('\\.RData', '', sq_fl))
     info(lvl = 1, ps = ps, "Working on [id ", txid, "]")
-    clstrs <- clstr_all(txid = txid, sqs = sqs, txdct = txdct,
-                        ps = ps)
+    clstrs <- clstr_all(txid = txid, sqs = sqs, txdct = txdct, ps = ps)
     if (length(clstrs@ids) > 0) {
       clstrs_save(wd = ps[['wd']], txid = txid, clstrs = clstrs)
     } else {
@@ -53,22 +50,19 @@ clstrs_calc <- function(txdct, ps) {
     info(lvl = 1, ps = ps, "[", i, "/", length(sq_fls), "]")
   }
   if (length(fld) > 1) {
-    info(lvl = 1, ps = ps,
-         "Paraphyletic retry with unsuccessful clades ...")
+    info(lvl = 1, ps = ps, "Paraphyletic retry with unsuccessful clades ...")
     all_sqs <- NULL
     for (i in fld) {
       sq_fl <- sq_fls[i]
       # TODO: use the cache tool
-      sqs <- readRDS(file = file.path(file.path(ps[['wd']], 'cache',
-                                                'sqs', sq_fl)))
+      sqs <- readRDS(file = file.path(ps[['wd']], 'cache', 'sqs', sq_fl))
       all_sqs <- c(all_sqs, sqs@sqs)
     }
     all_sqs <- seqarc_gen(all_sqs)
     clstrs <- clstr_sqs(txid = '', sqs = all_sqs, ps = ps, lvl = 1,
                         typ = 'paraphyly')
     if (length(clstrs@ids) > 0) {
-      clstrs_save(wd = ps[['wd']], txid = 'paraphyly',
-                  clstrs = clstrs)
+      clstrs_save(wd = ps[['wd']], txid = 'paraphyly', clstrs = clstrs)
       sqs_save(wd = ps[['wd']], txid = 'paraphyly', sqs = all_sqs)
     }
   }
