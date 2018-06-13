@@ -67,5 +67,5 @@ clstr2_calc <- function(ps) {
   all_clstrs <- clstrs_renumber(clstrrecs = all_clstrs)
   info(lvl = 1, ps = ps, 'Saving ...')
   obj_save(wd = ps[['wd']], obj = list('clstrs' = all_clstrs,
-                                'sqs' = all_sqs), nm = 'clstrs_sqs')
+                                       'sqs' = all_sqs), nm = 'clstrs_sqs')
 }
