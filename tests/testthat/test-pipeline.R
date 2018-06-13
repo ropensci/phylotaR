@@ -40,8 +40,28 @@ test_that('restart() works', {
   )
   phylotaR:::cleanup()
 })
-test_that('reset() works', {
-  # TODO
+test_that('reset(hard=FALSE) works', {
+  phylotaR:::cache_setup(ps = parameters())
+  phylotaR:::progress_init(wd = '.')
+  phylotaR:::progress_save(wd = '.', stg = 'taxise')
+  phylotaR:::progress_save(wd = '.', stg = 'download')
+  phylotaR:::progress_save(wd = '.', stg = 'cluster')
+  phylotaR:::reset(wd = '.', stage = 'download')
+  expect_true(phylotaR:::progress_read(wd = '.') == 'download')
+  phylotaR:::cleanup()
+})
+test_that('reset(hard=TRUE) works', {
+  phylotaR:::cache_setup(ps = parameters())
+  phylotaR:::progress_init(wd = '.')
+  phylotaR:::progress_save(wd = '.', stg = 'taxise')
+  phylotaR:::progress_save(wd = '.', stg = 'download')
+  phylotaR:::obj_save(wd = '.', obj = NULL, nm = 'txdct')
+  phylotaR:::sqs_save(wd = '.', txid = '1', sqs = NULL)
+  phylotaR:::reset(wd = '.', stage = 'taxise', hard = TRUE)
+  expect_true(phylotaR:::progress_read(wd = '.') == 'taxise')
+  expect_null(phylotaR:::obj_load(wd = '.', nm = 'txdct'))
+  expect_error(phylotaR:::sqs_load(wd = '.', txid = '1'))
+  phylotaR:::cleanup()
 })
 test_that('parameters_reset() works', {
   res <- with_mock(

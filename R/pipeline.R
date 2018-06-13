@@ -80,9 +80,25 @@ reset <- function(wd, stage, hard=FALSE) {
     stop('Invalid stage name.')
   }
   ps <- parameters_load(wd)
-  # TODO: hard/soft
+  if (hard) {
+    flpth <- file.path(ps[['wd']], 'cache')
+    rdata_fls <- list.files(flpth, '.RData')
+    rdata <- vector(mode = 'list', length = length(rdata_fls))
+    names(rdata) <- rdata_fls
+    for (rdata_fl in rdata_fls) {
+      rdata[[rdata_fl]] <- readRDS(file = file.path(flpth, rdata_fl))
+    }
+    cache_setup(ps = ps, ovrwrt = TRUE)
+    for (rdata_fl in rdata_fls) {
+      saveRDS(object = rdata[[rdata_fl]], file = file.path(flpth, rdata_fl))
+    }
+  }
   progress_reset(wd = wd, stg = stage)
-  msg <- paste0('Reset pipeline to [', stage, ']')
+  if (hard) {
+    msg <- paste0('Reset (hard) pipeline to [', stage, ']')
+  } else {
+    msg <- paste0('Reset (soft) pipeline to [', stage, ']')
+  }
   brdr <- paste0(rep('-', nchar(msg)), collapse = '')
   msg <- paste0(brdr, '\n', msg, '\n', brdr)
   info(ps = ps, lvl = 1, msg)
