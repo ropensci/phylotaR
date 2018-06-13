@@ -3,8 +3,7 @@ library(testthat)
 library(phylotaR)
 
 # DATA
-flpth <- phylotaR:::datadir_get(file.path('taxonomy',
-                                          'txids_records.RData'))
+flpth <- phylotaR:::datadir_get(file.path('taxonomy', 'txids_records.RData'))
 txids_recs <- readRDS(file = flpth)
 rndmn <- sample(x = seq_along(txids_recs), size = 1)
 txids <- txids_recs[[rndmn]][['txids']]

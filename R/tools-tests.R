@@ -22,7 +22,7 @@ datadir_get <- function(subdir = '') {
 #' @noRd
 cleanup <- function() {
   # remove any test generated datasets
-  if (file.exists('cache')) {
+  if (dir.exists('cache')) {
     unlink('cache', recursive = TRUE)
   }
   fls <- c(datadir_get(file.path('blast', 'testdb')), 'log.txt',

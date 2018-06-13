@@ -11,14 +11,13 @@
 #' @family run-private
 clstr_all <- function(txid, sqs, txdct, ps, lvl=0) {
   dds <- descendants_get(id = txid, txdct = txdct, direct = TRUE)
-  all_clstrs <- clstr_subtree(txid = txid, sqs = sqs,
-                                  txdct = txdct, ps = ps, dds = dds,
-                                  lvl = lvl + 1)
+  all_clstrs <- clstr_subtree(txid = txid, sqs = sqs, txdct = txdct, ps = ps,
+                              dds = dds, lvl = lvl + 1)
   for (dd in dds) {
-    info(lvl = lvl + 2, ps = ps, "Processing [id ", txid,
-         "] child [id ", dd, "]")
-    dd_clstrs <- clstr_all(txid = dd, txdct = txdct,
-                             sqs = sqs, ps = ps, lvl = lvl + 1)
+    info(lvl = lvl + 2, ps = ps, "Processing [id ", txid, "] child [id ", dd,
+         "]")
+    dd_clstrs <- clstr_all(txid = dd, txdct = txdct, sqs = sqs, ps = ps,
+                           lvl = lvl + 1)
     all_clstrs <- clstrarc_join(all_clstrs, dd_clstrs)
   }
   all_clstrs
@@ -40,8 +39,8 @@ clstr_all <- function(txid, sqs, txdct, ps, lvl=0) {
 clstr_subtree <- function(txid, sqs, txdct, dds, ps, lvl) {
   all_clstrs <- clstrarc_gen(list())
   rnk <- rank_get(txid = txid, txdct = txdct)
-  info(lvl = lvl + 1, ps = ps, "Generating subtree clusters for [id ",
-       txid, "(", rnk, ")]")
+  info(lvl = lvl + 1, ps = ps, "Generating subtree clusters for [id ", txid,
+       " (", rnk, ")]")
   if (length(dds) > 0) {
     drct_clstrs <- clstr_direct(txid, ps = ps, txdct = txdct,
                                 sqs = sqs, lvl = lvl)
@@ -56,8 +55,8 @@ clstr_subtree <- function(txid, sqs, txdct, dds, ps, lvl) {
     return(all_clstrs)
   }
   sqs_prt <- sqs[sids]
-  sbtr_clstrs <- clstr_sqs(txid = txid, sqs = sqs_prt,
-                             typ = 'subtree', ps = ps, lvl = lvl)
+  sbtr_clstrs <- clstr_sqs(txid = txid, sqs = sqs_prt, typ = 'subtree', ps = ps,
+                           lvl = lvl)
   clstrarc_join(all_clstrs, sbtr_clstrs)
 }
 
@@ -78,19 +77,17 @@ clstr_subtree <- function(txid, sqs, txdct, dds, ps, lvl) {
 clstr_direct <- function(txid, sqs, txdct, ps, lvl) {
   all_clstrs <- clstrarc_gen(list())
   rnk <- rank_get(txid = txid, txdct = txdct)
-  info(lvl = lvl + 1, ps = ps, "Generating direct clusters for [id ",
-       txid, "(", rnk, ")]")
+  info(lvl = lvl + 1, ps = ps, "Generating direct clusters for [id ", txid,
+       "(", rnk, ")]")
   all_sq_txids <- sqs@txids
   sids <- sqs@ids[all_sq_txids %in% as.character(txid)]
   info(lvl = lvl + 2, ps = ps, "[", length(sids), " sqs]")
   if (length(sids) < 3) {
-    info(lvl = lvl + 3, ps = ps,
-         "Too few sequences, cannot make clusters")
+    info(lvl = lvl + 3, ps = ps, "Too few sequences, cannot make clusters")
     return(all_clstrs)
   }
   sqs_prt <- sqs[sids]
-  clstr_sqs(txid = txid, sqs = sqs_prt, typ = 'direct',
-              ps = ps, lvl = lvl)
+  clstr_sqs(txid = txid, sqs = sqs_prt, typ = 'direct', ps = ps, lvl = lvl)
 }
 
 #' @name clstr_sqs
@@ -104,20 +101,18 @@ clstr_direct <- function(txid, sqs, txdct, ps, lvl) {
 #' @template lvl
 #' @family run-private
 clstr_sqs <- function(txid, sqs, ps, lvl,
-                         typ=c('direct', 'subtree', 'paraphyly')) {
+                      typ=c('direct', 'subtree', 'paraphyly')) {
   typ <- match.arg(typ)
-  info(lvl = lvl + 1, ps = ps, "BLASTing [", length(sqs@ids),
-       " sqs] ....")
-  blast_res <- blast_sqs(txid = txid, typ = typ, sqs = sqs, ps = ps,
-                         lvl = lvl)
+  info(lvl = lvl + 1, ps = ps, "BLASTing [", length(sqs@ids), " sqs] ....")
+  blast_res <- blast_sqs(txid = txid, typ = typ, sqs = sqs, ps = ps, lvl = lvl)
   if (is.null(blast_res)) {
     return(NULL)
   }
   clstr_list <- blast_clstr(blast_res = blast_res)
-  clstrrecs <- clstrrec_gen(clstr_list = clstr_list,
-                                txid = txid, sqs = sqs, typ = typ)
-  info(lvl = lvl + 1, ps = ps, "Identified [",
-       length(clstrrecs@ids), "] clusters")
+  clstrrecs <- clstrrec_gen(clstr_list = clstr_list, txid = txid, sqs = sqs,
+                            typ = typ)
+  info(lvl = lvl + 1, ps = ps, "Identified [", length(clstrrecs@ids),
+       "] clusters")
   clstrrecs
 }
 
@@ -195,11 +190,9 @@ clstrrec_gen <- function(clstr_list, txid, sqs, typ) {
     clstr_sqs <- sqs[clstr[['sids']]]
     nsqs <- length(clstr[['sids']])
     ntx <- length(unique(clstr_sqs@txids))
-    clstrrec <- new('ClstrRec', sids = clstr[['sids']],
-                    txids = clstr_sqs@txids, nsqs = nsqs,
-                    ntx = ntx, typ = typ,
-                    prnt = as.character(txid),
-                    seed = clstr[['seed']])
+    clstrrec <- new('ClstrRec', sids = clstr[['sids']], txids = clstr_sqs@txids,
+                    nsqs = nsqs, ntx = ntx, typ = typ,
+                    prnt = as.character(txid), seed = clstr[['seed']])
     clstrrecs[[i]] <- clstrrec
   }
   clstrarc_gen(clstrrecs)

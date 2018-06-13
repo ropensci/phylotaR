@@ -2,15 +2,15 @@
 library(testthat)
 
 # VARS
-blast_res <- readRDS(file = phylotaR:::datadir_get(
-  file.path('blast', 'blast_res.rda')))
+blast_res_dir <- phylotaR:::datadir_get(file.path('blast', 'blast_res.rda'))
+blast_res <- readRDS(file = blast_res_dir)
 ps <- parameters()
 ps[['wd']] <- phylotaR:::datadir_get('')
 
 # RUNNING
 context('Testing \'blast-tools\'')
 test_that('blastdb_gen() works', {
-  sqs <- testsqs_gen(n = 100)
+  sqs <- phylotaR:::testsqs_gen(n = 100)
   res <- with_mock(
     `phylotaR:::cmdln` = function(...) 0,
     phylotaR:::blastdb_gen(sqs = sqs, dbfl = 'testdb', ps = ps)

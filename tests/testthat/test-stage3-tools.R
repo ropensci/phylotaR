@@ -4,10 +4,16 @@ library(testthat)
 
 # DATA
 ps <- parameters()
+exclstrarc <- phylotaR:::clstrarc_gen(list())
 sqs <- readRDS(phylotaR:::datadir_get('sqrecs.rda'))
 sqs <- phylotaR:::seqarc_gen(sqs)
-blast_res <- readRDS(phylotaR:::datadir_get(file.path('blast',
-                                                      'blast_res.rda')))
+blastres_flpth <- phylotaR:::datadir_get(file.path('blast', 'blast_res.rda'))
+blast_res <- readRDS(blastres_flpth)
+# adapt sids for blast res
+sids <- unique(c(blast_res$subject.id, blast_res$query.id))
+blast_res_sqs <- sample(sqs@sqs, length(sids))
+blast_res_sqs <- phylotaR:::seqarc_gen(blast_res_sqs)
+blast_res_sqs@ids <- sids
 
 # RUNNING
 phylotaR:::cleanup()
@@ -23,82 +29,49 @@ test_that('blast_sqs() works', {
   expect_true('data.frame' %in% is(res))
 })
 phylotaR:::cleanup()
-test_that('clstrSqs() works', {
-  # setUpCch(ps=ps)
-  # txid <- sample(phylt_nds[['ti']], 1)
-  # res <- with_mock(
-  #   `phylotaR::blstN`=mckBlstN,
-  #   `phylotaR::mkBlstDB`=mckMkBlstDB,
-  #   clstrSqs(txid=txid, sqs=sqs, phylt_nds=phylt_nds,
-  #            ps=ps, lvl=0)
-  # )
-  # expect_true('list' %in% is(res))
-  # res <- with_mock(
-  #   `phylotaR::blstN`=mckBlstN,
-  #   `phylotaR::mkBlstDB`=mckMkBlstDB,
-  #   clstrSqs(txid=9479, sqs=sqs, phylt_nds=phylt_nds,
-  #            ps=ps, lvl=0)
-  # )
-  # # using the platyrrhini txid we should get more res
-  # expect_true(length(res) > 0)
+test_that('clstr_sqs() works', {
+  phylotaR:::cache_setup(ps)
+  ps[['v']] <- TRUE
+  res <- with_mock(
+    `phylotaR:::blast_sqs` = function(...) blast_res,
+    phylotaR:::clstr_sqs(txid = '1', sqs = blast_res_sqs, ps = ps, lvl = 0,
+                         typ = 'subtree')
+  )
+  expect_true(inherits(res, 'ClstrArc'))
 })
 phylotaR:::cleanup()
 # no cache tests
-test_that('clstrAll() works', {
-  # rndn <- round(runif(min=5, max=10, n=1))
-  # res <- with_mock(
-  #   `phylotaR::getDDFrmPhyltNds`=function(txid, ...) {
-  #     if(txid == 0) return(rep(1, rndn - 1))
-  #     NULL
-  #     },
-  #   `phylotaR::clstrSbtr`=function(...) list(clstr),
-  #   clstrAll(txid=0, sqs=sqs, phylt_nds=phylt_nds,
-  #            ps=ps, lvl=0)
-  # )
-  # expect_true(length(res) == rndn)
+test_that('clstr_all() works', {
+  mock_dscdnts_get <- function(id, ...) {
+    if (id == 1) return(NULL)
+    return(1)
+  }
+  res <- with_mock(
+    `phylotaR::clstr_subtree` = function(...) exclstrarc,
+    `phylotaR::descendants_get` = mock_dscdnts_get,
+    phylotaR:::clstr_all(txid = 0, txdct = NULL, sqs = sqs, ps = ps, lvl = 0)
+  )
+  expect_true(inherits(res, 'ClstrArc'))
 })
 test_that('clstrSbtr() works', {
-  # # the parent should represent all sequences
-  # res <- with_mock(
-  #   `phylotaR::clstrSqs`=function(sqs, ...) {
-  #     sapply(sqs, function(x) x[['gi']])
-  #   },
-  #   clstrSbtr(txid=9479, sqs=sqs,
-  #             phylt_nds=phylt_nds,
-  #             dds=NULL, ps=ps, lvl=0)
-  # )
-  # expect_true(length(res) == length(sqs))
-  # # a random should repr. equal or fewer seqs.
-  # txid <- sample(phylt_nds[['ti']], 1)
-  # res <- with_mock(
-  #   `phylotaR::clstrSqs`=function(sqs, ...) {
-  #     sapply(sqs, function(x) x[['gi']])
-  #   },
-  #   clstrSbtr(txid=txid, sqs=sqs,
-  #             phylt_nds=phylt_nds,
-  #             dds=NULL, ps=ps, lvl=0)
-  # )
-  # expect_true(length(res) <= length(sqs))
+  res <- with_mock(
+    `phylotaR:::clstr_sqs` = function(...) exclstrarc,
+    `phylotaR:::clstr_direct` = function(...) exclstrarc,
+    `phylotaR:::rank_get` = function(...) 'species',
+    `phylotaR:::descendants_get` = function(...) '',
+    phylotaR:::clstr_subtree(txid = 9479, sqs = sqs, dds = 1, ps = ps,
+                             lvl = 0, txdct = NULL)
+  )
+  expect_true(inherits(res, 'ClstrArc'))
 })
-test_that('clstrDrct() works', {
-  # # expect empty list because 0 is not in phylt_nds
-  # res <- with_mock(
-  #   `phylotaR::clstrSqs`=function(...) NA,
-  #   clstrDrct(txid=0, sqs=sqs,
-  #             phylt_nds=phylt_nds, ps=ps, lvl=0)
-  # )
-  # expect_true(length(res) == 0)
-  # # choose a txid from sqs
-  # # should run clstrSqs -- returning TRUE
-  # rnd <- sample(1:length(sqs), 1)
-  # txid <- sqs[[rnd]][['ti']]
-  # res <- with_mock(
-  #   `phylotaR::clstrSqs`=function(...) TRUE,
-  #   clstrDrct(txid=txid, sqs=sqs,
-  #             phylt_nds=phylt_nds,
-  #             ps=ps, lvl=0)
-  # )
-  # expect_true(res)
+test_that('clstr_direct() works', {
+  res <- with_mock(
+    `phylotaR:::clstr_sqs` = function(...) exclstrarc,
+    `phylotaR:::rank_get` = function(...) 'species',
+    phylotaR:::clstr_direct(txid = 9479, sqs = sqs, ps = ps, lvl = 0,
+                            txdct = NULL)
+  )
+  expect_true(inherits(res, 'ClstrArc'))
 })
 test_that('blast_clstr() works', {
   res <- phylotaR:::blast_clstr(blast_res = blast_res)
