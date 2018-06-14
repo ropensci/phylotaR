@@ -24,16 +24,15 @@ get_txids(phylota, cid = NULL, sid = NULL, txids = NULL, rnk = NULL,
 vector
 }
 \description{
-Return taxonomic IDs for a vector of sequence IDs or
-all sequences in a cluster. User can specify what rank the IDs
-should be returned. If NULL, the lowest level is returned.
+Return taxonomic IDs for a vector of sequence IDs or all
+sequences in a cluster. User can specify what rank the IDs should be
+returned. If NULL, the lowest level is returned.
 }
 \details{
-txids can either be provided by user or they can be
-determined for a vector of sids or for a cid.
-If keep_higher is TRUE, any sequence that has a identity that is
-higher than the given rank will be returned. If FALSE, these
-sequences will return ''.
+txids can either be provided by user or they can be determined for
+a vector of sids or for a cid. If keep_higher is TRUE, any sequence that has
+a identity that is higher than the given rank will be returned. If FALSE,
+these sequences will return ''.
 }
 \seealso{
 Other tools-public: \code{\link{calc_mad}},

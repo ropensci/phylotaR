@@ -22,10 +22,9 @@ get_ntaxa(phylota, cid = NULL, sid = NULL, rnk = NULL,
 vector
 }
 \description{
-Count the number of unique taxa represented by
-cluster(s) or sequences in phylota table Use rnk to specify a
-taxonomic level to count. If NULL counts will be made to the lowest
-level reported on NCBI.
+Count the number of unique taxa represented by cluster(s) or
+sequences in phylota table Use rnk to specify a taxonomic level to count. If
+NULL counts will be made to the lowest level reported on NCBI.
 }
 \seealso{
 Other tools-public: \code{\link{calc_mad}},

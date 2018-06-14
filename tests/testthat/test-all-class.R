@@ -3,16 +3,7 @@ library(phylotaR)
 library(testthat)
 
 # DATA
-# randomly choose one of the example phylota objects
-pssbls <- c("aotus", "bromeliads", "cycads", "dragonflies", "sturgeons",
-            "tinamous")
-# TODO: "tardigrades"
-rndm <- sample(pssbls, 1)
-list.files('data')
-data_env <- new.env()
-do.call(what = data, args = list(rndm, envir = data_env))
-assign(x = 'phylota', value = data_env[[rndm]])
-rm(data_env)
+phylota <- phylotaR:::random_phylota()
 
 # RUNNING
 context('Testing \'all-class\'')

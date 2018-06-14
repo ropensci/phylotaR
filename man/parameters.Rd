@@ -24,21 +24,24 @@ Statements will always be printed to log.txt.}
 \item{ncps}{The number of threads to use in the local-alignment search tool.}
 
 \item{mxnds}{The maximum number of nodes descending from a taxonomic group.
-If there are more than this number, nodes at the lower taxonomic level are analysed.}
+If there are more than this number, nodes at the lower taxonomic level are
+analysed.}
 
-\item{mdlthrs}{'Model organism threshold'. Taxa with more sequences than this number
-will be considered model organisms and a random mdlthrs subset of their sequences will
-be downloaded.}
+\item{mdlthrs}{'Model organism threshold'. Taxa with more sequences than this
+number will be considered model organisms and a random mdlthrs subset of
+their sequences will be downloaded.}
 
-\item{mnsql}{The minimum length of sequence in nucleotide base pairs to download.}
+\item{mnsql}{The minimum length of sequence in nucleotide base pairs to
+download.}
 
-\item{mxsql}{The maximum length of sequence in nucleotide base pairs to download.
-Any longer sequences will be ignored.}
+\item{mxsql}{The maximum length of sequence in nucleotide base pairs to
+download. Any longer sequences will be ignored.}
 
 \item{mxrtry}{The maximum number of attempts to make when downloading.}
 
 \item{mxsqs}{The maximum number of sequences to BLAST in all-vs-all searches.
-If there are more sequences for a node, BLAST is performed at the lower taxonomic level.}
+If there are more sequences for a node, BLAST is performed at the lower
+taxonomic level.}
 
 \item{mxevl}{The maximum E-value for a successful BLAST.}
 

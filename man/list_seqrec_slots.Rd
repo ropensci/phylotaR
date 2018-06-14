@@ -10,8 +10,8 @@ list_seqrec_slots()
 vector
 }
 \description{
-Returns a vector of all
-available SeqRec slots.
+Returns a vector of all available SeqRec slots of type
+character, integer and numeric.
 }
 \seealso{
 Other tools-public: \code{\link{calc_mad}},

@@ -10,8 +10,8 @@ list_clstrrec_slots()
 vector
 }
 \description{
-Returns a vector of all
-available ClstrRec slots.
+Returns a vector of all available ClstrRec slots of type
+character, integer and numeric.
 }
 \seealso{
 Other tools-public: \code{\link{calc_mad}},

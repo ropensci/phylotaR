@@ -10,8 +10,8 @@ list_taxrec_slots()
 vector
 }
 \description{
-Returns a vector of all
-available TaxRec slots.
+Returns a vector of all available TaxRec slots of type
+character, integer and numeric.
 }
 \seealso{
 Other tools-public: \code{\link{calc_mad}},

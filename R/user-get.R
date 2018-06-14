@@ -1,9 +1,8 @@
 #' @name get_ntaxa
 #' @title Count number of unique taxa
-#' @description Count the number of unique taxa represented by
-#' cluster(s) or sequences in phylota table Use rnk to specify a
-#' taxonomic level to count. If NULL counts will be made to the lowest
-#' level reported on NCBI.
+#' @description Count the number of unique taxa represented by cluster(s) or
+#' sequences in phylota table Use rnk to specify a taxonomic level to count. If
+#' NULL counts will be made to the lowest level reported on NCBI.
 #' @param phylota Phylota object
 #' @param cid Cluster ID(s)
 #' @param sid Sequence ID(s)
@@ -31,25 +30,24 @@ get_ntaxa <- function(phylota, cid = NULL, sid = NULL, rnk = NULL,
 
 #' @name get_txids
 #' @title Get taxonomic IDs by rank
-#' @description Return taxonomic IDs for a vector of sequence IDs or
-#' all sequences in a cluster. User can specify what rank the IDs
-#' should be returned. If NULL, the lowest level is returned.
+#' @description Return taxonomic IDs for a vector of sequence IDs or all
+#' sequences in a cluster. User can specify what rank the IDs should be
+#' returned. If NULL, the lowest level is returned.
 #' @param phylota Phylota object
 #' @param cid Cluster ID
 #' @param sid Sequence ID(s)
 #' @param txids Vector of txids
 #' @param rnk Taxonomic rank
 #' @param keep_higher Keep higher taxonomic IDs?
-#' @details txids can either be provided by user or they can be
-#' determined for a vector of sids or for a cid.
-#' If keep_higher is TRUE, any sequence that has a identity that is
-#' higher than the given rank will be returned. If FALSE, these
-#' sequences will return ''.
+#' @details txids can either be provided by user or they can be determined for
+#' a vector of sids or for a cid. If keep_higher is TRUE, any sequence that has
+#' a identity that is higher than the given rank will be returned. If FALSE,
+#' these sequences will return ''.
 #' @return vector
 #' @export
 #' @family tools-public
-get_txids <- function(phylota, cid = NULL, sid = NULL, txids = NULL,
-                      rnk = NULL, keep_higher = FALSE) {
+get_txids <- function(phylota, cid = NULL, sid = NULL, txids = NULL, rnk = NULL,
+                      keep_higher = FALSE) {
   get <- function(txid) {
     tx <- phylota@txdct@recs[[txid]]
     rnks <- tx@lng[['rnks']]
@@ -107,7 +105,6 @@ get_nsqs <- function(phylota, cid) {
 #' @return vector
 #' @export
 #' @family tools-public
-# TODO: GCR
 get_sq_slot <- function(phylota, cid = NULL, sid = NULL,
                         slt_nm = list_seqrec_slots()) {
   get <- function(sid) {

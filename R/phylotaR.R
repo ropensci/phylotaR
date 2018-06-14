@@ -18,24 +18,27 @@
 #' Statements will always be printed to log.txt.
 #' @param ncps The number of threads to use in the local-alignment search tool.
 #' @param mxnds The maximum number of nodes descending from a taxonomic group.
-#' If there are more than this number, nodes at the lower taxonomic level are analysed.
-#' @param mdlthrs 'Model organism threshold'. Taxa with more sequences than this number
-#' will be considered model organisms and a random mdlthrs subset of their sequences will
-#' be downloaded.
-#' @param mnsql The minimum length of sequence in nucleotide base pairs to download.
-#' @param mxsql The maximum length of sequence in nucleotide base pairs to download.
-#' Any longer sequences will be ignored.
+#' If there are more than this number, nodes at the lower taxonomic level are
+#' analysed.
+#' @param mdlthrs 'Model organism threshold'. Taxa with more sequences than this
+#' number will be considered model organisms and a random mdlthrs subset of
+#' their sequences will be downloaded.
+#' @param mnsql The minimum length of sequence in nucleotide base pairs to
+#' download.
+#' @param mxsql The maximum length of sequence in nucleotide base pairs to
+#' download. Any longer sequences will be ignored.
 #' @param mxrtry The maximum number of attempts to make when downloading.
 #' @param mxsqs The maximum number of sequences to BLAST in all-vs-all searches.
-#' If there are more sequences for a node, BLAST is performed at the lower taxonomic level.
+#' If there are more sequences for a node, BLAST is performed at the lower
+#' taxonomic level.
 #' @param mxevl The maximum E-value for a successful BLAST.
 #' @param mncvrg The maximum percentile coverage defining an overlapping BLAST hit.
 #' Sequences with BLAST matches with lower values are not considered orthologous.
 #' @export
-parameters <- function(wd='.', txid=character(), mkblstdb='', blstn='', v=FALSE, ncps=1,
-                       mxnds=100000, mdlthrs=3000, mnsql=250, mxsql=2000, mxrtry=100,
-                       mxsqs=50000, mxevl=1.0e-10, mncvrg=51, btchsz=300,
-                       date=Sys.Date()) {
+parameters <- function(wd='.', txid=character(), mkblstdb='', blstn='', v=FALSE,
+                       ncps=1, mxnds=100000, mdlthrs=3000, mnsql=250,
+                       mxsql=2000, mxrtry=100, mxsqs=50000, mxevl=1.0e-10,
+                       mncvrg=51, btchsz=300, date=Sys.Date()) {
   ps <- as.list(environment())
   ps[['txid']] <- as.character(ps[['txid']])
   ps[['wt_tms']] <- c(1, 3, 6, 10, 60, 300)
@@ -50,46 +53,46 @@ parameters <- function(wd='.', txid=character(), mkblstdb='', blstn='', v=FALSE,
 #' @return vector
 #' @export
 list_ncbi_ranks <- function() {
-  c("superkingdom", "kingdom", "phylum", "subphylum", "class",
-    "superorder", "order", "suborder", "infraorder", "parvorder",
-    "family", "genus", "species", "subspecies")
+  c("superkingdom", "kingdom", "phylum", "subphylum", "class", "superorder",
+    "order", "suborder", "infraorder", "parvorder", "family", "genus",
+    "species", "subspecies")
 }
 
 #' @name list_seqrec_slots
 #' @family tools-public
 #' @title List all SeqRec slots
-#' @description Returns a vector of all
-#' available SeqRec slots.
+#' @description Returns a vector of all available SeqRec slots of type
+#' character, integer and numeric.
 #' @return vector
 #' @export
 list_seqrec_slots <- function() {
   slt_typs <- getSlots('SeqRec')
-  pull <- slt_typs %in% c('character', 'integer', 'raw', 'numeric')
+  pull <- slt_typs %in% c('character', 'integer', 'numeric')
   names(slt_typs[pull])
 }
 
 #' @name list_clstrrec_slots
 #' @family tools-public
 #' @title List all ClstrRec slots
-#' @description Returns a vector of all
-#' available ClstrRec slots.
+#' @description Returns a vector of all available ClstrRec slots of type
+#' character, integer and numeric.
 #' @return vector
 #' @export
 list_clstrrec_slots <- function() {
   slt_typs <- getSlots('ClstrRec')
-  pull <- slt_typs %in% c('character', 'integer', 'raw', 'numeric')
+  pull <- slt_typs %in% c('character', 'integer', 'numeric')
   names(slt_typs[pull])
 }
 
 #' @name list_taxrec_slots
 #' @family tools-public
 #' @title List all TaxRec slots
-#' @description Returns a vector of all
-#' available TaxRec slots.
+#' @description Returns a vector of all available TaxRec slots of type
+#' character, integer and numeric.
 #' @return vector
 #' @export
 list_taxrec_slots <- function() {
   slt_typs <- getSlots('TaxRec')
-  pull <- slt_typs %in% c('character', 'integer', 'raw', 'numeric')
+  pull <- slt_typs %in% c('character', 'integer', 'numeric')
   names(slt_typs[pull])
 }
