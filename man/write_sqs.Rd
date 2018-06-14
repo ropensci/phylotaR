@@ -16,13 +16,12 @@ write_sqs(phylota, outfile, sid, sq_nm = sid)
 \item{sq_nm}{Sequence name(s)}
 }
 \description{
-Write out sequences, as .fasta, for a given vector of
-IDs.
+Write out sequences, as .fasta, for a given vector of IDs.
 }
 \details{
-The user can control the output definition lines of the sequences
-using the sq_nm. By default sequences IDs are used. Note, ensure
-the sq_nm are in the same order as sid.
+The user can control the output definition lines of the sequences using the
+sq_nm. By default sequences IDs are used. Note, ensure the sq_nm are in the
+same order as sid.
 }
 \seealso{
 Other tools-public: \code{\link{calc_mad}},
@@ -39,5 +38,5 @@ Other tools-public: \code{\link{calc_mad}},
   \code{\link{list_taxrec_slots}},
   \code{\link{plot_phylota_pa}},
   \code{\link{plot_phylota_treemap}},
-  \code{\link{read_phylota}}, \code{\link{write_phylota}}
+  \code{\link{read_phylota}}
 }

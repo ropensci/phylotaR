@@ -25,12 +25,11 @@ drop_by_rank(phylota, rnk = "species", keep_higher = FALSE, n = 10,
 phylota
 }
 \description{
-Identifies higher level taxa for each sequence
-in clusters for given rank. Selects representative sequences
-for each unique taxon using the choose_by functions. By default,
-the function will choose the top ten sequences by first sorting
-by those with fewest number of ambiguous sequences, then by
-youngest, then by sequence length.
+Identifies higher level taxa for each sequence in clusters for
+given rank. Selects representative sequences for each unique taxon using the
+choose_by functions. By default, the function will choose the top ten
+sequences by first sorting by those with fewest number of ambiguous
+sequences, then by youngest, then by sequence length.
 }
 \seealso{
 Other tools-public: \code{\link{calc_mad}},
@@ -46,6 +45,5 @@ Other tools-public: \code{\link{calc_mad}},
   \code{\link{list_taxrec_slots}},
   \code{\link{plot_phylota_pa}},
   \code{\link{plot_phylota_treemap}},
-  \code{\link{read_phylota}}, \code{\link{write_phylota}},
-  \code{\link{write_sqs}}
+  \code{\link{read_phylota}}, \code{\link{write_sqs}}
 }

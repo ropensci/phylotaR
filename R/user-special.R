@@ -32,18 +32,6 @@ read_phylota <- function(wd) {
   update_phylota(phylota)
 }
 
-#' @name write_phylota
-#' @title Write out Phylota-like Table
-#' @description Create a Phylota-like table from phylota object.
-#' @param phylota Phylota
-#' @param outfile Output file
-#' @return NULL
-#' @export
-#' @family tools-public
-write_table <- function(phylota, outfile) {
-  # TODO
-}
-
 #' @name write_sqs
 #' @title Write out sequences
 #' @description Write out sequences, as .fasta, for a given vector of IDs.
@@ -237,8 +225,7 @@ plot_phylota_treemap <- function(phylota, cids = NULL, txids = NULL,
 #' @param sids Sequence IDs
 #' @return matrix
 #' @family tools-private
-mk_txid_in_sq_mtrx <- function(phylota, txids,
-                               sids = phylota@sids) {
+mk_txid_in_sq_mtrx <- function(phylota, txids, sids = phylota@sids) {
   is_txid_in_sqs <- function(txid) {
     ads <- descendants_get(id = txid, txdct = phylota@txdct,
                            direct = FALSE)

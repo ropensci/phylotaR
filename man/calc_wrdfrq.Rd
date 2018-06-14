@@ -24,14 +24,13 @@ calc_wrdfrq(phylota, cid, min_frq = 0.1, min_nchar = 1, type = c("dfln",
 list
 }
 \description{
-For all sequences in a cluster(s) calculate the
-frequency of separate words in either the sequence definitions or
-the reported feature name.
+For all sequences in a cluster(s) calculate the frequency of
+separate words in either the sequence definitions or the reported feature
+name.
 }
 \details{
-By default, anything that is not alphanumeric is  ignored.
-'dfln' and 'nm' match the slot names in a SeqRec, see
-list_seqrec_slots().
+By default, anything that is not alphanumeric is  ignored. 'dfln'
+and 'nm' match the slot names in a SeqRec, see list_seqrec_slots().
 }
 \seealso{
 Other tools-public: \code{\link{calc_mad}},
@@ -47,6 +46,5 @@ Other tools-public: \code{\link{calc_mad}},
   \code{\link{list_taxrec_slots}},
   \code{\link{plot_phylota_pa}},
   \code{\link{plot_phylota_treemap}},
-  \code{\link{read_phylota}}, \code{\link{write_phylota}},
-  \code{\link{write_sqs}}
+  \code{\link{read_phylota}}, \code{\link{write_sqs}}
 }

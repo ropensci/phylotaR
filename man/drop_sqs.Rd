@@ -17,8 +17,7 @@ drop_sqs(phylota, cid, sid)
 phylota
 }
 \description{
-Drop all sequences in a cluster
-except those identified by user.
+Drop all sequences in a cluster except those identified by user.
 }
 \seealso{
 Other tools-public: \code{\link{calc_mad}},
@@ -34,6 +33,5 @@ Other tools-public: \code{\link{calc_mad}},
   \code{\link{list_taxrec_slots}},
   \code{\link{plot_phylota_pa}},
   \code{\link{plot_phylota_treemap}},
-  \code{\link{read_phylota}}, \code{\link{write_phylota}},
-  \code{\link{write_sqs}}
+  \code{\link{read_phylota}}, \code{\link{write_sqs}}
 }

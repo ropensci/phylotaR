@@ -18,9 +18,9 @@ vector
 For all sequences in a cluster(s) the MAD score.
 }
 \details{
-MAD is a measure of the deviation in  sequence length of
-a cluster. Values range from 0 to 1. Clusters with values close to
-1 have sequences with similar lengths.
+MAD is a measure of the deviation in sequence length of a cluster.
+Values range from 0 to 1. Clusters with values close to 1 have sequences with
+similar lengths.
 }
 \seealso{
 Other tools-public: \code{\link{calc_wrdfrq}},
@@ -36,6 +36,5 @@ Other tools-public: \code{\link{calc_wrdfrq}},
   \code{\link{list_taxrec_slots}},
   \code{\link{plot_phylota_pa}},
   \code{\link{plot_phylota_treemap}},
-  \code{\link{read_phylota}}, \code{\link{write_phylota}},
-  \code{\link{write_sqs}}
+  \code{\link{read_phylota}}, \code{\link{write_sqs}}
 }
