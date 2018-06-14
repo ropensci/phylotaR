@@ -46,21 +46,19 @@ write_table <- function(phylota, outfile) {
 
 #' @name write_sqs
 #' @title Write out sequences
-#' @description Write out sequences, as .fasta, for a given vector of
-#' IDs.
+#' @description Write out sequences, as .fasta, for a given vector of IDs.
 #' @param phylota Phylota
 #' @param outfile Output file
 #' @param sid Sequence ID(s)
 #' @param sq_nm Sequence name(s)
 #' @details 
-#' The user can control the output definition lines of the sequences
-#' using the sq_nm. By default sequences IDs are used. Note, ensure
-#' the sq_nm are in the same order as sid.
+#' The user can control the output definition lines of the sequences using the
+#' sq_nm. By default sequences IDs are used. Note, ensure the sq_nm are in the
+#' same order as sid.
 #' @return NULL
 #' @export
 #' @family tools-public
-write_sqs <- function(phylota, outfile,
-                      sid, sq_nm = sid) {
+write_sqs <- function(phylota, outfile, sid, sq_nm = sid) {
   get <- function(i) {
     sq <- phylota@sqs[[sid[i]]]
     paste0('>', sq_nm[i], '\n',
@@ -128,13 +126,12 @@ plot_phylota_pa <- function(phylota, cids, txids, cnms = cids, txnms = txids) {
   p_data[['txnm']] <- factor(p_data[['txnm']], levels = txnms,
                              ordered = TRUE)
   # plot
-  # https://stackoverflow.com/questions/9439256/how-can-i-handle-r-cmd-check-no-visible-binding-for-global-variable-notes-when
+  # https://tinyurl.com/y8jblekm
   cnm <- txnm <- NULL
   ggplot2::ggplot(p_data, ggplot2::aes(cnm, txnm)) +
     ggplot2::geom_tile(ggplot2::aes(fill = value)) +
     ggplot2::xlab('') + ggplot2::ylab('') +
-    ggplot2::scale_fill_gradient(low = '#e0e0e0',
-                                 high = '#303030') +
+    ggplot2::scale_fill_gradient(low = '#e0e0e0', high = '#303030') +
     ggplot2::theme_bw() +
     ggplot2::theme(legend.position = 'none')
 }

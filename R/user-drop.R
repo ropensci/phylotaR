@@ -1,7 +1,6 @@
 #' @name drop_sqs
 #' @title Drop sequences in a cluster
-#' @description Drop all sequences in a cluster
-#' except those identified by user.
+#' @description Drop all sequences in a cluster except those identified by user.
 #' @param phylota Phylota object
 #' @param cid Cluster ID
 #' @param sid Sequence ID(s) to be kept
@@ -16,7 +15,7 @@ drop_sqs <- function(phylota, cid, sid) {
   clstr@nsqs <- length(clstr@sids)
   clstr@txids <- clstr@txids[pull]
   clstr@ntx <- length(unique(clstr@txids))
-  phylota@cls@cls[[indx]] <- clstr
+  phylota@clstrs@clstrs[[indx]] <- clstr
   update_phylota(phylota)
 }
 
@@ -37,12 +36,11 @@ drop_clstrs <- function(phylota, cid) {
 
 #' @name drop_by_rank
 #' @title Reduce clusters to specific rank
-#' @description Identifies higher level taxa for each sequence
-#' in clusters for given rank. Selects representative sequences
-#' for each unique taxon using the choose_by functions. By default,
-#' the function will choose the top ten sequences by first sorting
-#' by those with fewest number of ambiguous sequences, then by
-#' youngest, then by sequence length.
+#' @description Identifies higher level taxa for each sequence in clusters for
+#' given rank. Selects representative sequences for each unique taxon using the
+#' choose_by functions. By default, the function will choose the top ten
+#' sequences by first sorting by those with fewest number of ambiguous
+#' sequences, then by youngest, then by sequence length.
 #' @param phylota Phylota object
 #' @param rnk Taxonomic rank
 #' @param keep_higher Keep higher taxonomic ranks?
@@ -52,8 +50,7 @@ drop_clstrs <- function(phylota, cid) {
 #' @return phylota
 #' @export
 #' @family tools-public
-drop_by_rank <- function(phylota, rnk = 'species',
-                         keep_higher = FALSE, n = 10,
+drop_by_rank <- function(phylota, rnk = 'species', keep_higher = FALSE, n = 10,
                          choose_by = c('pambgs', 'age', 'nncltds'),
                          greatest = c(FALSE, FALSE, TRUE)) {
   slct <- function(txid) {
@@ -73,9 +70,9 @@ drop_by_rank <- function(phylota, rnk = 'species',
     stop(paste0('[', choose_by[pull], '] not in SeqRec'))
   }
   for (cid in phylota@cids) {
-    txids <- get_txids(phylota = phylota, cid = cid, 
-                       rnk = rnk, keep_higher = keep_higher)
-    sids <- phylota@cls[[cid]]@sids
+    txids <- get_txids(phylota = phylota, cid = cid, rnk = rnk,
+                       keep_higher = keep_higher)
+    sids <- phylota@clstrs[[cid]]@sids
     pull <- txids != ''
     sids <- sids[pull]
     txids <- txids[pull]

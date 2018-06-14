@@ -158,8 +158,8 @@ setMethod('[', c('ClstrArc', 'character', 'missing', 'missing'),
           function(x, i, j, ..., drop = TRUE) {
             pull <- i %in% x@ids
             if (all(pull)) {
-              x <- clstrarc_gen(x@clstrs[x@ids %in% i])
-              x@ids <- i
+              clstrrecs <- x@clstrs[x@ids %in% i]
+              x <- new('ClstrArc', ids = i, clstrs = clstrrecs)
               return(x)
             }
             mssng <- paste0(i[!pull], collapse = ', ')
@@ -286,8 +286,7 @@ setClass('SeqArc', representation = representation(
 setMethod('as.character', c('x' = 'SeqArc'),
           function(x) {
             msg <- 'Archive of sequence record(s)\n'
-            msg <- paste0(msg, ' - [', length(x@ids),
-                          '] sequences\n')
+            msg <- paste0(msg, ' - [', length(x@ids), '] sequences\n')
             msg <- paste0(msg, ' - [', length(unique(x@txids)),
                           '] unique txids\n')
             msg <- paste0(msg, ' - [', median(x@nncltds),
