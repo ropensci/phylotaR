@@ -1,6 +1,7 @@
 #' @importFrom methods is new getSlots initialize slot slotNames show
 #' @importFrom stats median 
 #' @importFrom utils head packageVersion read.table tail write.table
+#' capture.output sessionInfo
 
 #' @name parameters
 #' @family public-pipeline

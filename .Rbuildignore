@@ -6,3 +6,4 @@ demos/
 _pkgdown.yml
 docs/
 man-roxygen/
+CONTRIBUTING.md

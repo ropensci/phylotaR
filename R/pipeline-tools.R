@@ -61,7 +61,7 @@ blast_setup <- function(d, v, wd) {
   blstn <- file.path(d, 'blastn')
   for (ech in c(mkblstdb, blstn)) {
     args <- '-version'
-    res <- phylotaR:::cmdln(cmd = ech, args = args)
+    res <- cmdln(cmd = ech, args = args)
     if (res[['status']] != 0) {
       tst <- FALSE
       stderr <- rawToChar(res[['stderr']])
