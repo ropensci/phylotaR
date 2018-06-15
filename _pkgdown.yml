@@ -36,6 +36,7 @@ reference:
     - write_sqs
     - plot_phylota_treemap
     - plot_phylota_pa
+    - get_stage_times
 - title: Data
   desc: Example Phylota objects
   contents:

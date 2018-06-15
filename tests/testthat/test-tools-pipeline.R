@@ -8,14 +8,14 @@ test_that('blast_setup() works', {
   # test with fake system
   res <- with_mock(
     `phylotaR:::cmdln` = phylotaR:::cmdln_blastcheck,
-    phylotaR:::blast_setup(d  =  '.', v  =  FALSE, wd  =  NULL)
+    phylotaR:::blast_setup(d  =  '.', v  =  FALSE, wd  =  '.')
   )
   expect_true(length(res) == 2)
   # make sure wrong versions are flagged
   res <- with_mock(
     `phylotaR:::cmdln`  =  phylotaR:::cmdln_blastcheck,
     expect_error(phylotaR:::blast_setup(d  =  'wrngvrsn', v  =  FALSE,
-                                        wd  =  NULL))
+                                        wd  =  '.'))
   )
   # make sure wrong dirs are flagged
   expect_error(phylotaR:::blast_setup(d  =  '.', v  =  FALSE, wd  =  NULL))

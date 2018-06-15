@@ -1,7 +1,7 @@
 # phylotaR
 [![Build Status](https://travis-ci.org/AntonelliLab/phylotaR.svg?branch=master)](https://travis-ci.org/AntonelliLab/phylotaR) [![Coverage Status](https://coveralls.io/repos/github/AntonelliLab/phylotaR/badge.svg?branch=master)](https://coveralls.io/github/AntonelliLab/phylotaR?branch=master) [![](https://badges.ropensci.org/187_status.svg)](https://github.com/ropensci/onboarding/issues/187)
 
-R implementation of the PhyLoTa sequence cluster pipeline (http://phylota.net/).
+R implementation of the (PhyLoTa sequence cluster pipeline)[http://phylota.net/]. For more information see the accompanying website.
 
 ## Install
 Currently only the devlopment package is available:
@@ -10,13 +10,15 @@ Currently only the devlopment package is available:
 devtools::install_github(repo='AntonelliLab/phylotaR', build_vignettes=TRUE)
 ```
 
-**Full functionality depends on a local copy of BLAST+**. For details on downloading and compiling BLAST+ on your machine please visit the [NCBI website](https://www.ncbi.nlm.nih.gov/books/NBK279690/).
+**Full functionality depends on a local copy of BLAST+**. For details on downloading and compiling BLAST+ on your machine please visit the [NCBI website](https://www.ncbi.nlm.nih.gov/books/NBK279690/). *Minimum BLAST version 2.0.0*.
 
 ## Pipeline
 
 `phylotaR` runs the PhyLoTa pipeline in four automated stages: identify and retrieve taxonomic information on all descendent nodes of the taxonomic group of interest (`taxise`), download sequence data for every identified node (`download`), identify orthologous clusters using BLAST (`cluster`), and identify sister clusters for sets of clusters identified in the previous stage (`cluster^2`) After these stages are complete, `phylotaR` provides tools for exploring, identifying and exporting suitable clusters for subsequent analysis.
 
-![phylotaR pipeline: internet dependencies are indicated with green circles, external software dependcies are indiciated with orange circles.](https://github.com/DomBennett/phylotaR/raw/master/other/stages.png)
+![phylotaR pipeline](other/stages.png)
+
+For more information on the pipeline and how it works see the publication, (phylotaR: An Automated Pipeline for Retrieving Orthologous DNA Sequences from GenBank in R)[https://doi.org/10.3390/life8020020].
 
 ## Running
 

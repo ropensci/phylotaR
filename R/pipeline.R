@@ -9,6 +9,12 @@
 #' @export
 #' @family run-public
 setup <- function(wd, txid, ncbi_dr='.', v=FALSE, ...) {
+  # no ~
+  checks <- vapply(X = c(wd, ncbi_dr), FUN = grepl, FUN.VALUE = logical(1),
+                   pattern = '~')
+  if (any(checks)) {
+    stop(paste0('Do not use `~` in filepaths.'))
+  }
   # header log
   msg <- paste0('phylotaR: Implementation of PhyLoTa in R [v',
                 packageVersion('phylotaR'), ']')
@@ -16,10 +22,8 @@ setup <- function(wd, txid, ncbi_dr='.', v=FALSE, ...) {
   msg <- paste0(brdr, '\n', msg, '\n', brdr, '\n')
   .log(v = v, wd = wd, msg)
   # set up
-  ncbi_execs <- blast_setup(d = ncbi_dr, v = v,
-                            wd = wd)
-  parameters_setup(wd = wd, txid = txid,
-                   ncbi_execs = ncbi_execs, v = v, ...)
+  ncbi_execs <- blast_setup(d = ncbi_dr, v = v, wd = wd)
+  parameters_setup(wd = wd, txid = txid, ncbi_execs = ncbi_execs, v = v, ...)
   # record session info
   writeLines(capture.output(sessionInfo()), file.path(wd, "session_info.txt"))
   # end

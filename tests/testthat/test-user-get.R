@@ -67,3 +67,20 @@ test_that('get_tx_slot() works', {
   rec <- phylota@txdct@recs[[txid]]
   expect_equal(slot(rec, sltnm), res[[1]])
 })
+phylotaR:::cleanup()
+test_that('get_stage_times() works', {
+  with_mock(
+    `phylotaR:::blast_setup` = function(...) {
+      list('mkblstdb' = '.', 'blstn' = '.')}
+    ,
+    `phylotaR:::txids_get` = function(...) NULL,
+    `phylotaR:::batcher` = function(...) NULL,
+    `phylotaR:::taxdict_gen` = function(...) NULL,
+    `phylotaR:::obj_save` = function(...) NULL,
+    phylotaR::setup(wd = '.', txid = 9606),
+    taxise_run(wd = '.')
+  )
+  timings <- get_stage_times(wd = '.')
+  expect_true(inherits(timings, 'numeric'))
+})
+phylotaR:::cleanup()

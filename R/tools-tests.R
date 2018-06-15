@@ -44,7 +44,7 @@ cleanup <- function() {
     unlink('cache', recursive = TRUE)
   }
   fls <- c(datadir_get(file.path('blast', 'testdb')), 'log.txt',
-           'log.log', 'test.fasta')
+           'log.log', 'test.fasta', 'session_info.txt', 'blast_versions.txt')
   for (fl in fls) {
     if (file.exists(fl)) {
       file.remove(fl)

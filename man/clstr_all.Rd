@@ -22,8 +22,7 @@ depth.}
 ClstrArc
 }
 \description{
-Identifies all direct and subtree clusters for a
-taxonomic ID.
+Identifies all direct and subtree clusters for a taxonomic ID.
 }
 \seealso{
 Other run-private: \code{\link{batcher}},

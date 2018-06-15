@@ -61,7 +61,7 @@ blast_setup <- function(d, v, wd) {
   blstn <- file.path(d, 'blastn')
   for (ech in c(mkblstdb, blstn)) {
     args <- '-version'
-    res <- cmdln(cmd = ech, args = args)
+    res <- phylotaR:::cmdln(cmd = ech, args = args)
     if (res[['status']] != 0) {
       tst <- FALSE
       stderr <- rawToChar(res[['stderr']])
@@ -74,6 +74,8 @@ blast_setup <- function(d, v, wd) {
       stdout <- strsplit(x = stdout, split = '\n')[[1]]
       vrsn <- gsub('[a-zA-Z:+]', '', stdout[[1]])
       vrsn <- gsub('\\s', '', vrsn)
+      write(x = paste0('Filepath: ', ech, ', version: ', vrsn, '\n'),
+            append = TRUE, file = file.path(wd, 'blast_versions.txt'))
       vrsn <- as.numeric(strsplit(vrsn, '\\.')[[1]])
       tst <- vrsn[1] >= 2 & vrsn[2] >= 0
       if (tst) {
