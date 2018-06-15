@@ -40,9 +40,27 @@ library(phylotaR)
 vignette("phylotaR")
 ```
 
+## Timings
+
+How long does it take for a phylotaR pipeline to complete? Below is a table listing the runtimes in minutes for different demonstration, taxonomic groups. 
+
+Taxon|Taxise|Download|Cluster|Cluster2|Total|
+|:--|--:|--:|--:|--:|--:|
+Anisoptera|0.8|12|21|33|
+Acipenseridae|0.067|NA|NA|NA|
+Tinamiformes|0.083|1.3|0.22|1.6|
+Aotus|0.05|NA|NA|NA|
+Bromeliaceae|0.67|15|14|30|
+Cycadidae|0.18|11|5.3|17|
+Eutardigrada|0.28|5|0.82|6|
+Kazachstania|0.067|9.3|1.1|10|
+Platyrrhini|0.2|30|1.6|32|
+
+To run these same demonstrations see ´demos/demo_run.R´. 
+
 ## License
 
-GPL-2
+MIT
 
 ## Version
 
@@ -54,6 +72,6 @@ Dom Bennett (maintainer, R package dev), Hannes Hettling (workhouse code dev), R
 
 ## Reference
 
-Bennett, D.J.; Hettling, H.; Silvestro, D.; Zizka, A.; Bacon, C.D.; Faurby, S.; Vos, R.A.; Antonelli, A. phylotaR: An automated pipeline for retrieving orthologous DNA sequences from GenBank in R. Preprints 2018, 2018040047 (doi: 10.20944/preprints201804.0047.v1).
+Bennett, D., Hettling, H., Silvestro, D., Zizka, A., Bacon, C., Faurby, S., … Antonelli, A. (2018). phylotaR: An Automated Pipeline for Retrieving Orthologous DNA Sequences from GenBank in R. Life, 8(2), 20. https://doi.org/10.3390/life8020020
 
 Sanderson, M. J., Boss, D., Chen, D., Cranston, K. A., & Wehe, A. (2008). The PhyLoTA Browser: Processing GenBank for molecular phylogenetics research. *Systematic Biology*, **57**(3), 335–346. [DOI:10.1080/10635150802158688](https://doi.org/10.1080/10635150802158688)
