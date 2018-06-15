@@ -20,6 +20,8 @@ setup <- function(wd, txid, ncbi_dr='.', v=FALSE, ...) {
                             wd = wd)
   parameters_setup(wd = wd, txid = txid,
                    ncbi_execs = ncbi_execs, v = v, ...)
+  # record session info
+  writeLines(capture.output(sessionInfo()), file.path(wd, "session_info.txt"))
   # end
   .log(v = v, wd = wd, paste0(brdr, '\n'))
 }

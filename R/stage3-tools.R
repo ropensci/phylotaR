@@ -1,7 +1,6 @@
 #' @name clstr_all
 #' @title Hierarchically cluster all sequences of a txid
-#' @description Identifies all direct and subtree clusters for a
-#' taxonomic ID.
+#' @description Identifies all direct and subtree clusters for a taxonomic ID.
 #' @param txid Taxonomic ID
 #' @param sqs Sequence object of all downloaded sequences
 #' @param txdct Taxonomic dictionary
@@ -50,8 +49,8 @@ clstr_subtree <- function(txid, sqs, txdct, dds, ps, lvl) {
   all_sq_txids <- sqs@txids
   sids <- sqs@ids[which(all_sq_txids %in% as.character(txids))]
   if (length(sids) < 3) {
-    info(lvl = lvl + 3, ps = ps, "[", length(sids), " sqs]",
-         " -- too few sequences, cannot make clusters")
+    # info(lvl = lvl + 3, ps = ps, "[", length(sids), " sqs]",
+    #      " -- too few sequences, cannot make clusters")
     return(all_clstrs)
   }
   sqs_prt <- sqs[sids]
