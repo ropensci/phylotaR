@@ -25,9 +25,9 @@ random_phylota <- function() {
               "tinamous")
   # TODO: "tardigrades"
   rndm <- sample(pssbls, 1)
-  list.files('data')
+  # list.files('data')
   data_env <- new.env()
-  do.call(what = data, args = list(rndm, envir = data_env))
+  do.call(what = utils::data, args = list(rndm, envir = data_env))
   assign(x = 'phylota', value = data_env[[rndm]])
   rm(data_env)
   phylota
@@ -44,7 +44,7 @@ cleanup <- function() {
     unlink('cache', recursive = TRUE)
   }
   fls <- c(datadir_get(file.path('blast', 'testdb')), 'log.txt',
-           'log.log')
+           'log.log', 'test.fasta')
   for (fl in fls) {
     if (file.exists(fl)) {
       file.remove(fl)

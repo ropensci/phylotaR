@@ -17,9 +17,8 @@ mk_txid_in_sq_mtrx(phylota, txids, sids = phylota@sids)
 matrix
 }
 \description{
-Searches through lineages of sequences' source
-organisms to determine whether each txid is represented by the
-sequence.
+Searches through lineages of sequences' source organisms to
+determine whether each txid is represented by the sequence.
 }
 \seealso{
 Other tools-private: \code{\link{summary_phylota}},
