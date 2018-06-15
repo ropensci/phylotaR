@@ -132,7 +132,7 @@ cluster in phylota object.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>phylota</th>
-      <td><p>PhyLoTa object</p></td>
+      <td><p>Phylota object</p></td>
     </tr>
     <tr>
       <th>cids</th>
@@ -158,14 +158,14 @@ cluster in phylota object.</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Cluster names and taxonomic names
-can be given to the function, by default IDs are used.</p>
+    <p>Cluster names and taxonomic names can be given to the function, by
+default IDs are used.</p>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p>Other tools-public: <code><a href='calc_mad.html'>calc_mad</a></code>,
   <code><a href='calc_wrdfrq.html'>calc_wrdfrq</a></code>, <code><a href='drop_by_rank.html'>drop_by_rank</a></code>,
-  <code><a href='drop_cls.html'>drop_cls</a></code>, <code><a href='drop_sqs.html'>drop_sqs</a></code>,
+  <code><a href='drop_clstrs.html'>drop_clstrs</a></code>, <code><a href='drop_sqs.html'>drop_sqs</a></code>,
   <code><a href='get_clstr_slot.html'>get_clstr_slot</a></code>, <code><a href='get_nsqs.html'>get_nsqs</a></code>,
   <code><a href='get_ntaxa.html'>get_ntaxa</a></code>, <code><a href='get_sq_slot.html'>get_sq_slot</a></code>,
   <code><a href='get_tx_slot.html'>get_tx_slot</a></code>, <code><a href='get_txids.html'>get_txids</a></code>,
@@ -176,38 +176,30 @@ can be given to the function, by default IDs are used.</p>
   <code><a href='list_seqrec_slots.html'>list_seqrec_slots</a></code>,
   <code><a href='list_taxrec_slots.html'>list_taxrec_slots</a></code>,
   <code><a href='plot_phylota_treemap.html'>plot_phylota_treemap</a></code>,
-  <code><a href='read_phylota.html'>read_phylota</a></code>, <code><a href='write_phylota.html'>write_phylota</a></code>,
-  <code><a href='write_sqs.html'>write_sqs</a></code></p></div>
+  <code><a href='read_phylota.html'>read_phylota</a></code>, <code><a href='write_sqs.html'>write_sqs</a></code></p></div>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>library(phylotaR)
-data(cycads)
-# drop all but first ten
-cycads <- drop_cls(cycads, cycads@cids[1:10])
-# plot all
-p <- plot_phylota_pa(phylota = cycads, cids = cycads@cids,
-                     txids = cycads@txids)
-print(p)  # lots of information, difficult to interpret
-# get genus-level taxonomic names
-genus_txids <- get_txids(cycads,
-                         txids = cycads@txids,
-                         rnk = 'genus')
-genus_txids <- unique(genus_txids)
-# dropping missing
-genus_txids <- genus_txids[genus_txids ! =  '']
-genus_nms <- get_tx_slot(cycads, genus_txids, slt_nm = 'scnm')
-# make alphabetical for plotting
-genus_nms <- sort(genus_nms, decreasing = TRUE)
-# generate geom_object
-p <- plot_phylota_pa(phylota = cycads, cids = cycads@cids,
-                     txids = genus_txids, txnms = genus_nms)
-# plot
-print(p)  # easier to interpret
-</div><div class='output co'>#&gt; <span class='error'>Error: &lt;text&gt;:15:40: unexpected '!'</span>
-#&gt; <span class='error'>14: # dropping missing</span>
-#&gt; <span class='error'>15: genus_txids &lt;- genus_txids[genus_txids !</span>
-#&gt; <span class='error'>                                           ^</span></div></pre>
+    <pre class="examples"><div class='input'><span class='fu'>library</span>(<span class='no'>phylotaR</span>)
+<span class='fu'>data</span>(<span class='no'>cycads</span>)
+<span class='co'># drop all but first ten</span>
+<span class='no'>cycads</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='drop_clstrs.html'>drop_clstrs</a></span>(<span class='no'>cycads</span>, <span class='no'>cycads</span>@<span class='kw'>cids</span>[<span class='fl'>1</span>:<span class='fl'>10</span>])
+<span class='co'># plot all</span>
+<span class='no'>p</span> <span class='kw'>&lt;-</span> <span class='fu'>plot_phylota_pa</span>(<span class='kw'>phylota</span> <span class='kw'>=</span> <span class='no'>cycads</span>, <span class='kw'>cids</span> <span class='kw'>=</span> <span class='no'>cycads</span>@<span class='kw'>cids</span>,
+                     <span class='kw'>txids</span> <span class='kw'>=</span> <span class='no'>cycads</span>@<span class='kw'>txids</span>)
+<span class='fu'>print</span>(<span class='no'>p</span>)  <span class='co'># lots of information, difficult to interpret</span></div><div class='img'><img src='plot_phylota_pa-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='co'># get genus-level taxonomic names</span>
+<span class='no'>genus_txids</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='get_txids.html'>get_txids</a></span>(<span class='no'>cycads</span>, <span class='kw'>txids</span> <span class='kw'>=</span> <span class='no'>cycads</span>@<span class='kw'>txids</span>, <span class='kw'>rnk</span> <span class='kw'>=</span> <span class='st'>'genus'</span>)
+<span class='no'>genus_txids</span> <span class='kw'>&lt;-</span> <span class='fu'>unique</span>(<span class='no'>genus_txids</span>)
+<span class='co'># dropping missing</span>
+<span class='no'>genus_txids</span> <span class='kw'>&lt;-</span> <span class='no'>genus_txids</span>[<span class='no'>genus_txids</span> <span class='kw'>!=</span>  <span class='st'>''</span>]
+<span class='no'>genus_nms</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='get_tx_slot.html'>get_tx_slot</a></span>(<span class='no'>cycads</span>, <span class='no'>genus_txids</span>, <span class='kw'>slt_nm</span> <span class='kw'>=</span> <span class='st'>'scnm'</span>)
+<span class='co'># make alphabetical for plotting</span>
+<span class='no'>genus_nms</span> <span class='kw'>&lt;-</span> <span class='fu'>sort</span>(<span class='no'>genus_nms</span>, <span class='kw'>decreasing</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)
+<span class='co'># generate geom_object</span>
+<span class='no'>p</span> <span class='kw'>&lt;-</span> <span class='fu'>plot_phylota_pa</span>(<span class='kw'>phylota</span> <span class='kw'>=</span> <span class='no'>cycads</span>, <span class='kw'>cids</span> <span class='kw'>=</span> <span class='no'>cycads</span>@<span class='kw'>cids</span>,
+                     <span class='kw'>txids</span> <span class='kw'>=</span> <span class='no'>genus_txids</span>, <span class='kw'>txnms</span> <span class='kw'>=</span> <span class='no'>genus_nms</span>)
+<span class='co'># plot</span>
+<span class='fu'>print</span>(<span class='no'>p</span>)  <span class='co'># easier to interpret</span></div><div class='img'><img src='plot_phylota_pa-2.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

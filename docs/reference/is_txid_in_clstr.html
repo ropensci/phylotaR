@@ -154,7 +154,7 @@ organism lineages.</p>
 
     <div class='dont-index'><p>Other tools-public: <code><a href='calc_mad.html'>calc_mad</a></code>,
   <code><a href='calc_wrdfrq.html'>calc_wrdfrq</a></code>, <code><a href='drop_by_rank.html'>drop_by_rank</a></code>,
-  <code><a href='drop_cls.html'>drop_cls</a></code>, <code><a href='drop_sqs.html'>drop_sqs</a></code>,
+  <code><a href='drop_clstrs.html'>drop_clstrs</a></code>, <code><a href='drop_sqs.html'>drop_sqs</a></code>,
   <code><a href='get_clstr_slot.html'>get_clstr_slot</a></code>, <code><a href='get_nsqs.html'>get_nsqs</a></code>,
   <code><a href='get_ntaxa.html'>get_ntaxa</a></code>, <code><a href='get_sq_slot.html'>get_sq_slot</a></code>,
   <code><a href='get_tx_slot.html'>get_tx_slot</a></code>, <code><a href='get_txids.html'>get_txids</a></code>,
@@ -165,15 +165,17 @@ organism lineages.</p>
   <code><a href='list_taxrec_slots.html'>list_taxrec_slots</a></code>,
   <code><a href='plot_phylota_pa.html'>plot_phylota_pa</a></code>,
   <code><a href='plot_phylota_treemap.html'>plot_phylota_treemap</a></code>,
-  <code><a href='read_phylota.html'>read_phylota</a></code>, <code><a href='write_phylota.html'>write_phylota</a></code>,
-  <code><a href='write_sqs.html'>write_sqs</a></code></p></div>
+  <code><a href='read_phylota.html'>read_phylota</a></code>, <code><a href='write_sqs.html'>write_sqs</a></code></p></div>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'>data</span>(<span class='no'>tinamous</span>)
 <span class='no'>cid</span> <span class='kw'>&lt;-</span> <span class='no'>tinamous</span>@<span class='kw'>cids</span><span class='kw'>[[</span><span class='fl'>1</span>]]
-<span class='no'>clstr</span> <span class='kw'>&lt;-</span> <span class='no'>tinamous</span><span class='kw'>[[</span><span class='no'>cid</span>]]</div><div class='output co'>#&gt; <span class='error'>Error in tinamous[[cid]]: this S4 class is not subsettable</span></div><div class='input'><span class='no'>sq</span> <span class='kw'>&lt;-</span> <span class='no'>tinamous</span><span class='kw'>[[</span><span class='no'>cl</span>@<span class='kw'>sids</span><span class='kw'>[[</span><span class='fl'>1</span>]]]]</div><div class='output co'>#&gt; <span class='error'>Error in eval(expr, envir, enclos): object 'cl' not found</span></div><div class='input'><span class='no'>txid</span> <span class='kw'>&lt;-</span> <span class='no'>sq</span>@<span class='kw'>txid</span></div><div class='output co'>#&gt; <span class='error'>Error in eval(expr, envir, enclos): object 'sq' not found</span></div><div class='input'><span class='co'># expect true</span>
-<span class='fu'>is_txid_in_cl</span>(<span class='kw'>phylota</span> <span class='kw'>=</span> <span class='no'>tinamous</span>, <span class='kw'>txid</span> <span class='kw'>=</span> <span class='no'>txid</span>, <span class='kw'>cid</span> <span class='kw'>=</span> <span class='no'>cid</span>)</div><div class='output co'>#&gt; <span class='error'>Error in is_txid_in_cl(phylota = tinamous, txid = txid, cid = cid): could not find function "is_txid_in_cl"</span></div></pre>
+<span class='no'>clstr</span> <span class='kw'>&lt;-</span> <span class='no'>tinamous</span><span class='kw'>[[</span><span class='no'>cid</span>]]
+<span class='no'>sq</span> <span class='kw'>&lt;-</span> <span class='no'>tinamous</span><span class='kw'>[[</span><span class='no'>clstr</span>@<span class='kw'>sids</span><span class='kw'>[[</span><span class='fl'>1</span>]]]]
+<span class='no'>txid</span> <span class='kw'>&lt;-</span> <span class='no'>sq</span>@<span class='kw'>txid</span>
+<span class='co'># expect true</span>
+<span class='fu'>is_txid_in_clstr</span>(<span class='kw'>phylota</span> <span class='kw'>=</span> <span class='no'>tinamous</span>, <span class='kw'>txid</span> <span class='kw'>=</span> <span class='no'>txid</span>, <span class='kw'>cid</span> <span class='kw'>=</span> <span class='no'>cid</span>)</div><div class='output co'>#&gt; [1] TRUE</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

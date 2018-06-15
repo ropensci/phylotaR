@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Plot treemap of PhyLoTa object — plot_phylota_treemap • phylotaR</title>
+<title>Plot treemap of Phylota object — plot_phylota_treemap • phylotaR</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,7 +30,7 @@
 
 
 
-<meta property="og:title" content="Plot treemap of PhyLoTa object — plot_phylota_treemap" />
+<meta property="og:title" content="Plot treemap of Phylota object — plot_phylota_treemap" />
 
 <meta property="og:description" content="Treemaps show relative size with boxes. The user can
 explore which taxa or clusters are most represented either by
@@ -116,7 +116,7 @@ made for taxa." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Plot treemap of PhyLoTa object</h1>
+    <h1>Plot treemap of Phylota object</h1>
     <small class="dont-index">Source: <a href='https://github.com/AntonelliLab/phylotaR#readme/blob/master/R/user-special.R'><code>R/user-special.R</code></a></small>
     <div class="hidden name"><code>plot_phylota_treemap.Rd</code></div>
     </div>
@@ -140,7 +140,7 @@ made for taxa.</p>
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>phylota</th>
-      <td><p>PhyLoTa object</p></td>
+      <td><p>Phylota object</p></td>
     </tr>
     <tr>
       <th>cids</th>
@@ -178,7 +178,7 @@ made for taxa.</p>
     
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>The function can take a long time to run for large PhyLoTa
+    <p>The function can take a long time to run for large Phylota
 objects over many taxonomic IDs because searches are made across
 lineages. The idea of the function is to assess the data dominance
 of specific clusters and taxa.</p>
@@ -187,7 +187,7 @@ of specific clusters and taxa.</p>
 
     <div class='dont-index'><p>Other tools-public: <code><a href='calc_mad.html'>calc_mad</a></code>,
   <code><a href='calc_wrdfrq.html'>calc_wrdfrq</a></code>, <code><a href='drop_by_rank.html'>drop_by_rank</a></code>,
-  <code><a href='drop_cls.html'>drop_cls</a></code>, <code><a href='drop_sqs.html'>drop_sqs</a></code>,
+  <code><a href='drop_clstrs.html'>drop_clstrs</a></code>, <code><a href='drop_sqs.html'>drop_sqs</a></code>,
   <code><a href='get_clstr_slot.html'>get_clstr_slot</a></code>, <code><a href='get_nsqs.html'>get_nsqs</a></code>,
   <code><a href='get_ntaxa.html'>get_ntaxa</a></code>, <code><a href='get_sq_slot.html'>get_sq_slot</a></code>,
   <code><a href='get_tx_slot.html'>get_tx_slot</a></code>, <code><a href='get_txids.html'>get_txids</a></code>,
@@ -198,30 +198,24 @@ of specific clusters and taxa.</p>
   <code><a href='list_seqrec_slots.html'>list_seqrec_slots</a></code>,
   <code><a href='list_taxrec_slots.html'>list_taxrec_slots</a></code>,
   <code><a href='plot_phylota_pa.html'>plot_phylota_pa</a></code>,
-  <code><a href='read_phylota.html'>read_phylota</a></code>, <code><a href='write_phylota.html'>write_phylota</a></code>,
-  <code><a href='write_sqs.html'>write_sqs</a></code></p></div>
+  <code><a href='read_phylota.html'>read_phylota</a></code>, <code><a href='write_sqs.html'>write_sqs</a></code></p></div>
     
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>data("tinamous")
-# Plot clusters, size by n. sq, fill by n. tx
-p <- plot_phylota_treemap(phylota = tinamous, cids = tinamous@cids,
-                          area = 'nsq', fill = 'ntx')
-print(p)
-# Plot taxa, size by n. sq, fill by ncl
-txids <- get_txids(tinamous, txids = tinamous@txids,
-                   rnk = 'genus')
-txids <- txids[txids ! =  '']
-txids <- unique(txids)
-txnms <- get_tx_slot(tinamous, txids, slt_nm = 'scnm')
-p <- plot_phylota_treemap(phylota = tinamous, txids = txids,
-                          txnms = txnms, area = 'nsq',
-                          fill = 'ncl')
-print(p)
-</div><div class='output co'>#&gt; <span class='error'>Error: &lt;text&gt;:9:22: unexpected '!'</span>
-#&gt; <span class='error'>8:                    rnk = 'genus')</span>
-#&gt; <span class='error'>9: txids &lt;- txids[txids !</span>
-#&gt; <span class='error'>                        ^</span></div></pre>
+    <pre class="examples"><div class='input'><span class='fu'>data</span>(<span class='st'>"tinamous"</span>)
+<span class='co'># Plot clusters, size by n. sq, fill by n. tx</span>
+<span class='no'>p</span> <span class='kw'>&lt;-</span> <span class='fu'>plot_phylota_treemap</span>(<span class='kw'>phylota</span> <span class='kw'>=</span> <span class='no'>tinamous</span>, <span class='kw'>cids</span> <span class='kw'>=</span> <span class='no'>tinamous</span>@<span class='kw'>cids</span>,
+                          <span class='kw'>area</span> <span class='kw'>=</span> <span class='st'>'nsq'</span>, <span class='kw'>fill</span> <span class='kw'>=</span> <span class='st'>'ntx'</span>)
+<span class='fu'>print</span>(<span class='no'>p</span>)</div><div class='img'><img src='plot_phylota_treemap-1.png' alt='' width='700' height='433' /></div><div class='input'><span class='co'># Plot taxa, size by n. sq, fill by ncl</span>
+<span class='no'>txids</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='get_txids.html'>get_txids</a></span>(<span class='no'>tinamous</span>, <span class='kw'>txids</span> <span class='kw'>=</span> <span class='no'>tinamous</span>@<span class='kw'>txids</span>,
+                   <span class='kw'>rnk</span> <span class='kw'>=</span> <span class='st'>'genus'</span>)
+<span class='no'>txids</span> <span class='kw'>&lt;-</span> <span class='no'>txids</span>[<span class='no'>txids</span> <span class='kw'>!=</span>  <span class='st'>''</span>]
+<span class='no'>txids</span> <span class='kw'>&lt;-</span> <span class='fu'>unique</span>(<span class='no'>txids</span>)
+<span class='no'>txnms</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='get_tx_slot.html'>get_tx_slot</a></span>(<span class='no'>tinamous</span>, <span class='no'>txids</span>, <span class='kw'>slt_nm</span> <span class='kw'>=</span> <span class='st'>'scnm'</span>)
+<span class='no'>p</span> <span class='kw'>&lt;-</span> <span class='fu'>plot_phylota_treemap</span>(<span class='kw'>phylota</span> <span class='kw'>=</span> <span class='no'>tinamous</span>, <span class='kw'>txids</span> <span class='kw'>=</span> <span class='no'>txids</span>,
+                          <span class='kw'>txnms</span> <span class='kw'>=</span> <span class='no'>txnms</span>, <span class='kw'>area</span> <span class='kw'>=</span> <span class='st'>'nsq'</span>,
+                          <span class='kw'>fill</span> <span class='kw'>=</span> <span class='st'>'ncl'</span>)
+<span class='fu'>print</span>(<span class='no'>p</span>)</div><div class='img'><img src='plot_phylota_treemap-2.png' alt='' width='700' height='433' /></div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

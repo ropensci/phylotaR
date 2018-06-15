@@ -17,7 +17,7 @@ reference:
   contents:
     - read_phylota
     - drop_by_rank
-    - drop_cls
+    - drop_clstrs
     - drop_sqs
     - get_clstr_slot
     - get_sq_slot
@@ -33,7 +33,6 @@ reference:
     - list_taxrec_slots
     - calc_wrdfrq
     - calc_mad
-    - write_phylota
     - write_sqs
     - plot_phylota_treemap
     - plot_phylota_pa

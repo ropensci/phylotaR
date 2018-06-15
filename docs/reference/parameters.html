@@ -125,7 +125,7 @@ parameter values.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>parameters</span>(<span class='kw'>wd</span> <span class='kw'>=</span> <span class='st'>"."</span>, <span class='kw'>txid</span> <span class='kw'>=</span> <span class='fu'>numeric</span>(), <span class='kw'>mkblstdb</span> <span class='kw'>=</span> <span class='st'>""</span>, <span class='kw'>blstn</span> <span class='kw'>=</span> <span class='st'>""</span>,
+    <pre class="usage"><span class='fu'>parameters</span>(<span class='kw'>wd</span> <span class='kw'>=</span> <span class='st'>"."</span>, <span class='kw'>txid</span> <span class='kw'>=</span> <span class='fu'>character</span>(), <span class='kw'>mkblstdb</span> <span class='kw'>=</span> <span class='st'>""</span>, <span class='kw'>blstn</span> <span class='kw'>=</span> <span class='st'>""</span>,
   <span class='kw'>v</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>ncps</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>mxnds</span> <span class='kw'>=</span> <span class='fl'>1e+05</span>, <span class='kw'>mdlthrs</span> <span class='kw'>=</span> <span class='fl'>3000</span>, <span class='kw'>mnsql</span> <span class='kw'>=</span> <span class='fl'>250</span>,
   <span class='kw'>mxsql</span> <span class='kw'>=</span> <span class='fl'>2000</span>, <span class='kw'>mxrtry</span> <span class='kw'>=</span> <span class='fl'>100</span>, <span class='kw'>mxsqs</span> <span class='kw'>=</span> <span class='fl'>50000</span>, <span class='kw'>mxevl</span> <span class='kw'>=</span> <span class='fl'>1e-10</span>,
   <span class='kw'>mncvrg</span> <span class='kw'>=</span> <span class='fl'>51</span>, <span class='kw'>btchsz</span> <span class='kw'>=</span> <span class='fl'>300</span>, <span class='kw'>date</span> <span class='kw'>=</span> <span class='fu'>Sys.Date</span>())</pre>
@@ -161,22 +161,24 @@ Statements will always be printed to log.txt.</p></td>
     <tr>
       <th>mxnds</th>
       <td><p>The maximum number of nodes descending from a taxonomic group.
-If there are more than this number, nodes at the lower taxonomic level are analysed.</p></td>
+If there are more than this number, nodes at the lower taxonomic level are
+analysed.</p></td>
     </tr>
     <tr>
       <th>mdlthrs</th>
-      <td><p>'Model organism threshold'. Taxa with more sequences than this number
-will be considered model organisms and a random mdlthrs subset of their sequences will
-be downloaded.</p></td>
+      <td><p>'Model organism threshold'. Taxa with more sequences than this
+number will be considered model organisms and a random mdlthrs subset of
+their sequences will be downloaded.</p></td>
     </tr>
     <tr>
       <th>mnsql</th>
-      <td><p>The minimum length of sequence in nucleotide base pairs to download.</p></td>
+      <td><p>The minimum length of sequence in nucleotide base pairs to
+download.</p></td>
     </tr>
     <tr>
       <th>mxsql</th>
-      <td><p>The maximum length of sequence in nucleotide base pairs to download.
-Any longer sequences will be ignored.</p></td>
+      <td><p>The maximum length of sequence in nucleotide base pairs to
+download. Any longer sequences will be ignored.</p></td>
     </tr>
     <tr>
       <th>mxrtry</th>
@@ -185,7 +187,8 @@ Any longer sequences will be ignored.</p></td>
     <tr>
       <th>mxsqs</th>
       <td><p>The maximum number of sequences to BLAST in all-vs-all searches.
-If there are more sequences for a node, BLAST is performed at the lower taxonomic level.</p></td>
+If there are more sequences for a node, BLAST is performed at the lower
+taxonomic level.</p></td>
     </tr>
     <tr>
       <th>mxevl</th>

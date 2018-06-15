@@ -160,3 +160,44 @@ get_tx_slot <- function(phylota, txid, slt_nm = list_taxrec_slots()) {
   expctd <- new(getSlots('TaxRec')[[slt_nm]], 1)
   vapply(txid, get, expctd)
 }
+
+#' @name get_stage_times
+#' @title Get run times for different stages
+#' @description Get slot data for taxa(s)
+#' @param wd Working directory
+#' @return list of runtimes in minutes
+#' @export
+#' @family tools-public
+get_stage_times <- function(wd) {
+  lgfl <- file.path(wd, 'log.txt')
+  lines <- readLines(con = lgfl)
+  stage_tms <- stage_ends <- stage_starts <- c('taxise' = NA,
+                                               'download' = NA,
+                                               'cluster' = NA,
+                                               'cluster\\^2' = NA)
+  stage_nms <- names(stage_tms)
+  for (ln in lines) {
+    for (stgnm in stage_nms) {
+      pttrn <- paste0('Starting stage ', stgnm, ': ')
+      if (grepl(pattern = pttrn, x = ln, ignore.case = TRUE)) {
+        ln <- sub(pattern = pttrn,
+                  replacement = '', x = ln, ignore.case = TRUE)
+        ln <- gsub(pattern = '(\\[|\\])', replacement = '', x = ln)
+        stage_starts[[stgnm]] <- ln
+      }
+      pttrn <- paste0('Completed stage ', stgnm, ': ')
+      if (grepl(pttrn, ln, ignore.case = TRUE)) {
+        ln <- sub(pattern = pttrn,
+                  replacement = '', x = ln, ignore.case = TRUE)
+        ln <- gsub(pattern = '(\\[|\\])', replacement = '', x = ln)
+        stage_ends[[stgnm]] <- ln
+      }
+    }
+  }
+  for (stgnm in stage_nms) {
+    stage_tms[[stgnm]] <- difftime(as.POSIXct(stage_ends[[stgnm]]),
+                                   as.POSIXct(stage_starts[[stgnm]]),
+                                   units = 'mins')
+  }
+  stage_tms
+}

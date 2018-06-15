@@ -132,8 +132,15 @@
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'>data</span>(<span class='no'>bromeliads</span>) <span class='co'># load object</span>
-<span class='fu'>str</span>(<span class='no'>bromeliads</span>)</div><div class='output co'>#&gt; Formal class 'PhyLoTa' [package "phylotaR"] with 0 slots
-#&gt;  Named list()</div></pre>
+<span class='fu'>str</span>(<span class='no'>bromeliads</span>)</div><div class='output co'>#&gt; Formal class 'Phylota' [package "phylotaR"] with 8 slots
+#&gt;   ..@ cids   : chr [1:406] "0" "1" "2" "3" ...
+#&gt;   ..@ txids  : chr [1:1015] "100681" "1349380" "1485041" "1485031" ...
+#&gt;   ..@ sids   : chr [1:5832] "AF162230.2/1..1536" "HQ913671.1/54..670" "HQ882722.1/1..573" "HQ882722.1/1..523" ...
+#&gt;   ..@ txdct  :Formal class 'TaxDict' [package "phylotaR"] with 4 slots
+#&gt;   ..@ sqs    :Formal class 'SeqArc' [package "phylotaR"] with 5 slots
+#&gt;   ..@ clstrs :Formal class 'ClstrArc' [package "phylotaR"] with 2 slots
+#&gt;   ..@ prnt_id: chr "4613"
+#&gt;   ..@ prnt_nm: chr "Bromeliaceae"</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

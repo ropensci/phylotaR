@@ -132,8 +132,15 @@
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'>data</span>(<span class='no'>sturgeons</span>) <span class='co'># load object</span>
-<span class='fu'>str</span>(<span class='no'>sturgeons</span>)</div><div class='output co'>#&gt; Formal class 'PhyLoTa' [package "phylotaR"] with 0 slots
-#&gt;  Named list()</div></pre>
+<span class='fu'>str</span>(<span class='no'>sturgeons</span>)</div><div class='output co'>#&gt; Formal class 'Phylota' [package "phylotaR"] with 8 slots
+#&gt;   ..@ cids   : chr [1:309] "0" "1" "2" "3" ...
+#&gt;   ..@ txids  : chr [1:42] "328639" "1358436" "228914" "136628" ...
+#&gt;   ..@ sids   : chr [1:2034] "MG670582.1/72..978" "MG670581.1/63..1129" "MG670580.1/64..1130" "MG670579.1/71..1137" ...
+#&gt;   ..@ txdct  :Formal class 'TaxDict' [package "phylotaR"] with 4 slots
+#&gt;   ..@ sqs    :Formal class 'SeqArc' [package "phylotaR"] with 5 slots
+#&gt;   ..@ clstrs :Formal class 'ClstrArc' [package "phylotaR"] with 2 slots
+#&gt;   ..@ prnt_id: chr "7900"
+#&gt;   ..@ prnt_nm: chr "Acipenseridae"</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

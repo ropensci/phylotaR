@@ -82,7 +82,7 @@
       <h1>phylotaR Tutorial</h1>
                         <h4 class="author">D.J. Bennett</h4>
             
-            <h4 class="date">2018-06-09</h4>
+            <h4 class="date">2018-06-15</h4>
       
       <small class="dont-index">Source: <a href="https://github.com/AntonelliLab/phylotaR#readme/blob/master/vignettes/phylotaR.Rmd"><code>vignettes/phylotaR.Rmd</code></a></small>
       <div class="hidden name"><code>phylotaR.Rmd</code></div>
@@ -139,9 +139,9 @@ txid &lt;-<span class="st"> </span><span class="dv">9504</span>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">all_clustrs &lt;-<span class="st"> </span><span class="kw"><a href="../reference/read_phylota.html">read_phylota</a></span>(wd)
 cids &lt;-<span class="st"> </span>all_clustrs<span class="op">@</span>cids
 n_taxa &lt;-<span class="st"> </span><span class="kw"><a href="../reference/get_ntaxa.html">get_ntaxa</a></span>(<span class="dt">phylota=</span>all_clustrs, <span class="dt">cid=</span>cids)</code></pre></div>
-<p>We can then drop all the clusters with fewer than 6 taxa and create a new phylota object using the <code><a href="../reference/drop_cls.html">drop_cls()</a></code> function. Let’s then take a peak of the now smaller object’s clusters using <code>summary()</code>.</p>
+<p>We can then drop all the clusters with fewer than 6 taxa and create a new phylota object using the <code>drop_cls()</code> function. Let’s then take a peak of the now smaller object’s clusters using <code>summary()</code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">keep &lt;-<span class="st"> </span>cids[n_taxa <span class="op">&gt;</span><span class="st"> </span><span class="dv">6</span>]
-selected &lt;-<span class="st"> </span><span class="kw"><a href="../reference/drop_cls.html">drop_cls</a></span>(<span class="dt">phylota=</span>all_clustrs, <span class="dt">cid=</span>keep)
+selected &lt;-<span class="st"> </span><span class="kw">drop_cls</span>(<span class="dt">phylota=</span>all_clustrs, <span class="dt">cid=</span>keep)
 smmry &lt;-<span class="st"> </span><span class="kw">summary</span>(selected)</code></pre></div>
 <p>In my session, I have the following output:</p>
 <pre><code>&gt; smmry

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Get slot data for each taxon record — get_tx_slot • phylotaR</title>
+<title>Drop cluster records from phylota object — drop_clstrs • phylotaR</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,9 +30,10 @@
 
 
 
-<meta property="og:title" content="Get slot data for each taxon record — get_tx_slot" />
+<meta property="og:title" content="Drop cluster records from phylota object — drop_clstrs" />
 
-<meta property="og:description" content="Get slot data for taxa(s)" />
+<meta property="og:description" content="Drops all clusters except those
+identified by user." />
 <meta name="twitter:card" content="summary" />
 
 
@@ -112,18 +113,19 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Get slot data for each taxon record</h1>
-    <small class="dont-index">Source: <a href='https://github.com/AntonelliLab/phylotaR#readme/blob/master/R/user-get.R'><code>R/user-get.R</code></a></small>
-    <div class="hidden name"><code>get_tx_slot.Rd</code></div>
+    <h1>Drop cluster records from phylota object</h1>
+    <small class="dont-index">Source: <a href='https://github.com/AntonelliLab/phylotaR#readme/blob/master/R/user-drop.R'><code>R/user-drop.R</code></a></small>
+    <div class="hidden name"><code>drop_clstrs.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Get slot data for taxa(s)</p>
+    <p>Drops all clusters except those
+identified by user.</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>get_tx_slot</span>(<span class='no'>phylota</span>, <span class='no'>txid</span>, <span class='kw'>slt_nm</span> <span class='kw'>=</span> <span class='fu'><a href='list_taxrec_slots.html'>list_taxrec_slots</a></span>())</pre>
+    <pre class="usage"><span class='fu'>drop_clstrs</span>(<span class='no'>phylota</span>, <span class='no'>cid</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -133,26 +135,22 @@
       <td><p>Phylota object</p></td>
     </tr>
     <tr>
-      <th>txid</th>
-      <td><p>Taxonomic ID</p></td>
-    </tr>
-    <tr>
-      <th>slt_nm</th>
-      <td><p>Slot name</p></td>
+      <th>cid</th>
+      <td><p>Cluster ID(s) to be kept</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>vector or list</p>
+    <p>phylota</p>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
     <div class='dont-index'><p>Other tools-public: <code><a href='calc_mad.html'>calc_mad</a></code>,
   <code><a href='calc_wrdfrq.html'>calc_wrdfrq</a></code>, <code><a href='drop_by_rank.html'>drop_by_rank</a></code>,
-  <code><a href='drop_clstrs.html'>drop_clstrs</a></code>, <code><a href='drop_sqs.html'>drop_sqs</a></code>,
-  <code><a href='get_clstr_slot.html'>get_clstr_slot</a></code>, <code><a href='get_nsqs.html'>get_nsqs</a></code>,
-  <code><a href='get_ntaxa.html'>get_ntaxa</a></code>, <code><a href='get_sq_slot.html'>get_sq_slot</a></code>,
+  <code><a href='drop_sqs.html'>drop_sqs</a></code>, <code><a href='get_clstr_slot.html'>get_clstr_slot</a></code>,
+  <code><a href='get_nsqs.html'>get_nsqs</a></code>, <code><a href='get_ntaxa.html'>get_ntaxa</a></code>,
+  <code><a href='get_sq_slot.html'>get_sq_slot</a></code>, <code><a href='get_tx_slot.html'>get_tx_slot</a></code>,
   <code><a href='get_txids.html'>get_txids</a></code>, <code><a href='is_txid_in_clstr.html'>is_txid_in_clstr</a></code>,
   <code><a href='is_txid_in_sq.html'>is_txid_in_sq</a></code>,
   <code><a href='list_clstrrec_slots.html'>list_clstrrec_slots</a></code>,
