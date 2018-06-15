@@ -1,7 +1,8 @@
 # phylotaR
 [![Build Status](https://travis-ci.org/AntonelliLab/phylotaR.svg?branch=master)](https://travis-ci.org/AntonelliLab/phylotaR) [![Coverage Status](https://coveralls.io/repos/github/AntonelliLab/phylotaR/badge.svg?branch=master)](https://coveralls.io/github/AntonelliLab/phylotaR?branch=master) [![](https://badges.ropensci.org/187_status.svg)](https://github.com/ropensci/onboarding/issues/187)
 
-R implementation of the (PhyLoTa sequence cluster pipeline)[http://phylota.net/]. For more information see the accompanying website.
+R implementation of the [PhyLoTa sequence cluster pipeline](http://phylota.net/). For more information see the accompanying website.
+Tested and demonstrated on Unix and Windows.
 
 ## Install
 Currently only the devlopment package is available:
@@ -10,7 +11,7 @@ Currently only the devlopment package is available:
 devtools::install_github(repo='AntonelliLab/phylotaR', build_vignettes=TRUE)
 ```
 
-**Full functionality depends on a local copy of BLAST+**. For details on downloading and compiling BLAST+ on your machine please visit the [NCBI website](https://www.ncbi.nlm.nih.gov/books/NBK279690/). *Minimum BLAST version 2.0.0*.
+**Full functionality depends on a local copy of BLAST+ (>= 2.0.0)**. For details on downloading and compiling BLAST+ on your machine please visit the [NCBI website](https://www.ncbi.nlm.nih.gov/books/NBK279690/).
 
 ## Pipeline
 
@@ -18,7 +19,7 @@ devtools::install_github(repo='AntonelliLab/phylotaR', build_vignettes=TRUE)
 
 ![phylotaR pipeline](other/stages.png)
 
-For more information on the pipeline and how it works see the publication, (phylotaR: An Automated Pipeline for Retrieving Orthologous DNA Sequences from GenBank in R)[https://doi.org/10.3390/life8020020].
+For more information on the pipeline and how it works see the publication, [phylotaR: An Automated Pipeline for Retrieving Orthologous DNA Sequences from GenBank in R](https://doi.org/10.3390/life8020020).
 
 ## Running
 
@@ -44,17 +45,17 @@ vignette("phylotaR")
 
 How long does it take for a phylotaR pipeline to complete? Below is a table listing the runtimes in minutes for different demonstration, taxonomic groups. 
 
-Taxon|Taxise|Download|Cluster|Cluster2|Total|
-|:--|--:|--:|--:|--:|--:|
-Anisoptera|0.75|14|14|0.017|28|
-Acipenseridae|0.067|35|1.5|0|37|
-Tinamiformes|0.05|1.9|0.083|0|2|
-Aotus|0.05|2|0.12|0|2.1|
-Bromeliaceae|0.7|18|9.4|0.017|28|
-Cycadidae|0.18|13|3.4|0|17|
-Eutardigrada|0.28|5|0.82|0|6|
-Kazachstania|0.067|9.3|1.1|0.033|10|
-Platyrrhini|0.2|30|1.6|0.28|32|
+Taxon|Taxa|Sequences|Clusters|Taxise|Download|Cluster|Cluster2|Total|
+|:--|--:|--:|--:|--:|--:|--:|--:|--:|
+Anisoptera|1143|10619|784|0.75|14|14|0.017|28|
+Acipenseridae|51|2417|332|0.067|35|1.5|0|37|
+Tinamiformes|25|250|98|0.05|1.9|0.083|0|2|
+Aotus|13|1499|193|0.05|2|0.12|0|2.1|
+Bromeliaceae|1172|9840|721|0.7|18|9.4|0.017|28|
+Cycadidae|353|8331|540|0.18|13|3.4|0|17|
+Eutardigrada|353|8331|540|0.23|NA|NA|NA|NA|
+Kazachstania|353|8331|540|0.067|9.3|1.1|0.033|10|
+Platyrrhini|353|8331|540|0.2|30|1.6|0.28|32|
 
 To run these same demonstrations see [´demos/demo_run.R´](demos/demos_run.R). 
 

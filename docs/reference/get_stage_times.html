@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Return matrix of txid in sequence — mk_txid_in_sq_mtrx • phylotaR</title>
+<title>Get run times for different stages — get_stage_times • phylotaR</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,10 +30,9 @@
 
 
 
-<meta property="og:title" content="Return matrix of txid in sequence — mk_txid_in_sq_mtrx" />
+<meta property="og:title" content="Get run times for different stages — get_stage_times" />
 
-<meta property="og:description" content="Searches through lineages of sequences' source organisms to
-determine whether each txid is represented by the sequence." />
+<meta property="og:description" content="Get slot data for taxa(s)" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -113,45 +112,49 @@ determine whether each txid is represented by the sequence." />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Return matrix of txid in sequence</h1>
-    <small class="dont-index">Source: <a href='https://github.com/AntonelliLab/phylotaR#readme/blob/master/R/user-special.R'><code>R/user-special.R</code></a></small>
-    <div class="hidden name"><code>mk_txid_in_sq_mtrx.Rd</code></div>
+    <h1>Get run times for different stages</h1>
+    <small class="dont-index">Source: <a href='https://github.com/AntonelliLab/phylotaR#readme/blob/master/R/user-get.R'><code>R/user-get.R</code></a></small>
+    <div class="hidden name"><code>get_stage_times.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Searches through lineages of sequences' source organisms to
-determine whether each txid is represented by the sequence.</p>
+    <p>Get slot data for taxa(s)</p>
     
     </div>
 
-    <pre class="usage"><span class='fu'>mk_txid_in_sq_mtrx</span>(<span class='no'>phylota</span>, <span class='no'>txids</span>, <span class='kw'>sids</span> <span class='kw'>=</span> <span class='no'>phylota</span>@<span class='kw'>sids</span>)</pre>
+    <pre class="usage"><span class='fu'>get_stage_times</span>(<span class='no'>wd</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>phylota</th>
-      <td><p>Phylota</p></td>
-    </tr>
-    <tr>
-      <th>txids</th>
-      <td><p>Taxonomic IDs</p></td>
-    </tr>
-    <tr>
-      <th>sids</th>
-      <td><p>Sequence IDs</p></td>
+      <th>wd</th>
+      <td><p>Working directory</p></td>
     </tr>
     </table>
     
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>matrix</p>
+    <p>list of runtimes in minutes</p>
     
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p>Other tools-private: <code><a href='summary_phylota.html'>summary_phylota</a></code>,
-  <code><a href='update_phylota.html'>update_phylota</a></code></p></div>
+    <div class='dont-index'><p>Other tools-public: <code><a href='calc_mad.html'>calc_mad</a></code>,
+  <code><a href='calc_wrdfrq.html'>calc_wrdfrq</a></code>, <code><a href='drop_by_rank.html'>drop_by_rank</a></code>,
+  <code><a href='drop_clstrs.html'>drop_clstrs</a></code>, <code><a href='drop_sqs.html'>drop_sqs</a></code>,
+  <code><a href='get_clstr_slot.html'>get_clstr_slot</a></code>, <code><a href='get_nsqs.html'>get_nsqs</a></code>,
+  <code><a href='get_ntaxa.html'>get_ntaxa</a></code>, <code><a href='get_sq_slot.html'>get_sq_slot</a></code>,
+  <code><a href='get_tx_slot.html'>get_tx_slot</a></code>, <code><a href='get_txids.html'>get_txids</a></code>,
+  <code><a href='is_txid_in_clstr.html'>is_txid_in_clstr</a></code>,
+  <code><a href='is_txid_in_sq.html'>is_txid_in_sq</a></code>,
+  <code><a href='list_clstrrec_slots.html'>list_clstrrec_slots</a></code>,
+  <code><a href='list_ncbi_ranks.html'>list_ncbi_ranks</a></code>,
+  <code><a href='list_seqrec_slots.html'>list_seqrec_slots</a></code>,
+  <code><a href='list_taxrec_slots.html'>list_taxrec_slots</a></code>,
+  <code><a href='plot_phylota_pa.html'>plot_phylota_pa</a></code>,
+  <code><a href='plot_phylota_treemap.html'>plot_phylota_treemap</a></code>,
+  <code><a href='read_phylota.html'>read_phylota</a></code>, <code><a href='write_sqs.html'>write_sqs</a></code></p></div>
     
 
   </div>

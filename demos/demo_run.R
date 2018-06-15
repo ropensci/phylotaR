@@ -20,7 +20,7 @@ for (i in seq_along(demos)) {
   }
   dir.create(wd)
   # run
-  setup(wd = wd, txid = txid, ncbi_dr = ncbi_dr, v = TRUE)
+  phylotaR::setup(wd = wd, txid = txid, ncbi_dr = ncbi_dr, v = TRUE)
   run(wd = wd)
 }
 
@@ -32,11 +32,24 @@ for (i in seq_along(demos)) {
   timings[[i]] <- get_stage_times(wd)
 }
 
+# CLSQ STATS ----
+clsq <- vector(mode = 'list', length = length(demos))
+names(clsq) <- names(demos)
+for (i in seq_along(demos)) {
+  wd <- file.path(getwd(), 'demos', names(demos)[[i]])
+  phylota <- read_phylota(wd)
+  clsq[[i]] <- c('Taxa' = length(phylota@txids),
+                 'Sequences' = length(phylota@sids),
+                 'Clusters' = length(phylota@cids))
+}
+
 # MARKDOWN ----
-mrkdwn <- 'Taxon|Taxise|Download|Cluster|Cluster2|Total|\n'
-mrkdwn <- paste0(mrkdwn, '|:--|--:|--:|--:|--:|--:|\n')
+mrkdwn <- 'Taxon|Taxa|Sequences|Clusters|Taxise|Download|Cluster|Cluster2|Total|\n'
+mrkdwn <- paste0(mrkdwn, '|:--|--:|--:|--:|--:|--:|--:|--:|--:|\n')
 for (i in seq_along(timings)) {
   mrkdwn <- paste0(mrkdwn, Hmisc::capitalize(names(timings)[[i]]), '|',
+                   clsq[[i]][['Taxa']], '|', clsq[[i]][['Sequences']], '|', 
+                   clsq[[i]][['Clusters']], '|',
                    signif(timings[[i]][['taxise']], 2), '|',
                    signif(timings[[i]][['download']], 2), '|',
                    signif(timings[[i]][['cluster']], 2), '|',
