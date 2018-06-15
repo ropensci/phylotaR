@@ -62,7 +62,7 @@ MIT
 
 ## Version
 
-Development version 0.1
+Version 1.
 
 ## Authors
 
