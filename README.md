@@ -46,12 +46,12 @@ How long does it take for a phylotaR pipeline to complete? Below is a table list
 
 Taxon|Taxise|Download|Cluster|Cluster2|Total|
 |:--|--:|--:|--:|--:|--:|
-Anisoptera|0.8|12|21|0.017|33|
-Acipenseridae|0.067|NA|NA|NA|NA|
-Tinamiformes|0.083|1.3|0.22|0|1.6|
-Aotus|0.05|NA|NA|NA|NA|
-Bromeliaceae|0.67|15|14|0.017|30|
-Cycadidae|0.18|11|5.3|0.017|17|
+Anisoptera|0.75|14|14|0.017|28|
+Acipenseridae|0.067|35|1.5|0|37|
+Tinamiformes|0.05|1.9|0.083|0|2|
+Aotus|0.05|2|0.12|0|2.1|
+Bromeliaceae|0.7|18|9.4|0.017|28|
+Cycadidae|0.18|13|3.4|0|17|
 Eutardigrada|0.28|5|0.82|0|6|
 Kazachstania|0.067|9.3|1.1|0.033|10|
 Platyrrhini|0.2|30|1.6|0.28|32|
