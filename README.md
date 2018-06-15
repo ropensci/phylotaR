@@ -46,17 +46,17 @@ How long does it take for a phylotaR pipeline to complete? Below is a table list
 
 Taxon|Taxise|Download|Cluster|Cluster2|Total|
 |:--|--:|--:|--:|--:|--:|
-Anisoptera|0.8|12|21|33|
-Acipenseridae|0.067|NA|NA|NA|
-Tinamiformes|0.083|1.3|0.22|1.6|
-Aotus|0.05|NA|NA|NA|
-Bromeliaceae|0.67|15|14|30|
-Cycadidae|0.18|11|5.3|17|
-Eutardigrada|0.28|5|0.82|6|
-Kazachstania|0.067|9.3|1.1|10|
-Platyrrhini|0.2|30|1.6|32|
+Anisoptera|0.8|12|21|0.017|33|
+Acipenseridae|0.067|NA|NA|NA|NA|
+Tinamiformes|0.083|1.3|0.22|0|1.6|
+Aotus|0.05|NA|NA|NA|NA|
+Bromeliaceae|0.67|15|14|0.017|30|
+Cycadidae|0.18|11|5.3|0.017|17|
+Eutardigrada|0.28|5|0.82|0|6|
+Kazachstania|0.067|9.3|1.1|0.033|10|
+Platyrrhini|0.2|30|1.6|0.28|32|
 
-To run these same demonstrations see ´demos/demo_run.R´. 
+To run these same demonstrations see [´demos/demo_run.R´](demos/demos_run.R). 
 
 ## License
 
