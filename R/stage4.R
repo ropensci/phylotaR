@@ -6,6 +6,7 @@
 #' @param wd Working directory
 #' @export
 #' @family run-public
+#' @example examples/clusters2_run.R
 #' @return NULL
 clusters2_run <- function(wd) {
   ps <- parameters_load(wd)

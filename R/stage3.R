@@ -7,6 +7,7 @@
 #' into paraphyletic clusters.
 #' @param wd Working directory
 #' @family run-public
+#' @example examples/clusters_run.R
 #' @export
 clusters_run <- function(wd) {
   ps <- parameters_load(wd)

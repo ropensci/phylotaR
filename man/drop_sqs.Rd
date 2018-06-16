@@ -19,6 +19,15 @@ phylota
 \description{
 Drop all sequences in a cluster except those identified by user.
 }
+\examples{
+data("dragonflies")
+# drop random sequences from cluster 0
+clstr <- dragonflies[['0']]
+# specify the sids to *keep*
+sids <- sample(clstr@sids, 100)
+(dragonflies <- drop_sqs(phylota = dragonflies, cid = '0', sid = sids))
+# Note, sequences dropped may be represented in other clusters
+}
 \seealso{
 Other tools-public: \code{\link{calc_mad}},
   \code{\link{calc_wrdfrq}}, \code{\link{drop_by_rank}},

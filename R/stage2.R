@@ -6,6 +6,7 @@
 #' downloads direct and subtree sequences for all descendants.
 #' @param wd Working directory
 #' @export
+#' @example examples/download_run.R
 #' @return NULL
 download_run <- function(wd) {
   ps <- parameters_load(wd)

@@ -9,6 +9,7 @@
 #' @return NULL
 #' @family run-public
 #' @export
+#' @example examples/taxise_run.R
 taxise_run <- function(wd) {
   # TODO: allow a user to have their own taxids and/or tax tree
   ps <- parameters_load(wd)

@@ -17,6 +17,12 @@ vector
 \description{
 Count the number of sequences in a cluster(s).
 }
+\examples{
+data("cycads")
+# count seqs for a random 10 clusters
+random_cids <- sample(cycads@cids, 10)
+nsqs <- get_nsqs(phylota = cycads, cid = random_cids)
+}
 \seealso{
 Other tools-public: \code{\link{calc_mad}},
   \code{\link{calc_wrdfrq}}, \code{\link{drop_by_rank}},

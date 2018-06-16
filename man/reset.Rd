@@ -16,6 +16,19 @@ reset(wd, stage, hard = FALSE)
 \description{
 Resets the pipeline to a specified stage.
 }
+\examples{
+\dontrun{
+  
+  # reset and restart aotus run
+  setup(wd = 'aotus', txid = 9504)
+  run(wd = 'aotus')
+  # use ctrl+c or Esc to kill
+  # reset to an earlier stage
+  reset(wd = 'aotus', stage = 'download')
+  # restart with from download
+  restart(wd = 'aotus')
+}
+}
 \seealso{
 Other run-public: \code{\link{ClstrArc-class}},
   \code{\link{ClstrRec-class}},

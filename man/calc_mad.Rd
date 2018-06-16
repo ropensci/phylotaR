@@ -22,6 +22,11 @@ MAD is a measure of the deviation in sequence length of a cluster.
 Values range from 0 to 1. Clusters with values close to 1 have sequences with
 similar lengths.
 }
+\examples{
+data("bromeliads")
+random_cids <- sample(bromeliads@cids, 10)
+(calc_mad(phylota = bromeliads, cid = random_cids))
+}
 \seealso{
 Other tools-public: \code{\link{calc_wrdfrq}},
   \code{\link{drop_by_rank}}, \code{\link{drop_clstrs}},

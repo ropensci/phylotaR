@@ -20,6 +20,14 @@ setup(wd, txid, ncbi_dr = ".", v = FALSE, ...)
 \description{
 Set up working directory with parameters.
 }
+\examples{
+\dontrun{
+  
+  # setup for aotus, make sure aotus/ folder already exists
+  setup(wd = 'aotus', txid = 9504)
+  # see ?parameters for all available parameter options
+}
+}
 \seealso{
 Other run-public: \code{\link{ClstrArc-class}},
   \code{\link{ClstrRec-class}},

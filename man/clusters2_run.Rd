@@ -14,6 +14,17 @@ Run the fourth stage of the phylotaR pipeline,
 cluster2. Identify clusters at higher taxonomic levels by
 merging sister clusters.
 }
+\examples{
+\dontrun{
+  
+  # individually run stages
+  setup(wd = 'aotus', txid = 9504)
+  taxise_run(wd = 'aotus')
+  download_run(wd = 'aotus')
+  clusters_run(wd = 'aotus')
+  clusters2_run(wd = 'aotus')
+}
+}
 \seealso{
 Other run-public: \code{\link{ClstrArc-class}},
   \code{\link{ClstrRec-class}},

@@ -15,3 +15,5 @@ log.txt
 inst/doc
 demos/ncbi_dr.txt
 demos/*/
+test.fasta
+

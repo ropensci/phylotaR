@@ -9,6 +9,7 @@
 #' @param rnk Taxonomic rank
 #' @param keep_higher Keep higher taxonomic ranks?
 #' @return vector
+#' @example examples/get_ntaxa.R
 #' @export
 #' @family tools-public
 get_ntaxa <- function(phylota, cid = NULL, sid = NULL, rnk = NULL,
@@ -45,6 +46,7 @@ get_ntaxa <- function(phylota, cid = NULL, sid = NULL, rnk = NULL,
 #' these sequences will return ''.
 #' @return vector
 #' @export
+#' @example examples/get_txids.R
 #' @family tools-public
 get_txids <- function(phylota, cid = NULL, sid = NULL, txids = NULL, rnk = NULL,
                       keep_higher = FALSE) {
@@ -85,6 +87,7 @@ get_txids <- function(phylota, cid = NULL, sid = NULL, txids = NULL, rnk = NULL,
 #' @return vector
 #' @export
 #' @family tools-public
+#' @example examples/get_nsqs.R
 get_nsqs <- function(phylota, cid) {
   count <- function(cid) {
     clstr <- phylota@clstrs[[cid]]
@@ -105,6 +108,7 @@ get_nsqs <- function(phylota, cid) {
 #' @return vector
 #' @export
 #' @family tools-public
+#' @example examples/get_sq_slot.R
 get_sq_slot <- function(phylota, cid = NULL, sid = NULL,
                         slt_nm = list_seqrec_slots()) {
   get <- function(sid) {
@@ -130,6 +134,7 @@ get_sq_slot <- function(phylota, cid = NULL, sid = NULL,
 #' @return vector
 #' @family tools-public
 #' @export
+#' @example examples/get_clstr_slot.R
 get_clstr_slot <- function(phylota, cid,
                            slt_nm = list_clstrrec_slots()) {
   get <- function(cid) {
@@ -151,6 +156,7 @@ get_clstr_slot <- function(phylota, cid,
 #' @return vector or list
 #' @export
 #' @family tools-public
+#' @example examples/get_tx_slot.R
 get_tx_slot <- function(phylota, txid, slt_nm = list_taxrec_slots()) {
   get <- function(txid) {
     tx <- phylota@txdct@recs[[txid]]
@@ -168,6 +174,7 @@ get_tx_slot <- function(phylota, txid, slt_nm = list_taxrec_slots()) {
 #' @return list of runtimes in minutes
 #' @export
 #' @family tools-public
+#' @example examples/get_stage_times.R
 get_stage_times <- function(wd) {
   lgfl <- file.path(wd, 'log.txt')
   lines <- readLines(con = lgfl)

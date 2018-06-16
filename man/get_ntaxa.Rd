@@ -26,6 +26,17 @@ Count the number of unique taxa represented by cluster(s) or
 sequences in phylota table Use rnk to specify a taxonomic level to count. If
 NULL counts will be made to the lowest level reported on NCBI.
 }
+\examples{
+data('bromeliads')
+# how many species are there?
+(get_ntaxa(phylota = bromeliads, cid = '0', rnk = 'species'))
+# how many genera are there?
+(get_ntaxa(phylota = bromeliads, cid = '0', rnk = 'genus'))
+# how many families are there?
+(get_ntaxa(phylota = bromeliads, cid = '0', rnk = 'family'))
+# use list_ncbi_ranks() to see available rank names
+(list_ncbi_ranks())
+}
 \seealso{
 Other tools-public: \code{\link{calc_mad}},
   \code{\link{calc_wrdfrq}}, \code{\link{drop_by_rank}},

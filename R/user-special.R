@@ -5,6 +5,7 @@
 #' completed pipeline.
 #' @param wd Working directory
 #' @return Phylota
+#' @example examples/read_phylota.R
 #' @export
 #' @family tools-public
 read_phylota <- function(wd) {
@@ -44,6 +45,7 @@ read_phylota <- function(wd) {
 #' sq_nm. By default sequences IDs are used. Note, ensure the sq_nm are in the
 #' same order as sid.
 #' @return NULL
+#' @example examples/write_sqs.R
 #' @export
 #' @family tools-public
 write_sqs <- function(phylota, outfile, sid, sq_nm = sid) {
@@ -68,28 +70,7 @@ write_sqs <- function(phylota, outfile, sid, sq_nm = sid) {
 #' @details Cluster names and taxonomic names can be given to the function, by
 #' default IDs are used.
 #' @return geom_object
-#' @examples
-#' library(phylotaR)
-#' data(cycads)
-#' # drop all but first ten
-#' cycads <- drop_clstrs(cycads, cycads@cids[1:10])
-#' # plot all
-#' p <- plot_phylota_pa(phylota = cycads, cids = cycads@cids,
-#'                      txids = cycads@txids)
-#' print(p)  # lots of information, difficult to interpret
-#' # get genus-level taxonomic names
-#' genus_txids <- get_txids(cycads, txids = cycads@txids, rnk = 'genus')
-#' genus_txids <- unique(genus_txids)
-#' # dropping missing
-#' genus_txids <- genus_txids[genus_txids !=  '']
-#' genus_nms <- get_tx_slot(cycads, genus_txids, slt_nm = 'scnm')
-#' # make alphabetical for plotting
-#' genus_nms <- sort(genus_nms, decreasing = TRUE)
-#' # generate geom_object
-#' p <- plot_phylota_pa(phylota = cycads, cids = cycads@cids,
-#'                      txids = genus_txids, txnms = genus_nms)
-#' # plot
-#' print(p)  # easier to interpret
+#' @example examples/plot_phylota_pa.R
 #' @export
 #' @family tools-public
 plot_phylota_pa <- function(phylota, cids, txids, cnms = cids, txnms = txids) {
@@ -143,22 +124,7 @@ plot_phylota_pa <- function(phylota, cids, txids, cnms = cids, txnms = txids) {
 #' lineages. The idea of the function is to assess the data dominance
 #' of specific clusters and taxa.
 #' @return geom_object
-#' @examples 
-#' data("tinamous")
-#' # Plot clusters, size by n. sq, fill by n. tx
-#' p <- plot_phylota_treemap(phylota = tinamous, cids = tinamous@cids,
-#'                           area = 'nsq', fill = 'ntx')
-#' print(p)
-#' # Plot taxa, size by n. sq, fill by ncl
-#' txids <- get_txids(tinamous, txids = tinamous@txids,
-#'                    rnk = 'genus')
-#' txids <- txids[txids !=  '']
-#' txids <- unique(txids)
-#' txnms <- get_tx_slot(tinamous, txids, slt_nm = 'scnm')
-#' p <- plot_phylota_treemap(phylota = tinamous, txids = txids,
-#'                           txnms = txnms, area = 'nsq',
-#'                           fill = 'ncl')
-#' print(p)
+#' @example examples/plot_phylota_treemap.R
 #' @export
 #' @family tools-public
 plot_phylota_treemap <- function(phylota, cids = NULL, txids = NULL,
@@ -257,13 +223,7 @@ mk_txid_in_sq_mtrx <- function(phylota, txids, sids = phylota@sids) {
 #' @param txid Taxonomic ID
 #' @param sid Sequence ID
 #' @return boolean
-#' @examples
-#' data(tinamous)
-#' sid <- tinamous@sids[[1]]
-#' sq <- tinamous[[sid]]
-#' txid <- sq@txid
-#' # expect true
-#' is_txid_in_sq(phylota = tinamous, txid = txid, sid = sid)
+#' @example examples/is_txid_in_sq.R
 #' @export
 #' @family tools-public
 is_txid_in_sq <- function(phylota, txid, sid) {
@@ -281,14 +241,7 @@ is_txid_in_sq <- function(phylota, txid, sid) {
 #' @param txid Taxonomic ID
 #' @param cid Cluster ID
 #' @return boolean
-#' @examples
-#' data(tinamous)
-#' cid <- tinamous@cids[[1]]
-#' clstr <- tinamous[[cid]]
-#' sq <- tinamous[[clstr@sids[[1]]]]
-#' txid <- sq@txid
-#' # expect true
-#' is_txid_in_clstr(phylota = tinamous, txid = txid, cid = cid)
+#' @example examples/is_txid_in_clstr.R
 #' @export
 #' @family tools-public
 is_txid_in_clstr <- function(phylota, txid, cid) {

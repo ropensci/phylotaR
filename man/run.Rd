@@ -21,6 +21,14 @@ number of stages that will be run. Stages are run in the following order:
 For example, specifying \code{nstages} = 3, will run taxise, download and
 cluster. Stages can also be run individually, see linked functions below.
 }
+\examples{
+\dontrun{
+  
+  # setup and run for aotus, make sure aotus/ folder already exists
+  setup(wd = 'aotus', txid = 9504)
+  run(wd = 'aotus')
+}
+}
 \seealso{
 Other run-public: \code{\link{ClstrArc-class}},
   \code{\link{ClstrRec-class}},

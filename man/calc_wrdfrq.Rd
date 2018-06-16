@@ -32,6 +32,15 @@ name.
 By default, anything that is not alphanumeric is  ignored. 'dfln'
 and 'nm' match the slot names in a SeqRec, see list_seqrec_slots().
 }
+\examples{
+data('dragonflies')
+# work out what gene region the cluster is likely representing with word freqs.
+random_cids <- sample(dragonflies@cids, 10)
+# most frequent words in definition line
+(calc_wrdfrq(phylota = dragonflies, cid = random_cids, type = 'dfln'))
+# most frequent words in feature name
+(calc_wrdfrq(phylota = dragonflies, cid = random_cids, type = 'nm'))
+}
 \seealso{
 Other tools-public: \code{\link{calc_mad}},
   \code{\link{drop_by_rank}}, \code{\link{drop_clstrs}},

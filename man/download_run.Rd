@@ -15,3 +15,12 @@ downloads sequences for all nodes with sequence numbers less than
 mxsqs. It hierarchically traverses the taxonomy for each node and
 downloads direct and subtree sequences for all descendants.
 }
+\examples{
+\dontrun{
+  
+  # individually run stages
+  setup(wd = 'aotus', txid = 9504)
+  taxise_run(wd = 'aotus')
+  download_run(wd = 'aotus')
+}
+}

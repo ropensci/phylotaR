@@ -15,6 +15,13 @@ list of runtimes in minutes
 \description{
 Get slot data for taxa(s)
 }
+\examples{
+\dontrun{
+  
+  # return a named list of the time take in minutes for each stage
+  get_stage_times(wd = wd)
+}
+}
 \seealso{
 Other tools-public: \code{\link{calc_mad}},
   \code{\link{calc_wrdfrq}}, \code{\link{drop_by_rank}},

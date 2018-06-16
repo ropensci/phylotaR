@@ -8,6 +8,7 @@
 #' @param ... Additional parameters
 #' @export
 #' @family run-public
+#' @example examples/setup.R
 setup <- function(wd, txid, ncbi_dr='.', v=FALSE, ...) {
   # no ~
   checks <- vapply(X = c(wd, ncbi_dr), FUN = grepl, FUN.VALUE = logical(1),
@@ -44,6 +45,7 @@ setup <- function(wd, txid, ncbi_dr='.', v=FALSE, ...) {
 #' @param nstages Number of total stages to run, max 4.
 #' @family run-public
 #' @export
+#' @example examples/run.R
 run <- function(wd, nstages=4) {
   stgs_msg <- stage_args_check(frm = 1, to = nstages)
   stages_run(wd = wd, frm = 1, to = nstages, stgs_msg = stgs_msg)
@@ -57,6 +59,7 @@ run <- function(wd, nstages=4) {
 #' @param nstages Number of total stages to run, max 4.
 #' @export
 #' @family run-public
+#' @example examples/restart.R
 restart <- function(wd, nstages=4) {
   stg <- progress_read(wd)
   if (is.na(stg)) {
@@ -81,6 +84,7 @@ restart <- function(wd, nstages=4) {
 #' @param hard T/F, delete all cached data?
 #' @family run-public
 #' @export
+#' @example examples/reset.R
 reset <- function(wd, stage, hard=FALSE) {
   if (!stage %in% c('taxise', 'download', 'cluster', 'cluster2')) {
     stop('Invalid stage name.')
@@ -118,6 +122,7 @@ reset <- function(wd, stage, hard=FALSE) {
 #' @param values New values for each parameter
 #' @family run-public
 #' @export
+#' @example examples/parameters_reset.R
 parameters_reset <- function(wd, parameters, values) {
   # TODO: make parameters an object with pre-defined parameter types
   ps <- parameters_load(wd)

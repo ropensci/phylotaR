@@ -23,6 +23,13 @@ Get slot data for either or sequences in a cluster of
 a vector of sequence IDs. Use list_seqrec_slots() for a list of
 available slots.
 }
+\examples{
+data('aotus')
+random_sid <- sample(aotus@sids, 1)
+(get_sq_slot(phylota = aotus, sid = random_sid, slt_nm = 'dfln'))
+# see list_seqrec_slots() for available slots
+(list_seqrec_slots())
+}
 \seealso{
 Other tools-public: \code{\link{calc_mad}},
   \code{\link{calc_wrdfrq}}, \code{\link{drop_by_rank}},

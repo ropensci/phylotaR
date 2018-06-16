@@ -18,6 +18,14 @@ dictionary for user interaction after phylotaR has completed.
 \details{
 Objects will be cached.
 }
+\examples{
+\dontrun{
+  
+  # individually run a stage
+  setup(wd = 'aotus', txid = 9504)
+  taxise_run(wd = 'aotus')
+}
+}
 \seealso{
 Other run-public: \code{\link{ClstrArc-class}},
   \code{\link{ClstrRec-class}},

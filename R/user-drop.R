@@ -7,6 +7,7 @@
 #' @return phylota
 #' @export
 #' @family tools-public
+#' @example examples/drop_sqs.R
 drop_sqs <- function(phylota, cid, sid) {
   indx <- which(phylota@clstrs@ids == cid)
   clstr <- phylota@clstrs@clstrs[[indx]]
@@ -28,6 +29,7 @@ drop_sqs <- function(phylota, cid, sid) {
 #' @return phylota
 #' @export
 #' @family tools-public
+#' @example examples/drop_clstrs.R
 drop_clstrs <- function(phylota, cid) {
   phylota@clstrs <- phylota@clstrs[cid]
   phylota@cids <- cid
@@ -50,6 +52,7 @@ drop_clstrs <- function(phylota, cid) {
 #' @return phylota
 #' @export
 #' @family tools-public
+#' @example examples/drop_by_rank.R
 drop_by_rank <- function(phylota, rnk = 'species', keep_higher = FALSE, n = 10,
                          choose_by = c('pambgs', 'age', 'nncltds'),
                          greatest = c(FALSE, FALSE, TRUE)) {

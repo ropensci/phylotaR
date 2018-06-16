@@ -15,6 +15,17 @@ restart(wd, nstages = 4)
 Restarts the running of a pipeline
 as started with \code{run}.
 }
+\examples{
+\dontrun{
+  
+  # restart aotus run
+  setup(wd = 'aotus', txid = 9504)
+  run(wd = 'aotus')
+  # use ctrl+c or Esc to kill
+  # restart with ....
+  restart(wd = wd)
+}
+}
 \seealso{
 Other run-public: \code{\link{ClstrArc-class}},
   \code{\link{ClstrRec-class}},

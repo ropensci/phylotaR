@@ -17,6 +17,12 @@ Creates a Phylota object containing information on
 clusters, sequences and taxonomy from the working directory of a
 completed pipeline.
 }
+\examples{
+\dontrun{
+  
+  phylota <- read_phylota(wd)
+}
+}
 \seealso{
 Other tools-public: \code{\link{calc_mad}},
   \code{\link{calc_wrdfrq}}, \code{\link{drop_by_rank}},

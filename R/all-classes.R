@@ -22,6 +22,7 @@
 #' @slot prnt Parent taxonomic ID
 #' @family run-public
 #' @exportClass ClstrRec
+#' @example examples/clstrrec-class.R
 setClass('ClstrRec', representation = representation(
   id = 'integer',
   sids = 'vector',
@@ -96,6 +97,7 @@ clstrarc_check <- function(object) {
 #' @slot clstrs List of ClstrArc named by ID
 #' @family run-public
 #' @exportClass ClstrArc
+#' @example examples/clstrarc-class.R
 setClass('ClstrArc', representation = representation(
   ids = 'vector',
   clstrs = 'list'),
@@ -194,6 +196,7 @@ setMethod('[', c('ClstrArc', 'character', 'missing', 'missing'),
 #' @slot gcr GC ratio
 #' @slot age Number of days between sequence upload and running pipeline 
 #' @exportClass SeqRec
+#' @example examples/seqrec-class.R
 setClass('SeqRec', representation = representation(
   id = 'character',
   nm = 'character',
@@ -273,6 +276,7 @@ seqarc_check <- function(object) {
 #' @slot txids Vector source txid associated with each sequence
 #' @slot sqs List of SeqRecs named by ID
 #' @exportClass SeqArc
+#' @example examples/seqarc-class.R
 setClass('SeqArc', representation = representation(
   ids = 'vector',
   nncltds = 'vector',
@@ -372,6 +376,7 @@ taxrec_check <- function(object) {
 #' @slot lng Lineage
 #' @slot prnt Parent
 #' @exportClass TaxRec
+#' @example examples/taxrec-class.R
 setClass('TaxRec', representation = representation(
   id = 'character',
   scnm = 'character',
@@ -440,6 +445,7 @@ taxdict_check <- function(object) {
 #' @slot prnt Parent taxonomic ID
 #' @slot txtr Taxonomic tree
 #' @exportClass TaxDict
+#' @example examples/taxdict-class.R
 setClass('TaxDict', representation = representation(
   txids = 'vector',
   recs = 'environment',
@@ -511,6 +517,7 @@ phylota_check <- function(object) {
 #' @slot prnt_id Parent taxonomic ID
 #' @slot prnt_nm Parent taxonomic name
 #' @exportClass Phylota
+#' @example examples/phylota-class.R
 setClass('Phylota', representation = representation(
   cids = 'vector',
   txids = 'vector',

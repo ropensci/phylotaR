@@ -7,6 +7,7 @@
 #' Values range from 0 to 1. Clusters with values close to 1 have sequences with
 #' similar lengths.
 #' @return vector
+#' @example examples/calc_mad.R
 #' @export
 #' @family tools-public
 calc_mad <- function(phylota, cid) {
@@ -32,6 +33,7 @@ calc_mad <- function(phylota, cid) {
 #' @details By default, anything that is not alphanumeric is  ignored. 'dfln'
 #' and 'nm' match the slot names in a SeqRec, see list_seqrec_slots().
 #' @return list
+#' @example examples/calc_wrdfrq.R
 #' @export
 #' @family tools-public
 calc_wrdfrq <- function(phylota, cid, min_frq = 0.1, min_nchar = 1,

@@ -19,6 +19,13 @@ vector
 \description{
 Get slot data for cluster(s)
 }
+\examples{
+data('aotus')
+random_cid <- sample(aotus@cids, 1)
+(get_clstr_slot(phylota = aotus, cid = random_cid, slt_nm = 'seed'))
+# see list_clstrrec_slots() for available slots
+(list_clstrrec_slots())
+}
 \seealso{
 Other tools-public: \code{\link{calc_mad}},
   \code{\link{calc_wrdfrq}}, \code{\link{drop_by_rank}},

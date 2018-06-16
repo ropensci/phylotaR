@@ -23,6 +23,14 @@ The user can control the output definition lines of the sequences using the
 sq_nm. By default sequences IDs are used. Note, ensure the sq_nm are in the
 same order as sid.
 }
+\examples{
+data('aotus')
+# get sequences for a cluster and write out
+random_cid <- sample(aotus@cids, 1)
+sids <- aotus[[random_cid]]@sids
+write_sqs(phylota = aotus, outfile = 'test.fasta', sq_nm = 'my_gene',
+          sid = sids)
+}
 \seealso{
 Other tools-public: \code{\link{calc_mad}},
   \code{\link{calc_wrdfrq}}, \code{\link{drop_by_rank}},
