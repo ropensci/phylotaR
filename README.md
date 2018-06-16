@@ -53,9 +53,9 @@ Tinamiformes|25|250|98|0.05|1.9|0.083|0|2|
 Aotus|13|1499|193|0.05|2|0.12|0|2.1|
 Bromeliaceae|1172|9840|721|0.7|18|9.4|0.017|28|
 Cycadidae|353|8331|540|0.18|13|3.4|0|17|
-Eutardigrada|353|8331|540|0.23|NA|NA|NA|NA|
-Kazachstania|353|8331|540|0.067|9.3|1.1|0.033|10|
-Platyrrhini|353|8331|540|0.2|30|1.6|0.28|32|
+Eutardigrada|1|3|4|0.28|5|0.82|0|6|
+Kazachstania|26|164|33|0.067|9.3|1.1|0.033|10|
+Platyrrhini|273|19384|543|0.2|30|1.6|0.28|32|
 
 To run these same demonstrations see [´demos/demo_run.R´](demos/demos_run.R). 
 
