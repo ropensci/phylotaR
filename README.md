@@ -2,7 +2,7 @@
 [![Build Status](https://travis-ci.org/AntonelliLab/phylotaR.svg?branch=master)](https://travis-ci.org/AntonelliLab/phylotaR) [![Coverage Status](https://coveralls.io/repos/github/AntonelliLab/phylotaR/badge.svg?branch=master)](https://coveralls.io/github/AntonelliLab/phylotaR?branch=master) [![](https://badges.ropensci.org/187_status.svg)](https://github.com/ropensci/onboarding/issues/187)
 
 R implementation of the [PhyLoTa sequence cluster pipeline](http://phylota.net/). For more information see the accompanying website.
-Tested and demonstrated on Unix and Windows.
+Tested and demonstrated on Unix and Windows. **Find out more by visiting the [phylotaR website](https://antonellilab.github.io/phylotaR/).**
 
 ## Install
 Currently only the devlopment package is available:
@@ -57,7 +57,7 @@ Eutardigrada|1|3|4|0.28|5|0.82|0|6|
 Kazachstania|26|164|33|0.067|9.3|1.1|0.033|10|
 Platyrrhini|273|19384|543|0.2|30|1.6|0.28|32|
 
-To run these same demonstrations see [´demos/demo_run.R´](demos/demos_run.R). 
+To run these same demonstrations see [´demos/demo_run.R´](https://github.com/AntonelliLab/phylotaR/blob/master/demos/demo_run.R). 
 
 ## License
 
