@@ -32,16 +32,20 @@ seqrec_convert <- function(raw_recs, ps) {
     accssn <- rec[['GBSeq_primary-accession']]
     vrsn <- rec[["GBSeq_accession-version"]]
     ml_typ <- rec[['GBSeq_moltype']]
-    if (is.null(ml_typ)) {
+    if (is.null(vrsn)) {
+      next
+    }
+    if(is.null(ml_typ)) {
       # ml_typ not always recorded, e.g. NR_040059
       ml_typ <- ''
     }
     sq <- rec[['GBSeq_sequence']]
     create_date <- rec[["GBSeq_create-date"]]
     create_date <- as.Date(create_date,
-                           format = "%d-%b-%Y")
-    age <- as.integer(ps[['date']] - create_date)
-    if (is.null(sq)) {
+                           format="%d-%b-%Y")
+    age <- as.integer(difftime(ps[['date']],
+                               create_date, units = 'days'))
+    if(is.null(sq)) {
       # master records have no sequences
       # e.g. https://www.ncbi.nlm.nih.gov/nuccore/1283191328
       next
