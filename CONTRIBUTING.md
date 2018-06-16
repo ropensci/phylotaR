@@ -34,7 +34,7 @@ To contribute you will need a GitHub account and to have basic knowledge of the 
 repo in your own GitHub account and download the repository to your local machine. `devtools` is recommended.
 
 ```r
-devtools::install_github('[your account]/restez')
+devtools::install_github('[your account]/phylotaR')
 ```
 
 All new functions must be tested. For every new file in `R/`, a new test file must be created in `tests/testthat/`. To test the
