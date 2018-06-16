@@ -68,7 +68,6 @@ blastn_run <- function(dbfl, outfl, ps) {
   res <- cmdln(cmd = ps[['blstn']], args = args, lgfl = dbfl)
   if (res != 0) {
     error(ps = ps, 'blastn failed to run. Check BLAST log files.')
-   }
   }
   if (!file.exists(outfl)) {
     info(lvl = 3, ps = ps, "No BLAST output, returning NULL")
