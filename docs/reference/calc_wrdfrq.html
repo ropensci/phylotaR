@@ -81,18 +81,6 @@ name." />
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="../articles/phylotaR-advanced.html">phylotaR Advanced</a>
-    </li>
-  </ul>
-</li>
       </ul>
       
       <ul class="nav navbar-nav navbar-right">
@@ -187,6 +175,94 @@ and 'nm' match the slot names in a SeqRec, see list_seqrec_slots().</p>
   <code><a href='read_phylota.html'>read_phylota</a></code>, <code><a href='write_sqs.html'>write_sqs</a></code></p></div>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'>data</span>(<span class='st'>'dragonflies'</span>)
+<span class='co'># work out what gene region the cluster is likely representing with word freqs.</span>
+<span class='no'>random_cids</span> <span class='kw'>&lt;-</span> <span class='fu'>sample</span>(<span class='no'>dragonflies</span>@<span class='kw'>cids</span>, <span class='fl'>10</span>)
+<span class='co'># most frequent words in definition line</span>
+(<span class='fu'>calc_wrdfrq</span>(<span class='kw'>phylota</span> <span class='kw'>=</span> <span class='no'>dragonflies</span>, <span class='kw'>cid</span> <span class='kw'>=</span> <span class='no'>random_cids</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>'dfln'</span>))</div><div class='output co'>#&gt; $`358`
+#&gt; named numeric(0)
+#&gt; 
+#&gt; $`71`
+#&gt; named numeric(0)
+#&gt; 
+#&gt; $`13`
+#&gt; wrds
+#&gt;  sequence      gene 
+#&gt; 0.1430412 0.1423969 
+#&gt; 
+#&gt; $`130`
+#&gt; wrds
+#&gt;      rrna       and 
+#&gt; 0.1632653 0.1088435 
+#&gt; 
+#&gt; $`163`
+#&gt; wrds
+#&gt;      complete        genome mitochondrion       isolate     orthetrum 
+#&gt;     0.1578947     0.1578947     0.1578947     0.1052632     0.1052632 
+#&gt; 
+#&gt; $`79`
+#&gt; wrds
+#&gt;      gene   partial 
+#&gt; 0.1111111 0.1111111 
+#&gt; 
+#&gt; $`405`
+#&gt; named numeric(0)
+#&gt; 
+#&gt; $`25`
+#&gt; named numeric(0)
+#&gt; 
+#&gt; $`156`
+#&gt; named numeric(0)
+#&gt; 
+#&gt; $`391`
+#&gt; wrds
+#&gt;      gene  sequence 
+#&gt; 0.1451613 0.1451613 
+#&gt; </div><div class='input'><span class='co'># most frequent words in feature name</span>
+(<span class='fu'>calc_wrdfrq</span>(<span class='kw'>phylota</span> <span class='kw'>=</span> <span class='no'>dragonflies</span>, <span class='kw'>cid</span> <span class='kw'>=</span> <span class='no'>random_cids</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>'nm'</span>))</div><div class='output co'>#&gt; $`358`
+#&gt; wrds
+#&gt;       16s ribosomal       rna 
+#&gt; 0.3333333 0.3333333 0.3333333 
+#&gt; 
+#&gt; $`71`
+#&gt; co1 
+#&gt;   1 
+#&gt; 
+#&gt; $`13`
+#&gt; wrds
+#&gt;       12s ribosomal       rna 
+#&gt; 0.3333333 0.3333333 0.3333333 
+#&gt; 
+#&gt; $`130`
+#&gt; wrds
+#&gt;    internal      spacer transcribed 
+#&gt;   0.3333333   0.3333333   0.3333333 
+#&gt; 
+#&gt; $`163`
+#&gt; nd4 
+#&gt;   1 
+#&gt; 
+#&gt; $`79`
+#&gt; coii 
+#&gt;    1 
+#&gt; 
+#&gt; $`405`
+#&gt; nd1 
+#&gt;   1 
+#&gt; 
+#&gt; $`25`
+#&gt;       co1 
+#&gt; 0.9852941 
+#&gt; 
+#&gt; $`156`
+#&gt; named numeric(0)
+#&gt; 
+#&gt; $`391`
+#&gt; wrds
+#&gt;       16s ribosomal       rna 
+#&gt; 0.3333333 0.3333333 0.3333333 
+#&gt; </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -198,7 +274,9 @@ and 'nm' match the slot names in a SeqRec, see list_seqrec_slots().</p>
       <li><a href="#details">Details</a></li>
 
       <li><a href="#see-also">See also</a></li>
-          </ul>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
   </div>
 </div>

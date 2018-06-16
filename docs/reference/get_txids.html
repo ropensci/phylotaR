@@ -81,18 +81,6 @@ returned. If NULL, the lowest level is returned." />
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="../articles/phylotaR-advanced.html">phylotaR Advanced</a>
-    </li>
-  </ul>
-</li>
       </ul>
       
       <ul class="nav navbar-nav navbar-right">
@@ -189,6 +177,49 @@ these sequences will return ''.</p>
   <code><a href='read_phylota.html'>read_phylota</a></code>, <code><a href='write_sqs.html'>write_sqs</a></code></p></div>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'>data</span>(<span class='st'>'bromeliads'</span>)
+<span class='co'># get all the genus IDs and names</span>
+<span class='no'>genus_ids</span> <span class='kw'>&lt;-</span> <span class='fu'>get_txids</span>(<span class='kw'>phylota</span> <span class='kw'>=</span> <span class='no'>bromeliads</span>, <span class='kw'>txids</span> <span class='kw'>=</span> <span class='no'>bromeliads</span>@<span class='kw'>txids</span>,
+                       <span class='kw'>rnk</span> <span class='kw'>=</span> <span class='st'>'genus'</span>)
+<span class='no'>genus_ids</span> <span class='kw'>&lt;-</span> <span class='fu'>unique</span>(<span class='no'>genus_ids</span>)
+<span class='co'># drop empty IDs -- this happens if a given lineage has no ID for specified rank</span>
+<span class='no'>genus_ids</span> <span class='kw'>&lt;-</span> <span class='no'>genus_ids</span>[<span class='no'>genus_ids</span> <span class='kw'>!=</span> <span class='st'>''</span>]
+<span class='co'># get names</span>
+(<span class='fu'><a href='get_tx_slot.html'>get_tx_slot</a></span>(<span class='kw'>phylota</span> <span class='kw'>=</span> <span class='no'>bromeliads</span>, <span class='kw'>txid</span> <span class='kw'>=</span> <span class='no'>genus_ids</span>, <span class='kw'>slt_nm</span> <span class='kw'>=</span> <span class='st'>'scnm'</span>))</div><div class='output co'>#&gt;              100680             2184933             2184932             2184931 
+#&gt;      "Cottendorfia"         "Sincoraea"       "Rokautskyia"  "Hoplocryptanthus" 
+#&gt;             1387303             1349361              796805              713961 
+#&gt;         "Lapanthus"      "Canistropsis"      "Disteganthus"         "Eduandrea" 
+#&gt;              326799              326795              326788              213064 
+#&gt;            "Portea"   "Hohenbergiopsis"          "Fernseea"          "Edmundoa" 
+#&gt;              106462              106458              106452              106447 
+#&gt;         "Ochagavia"      "Neoglaziovia"           "Greigia"      "Fascicularia" 
+#&gt;              106440              106438              106430              106424 
+#&gt;      "Deinacanthon"        "Chevaliera"        "Androlepis"    "Acanthostachys" 
+#&gt;               49536               49531               49529               49522 
+#&gt;        "Wittrockia"        "Ronnbergia"         "Quesnelia"       "Orthophytum" 
+#&gt;               49520               49512               49496               49493 
+#&gt;        "Nidularium"           "Lymania"       "Cryptanthus"         "Canistrum" 
+#&gt;               49491               49476               15119               15114 
+#&gt;       "Hohenbergia"       "Araeococcus"        "Billbergia"           "Aechmea" 
+#&gt;                4616                4614               15164               49487 
+#&gt;          "Bromelia"            "Ananas"              "Puya"        "Fosterella" 
+#&gt;               49526               49485               49483              100682 
+#&gt;        "Pitcairnia"       "Encholirium"            "Dyckia"     "Deuterocohnia" 
+#&gt;               49516              222987               15141              261216 
+#&gt;             "Navia"         "Brewcaria"           "Hechtia"         "Lindmania" 
+#&gt;               49479              106432               49534               49518 
+#&gt;        "Brocchinia"           "Ayensua"           "Vriesea"        "Neoregelia" 
+#&gt;             1908703               49514              213045              106428 
+#&gt;          "Lutheria"      "Mezobromelia"          "Werauhia"        "Alcantarea" 
+#&gt;             1908700             1908698             2002971             1908705 
+#&gt;         "Jagrantia"           "Goudaea"         "Waltillia"       "Stigmatodon" 
+#&gt;             1908701             1908706               15170             1908704 
+#&gt;         "Josemania"           "Zizkaea"        "Tillandsia"   "Pseudalcantarea" 
+#&gt;             1908702              106471               49489             1908697 
+#&gt;        "Lemeltonia"          "Racinaea"          "Guzmania"         "Barfussia" 
+#&gt;             1908553             1908699               15123               15137 
+#&gt;          "Wallisia"       "Gregbrownia"          "Catopsis" "Glomeropitcairnia" </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -200,7 +231,9 @@ these sequences will return ''.</p>
       <li><a href="#details">Details</a></li>
 
       <li><a href="#see-also">See also</a></li>
-          </ul>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
   </div>
 </div>

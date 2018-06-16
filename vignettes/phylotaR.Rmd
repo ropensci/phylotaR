@@ -1,7 +1,5 @@
 ---
 title: "phylotaR Tutorial"
-author: "D.J. Bennett"
-date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{phylotaR Tutorial}

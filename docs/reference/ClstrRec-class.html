@@ -79,18 +79,6 @@
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="../articles/phylotaR-advanced.html">phylotaR Advanced</a>
-    </li>
-  </ul>
-</li>
       </ul>
       
       <ul class="nav navbar-nav navbar-right">
@@ -185,6 +173,32 @@
   <code><a href='setup.html'>setup</a></code>, <code><a href='taxise_run.html'>taxise_run</a></code></p></div>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'>data</span>(<span class='st'>'aotus'</span>)
+<span class='no'>clstrrec</span> <span class='kw'>&lt;-</span> <span class='no'>aotus</span>@<span class='kw'>clstrs</span>@<span class='kw'>clstrs</span><span class='kw'>[[</span><span class='fl'>1</span>]]
+<span class='co'># this is a ClstrRec object</span>
+<span class='co'># it contains cluster information</span>
+<span class='fu'>show</span>(<span class='no'>clstrrec</span>)</div><div class='output co'>#&gt; Cluster Record [id 0]
+#&gt;  - [subtree] type
+#&gt;  - [AF352254.1/34..729] seed sequence
+#&gt;  - [36] sequences
+#&gt;  - [10] taxa</div><div class='input'><span class='co'># you can access its different data slots with @</span>
+<span class='no'>clstrrec</span>@<span class='kw'>id</span>     <span class='co'># cluster id</span></div><div class='output co'>#&gt; [1] 0</div><div class='input'><span class='no'>clstrrec</span>@<span class='kw'>sids</span>   <span class='co'># sequence IDs</span></div><div class='output co'>#&gt;  [1] "AF352254.1/34..729"     "AF352255.1/34..729"     "AF352256.1/34..729"    
+#&gt;  [4] "AF352257.1/34..729"     "AF352258.1/34..729"     "AF352259.1/34..729"    
+#&gt;  [7] "AF352260.1/34..729"     "AY250707.1/4361..5056"  "FJ785421.1/7009..7682" 
+#&gt; [10] "HQ005472.1/1686..2381"  "HQ005473.1/1686..2381"  "HQ005474.1/1685..2380" 
+#&gt; [13] "HQ005475.1/1685..2380"  "HQ005476.1/1685..2380"  "HQ005477.1/1685..2380" 
+#&gt; [16] "HQ005478.1/1685..2380"  "HQ005479.1/1685..2380"  "HQ005480.1/1685..2380" 
+#&gt; [19] "HQ005481.1/1685..2380"  "HQ005482.1/1685..2380"  "HQ005483.1/1685..2380" 
+#&gt; [22] "HQ005484.1/1685..2380"  "HQ005485.1/1685..2380"  "HQ005486.1/1685..2380" 
+#&gt; [25] "HQ005487.1/1685..2380"  "HQ005488.1/1685..2380"  "HQ005489.1/1685..2380" 
+#&gt; [28] "JN161099.1/7014..7701"  "JN161100.1/7009..7696"  "JN161101.1/7010..7697" 
+#&gt; [31] "KC592390.1/7012..7699"  "KC757385.1/7012..7699"  "NC_018115.1/7014..7701"
+#&gt; [34] "NC_018116.1/7009..7696" "NC_019799.1/7009..7682" "NC_021939.1/7012..7699"</div><div class='input'><span class='no'>clstrrec</span>@<span class='kw'>nsqs</span>   <span class='co'># number of sequences</span></div><div class='output co'>#&gt; [1] 36</div><div class='input'><span class='no'>clstrrec</span>@<span class='kw'>txids</span>  <span class='co'># taxonomic IDs of sequences</span></div><div class='output co'>#&gt;  [1] "37293"  "120088" "867331" "30591"  "43147"  "280755" "280755" "43147" 
+#&gt;  [9] "9505"   "30591"  "37293"  "37293"  "37293"  "43147"  "292213" "292213"
+#&gt; [17] "57176"  "57176"  "9505"   "9505"   "9505"   "57175"  "57175"  "867331"
+#&gt; [25] "867331" "867331" "57176"  "57176"  "57175"  "57175"  "57175"  "37293" 
+#&gt; [33] "37293"  "37293"  "37293"  "120088"</div><div class='input'><span class='no'>clstrrec</span>@<span class='kw'>ntx</span>    <span class='co'># number unique taxonomic IDs</span></div><div class='output co'>#&gt; [1] 10</div><div class='input'><span class='no'>clstrrec</span>@<span class='kw'>typ</span>    <span class='co'># cluster type: merged, subtree, direct or paraphyly</span></div><div class='output co'>#&gt; [1] "subtree"</div><div class='input'><span class='no'>clstrrec</span>@<span class='kw'>prnt</span>   <span class='co'># MRCA of all taxa</span></div><div class='output co'>#&gt; [1] "9504"</div><div class='input'><span class='no'>clstrrec</span>@<span class='kw'>seed</span>   <span class='co'># most inter-connected sequence</span></div><div class='output co'>#&gt; [1] "AF352254.1/34..729"</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -194,7 +208,9 @@
       <li><a href="#slots">Slots</a></li>
 
       <li><a href="#see-also">See also</a></li>
-          </ul>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
   </div>
 </div>

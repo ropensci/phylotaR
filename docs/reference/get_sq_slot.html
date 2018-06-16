@@ -81,18 +81,6 @@ available slots." />
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Articles
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li>
-      <a href="../articles/phylotaR-advanced.html">phylotaR Advanced</a>
-    </li>
-  </ul>
-</li>
       </ul>
       
       <ul class="nav navbar-nav navbar-right">
@@ -173,6 +161,14 @@ available slots.</p>
   <code><a href='read_phylota.html'>read_phylota</a></code>, <code><a href='write_sqs.html'>write_sqs</a></code></p></div>
     
 
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
+    <pre class="examples"><div class='input'><span class='fu'>data</span>(<span class='st'>'aotus'</span>)
+<span class='no'>random_sid</span> <span class='kw'>&lt;-</span> <span class='fu'>sample</span>(<span class='no'>aotus</span>@<span class='kw'>sids</span>, <span class='fl'>1</span>)
+(<span class='fu'>get_sq_slot</span>(<span class='kw'>phylota</span> <span class='kw'>=</span> <span class='no'>aotus</span>, <span class='kw'>sid</span> <span class='kw'>=</span> <span class='no'>random_sid</span>, <span class='kw'>slt_nm</span> <span class='kw'>=</span> <span class='st'>'dfln'</span>))</div><div class='output co'>#&gt;                             NC_018115.1/16115..16417 
+#&gt; "Aotus azarai azarai mitochondrion, complete genome" </div><div class='input'><span class='co'># see list_seqrec_slots() for available slots</span>
+(<span class='fu'><a href='list_seqrec_slots.html'>list_seqrec_slots</a></span>())</div><div class='output co'>#&gt;  [1] "id"      "nm"      "accssn"  "vrsn"    "url"     "txid"    "orgnsm" 
+#&gt;  [8] "dfln"    "ml_typ"  "rec_typ" "nncltds" "nambgs"  "pambgs"  "gcr"    
+#&gt; [15] "age"    </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>
@@ -182,7 +178,9 @@ available slots.</p>
       <li><a href="#value">Value</a></li>
 
       <li><a href="#see-also">See also</a></li>
-          </ul>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
 
   </div>
 </div>
