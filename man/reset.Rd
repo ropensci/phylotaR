@@ -2,7 +2,7 @@
 % Please edit documentation in R/pipeline.R
 \name{reset}
 \alias{reset}
-\title{Reset a PhyLoTa pipeline run}
+\title{Reset a phylotaR pipeline run}
 \usage{
 reset(wd, stage, hard = FALSE)
 }
@@ -16,6 +16,27 @@ reset(wd, stage, hard = FALSE)
 \description{
 Resets the pipeline to a specified stage.
 }
+\examples{
+\dontrun{
+  
+  # reset and restart aotus run
+  setup(wd = 'aotus', txid = 9504)
+  run(wd = 'aotus')
+  # use ctrl+c or Esc to kill
+  # reset to an earlier stage
+  reset(wd = 'aotus', stage = 'download')
+  # restart with from download
+  restart(wd = 'aotus')
+}
+}
 \seealso{
-\code{\link{restart}}, \code{\link{setParameters}}
+Other run-public: \code{\link{ClstrArc-class}},
+  \code{\link{ClstrRec-class}},
+  \code{\link{Phylota-class}}, \code{\link{SeqArc-class}},
+  \code{\link{SeqRec-class}}, \code{\link{TaxDict-class}},
+  \code{\link{TaxRec-class}}, \code{\link{clusters2_run}},
+  \code{\link{clusters_run}},
+  \code{\link{parameters_reset}}, \code{\link{restart}},
+  \code{\link{run}}, \code{\link{setup}},
+  \code{\link{taxise_run}}
 }

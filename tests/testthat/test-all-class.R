@@ -3,77 +3,69 @@ library(phylotaR)
 library(testthat)
 
 # DATA
-# randomly choose one of the example phylota objects
-pssbls <- c("aotus", "bromeliads", "cycads", "dragonflies",
-            "sturgeons", "tardigrades", "tinamous")
-rndm <- sample(pssbls, 1)
-list.files('data')
-data_env <- new.env()
-do.call(what=data, args=list(rndm, envir=data_env))
-assign(x='phylota', value=data_env[[rndm]])
-rm(data_env)
+phylota <- phylotaR:::random_phylota()
 
 # RUNNING
 context('Testing \'all-class\'')
-test_that('SqRcrd() works', {
-  sqrcrd <- phylota@sqs@sqs[[1]]
-  show(sqrcrd)
-  print(sqrcrd)
-  str(sqrcrd)
-  summary(sqrcrd)
-  sqstrng <- as.character(sqrcrd)
-  expect_true(validObject(sqrcrd))
+test_that('SeqRec() works', {
+  seqrec <- phylota@sqs@sqs[[1]]
+  show(seqrec)
+  print(seqrec)
+  str(seqrec)
+  summary(seqrec)
+  seqstrng <- as.character(seqrec)
+  expect_true(validObject(seqrec))
 })
-test_that('SqRcrdBx() works', {
-  sqrcrdbx <- phylota@sqs
-  show(sqrcrdbx)
-  print(sqrcrdbx)
-  str(sqrcrdbx)
-  summary(sqrcrdbx)
-  sqstrng <- as.character(sqrcrdbx)
-  expect_true(validObject(sqrcrdbx))
+test_that('SeqArc() works', {
+  seqarc <- phylota@sqs
+  show(seqarc)
+  print(seqarc)
+  str(seqarc)
+  summary(seqarc)
+  sqstrng <- as.character(seqarc)
+  expect_true(validObject(seqarc))
   # [ and [[
-  sqrcrd <- sqrcrdbx[[sqrcrdbx@ids[[1]]]]
-  expect_true(inherits(sqrcrd, 'SqRcrd'))
-  sqrcrdbx2 <- sqrcrdbx[sqrcrdbx@ids[1:10]]
-  expect_true(inherits(sqrcrdbx2, 'SqRcrdBx'))
+  seqrec <- seqarc[[seqarc@ids[[1]]]]
+  expect_true(inherits(seqrec, 'SeqRec'))
+  seqarc2 <- seqarc[seqarc@ids[1:10]]
+  expect_true(inherits(seqarc2, 'SeqArc'))
 })
-test_that('ClRcrd() works', {
-  clrcrd <- phylota@cls@cls[[1]]
-  show(clrcrd)
-  print(clrcrd)
-  str(clrcrd)
-  summary(clrcrd)
-  clstrng <- as.character(clrcrd)
-  expect_true(validObject(clrcrd))
+test_that('ClstrRec() works', {
+  clstrrec <- phylota@clstrs@clstrs[[1]]
+  show(clstrrec)
+  print(clstrrec)
+  str(clstrrec)
+  summary(clstrrec)
+  clstrng <- as.character(clstrrec)
+  expect_true(validObject(clstrrec))
   # [ and [[
-  expect_true(validObject(clrcrd))
+  expect_true(validObject(clstrrec))
 })
-test_that('ClRcrdBx() works', {
-  clrcrdbx <- phylota@cls
-  show(clrcrdbx)
-  print(clrcrdbx)
-  str(clrcrdbx)
-  summary(clrcrdbx)
-  clstrng <- as.character(clrcrdbx)
-  expect_true(validObject(clrcrdbx))
+test_that('ClstrArc() works', {
+  clstrarc <- phylota@clstrs
+  show(clstrarc)
+  print(clstrarc)
+  str(clstrarc)
+  summary(clstrarc)
+  clstrng <- as.character(clstrarc)
+  expect_true(validObject(clstrarc))
   # [ and [[
-  clrcrd <- clrcrdbx[[clrcrdbx@ids[[1]]]]
-  expect_true(inherits(clrcrd, 'ClRcrd'))
-  clrcrdbx2 <- clrcrdbx[clrcrdbx@ids[1:10]]
-  expect_true(inherits(clrcrdbx2, 'ClRcrdBx'))
+  clstrrec <- clstrarc[[clstrarc@ids[[1]]]]
+  expect_true(inherits(clstrrec, 'ClstrRec'))
+  clstrarc2 <- clstrarc[clstrarc@ids[1:10]]
+  expect_true(inherits(clstrarc2, 'ClstrArc'))
 })
-test_that('TxRcrd() works', {
+test_that('TaxRec() works', {
   txid <- phylota@txids[[1]]
-  txrcrd <- phylota@txdct@rcrds[[txid]]
-  show(txrcrd)
-  print(txrcrd)
-  str(txrcrd)
-  summary(txrcrd)
-  txstrng <- as.character(txrcrd)
-  expect_true(validObject(txrcrd))
+  taxrec <- phylota@txdct@recs[[txid]]
+  show(taxrec)
+  print(taxrec)
+  str(taxrec)
+  summary(taxrec)
+  txstrng <- as.character(taxrec)
+  expect_true(validObject(taxrec))
 })
-test_that('TxDct() works', {
+test_that('TaxDct() works', {
   txdct <- phylota@txdct
   show(txdct)
   print(txdct)
@@ -82,17 +74,17 @@ test_that('TxDct() works', {
   txstrng <- as.character(txdct)
   expect_true(validObject(txdct))
 })
-test_that('PhyLoTa() works', {
+test_that('Phylota() works', {
   show(phylota)
   print(phylota)
   str(phylota)
   cids <- sample(phylota@cids, 2)
-  summary(drop_cls(phylota=phylota, cid=cids))
+  summary(drop_clstrs(phylota=phylota, cid=cids))
   txstrng <- as.character(phylota)
   expect_true(validObject(phylota))
   # [[
   sid <- sample(phylota@sids, 1)
-  expect_true(inherits(phylota[[sid]], 'SqRcrd'))
+  expect_true(inherits(phylota[[sid]], 'SeqRec'))
   cid <- sample(phylota@cids, 1)
-  expect_true(inherits(phylota[[cid]], 'ClRcrd'))
+  expect_true(inherits(phylota[[cid]], 'ClstrRec'))
 })

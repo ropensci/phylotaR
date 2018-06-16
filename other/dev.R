@@ -1,13 +1,15 @@
 
 devtools::load_all('~/Coding/phylotaR')
+library(phylotaR)
 
-aotus_ps <- ldPrmtrs('demos/aotus')
-wd <- '/home/dom/Coding/phylotaR_demo/primates'
-ps <- ldPrmtrs(wd)
-ps[['wd']] <- wd
-ps[['v']] <- TRUE
-ps$mkblstdb <- aotus_ps$mkblstdb
-ps$blstn <- aotus_ps$blstn
-clstrClstrs(ps)
-
+ncbi_dr <- file.path('NCBI', 'bin')
+wd <- 'aotus'
+if (file.exists(wd)) {
+  unlink(wd, recursive = TRUE)
+}
+dir.create(wd)
+setup(wd = wd, txid = '9504', ncbi_dr = ncbi_dr, v = TRUE)
+run(wd)
+taxise_run(wd)
+download_run(wd)
 

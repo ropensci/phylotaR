@@ -2,7 +2,7 @@
 % Please edit documentation in R/pipeline.R
 \name{restart}
 \alias{restart}
-\title{Restart a PhyLoTa pipeline run}
+\title{Restart a phylotaR pipeline run}
 \usage{
 restart(wd, nstages = 4)
 }
@@ -15,6 +15,25 @@ restart(wd, nstages = 4)
 Restarts the running of a pipeline
 as started with \code{run}.
 }
+\examples{
+\dontrun{
+  
+  # restart aotus run
+  setup(wd = 'aotus', txid = 9504)
+  run(wd = 'aotus')
+  # use ctrl+c or Esc to kill
+  # restart with ....
+  restart(wd = wd)
+}
+}
 \seealso{
-\code{\link{run}}
+Other run-public: \code{\link{ClstrArc-class}},
+  \code{\link{ClstrRec-class}},
+  \code{\link{Phylota-class}}, \code{\link{SeqArc-class}},
+  \code{\link{SeqRec-class}}, \code{\link{TaxDict-class}},
+  \code{\link{TaxRec-class}}, \code{\link{clusters2_run}},
+  \code{\link{clusters_run}},
+  \code{\link{parameters_reset}}, \code{\link{reset}},
+  \code{\link{run}}, \code{\link{setup}},
+  \code{\link{taxise_run}}
 }

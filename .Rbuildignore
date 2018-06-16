@@ -3,3 +3,9 @@
 ^\.travis\.yml$
 other/
 demos/
+_pkgdown.yml
+docs/
+man-roxygen/
+CONTRIBUTING.md
+test.fasta
+examples/

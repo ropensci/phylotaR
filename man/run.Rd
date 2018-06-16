@@ -2,7 +2,7 @@
 % Please edit documentation in R/pipeline.R
 \name{run}
 \alias{run}
-\title{Run PhyLoTa pipeline}
+\title{Run phylotaR pipeline}
 \usage{
 run(wd, nstages = 4)
 }
@@ -12,21 +12,31 @@ run(wd, nstages = 4)
 \item{nstages}{Number of total stages to run, max 4.}
 }
 \description{
-Run the entire PhyLoTa pipeline.
-All generated files will be stored in the wd.
-The process can be stopped at anytime and 
-restarted with \code{restart}.
-\code{nstages} must be a numeric value representing
-the number of stages that will be run. Stages are run
-in the following order:  1 - taxise, 2 - download,
-3 - cluster and 4 - align.
-For example, specifying \code{nstages} = 3, will run
-taxise, download and cluster.
-Stages can also be run individually, see linked
-functions below.
+Run the entire phylotaR pipeline. All generated files will be
+stored in the wd. The process can be stopped at anytime and  restarted with
+\code{restart}. \code{nstages} must be a numeric value representing the
+number of stages that will be run. Stages are run in the following order:
+1 - taxise, 2 - download, 3 - cluster and 4 - cluster2.
+
+For example, specifying \code{nstages} = 3, will run taxise, download and
+cluster. Stages can also be run individually, see linked functions below.
+}
+\examples{
+\dontrun{
+  
+  # setup and run for aotus, make sure aotus/ folder already exists
+  setup(wd = 'aotus', txid = 9504)
+  run(wd = 'aotus')
+}
 }
 \seealso{
-\code{\link{restart}}, \code{\link{runTaxise}},
-\code{\link{runDownload}}, \code{\link{runClusters}},
-\code{\link{runClusters2}}
+Other run-public: \code{\link{ClstrArc-class}},
+  \code{\link{ClstrRec-class}},
+  \code{\link{Phylota-class}}, \code{\link{SeqArc-class}},
+  \code{\link{SeqRec-class}}, \code{\link{TaxDict-class}},
+  \code{\link{TaxRec-class}}, \code{\link{clusters2_run}},
+  \code{\link{clusters_run}},
+  \code{\link{parameters_reset}}, \code{\link{reset}},
+  \code{\link{restart}}, \code{\link{setup}},
+  \code{\link{taxise_run}}
 }

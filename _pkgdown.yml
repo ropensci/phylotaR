@@ -1,0 +1,141 @@
+reference:
+- title: Running
+  desc:  Functions for starting/stopping the phylotaR pipeline.
+  contents:
+    - setup
+    - run
+    - restart
+    - reset
+    - parameters
+    - parameters_reset
+    - taxise_run
+    - download_run
+    - clusters_run
+    - clusters2_run
+- title: Tools
+  desc: Tools for interacting with the Phylota object
+  contents:
+    - read_phylota
+    - drop_by_rank
+    - drop_clstrs
+    - drop_sqs
+    - get_clstr_slot
+    - get_sq_slot
+    - get_tx_slot
+    - get_nsqs
+    - get_ntaxa
+    - get_txids
+    - is_txid_in_clstr
+    - is_txid_in_sq
+    - list_clstrrec_slots
+    - list_ncbi_ranks
+    - list_seqrec_slots
+    - list_taxrec_slots
+    - calc_wrdfrq
+    - calc_mad
+    - write_sqs
+    - plot_phylota_treemap
+    - plot_phylota_pa
+    - get_stage_times
+- title: Data
+  desc: Example Phylota objects
+  contents:
+    - aotus
+    - bromeliads
+    - cycads
+    - dragonflies
+    - sturgeons
+    - tardigrades
+    - tinamous
+    - yeasts
+- title: Classes
+  desc: S4 classes
+  contents:
+    - ends_with("-class")
+- title: Taxise (private)
+  desc: Internal functions for running the taxise stage, use `phylotaR:::` to access.
+  contents:
+    - rank_get
+    - descendants_get
+    - sqs_count
+    - clade_select
+    - txnds_count
+    - txids_get
+    - parent_get
+    - tax_download
+    - taxdict_gen
+    - taxtree_gen
+- title: Download (private)
+  desc: Internal functions for running the download stage, use `phylotaR:::` to access.
+  contents:
+    - searchterm_gen
+    - seq_download
+    - seqarc_gen
+    - seqrec_augment
+    - seqrec_convert
+    - seqrec_gen
+    - seqrec_get
+    - hierarchic_download
+    - sids_get
+- title: Cluster (private)
+  desc: Internal functions for running the cluster stage, use `phylotaR:::` to access.
+  contents:
+    - blast_clstr
+    - blast_filter
+    - blast_sqs
+    - blastdb_gen
+    - blastn_run
+    - clstr_all 
+    - clstr_direct
+    - clstr_sqs
+    - clstr_subtree
+    - clstrarc_gen
+    - clstrarc_join
+    - clstrrec_gen
+    - clstrs_calc
+- title: Cluster2 (private)
+  desc: Internal functions for running the cluster2 stage, use `phylotaR:::` to access.
+  contents:
+    - seeds_blast
+    - clstr2_calc
+    - clstrs_join
+    - clstrs_merge
+    - clstrs_renumber
+- title: Misc (private)
+  desc: Miscellaneous internal functions, use `phylotaR:::` to access.
+  contents:
+    - blast_setup
+    - download_obj_check
+    - safely_connect
+    - search_and_cache
+    - batcher
+    - info
+    - error
+    - warn
+    - blastcache_load
+    - blastcache_save
+    - sids_check
+    - sids_load
+    - sids_save
+    - cache_rm
+    - cache_setup
+    - sqs_load
+    - sqs_save
+    - ncbicache_load
+    - ncbicache_save
+    - stages_run
+    - stage_args_check
+    - mk_txid_in_sq_mtrx
+    - obj_check
+    - obj_load
+    - obj_save
+    - summary_phylota
+    - parameters_load
+    - progress_init
+    - progress_read
+    - progress_reset
+    - progress_save
+    - cmdln
+    - update_phylota
+    - parameters_setup
+    - clstrs_save

@@ -1,10 +1,16 @@
-#' @name ClRcrd-class
-#' @aliases ClRcrd-method
-#' @param x \code{ClRcrd} object
-#' @param object \code{ClRcrd} object
+# Style note ----
+#  - lots of style guides recommend avoiding S4
+#  - those that do recommend, suggest CamelCase
+#  - for now I'm following 'TypeData'
+#  - functions that interact are typedata_verb
+# ClstrRec ----
+#' @name ClstrRec-class
+#' @aliases ClstrRec-method
+#' @param x \code{ClstrRec} object
+#' @param object \code{ClstrRec} object
 #' @param max.level Maximum level of nesting for str()
 #' @param ... Further arguments for str()
-#' @title ClRcrd-class
+#' @title Cluster record
 #' @description Cluster record contains all information on a cluster.
 #' @slot id Cluster ID, integer
 #' @slot sids Sequence IDs
@@ -14,20 +20,22 @@
 #' @slot typ Cluster type: direct, subtree or merged
 #' @slot seed Seed sequence ID
 #' @slot prnt Parent taxonomic ID
-#' @exportClass ClRcrd
-setClass('ClRcrd', representation=representation(
-  id='integer',
-  sids='vector',
-  nsqs='integer',
-  txids='vector',
-  ntx='integer',
-  typ='character',
-  prnt='character',
-  seed='character'))
+#' @family run-public
+#' @exportClass ClstrRec
+#' @example examples/clstrrec-class.R
+setClass('ClstrRec', representation = representation(
+  id = 'integer',
+  sids = 'vector',
+  nsqs = 'integer',
+  txids = 'vector',
+  ntx = 'integer',
+  typ = 'character',
+  prnt = 'character',
+  seed = 'character'))
 
-#' @rdname ClRcrd-class
+#' @rdname ClstrRec-class
 #' @exportMethod as.character
-setMethod('as.character', c('x'='ClRcrd'),
+setMethod('as.character', c('x' = 'ClstrRec'),
           function(x) {
             msg <- paste0('Cluster Record [id ', x@id,']\n')
             msg <- paste0(msg, ' - [', x@typ,
@@ -39,132 +47,136 @@ setMethod('as.character', c('x'='ClRcrd'),
             msg <- paste0(msg, ' - [', x@ntx,
                           '] taxa\n')
           })
-#' @rdname ClRcrd-class
+#' @rdname ClstrRec-class
 #' @exportMethod show
-setMethod('show', 'ClRcrd',
+setMethod('show', 'ClstrRec',
           function(object){
             msg <- as.character(object)
             cat(msg)
           })
-#' @rdname ClRcrd-class
+#' @rdname ClstrRec-class
 #' @exportMethod print
-setMethod('print', 'ClRcrd',
+setMethod('print', 'ClstrRec',
           function(x){
             msg <- as.character(x)
             print(msg)
           })
-#' @rdname ClRcrd-class
+#' @rdname ClstrRec-class
 #' @exportMethod str
-setMethod('str', c('object'='ClRcrd'),
-          function(object, max.level=2L, ...) {
-            if(is.na(max.level)) {
+setMethod('str', c('object' = 'ClstrRec'),
+          function(object, max.level = 2L, ...) {
+            if (is.na(max.level)) {
               stop('max.level must be numeric')
             }
-            str@default(object, max.level=max.level, ...)
+            str@default(object, max.level = max.level, ...)
           })
-#' @rdname ClRcrd-class
+#' @rdname ClstrRec-class
 #' @exportMethod summary
-setMethod('summary', c('object'='ClRcrd'),
+setMethod('summary', c('object' = 'ClstrRec'),
           function(object){
             msg <- as.character(object)
             cat(msg)
           })
 
-chckClRcrdBx <- function(object) {
-  length(object@ids) == length(object@cls)
+# ClstrArc ----
+clstrarc_check <- function(object) {
+  length(object@ids) == length(object@clstrs)
 }
-
-#' @name ClRcrdBx-class
-#' @aliases ClRcrdBx-method
-#' @param x \code{ClRcrdBx} object
-#' @param object \code{ClRcrdBx} object
+#' @name ClstrArc-class
+#' @aliases ClstrArc-method
+#' @param x \code{ClstrArc} object
+#' @param object \code{ClstrArc} object
 #' @param i cid(s)
 #' @param j Unused
 #' @param drop Unused
 #' @param max.level Maximum level of nesting for str()
 #' @param ... Further arguments for str()
-#' @title ClRcrdBx-class
+#' @title Cluster record archive
 #' @description Multiple cluster records.
-#' @slot ids Vector of Cluster Record IDs
-#' @slot cls List of ClRcrds named by ID
-#' @exportClass ClRcrdBx
-setClass('ClRcrdBx', representation=representation(
-  ids='vector',
-  cls='list'),
-  validity=chckClRcrdBx)
+#' @slot ids Vector of cluster record IDs
+#' @slot clstrs List of ClstrArc named by ID
+#' @family run-public
+#' @exportClass ClstrArc
+#' @example examples/clstrarc-class.R
+setClass('ClstrArc', representation = representation(
+  ids = 'vector',
+  clstrs = 'list'),
+  validity = clstrarc_check)
 
-#' @rdname ClRcrdBx-class
+#' @rdname ClstrArc-class
 #' @exportMethod as.character
-setMethod('as.character', c('x'='ClRcrdBx'),
+setMethod('as.character', c('x' = 'ClstrArc'),
           function(x) {
-            msg <- 'Multiple ClRcrd(s)\n'
+            msg <- 'Archive of cluster record(s)\n'
             msg <- paste0(msg, ' - [', length(x@ids),
                           '] clusters\n')
             msg
           })
-#' @rdname ClRcrdBx-class
+#' @rdname ClstrArc-class
 #' @exportMethod show
-setMethod('show', 'ClRcrdBx',
+setMethod('show', 'ClstrArc',
           function(object){
             msg <- as.character(object)
             cat(msg)
           })
-#' @rdname ClRcrdBx-class
+#' @rdname ClstrArc-class
 #' @exportMethod print
-setMethod('print', 'ClRcrdBx',
+setMethod('print', 'ClstrArc',
           function(x){
             msg <- as.character(x)
             print(msg)
           })
-#' @rdname ClRcrdBx-class
+#' @rdname ClstrArc-class
 #' @exportMethod str
-setMethod('str', c('object'='ClRcrdBx'),
-          function(object, max.level=2L, ...) {
-            if(is.na(max.level)) {
+setMethod('str', c('object' = 'ClstrArc'),
+          function(object, max.level = 2L, ...) {
+            if (is.na(max.level)) {
               stop('max.level must be numeric')
             }
-            str@default(object, max.level=max.level, ...)
+            str@default(object, max.level = max.level, ...)
           })
-#' @rdname ClRcrdBx-class
+#' @rdname ClstrArc-class
 #' @exportMethod summary
-setMethod('summary', c('object'='ClRcrdBx'),
+setMethod('summary', c('object' = 'ClstrArc'),
           function(object){
             msg <- as.character(object)
             cat(msg)
           })
 
 # Accessor methods
-#' @rdname ClRcrdBx-class
+#' @rdname ClstrArc-class
 #' @exportMethod [[
-setMethod('[[', c('ClRcrdBx', 'character'),
+setMethod('[[', c('ClstrArc', 'character'),
           function(x, i) {
             pull <- which(x@ids %in% i)
-            if(length(pull) == 1) {
-              return(x@cls[[pull[1]]])
+            if (length(pull) == 1) {
+              return(x@clstrs[[pull[1]]])
             }
             stop(paste0('[', i , '] not in records'))
           })
-#' @rdname ClRcrdBx-class
+#' @rdname ClstrArc-class
 #' @exportMethod [
-setMethod('[', c('ClRcrdBx', 'character', 'missing', 'missing'),
-          function(x, i, j, ..., drop=TRUE) {
+setMethod('[', c('ClstrArc', 'character', 'missing', 'missing'),
+          function(x, i, j, ..., drop = TRUE) {
             pull <- i %in% x@ids
-            if(all(pull)) {
-              x <- genClRcrdBx(x@cls[x@ids %in% i])
-              x@ids <- i
+            if (all(pull)) {
+              clstrrecs <- x@clstrs[x@ids %in% i]
+              x <- new('ClstrArc', ids = i, clstrs = clstrrecs)
               return(x)
             }
-            mssng <- paste0(i[!pull], collapse=', ')
+            mssng <- paste0(i[!pull], collapse = ', ')
             stop(paste0('[', mssng , '] not in records'))
           })
 
-#' @name SqRcrd-class
-#' @aliases SqRcrd-method
-#' @param x \code{SqRcrd} object
-#' @param object \code{SqRcrd} object
+# SeqRec ----
+#' @name SeqRec-class
+#' @family run-public
+#' @aliases SeqRec-method
+#' @param x \code{SeqRec} object
+#' @param object \code{SeqRec} object
 #' @param max.level Maximum level of nesting for str()
 #' @param ... Further arguments for str()
-#' @title SqRcrd-class
+#' @title Sequence record
 #' @description Sequence record contains sequence data.
 #' @details Sequence is stored as raw. Use rawToChar().
 #' @slot id Unique ID
@@ -172,186 +184,189 @@ setMethod('[', c('ClRcrdBx', 'character', 'missing', 'missing'),
 #' @slot accssn Accession
 #' @slot vrsn Accession version
 #' @slot url URL
-#' @slot gi GI
 #' @slot txid Taxonomic ID of source taxon
 #' @slot orgnsm Scientific name of source taxon
 #' @slot sq Sequence
 #' @slot dfln Definition line
 #' @slot ml_typ Molecule type, e.g. DNA
-#' @slot rcrd_typ Record type: Whole or feature
+#' @slot rec_typ Record type: Whole or feature
 #' @slot nncltds Number of nucleotides
 #' @slot nambgs Number of ambiguous nucleotides
 #' @slot pambgs Proportion of ambiguous nucleotides
 #' @slot gcr GC ratio
 #' @slot age Number of days between sequence upload and running pipeline 
-#' @exportClass SqRcrd
-setClass('SqRcrd', representation=representation(
-  id='character',
-  nm='character',
-  accssn='character',
-  vrsn='character',
-  gi='character',
-  url='character',
-  txid='character',
-  orgnsm='character',
-  sq='raw',
-  dfln='character',
-  ml_typ='character',
-  rcrd_typ='character',
-  nncltds='integer',
-  nambgs='integer',
-  pambgs='numeric',
-  gcr='numeric',
-  age='integer'))
+#' @exportClass SeqRec
+#' @example examples/seqrec-class.R
+setClass('SeqRec', representation = representation(
+  id = 'character',
+  nm = 'character',
+  accssn = 'character',
+  vrsn = 'character',
+  url = 'character',
+  txid = 'character',
+  orgnsm = 'character',
+  sq = 'raw',
+  dfln = 'character',
+  ml_typ = 'character',
+  rec_typ = 'character',
+  nncltds = 'integer',
+  nambgs = 'integer',
+  pambgs = 'numeric',
+  gcr = 'numeric',
+  age = 'integer'))
 
-#' @rdname SqRcrd-class
+#' @rdname SeqRec-class
 #' @exportMethod as.character
-setMethod('as.character', c('x'='SqRcrd'),
+setMethod('as.character', c('x' = 'SeqRec'),
           function(x) {
-            paste0('SqRcrd [ID: ', x@id,']')
+            paste0('SeqRec [ID: ', x@id,']')
           })
-#' @rdname SqRcrd-class
+#' @rdname SeqRec-class
 #' @exportMethod show
-setMethod('show', 'SqRcrd',
+setMethod('show', 'SeqRec',
           function(object){
             msg <- as.character(object)
             cat(msg)
           })
-#' @rdname SqRcrd-class
+#' @rdname SeqRec-class
 #' @exportMethod print
-setMethod('print', 'SqRcrd',
+setMethod('print', 'SeqRec',
           function(x){
             msg <- as.character(x)
             print(msg)
           })
-#' @rdname SqRcrd-class
+#' @rdname SeqRec-class
 #' @exportMethod str
-setMethod('str', c('object'='SqRcrd'),
-          function(object, max.level=2L, ...) {
-            if(is.na(max.level)) {
+setMethod('str', c('object' = 'SeqRec'),
+          function(object, max.level = 2L, ...) {
+            if (is.na(max.level)) {
               stop('max.level must be numeric')
             }
-            str@default(object, max.level=max.level, ...)
+            str@default(object, max.level = max.level, ...)
           })
-#' @rdname SqRcrd-class
+#' @rdname SeqRec-class
 #' @exportMethod summary
-setMethod('summary', c('object'='SqRcrd'),
+setMethod('summary', c('object' = 'SeqRec'),
           function(object){
             msg <- as.character(object)
             cat(msg)
           })
 
-chckSqRcrdBx <- function(object) {
+# SeqArc ----
+seqarc_check <- function(object) {
   length(object@ids) == length(object@sqs) &
     length(object@ids) == length(object@txids)  
 }
-
-#' @name SqRcrdBx-class
-#' @aliases SqRcrdBx-method
-#' @param x \code{SqRcrdBx} object
-#' @param object \code{SqRcrdBx} object
+#' @name SeqArc-class
+#' @family run-public
+#' @aliases SeqArc-method
+#' @param x \code{SeqArc} object
+#' @param object \code{SeqArc} object
 #' @param i sid(s)
 #' @param j Unused
 #' @param drop Unused
 #' @param max.level Maximum level of nesting for str()
 #' @param ... Further arguments for str()
-#' @title SqRcrdBx-class
+#' @title Sequence record archive
 #' @description Multiple sequence records containing sequence data.
 #' @details Sequences are stored as raw. Use rawToChar().
 #' @slot ids Vector of Sequence Record IDs
 #' @slot nncltds Vector of sequence lengths
 #' @slot nambgs Vector of number of ambiguous nucleotides
 #' @slot txids Vector source txid associated with each sequence
-#' @slot sqs List of SqRcrds named by ID
-#' @exportClass SqRcrdBx
-setClass('SqRcrdBx', representation=representation(
-  ids='vector',
-  nncltds='vector',
-  nambgs='vector',
-  txids='vector',
-  sqs='list'),
-  validity=chckSqRcrdBx)
+#' @slot sqs List of SeqRecs named by ID
+#' @exportClass SeqArc
+#' @example examples/seqarc-class.R
+setClass('SeqArc', representation = representation(
+  ids = 'vector',
+  nncltds = 'vector',
+  nambgs = 'vector',
+  txids = 'vector',
+  sqs = 'list'),
+  validity = seqarc_check)
 
-#' @rdname SqRcrdBx-class
+#' @rdname SeqArc-class
 #' @exportMethod as.character
-setMethod('as.character', c('x'='SqRcrdBx'),
+setMethod('as.character', c('x' = 'SeqArc'),
           function(x) {
-            msg <- 'Multiple SqRcrd(s)\n'
-            msg <- paste0(msg, ' - [', length(x@ids),
-                          '] sequences\n')
+            msg <- 'Archive of sequence record(s)\n'
+            msg <- paste0(msg, ' - [', length(x@ids), '] sequences\n')
             msg <- paste0(msg, ' - [', length(unique(x@txids)),
                           '] unique txids\n')
             msg <- paste0(msg, ' - [', median(x@nncltds),
                           '] median sequence length\n')
             msg <- paste0(msg, ' - [', median(x@nambgs),
                           '] median ambiguous nucleotides\n')
+            msg
           })
-#' @rdname SqRcrdBx-class
+#' @rdname SeqArc-class
 #' @exportMethod show
-setMethod('show', 'SqRcrdBx',
+setMethod('show', 'SeqArc',
           function(object){
             msg <- as.character(object)
             cat(msg)
           })
-#' @rdname SqRcrdBx-class
+#' @rdname SeqArc-class
 #' @exportMethod print
-setMethod('print', 'SqRcrdBx',
+setMethod('print', 'SeqArc',
           function(x){
             msg <- as.character(x)
             print(msg)
           })
-#' @rdname SqRcrdBx-class
+#' @rdname SeqArc-class
 #' @exportMethod str
-setMethod('str', c('object'='SqRcrdBx'),
-          function(object, max.level=2L, ...) {
-            if(is.na(max.level)) {
+setMethod('str', c('object' = 'SeqArc'),
+          function(object, max.level = 2L, ...) {
+            if (is.na(max.level)) {
               stop('max.level must be numeric')
             }
-            str@default(object, max.level=max.level, ...)
+            str@default(object, max.level = max.level, ...)
           })
-#' @rdname SqRcrdBx-class
+#' @rdname SeqArc-class
 #' @exportMethod summary
-setMethod('summary', c('object'='SqRcrdBx'),
+setMethod('summary', c('object' = 'SeqArc'),
           function(object){
             msg <- as.character(object)
             cat(msg)
           })
 
 # Accessor methods
-#' @rdname SqRcrdBx-class
+#' @rdname SeqArc-class
 #' @exportMethod [[
-setMethod('[[', c('SqRcrdBx', 'character'),
+setMethod('[[', c('SeqArc', 'character'),
           function(x, i) {
             pull <- which(x@ids %in% i)
-            if(length(pull) == 1) {
+            if (length(pull) == 1) {
               return(x@sqs[[pull[1]]])
             }
             stop(paste0('[', i , '] not in records'))
           })
-#' @rdname SqRcrdBx-class
+#' @rdname SeqArc-class
 #' @exportMethod [
-setMethod('[', c('SqRcrdBx', 'character', 'missing', 'missing'),
-          function(x, i, j, ..., drop=TRUE) {
+setMethod('[', c('SeqArc', 'character', 'missing', 'missing'),
+          function(x, i, j, ..., drop = TRUE) {
             pull <- i %in% x@ids
-            if(all(pull)) {
-              return(genSqRcrdBx(x@sqs[x@ids %in% i]))
+            if (all(pull)) {
+              return(seqarc_gen(x@sqs[x@ids %in% i]))
             }
-            mssng <- paste0(i[!pull], collapse=', ')
+            mssng <- paste0(i[!pull], collapse = ', ')
             stop(paste0('[', mssng , '] not in records'))
           })
 
-chckTxRcrd <- function(object) {
+# TaxRec ----
+taxrec_check <- function(object) {
   length(object@lng[['rnks']]) ==
     length(object@lng[['ids']])
 }
 
-#' @name TxRcrd-class
-#' @aliases TxRcrd-method
-#' @param x \code{TxRcrd} object
-#' @param object \code{TxRcrd} object
+#' @name TaxRec-class
+#' @family run-public
+#' @aliases TaxRec-method
+#' @param x \code{TaxRec} object
+#' @param object \code{TaxRec} object
 #' @param max.level Maximum level of nesting for str()
 #' @param ... Further arguments for str()
-#' @title TxRcrd-class
+#' @title Taxonomic record
 #' @description Taxonomic dictionary contains a taxonomic
 #' tree and NCBI taxonomy data for all taxonomic IDs.
 #' @slot id Taxonomic ID
@@ -360,163 +375,165 @@ chckTxRcrd <- function(object) {
 #' @slot rnk Rank
 #' @slot lng Lineage
 #' @slot prnt Parent
-#' @exportClass TxRcrd
-setClass('TxRcrd', representation=representation(
-  id='character',
-  scnm='character',
-  cmnm='character',
-  rnk='character',
-  lng='list',
-  prnt='character'),
-  validity=chckTxRcrd)
+#' @exportClass TaxRec
+#' @example examples/taxrec-class.R
+setClass('TaxRec', representation = representation(
+  id = 'character',
+  scnm = 'character',
+  cmnm = 'character',
+  rnk = 'character',
+  lng = 'list',
+  prnt = 'character'),
+  validity = taxrec_check)
 
-#' @rdname TxRcrd-class
+#' @rdname TaxRec-class
 #' @exportMethod as.character
-setMethod('as.character', c('x'='TxRcrd'),
+setMethod('as.character', c('x' = 'TaxRec'),
           function(x) {
-            msg <- paste0('TxRcrd [id ', x@id,
-                          ' (', x@scnm, ')]\n')
+            paste0('TaxRec [id ', x@id, ' (', x@scnm, ')]\n')
           })
-#' @rdname TxRcrd-class
+#' @rdname TaxRec-class
 #' @exportMethod show
-setMethod('show', 'TxRcrd',
+setMethod('show', 'TaxRec',
           function(object){
             msg <- as.character(object)
             cat(msg)
           })
-#' @rdname TxRcrd-class
+#' @rdname TaxRec-class
 #' @exportMethod print
-setMethod('print', 'TxRcrd',
+setMethod('print', 'TaxRec',
           function(x){
             msg <- as.character(x)
             print(msg)
           })
-#' @rdname TxRcrd-class
+#' @rdname TaxRec-class
 #' @exportMethod str
-setMethod('str', c('object'='TxRcrd'),
-          function(object, max.level=2L, ...) {
-            if(is.na(max.level)) {
+setMethod('str', c('object' = 'TaxRec'),
+          function(object, max.level = 2L, ...) {
+            if (is.na(max.level)) {
               stop('max.level must be numeric')
             }
-            str@default(object, max.level=max.level, ...)
+            str@default(object, max.level = max.level, ...)
           })
-#' @rdname TxRcrd-class
+#' @rdname TaxRec-class
 #' @exportMethod summary
-setMethod('summary', c('object'='TxRcrd'),
+setMethod('summary', c('object' = 'TaxRec'),
           function(object){
             msg <- as.character(object)
             cat(msg)
           })
 
-chckTxDct <- function(object) {
+# TaxDict ----
+taxdict_check <- function(object) {
   length(object@txids) ==
-    length(ls(object@rcrds)) &
-    length(object@txids) ==
-    length(object@indx)
+    length(ls(object@recs)) &
+    length(object@txids)
 }
 
-#' @name TxDct-class
-#' @aliases TxDct-method
-#' @param x \code{TxDct} object
-#' @param object \code{TxDct} object
+#' @name TaxDict-class
+#' @family run-public
+#' @aliases TaxDict-method
+#' @param x \code{TaxDict} object
+#' @param object \code{TaxDict} object
 #' @param max.level Maximum level of nesting for str()
 #' @param ... Further arguments for str()
-#' @title TxDct-class
+#' @title Taxonomic record dictionary
 #' @description Taxonomic dictionary contains a taxonomic
 #' tree and NCBI taxonomy data for all taxonomic IDs.
 #' @slot txids Taxonomic IDs of taxon records
-#' @slot rcrds Environment of records
+#' @slot recs Environment of records
 #' @slot prnt Parent taxonomic ID
 #' @slot txtr Taxonomic tree
-#' @slot indx Taxonomic ID index for tree IDs
-#' @exportClass TxDct
-setClass('TxDct', representation=representation(
-  txids='vector',
-  indx='vector',
-  rcrds='environment',
-  txtr='TreeMan',
-  prnt='character'),
-  validity=chckTxDct)
+#' @exportClass TaxDict
+#' @example examples/taxdict-class.R
+setClass('TaxDict', representation = representation(
+  txids = 'vector',
+  recs = 'environment',
+  txtr = 'TreeMan',
+  prnt = 'character'),
+  validity = taxdict_check)
 
-#' @rdname TxDct-class
+#' @rdname TaxDict-class
 #' @exportMethod as.character
-setMethod('as.character', c('x'='TxDct'),
+setMethod('as.character', c('x' = 'TaxDict'),
           function(x) {
-            msg <- paste0('TxDct [', length(x@txids),
-                          '] rcrds, parent [id ', x@prnt,']\n')
+            paste0('Taxonomic dictionary [', length(x@txids),
+                   '] recs, parent [id ', x@prnt,']\n')
           })
-#' @rdname TxDct-class
+#' @rdname TaxDict-class
 #' @exportMethod show
-setMethod('show', 'TxDct',
+setMethod('show', 'TaxDict',
           function(object){
             msg <- as.character(object)
             cat(msg)
           })
-#' @rdname TxDct-class
+#' @rdname TaxDict-class
 #' @exportMethod print
-setMethod('print', 'TxDct',
+setMethod('print', 'TaxDict',
           function(x){
             msg <- as.character(x)
             print(msg)
           })
-#' @rdname TxDct-class
+#' @rdname TaxDict-class
 #' @exportMethod str
-setMethod('str', c('object'='TxDct'),
-          function(object, max.level=2L, ...) {
-            if(is.na(max.level)) {
+setMethod('str', c('object' = 'TaxDict'),
+          function(object, max.level = 2L, ...) {
+            if (is.na(max.level)) {
               stop('max.level must be numeric')
             }
-            str@default(object, max.level=max.level, ...)
+            str@default(object, max.level = max.level, ...)
           })
-#' @rdname TxDct-class
+#' @rdname TaxDict-class
 #' @exportMethod summary
-setMethod('summary', c('object'='TxDct'),
+setMethod('summary', c('object' = 'TaxDict'),
           function(object){
             msg <- as.character(object)
             cat(msg)
           })
 
-
-chckPhyLoTa <- function(object) {
-  length(object@cids) == length(object@cls@cls) &
+# Phylota ----
+phylota_check <- function(object) {
+  length(object@cids) == length(object@clstrs@clstrs) &
     length(object@sids) == length(object@sqs@sqs) &
     all(object@txids %in% object@txdct@txids)
 }
-
-#' @name PhyLoTa-class
-#' @aliases PhyLoTa-method
-#' @param x \code{PhyLoTa} object
-#' @param object \code{PhyLoTa} object
+#' @name Phylota-class
+#' @family run-public
+#' @aliases Phylota-method
+#' @param x \code{Phylota} object
+#' @param object \code{Phylota} object
 #' @param i Either sid or cid
 #' @param max.level Maximum level of nesting for str()
 #' @param ... Further arguments for str()
-#' @title PhyLoTa-class
-#' @description PhyLoTa table contains sequences and clusters information.
+#' @title Phylota object
+#' @description Phylota table contains all sequence, cluster and taxonomic
+#' information from a phylotaR pipeline run.
 #' @slot cids IDs of all clusters
 #' @slot sids IDs of all sequences
 #' @slot txids IDs of all taxa
-#' @slot sqs All sequence records as SqRcrdBx
-#' @slot cls All cluster records as ClRcrdBx
-#' @slot txdct Taxonomic dictionary as TxDct
+#' @slot sqs All sequence records as SeqArc
+#' @slot clstrs All cluster records as ClstrArc
+#' @slot txdct Taxonomic dictionary as TaxDict
 #' @slot prnt_id Parent taxonomic ID
 #' @slot prnt_nm Parent taxonomic name
-#' @exportClass PhyLoTa
-setClass('PhyLoTa', representation=representation(
-  cids='vector',
-  txids='vector',
-  sids='vector',
-  txdct='TxDct',
-  sqs='SqRcrdBx',
-  cls='ClRcrdBx',
-  prnt_id='character',
-  prnt_nm='character'),
-  validity=chckPhyLoTa)
+#' @exportClass Phylota
+#' @example examples/phylota-class.R
+setClass('Phylota', representation = representation(
+  cids = 'vector',
+  txids = 'vector',
+  sids = 'vector',
+  txdct = 'TaxDict',
+  sqs = 'SeqArc',
+  clstrs = 'ClstrArc',
+  prnt_id = 'character',
+  prnt_nm = 'character'),
+  validity = phylota_check)
 
-#' @rdname PhyLoTa-class
+#' @rdname Phylota-class
 #' @exportMethod as.character
-setMethod('as.character', c('x'='PhyLoTa'),
+setMethod('as.character', c('x' = 'Phylota'),
           function(x) {
-            msg <- paste0('PhyLoTa Table (',
+            msg <- paste0('Phylota Table (',
                           x@prnt_nm, ')\n')
             msg <- paste0(msg, '- [', length(x@cids),
                           '] clusters\n')
@@ -526,47 +543,47 @@ setMethod('as.character', c('x'='PhyLoTa'),
                           '] source taxa\n')
             msg
           })
-#' @rdname PhyLoTa-class
+#' @rdname Phylota-class
 #' @exportMethod show
-setMethod('show', 'PhyLoTa',
+setMethod('show', 'Phylota',
           function(object){
             msg <- as.character(object)
             cat(msg)
           })
-#' @rdname PhyLoTa-class
+#' @rdname Phylota-class
 #' @exportMethod print
-setMethod('print', 'PhyLoTa',
+setMethod('print', 'Phylota',
           function(x){
             msg <- as.character(x)
             print(msg)
           })
-#' @rdname PhyLoTa-class
+#' @rdname Phylota-class
 #' @exportMethod str
-setMethod('str', c('object'='PhyLoTa'),
-          function(object, max.level=2L, ...) {
-            if(is.na(max.level)) {
+setMethod('str', c('object' = 'Phylota'),
+          function(object, max.level = 2L, ...) {
+            if (is.na(max.level)) {
               stop('max.level must be numeric')
             }
-            str@default(object, max.level=max.level, ...)
+            str@default(object, max.level = max.level, ...)
           })
-#' @rdname PhyLoTa-class
+#' @rdname Phylota-class
 #' @exportMethod summary
-setMethod('summary', c('object'='PhyLoTa'),
+setMethod('summary', c('object' = 'Phylota'),
           function(object){
             summary_phylota(object)
           })
 
 # Accessor methods
-#' @rdname PhyLoTa-class
+#' @rdname Phylota-class
 #' @exportMethod [[
-setMethod('[[', c('PhyLoTa', 'character'),
+setMethod('[[', c('Phylota', 'character'),
           function(x, i) {
             pull <- which(x@cids %in% i)
-            if(length(pull) == 1) {
-              return(x@cls@cls[[pull[1]]])
+            if (length(pull) == 1) {
+              return(x@clstrs@clstrs[[pull[1]]])
             }
             pull <- which(x@sids %in% i)
-            if(length(pull) == 1) {
+            if (length(pull) == 1) {
               return(x@sqs@sqs[[pull[1]]])
             }
             stop(paste0('[', i , '] not in table'))

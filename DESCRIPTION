@@ -1,11 +1,14 @@
 Package: phylotaR
 Type: Package
 Title: Automated phylogenetic sequence cluster identification from GenBank
-Version: 0.1
-Date: 2017-11-17
-Author: Hannes Hettling, Rutger Vos, Alexander Zika, Dominic J. Bennett, Alexandre Antonelli
+Version: 1.0.0
+Authors@R: c(person("Hannes", "Hettling", role = "aut"), person("Rutger", "Vos", role = "aut"), person("Alexander", "Zizka", role = "aut"), person("Dom", "Bennett", role = c("aut", "cre"), email = "dominic.john.bennett@gmail.com"), person("Alexandre", "Antonelli", role = c("aut")))
 Maintainer: D.J. Bennett <dominic.john.bennett@gmail.com>
-Description: PhyLoTa identifies orthologous sequence clusters from data readily available in GenBank. This is an R implementation of this process.
+Description: phylotaR is a pipeline for the identification within taxonomic
+    groups of orthologous sequence clusters from GenBank as the first step in a
+    phylogenetic analysis. The pipeline depends on a local alignment search tool
+    and is, therefore, not dependent on differences in gene naming conventions
+    and naming errors.
 License: MIT + file LICENSE
 URL: https://github.com/AntonelliLab/phylotaR#readme
 BugReports: https://github.com/AntonelliLab/phylotaR/issues
@@ -23,9 +26,6 @@ Imports:
     treemapify,
     R.utils
 Suggests:
-    foreach,
-    doMC,
-    doSNOW,
     testthat,
     knitr,
     rmarkdown
