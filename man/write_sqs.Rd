@@ -4,7 +4,7 @@
 \alias{write_sqs}
 \title{Write out sequences}
 \usage{
-write_sqs(phylota, outfile, sid, sq_nm = sid)
+write_sqs(phylota, outfile, sid, sq_nm = sid, width = 80)
 }
 \arguments{
 \item{phylota}{Phylota}
@@ -14,6 +14,8 @@ write_sqs(phylota, outfile, sid, sq_nm = sid)
 \item{sid}{Sequence ID(s)}
 
 \item{sq_nm}{Sequence name(s)}
+
+\item{width}{Maximum number of characters in a line, integer}
 }
 \description{
 Write out sequences, as .fasta, for a given vector of IDs.

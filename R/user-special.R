@@ -40,6 +40,7 @@ read_phylota <- function(wd) {
 #' @param outfile Output file
 #' @param sid Sequence ID(s)
 #' @param sq_nm Sequence name(s)
+#' @param width Maximum number of characters in a line, integer
 #' @details 
 #' The user can control the output definition lines of the sequences using the
 #' sq_nm. By default sequences IDs are used. Note, ensure the sq_nm are in the
@@ -48,12 +49,25 @@ read_phylota <- function(wd) {
 #' @example examples/write_sqs.R
 #' @export
 #' @family tools-public
-write_sqs <- function(phylota, outfile, sid, sq_nm = sid) {
+write_sqs <- function(phylota, outfile, sid, sq_nm = sid, width=80) {
   get <- function(i) {
-    sq <- phylota@sqs[[sid[i]]]
-    paste0('>', sq_nm[i], '\n', rawToChar(sq@sq), '\n\n')
+    rec <- phylota@sqs[[sid[i]]]
+    sq <- rawToChar(rec@sq)
+    n <- nchar(sq)
+    if (n > width) {
+      slices <- c(seq(from = 1, to = nchar(sq), by = width), nchar(sq))
+      sq <- vapply(X = 2:length(slices), function(x) {
+        substr(x = sq, start = slices[x - 1], stop = slices[x] - 1)
+        }, character(1))
+      sq <- paste0(sq, collapse = '\n')
+    }
+    paste0('>', sq_nm[i], '\n', sq, '\n\n')
   }
-  fasta <- vapply(seq_along(sid), get, '')
+  nms_check <- vapply(X = sq_nm, FUN = function(x) nchar(x) > width, logical(1))
+  if (any(nms_check)) {
+    warning('One or more `sq_nm` have more characters than `width`')
+  }
+  fasta <- vapply(seq_along(sid), get, character(1))
   fasta <- paste0(fasta, collapse = '')
   write(x = fasta, file = outfile)
 }
