@@ -22,8 +22,7 @@ datadir_get <- function(subdir = '') {
 random_phylota <- function() {
   # randomly choose one of the example phylota objects
   pssbls <- c("aotus", "bromeliads", "cycads", "dragonflies", "sturgeons",
-              "tinamous")
-  # TODO: "tardigrades"
+              "tinamous", "tardigrades")
   rndm <- sample(pssbls, 1)
   # list.files('data')
   data_env <- new.env()
