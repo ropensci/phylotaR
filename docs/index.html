@@ -71,18 +71,18 @@
       
       </header><div class="row">
   <div class="contents col-md-9">
-    
-<p><img src="logo.png" height="300" align="left"></p>
-<div id="automated-retrieval-of-orthologous-dna-sequences-from-genbank" class="section level1">
+    <div id="automated-retrieval-of-orthologous-dna-sequences-from-genbank" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
 <a href="#automated-retrieval-of-orthologous-dna-sequences-from-genbank" class="anchor"></a>Automated Retrieval of Orthologous DNA Sequences from GenBank</h1></div>
-<p><a href="https://travis-ci.org/AntonelliLab/phylotaR"><img src="https://travis-ci.org/AntonelliLab/phylotaR.svg?branch=master" alt="Build Status"></a> <a href="https://coveralls.io/github/AntonelliLab/phylotaR?branch=master"><img src="https://coveralls.io/repos/github/AntonelliLab/phylotaR/badge.svg?branch=master" alt="Coverage Status"></a> <a href="https://github.com/ropensci/onboarding/issues/187"><img src="https://badges.ropensci.org/187_status.svg"></a></p>
+
+<p><img src="logo.png" height="300" align="right"></p>
 <p>R implementation of the <a href="http://phylota.net/">PhyLoTa sequence cluster pipeline</a>. For more information see the accompanying website. Tested and demonstrated on Unix and Windows. <strong>Find out more by visiting the <a href="https://antonellilab.github.io/phylotaR/">phylotaR website</a>.</strong></p>
 <div id="install" class="section level2">
 <h2 class="hasAnchor">
 <a href="#install" class="anchor"></a>Install</h2>
 <p>Currently only the devlopment package is available:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(<span class="dt">repo=</span><span class="st">'AntonelliLab/phylotaR'</span>, <span class="dt">build_vignettes=</span><span class="ot">TRUE</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(<span class="dt">repo=</span><span class="st">'AntonelliLab/phylotaR'</span>,
+                         <span class="dt">build_vignettes=</span><span class="ot">TRUE</span>)</code></pre></div>
 <p><strong>Full functionality depends on a local copy of BLAST+ (&gt;= 2.0.0)</strong>. For details on downloading and compiling BLAST+ on your machine please visit the <a href="https://www.ncbi.nlm.nih.gov/books/NBK279690/">NCBI website</a>.</p>
 </div>
 <div id="pipeline" class="section level2">
@@ -248,7 +248,6 @@ txid &lt;-<span class="st"> </span><span class="dv">9443</span>  <span class="co
 <p>Sanderson, M. J., Boss, D., Chen, D., Cranston, K. A., &amp; Wehe, A. (2008). The PhyLoTA Browser: Processing GenBank for molecular phylogenetics research. <em>Systematic Biology</em>, <strong>57</strong>(3), 335–346. <a href="https://doi.org/10.1080/10635150802158688">DOI:10.1080/10635150802158688</a></p>
 </div>
 </div>
-
   </div>
 
   <div class="col-md-3" id="sidebar">
@@ -280,7 +279,15 @@ txid &lt;-<span class="st"> </span><span class="dv">9443</span>  <span class="co
 </ul>
 </div>
 
-  </div>
+  <div class="dev-status">
+<h2>Dev status</h2>
+<ul class="list-unstyled">
+<li><a href="https://travis-ci.org/AntonelliLab/phylotaR"><img src="https://travis-ci.org/AntonelliLab/phylotaR.svg?branch=master" alt="Build Status"></a></li>
+<li><a href="https://coveralls.io/github/AntonelliLab/phylotaR?branch=master"><img src="https://coveralls.io/repos/github/AntonelliLab/phylotaR/badge.svg?branch=master" alt="Coverage Status"></a></li>
+<li><a href="https://github.com/ropensci/onboarding/issues/187"><img src="https://badges.ropensci.org/187_status.svg"></a></li>
+</ul>
+</div>
+</div>
 </div>
 
 
