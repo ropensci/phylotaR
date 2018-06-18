@@ -1,9 +1,9 @@
 # Automated Retrieval of Orthologous DNA Sequences from GenBank
 [![Build Status](https://travis-ci.org/AntonelliLab/phylotaR.svg?branch=master)](https://travis-ci.org/AntonelliLab/phylotaR) [![Coverage Status](https://coveralls.io/repos/github/AntonelliLab/phylotaR/badge.svg?branch=master)](https://coveralls.io/github/AntonelliLab/phylotaR?branch=master) [![](https://badges.ropensci.org/187_status.svg)](https://github.com/ropensci/onboarding/issues/187)
+
 <img src="logo.png" height="300" align="right"/>
 
-R implementation of the [PhyLoTa sequence cluster pipeline](http://phylota.net/). For more information see the accompanying website.
-Tested and demonstrated on Unix and Windows. **Find out more by visiting the [phylotaR website](https://antonellilab.github.io/phylotaR/).**
+R implementation of the [PhyLoTa sequence cluster pipeline](http://phylota.net/). For more information see the accompanying website. Tested and demonstrated on Unix and Windows. **Find out more by visiting the [phylotaR website](https://antonellilab.github.io/phylotaR/).**
 
 ## Install
 Currently only the devlopment package is available:
