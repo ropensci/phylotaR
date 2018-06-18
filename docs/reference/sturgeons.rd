@@ -33,6 +33,8 @@
 <meta property="og:title" content="Example phylota object (sturgeons) — sturgeons" />
 
 <meta property="og:description" content="Final phylota object produced by running pipeline for the sturgeons, Acipenseridae (7900)." />
+
+<meta property="og:image" content="/logo.png" />
 <meta name="twitter:card" content="summary" />
 
 

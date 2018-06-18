@@ -33,6 +33,8 @@
 <meta property="og:title" content="Example phylota object (tardigrades) — tardigrades" />
 
 <meta property="og:description" content="Final phylota object produced by running pipeline for the tardigrades, Eutardigrada (42242)." />
+
+<meta property="og:image" content="/logo.png" />
 <meta name="twitter:card" content="summary" />
 
 

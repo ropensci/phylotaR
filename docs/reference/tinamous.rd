@@ -33,6 +33,8 @@
 <meta property="og:title" content="Example phylota object (tinamous) — tinamous" />
 
 <meta property="og:description" content="Final phylota object produced by running pipeline for the tinamous, Tinamiformes (8802)." />
+
+<meta property="og:image" content="/logo.png" />
 <meta name="twitter:card" content="summary" />
 
 

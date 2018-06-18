@@ -33,6 +33,8 @@
 <meta property="og:title" content="Write out sequences — write_sqs" />
 
 <meta property="og:description" content="Write out sequences, as .fasta, for a given vector of IDs." />
+
+<meta property="og:image" content="/logo.png" />
 <meta name="twitter:card" content="summary" />
 
 
@@ -111,7 +113,7 @@
     
     </div>
 
-    <pre class="usage"><span class='fu'>write_sqs</span>(<span class='no'>phylota</span>, <span class='no'>outfile</span>, <span class='no'>sid</span>, <span class='kw'>sq_nm</span> <span class='kw'>=</span> <span class='no'>sid</span>)</pre>
+    <pre class="usage"><span class='fu'>write_sqs</span>(<span class='no'>phylota</span>, <span class='no'>outfile</span>, <span class='no'>sid</span>, <span class='kw'>sq_nm</span> <span class='kw'>=</span> <span class='no'>sid</span>, <span class='kw'>width</span> <span class='kw'>=</span> <span class='fl'>80</span>)</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -131,6 +133,10 @@
     <tr>
       <th>sq_nm</th>
       <td><p>Sequence name(s)</p></td>
+    </tr>
+    <tr>
+      <th>width</th>
+      <td><p>Maximum number of characters in a line, integer</p></td>
     </tr>
     </table>
     

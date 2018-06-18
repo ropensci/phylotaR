@@ -32,6 +32,9 @@
 
 <meta property="og:title" content="Contributing" />
 
+<meta property="og:image" content="/logo.png" />
+<meta name="twitter:card" content="summary" />
+
 
 
 <!-- mathjax -->
@@ -141,7 +144,7 @@
 <h2 class="hasAnchor">
 <a href="#how-to-contribute" class="anchor"></a>How to contribute</h2>
 <p>To contribute you will need a GitHub account and to have basic knowledge of the R language. You can then create a fork of the repo in your own GitHub account and download the repository to your local machine. <code>devtools</code> is recommended.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(<span class="st">'[your account]/restez'</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(<span class="st">'[your account]/phylotaR'</span>)</code></pre></div>
 <p>All new functions must be tested. For every new file in <code>R/</code>, a new test file must be created in <code>tests/testthat/</code>. To test the package and make sure it meets CRAN guidelines use <code>devtools</code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/test">test</a></span>()
 devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/check_cran">check_cran</a></span>()</code></pre></div>
