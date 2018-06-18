@@ -1,6 +1,6 @@
-<img src="logo.png" height="300" align="left"/>
 # Automated Retrieval of Orthologous DNA Sequences from GenBank
 [![Build Status](https://travis-ci.org/AntonelliLab/phylotaR.svg?branch=master)](https://travis-ci.org/AntonelliLab/phylotaR) [![Coverage Status](https://coveralls.io/repos/github/AntonelliLab/phylotaR/badge.svg?branch=master)](https://coveralls.io/github/AntonelliLab/phylotaR?branch=master) [![](https://badges.ropensci.org/187_status.svg)](https://github.com/ropensci/onboarding/issues/187)
+<img src="logo.png" height="300" align="right"/>
 
 R implementation of the [PhyLoTa sequence cluster pipeline](http://phylota.net/). For more information see the accompanying website.
 Tested and demonstrated on Unix and Windows. **Find out more by visiting the [phylotaR website](https://antonellilab.github.io/phylotaR/).**
@@ -9,7 +9,8 @@ Tested and demonstrated on Unix and Windows. **Find out more by visiting the [ph
 Currently only the devlopment package is available:
 
 ```r
-devtools::install_github(repo='AntonelliLab/phylotaR', build_vignettes=TRUE)
+devtools::install_github(repo='AntonelliLab/phylotaR',
+                         build_vignettes=TRUE)
 ```
 
 **Full functionality depends on a local copy of BLAST+ (>= 2.0.0)**. For details on downloading and compiling BLAST+ on your machine please visit the [NCBI website](https://www.ncbi.nlm.nih.gov/books/NBK279690/).
