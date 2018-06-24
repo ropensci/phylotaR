@@ -3,11 +3,30 @@ library(phylotaR)
 library(testthat)
 
 # DATA
+# from the wild
 raw_recs <- readRDS(phylotaR:::datadir_get('raw_seqrecs.rda'))
+# selected to represent record diversity
+test_raw_recs <- readRDS(phylotaR:::datadir_get('test_raw_seqrecs.rda'))
 ps <- parameters()
 
 # RUNNING
 context('Testing \'tools-sqs\'')
+test_that('gb_extract() works', {
+  for (test_raw_rec in test_raw_recs) {
+    record_parts <- phylotaR:::gb_extract(record = test_raw_rec)
+    test <- names(record_parts) %in% c('accession', 'version', 'definition',
+                                       'sequence', 'moltype', 'features',
+                                       'date', 'organism', 'keywords')
+    expect_true(all(test))
+  }
+})
+test_that('rawseqrec_breakdown() works', {
+  for (test_raw_rec in test_raw_recs) {
+    record_parts <- phylotaR:::gb_extract(record = test_raw_rec)
+    seqrecs <- phylotaR:::rawseqrec_breakdown(record = record_parts, ps = ps)
+    expect_true(inherits(seqrecs[[1]], 'SeqRec'))
+  }
+})
 test_that('seqrec_convert() works', {
   raw_rec <- raw_recs[[sample(seq_along(raw_recs), 1)]]
   sqs <- phylotaR:::seqrec_convert(raw_recs = raw_rec, ps = ps)

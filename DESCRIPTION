@@ -24,6 +24,7 @@ Imports:
     sys,
     treeman,
     treemapify,
+    restez,
     R.utils
 Suggests:
     testthat,
