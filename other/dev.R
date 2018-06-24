@@ -2,7 +2,7 @@
 
 
 
-devtools::load_all('~/Coding/phylotaR')
+devtools::load_all('~/Coding/phylotaR_restez')
 library(phylotaR)
 
 ncbi_dr <- file.path('NCBI', 'bin')

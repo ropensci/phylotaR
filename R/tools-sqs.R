@@ -3,7 +3,7 @@
 #' @description Returns a list of elements from a GenBank record such as
 #' 'organism', 'sequence' and features.
 #' @details Uses restez extract functions. See restez package for more details.
-#' @param record
+#' @param record raw GenBank text record
 #' @family run-private
 #' @return list of GenBank elements
 gb_extract <- function(record) {
@@ -28,7 +28,7 @@ gb_extract <- function(record) {
 #' sequences with lots of features, the sequence is broken down into these
 #' features provided they are of the right size. Sequences are either returned
 #' as features or whole sequence records, never both.
-#' @param record_parts
+#' @param record_parts list of record elements from a GenBank record
 #' @template ps
 #' @family run-private
 #' @return list of SeqRecs
@@ -68,7 +68,7 @@ rawseqrec_breakdown <- function(record_parts, ps) {
     pull <- FALSE
   }
   # extract sequences
-  if (length(features) > 0) {
+  if (any(pull)) {
     seqrecs <- vector(mode = 'list', length = length(features))
     for (i in seq_along(features)) {
       strt <- locations[[i]][[1]]
