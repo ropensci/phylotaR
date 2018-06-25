@@ -4,12 +4,14 @@
 \alias{parameters_setup}
 \title{Set Up Parameters}
 \usage{
-parameters_setup(wd, ncbi_execs, ...)
+parameters_setup(wd, ncbi_execs, overwrite = FALSE, ...)
 }
 \arguments{
 \item{wd}{Working directory}
 
 \item{ncbi_execs}{File directories for NCBI tools, see \code{blast_setup()}}
+
+\item{overwrite}{Overwrite existing cache?}
 
 \item{...}{Set parameters, see parameters()}
 }

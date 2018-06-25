@@ -11,7 +11,7 @@
 #' @export
 #' @family run-public
 #' @example examples/setup.R
-setup <- function(wd, txid, ncbi_dr='.', v=FALSE, ...) {
+setup <- function(wd, txid, ncbi_dr='.', v=FALSE, overwrite=FALSE, ...) {
   # no ~
   checks <- vapply(X = c(wd, ncbi_dr), FUN = grepl, FUN.VALUE = logical(1),
                    pattern = '~')
@@ -26,7 +26,8 @@ setup <- function(wd, txid, ncbi_dr='.', v=FALSE, ...) {
   .log(v = v, wd = wd, msg)
   # set up
   ncbi_execs <- blast_setup(d = ncbi_dr, v = v, wd = wd)
-  parameters_setup(wd = wd, txid = txid, ncbi_execs = ncbi_execs, v = v, ...)
+  parameters_setup(wd = wd, txid = txid, ncbi_execs = ncbi_execs, v = v,
+                   overwrite=overwrite, ...)
   # record session info
   writeLines(capture.output(sessionInfo()), file.path(wd, "session_info.txt"))
   # end

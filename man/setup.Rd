@@ -4,7 +4,7 @@
 \alias{setup}
 \title{Set-up parameters}
 \usage{
-setup(wd, txid, ncbi_dr = ".", v = FALSE, ...)
+setup(wd, txid, ncbi_dr = ".", v = FALSE, overwrite = FALSE, ...)
 }
 \arguments{
 \item{wd}{Working directory}
@@ -15,10 +15,15 @@ setup(wd, txid, ncbi_dr = ".", v = FALSE, ...)
 
 \item{v}{Verbose, T/F}
 
+\item{overwrite}{Overwrite existing cache?}
+
 \item{...}{Additional parameters}
 }
 \description{
 Set up working directory with parameters.
+}
+\details{
+If overwrite=TRUE, any pre-existing cache will be deleted.
 }
 \examples{
 \dontrun{

@@ -79,11 +79,11 @@ seqrec_get <- function(txid, ps, direct=FALSE, lvl=0) {
     sids <- sids[sample(1:length(sids), size = ps[['mdlthrs']],
                         replace = FALSE)]
   }
-  if ('restez_path' %in% names(options()) & length(sids) > ps[['btchsz']]) {
+  if ('restez_path' %in% names(options())) {
     info(lvl = lvl + 3, ps = ps, "Getting [", length(sids),
          " sqs] from restez database...")
     unversioned <- sub(pattern = '\\.[0-9]+', replacement = '', x = sids)
-    raw_recs <- restez:::gb_record_get(id = unversioned)
+    raw_recs <- restez::gb_record_get(id = unversioned)
     sids <- sids[!unversioned %in% names(raw_recs)]
   } else {
     raw_recs <- NULL

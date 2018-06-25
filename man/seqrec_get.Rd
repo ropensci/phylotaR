@@ -22,6 +22,11 @@ Vector of sequence records
 \description{
 Downloads sequences from GenBank in batches.
 }
+\details{
+If a restez database is available and the number of sequences to
+retrieve is less than 'btchsz', the function will look the sequences up
+from the database rather than download.
+}
 \seealso{
 Other run-private: \code{\link{batcher}},
   \code{\link{blast_clstr}}, \code{\link{blast_filter}},
