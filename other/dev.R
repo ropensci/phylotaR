@@ -3,7 +3,11 @@
 
 
 devtools::load_all('~/Coding/phylotaR_restez')
-library(phylotaR)
+
+wd <- '~/Coding/restez/hystricomorpha'
+ps <- parameters_load(wd)
+ps[['wd']] <- '~/Coding/restez/hystricomorpha'
+
 
 ncbi_dr <- file.path('NCBI', 'bin')
 wd <- 'aotus'

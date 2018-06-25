@@ -99,7 +99,7 @@ batcher <- function(ids, func, ps, lvl = 0) {
     # for debugging purposes
     write(x = prt_ids, file = file.path(ps[['wd']], 'cache',
                                         'last_searched_ids.txt'))
-    info(lvl = lvl, ps = ps, "[", lower, "-", upper, "]");
+    info(lvl = lvl, ps = ps, "[", lower, "-", upper, "]")
     res <- c(res, func(ids = prt_ids, ps = ps))
   }
   res

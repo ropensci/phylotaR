@@ -1,10 +1,12 @@
 #' @name setup
 #' @title Set-up parameters
 #' @description Set up working directory with parameters.
+#' @details If overwrite=TRUE, any pre-existing cache will be deleted.
 #' @param wd Working directory
 #' @param txid Root taxonomic ID(s), vector or numeric
 #' @param ncbi_dr Directory to NCBI BLAST tools, default '.'
 #' @param v Verbose, T/F
+#' @param overwrite Overwrite existing cache?
 #' @param ... Additional parameters
 #' @export
 #' @family run-public

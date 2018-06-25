@@ -83,6 +83,6 @@ seq_download <- function(txids, txdct, ps) {
       sqs_save(wd = ps[['wd']], txid = txid, sqs = sqs)
     }
   }
-  info(lvl = 1, ps = ps, "Successfully downloaded [", sqcnt,
+  info(lvl = 1, ps = ps, "Successfully retrieved [", sqcnt,
        " sqs] in total.")
 }

@@ -17,7 +17,6 @@ searchterm_gen <- function(txid, ps, direct = FALSE) {
          ':', ps[['mxsql']], '[SLEN])', avd1, avd2)
 }
 
-
 #' @name txnds_count
 #' @title Count number of descending taxonomic nodes
 #' @description Searches NCBI taxonomy and returns number of descendants
@@ -79,10 +78,9 @@ sids_get <- function(txid, direct, ps, retmax=100, hrdmx=100000) {
   }
   # search
   trm <- searchterm_gen(txid = txid, ps = ps, direct = direct)
-  args <- list(db = 'nucleotide', retmax = 0, term = trm,
-               use_history = TRUE)
-  srch <- safely_connect(func = rentrez::entrez_search, args = args,
-                         fnm = 'search', ps = ps)
+  args <- list(db = 'nucleotide', retmax = 0, term = trm, use_history = TRUE)
+  srch <- safely_connect(func = rentrez::entrez_search, args = args, ps = ps,
+                         fnm = 'search')
   nsqs <- srch[['count']]
   if (nsqs == 0) {
     return(NULL)
