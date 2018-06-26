@@ -79,7 +79,7 @@ seqrec_get <- function(txid, ps, direct=FALSE, lvl=0) {
     sids <- sids[sample(1:length(sids), size = ps[['mdlthrs']],
                         replace = FALSE)]
   }
-  if ('restez_path' %in% names(options())) {
+  if (restez::restez_ready()) {
     info(lvl = lvl + 3, ps = ps, "Getting [", length(sids),
          " sqs] from restez database...")
     unversioned <- sub(pattern = '\\.[0-9]+', replacement = '', x = sids)
