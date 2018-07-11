@@ -1,12 +1,16 @@
 #' @name setup
 #' @title Set-up parameters
 #' @description Set up working directory with parameters.
+#' @details See \code{\link{parameters}}() for a description of all parameters
+#' and their defaults. You can change parameters after a folder has been set up
+#' with \code{\link{parameters_reset}}().
 #' @param wd Working directory
 #' @param txid Root taxonomic ID(s), vector or numeric
 #' @param ncbi_dr Directory to NCBI BLAST tools, default '.'
 #' @param v Verbose, T/F
 #' @param ... Additional parameters
 #' @export
+#' @return NULL
 #' @family run-public
 #' @example examples/setup.R
 setup <- function(wd, txid, ncbi_dr='.', v=FALSE, ...) {
@@ -46,6 +50,7 @@ setup <- function(wd, txid, ncbi_dr='.', v=FALSE, ...) {
 #' @family run-public
 #' @export
 #' @example examples/run.R
+#' @return NULL
 run <- function(wd, nstages=4) {
   stgs_msg <- stage_args_check(frm = 1, to = nstages)
   stages_run(wd = wd, frm = 1, to = nstages, stgs_msg = stgs_msg)
@@ -60,6 +65,7 @@ run <- function(wd, nstages=4) {
 #' @export
 #' @family run-public
 #' @example examples/restart.R
+#' @return NULL
 restart <- function(wd, nstages=4) {
   stg <- progress_read(wd)
   if (is.na(stg)) {
@@ -85,6 +91,7 @@ restart <- function(wd, nstages=4) {
 #' @family run-public
 #' @export
 #' @example examples/reset.R
+#' @return NULL
 reset <- function(wd, stage, hard=FALSE) {
   if (!stage %in% c('taxise', 'download', 'cluster', 'cluster2')) {
     stop('Invalid stage name.')
@@ -118,11 +125,12 @@ reset <- function(wd, stage, hard=FALSE) {
 #' @title Change parameters in a working directory
 #' @description Reset parameters after running \code{setup()}.
 #' @param wd Working directory
-#' @param parameters Parameters to be changed
-#' @param values New values for each parameter
+#' @param parameters Parameters to be changed, vector.
+#' @param values New values for each parameter, vector.
 #' @family run-public
 #' @export
 #' @example examples/parameters_reset.R
+#' @return NULL
 parameters_reset <- function(wd, parameters, values) {
   # TODO: make parameters an object with pre-defined parameter types
   ps <- parameters_load(wd)

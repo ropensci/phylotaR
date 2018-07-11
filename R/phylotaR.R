@@ -6,8 +6,10 @@
 #' @name parameters
 #' @family public-pipeline
 #' @title Default parameters
-#' @description Returns a parameter list with default
-#' parameter values.
+#' @description Returns a parameter list with default parameter values.
+#' @details This function is NOT used to change the parameters in a folder.
+#' Use parameters_reset() instead. The purpose of this function is to describe
+#' the paramaters and present their default values.
 #' @return list
 #' @param wd The working directory where all output files are saved.
 #' @param txid Taxonomic group of interest, allows vectors.
@@ -39,7 +41,7 @@
 parameters <- function(wd='.', txid=character(), mkblstdb='', blstn='', v=FALSE,
                        ncps=1, mxnds=100000, mdlthrs=3000, mnsql=250,
                        mxsql=2000, mxrtry=100, mxsqs=50000, mxevl=1.0e-10,
-                       mncvrg=51, btchsz=300, date=Sys.Date()) {
+                       mncvrg=51, btchsz=100, date=Sys.Date()) {
   ps <- as.list(environment())
   ps[['txid']] <- as.character(ps[['txid']])
   ps[['wt_tms']] <- c(1, 3, 6, 10, 60, 300)

@@ -49,7 +49,7 @@ safely_connect <- function(func, args, fnm, ps) {
       # too large a request
       if (grepl('the request is too large', query[[1]])) {
         error(ps = ps, 'NCBI is limiting the size of your request. ',
-              'Consider reducing btchsz.')
+              'Consider reducing btchsz with parameters_reset().')
       }
       info(lvl = 1, ps = ps, "Retrying in [", wt_tm, "s] for [", fnm, ']')
       Sys.sleep(wt_tm)

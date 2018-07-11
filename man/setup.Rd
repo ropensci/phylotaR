@@ -20,6 +20,11 @@ setup(wd, txid, ncbi_dr = ".", v = FALSE, ...)
 \description{
 Set up working directory with parameters.
 }
+\details{
+See \code{\link{parameters}}() for a description of all parameters
+and their defaults. You can change parameters after a folder has been set up
+with \code{\link{parameters_reset}}().
+}
 \examples{
 \dontrun{
   

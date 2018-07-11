@@ -1,4 +1,3 @@
-# TODO: switch to text for restez integration, vectorise
 #' @name seqrec_convert
 #' @title Convert raw Entrez gbwithparts record to SeqRecs
 #' @description Parses returned sequences features with Entrez,

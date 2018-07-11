@@ -9,9 +9,9 @@ parameters_reset(wd, parameters, values)
 \arguments{
 \item{wd}{Working directory}
 
-\item{parameters}{Parameters to be changed}
+\item{parameters}{Parameters to be changed, vector.}
 
-\item{values}{New values for each parameter}
+\item{values}{New values for each parameter, vector.}
 }
 \description{
 Reset parameters after running \code{setup()}.
