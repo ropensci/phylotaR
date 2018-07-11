@@ -134,14 +134,14 @@ reset <- function(wd, stage, hard=FALSE) {
 parameters_reset <- function(wd, parameters, values) {
   # TODO: make parameters an object with pre-defined parameter types
   ps <- parameters_load(wd)
-  for (i in 1:length(parameters)) {
+  for (i in seq_along(parameters)) {
     ps[[parameters[i]]] <- values[[i]]
   }
   obj_save(wd = wd, obj = ps, nm = 'prmtrs')
   msg <- paste0('The following parameters have been reset:')
   brdr <- paste0(rep('-', nchar(msg)), collapse = '')
   info(lvl = 1, ps = ps, paste0(brdr, '\n', msg))
-  mxnchrs <- max(sapply(parameters, nchar)) + 3
+  mxnchrs <- max(vapply(parameters, nchar, integer(1))) + 3
   for (prmtr in parameters) {
     spcr <- paste0(rep(' ', mxnchrs - nchar(prmtr)), collapse = '')
     prmtr_msg <- paste0(prmtr, spcr, '[', ps[[prmtr]], ']')

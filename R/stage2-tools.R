@@ -73,7 +73,7 @@ seqrec_get <- function(txid, ps, direct=FALSE, lvl=0) {
   if (length(sids) > ps[['mdlthrs']]) {
     info(lvl = lvl + 3, ps = ps, "More than [", ps[['mdlthrs']],
          ' sqs] available. Choosing at random.')
-    sids <- sids[sample(1:length(sids), size = ps[['mdlthrs']],
+    sids <- sids[sample(seq_along(sids), size = ps[['mdlthrs']],
                         replace = FALSE)]
   }
   info(lvl = lvl + 3, ps = ps, "Getting [", length(sids), " sqs] ...")

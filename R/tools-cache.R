@@ -379,7 +379,7 @@ blastcache_load <- function(sids, wd) {
   } else {
     return(NULL)
   }
-  pull <- sapply(fldctnry, function(x) all(sids %in% x))
+  pull <- vapply(fldctnry, function(x) all(sids %in% x), logical(1))
   if (sum(pull) == 0) {
     return(NULL)
   }
@@ -389,7 +389,7 @@ blastcache_load <- function(sids, wd) {
     return(readRDS(file = flpth))
   }
   pssbls <- which(pull)
-  lngs <- sapply(fldctnry[pssbls], length)
+  lngs <- vapply(fldctnry[pssbls], length, integer(1))
   flnm <- paste0(pssbls[which.min(lngs)], '.RData')
   flpth <- file.path(wd, 'cache', 'blast', flnm)
   blst_rs <- readRDS(file = flpth)

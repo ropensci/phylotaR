@@ -30,10 +30,9 @@ blastdb_gen <- function(sqs, dbfl, ps) {
   }
   # Check success
   extensions <- c('nhr', 'nin', 'nsq')
-  fnames <- sapply(extensions, function(e) paste0(fl, '.', e))
-  if (!all(sapply(fnames, file.exists))) {
-    error(ps = ps, 'Command did not produce output files [',
-          paste(fnames), ']')
+  fnames <- vapply(extensions, function(e) paste0(fl, '.', e), character(1))
+  if (!all(vapply(fnames, file.exists, logical(1)))) {
+    error(ps = ps, 'Command did not produce output files [', paste(fnames), ']')
   }
   NULL
 }
