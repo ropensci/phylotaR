@@ -7,7 +7,7 @@ demos <- list('anisoptera' = '6962', 'acipenseridae' = '7900',
               'bromeliaceae' = '4613', 'cycadidae' = '1445963',
               'eutardigrada' = '42242', 'kazachstania' = '71245',
               'platyrrhini' = '9479')
-demos <- demos[7:9]
+#demos <- demos[7:9]
 # set these paths for your own system
 ncbi_dr <- readLines(file.path('demos', 'ncbi_dr.txt'))
 

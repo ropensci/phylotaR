@@ -192,20 +192,66 @@
 <span class='no'>seqrec</span> <span class='kw'>&lt;-</span> <span class='no'>aotus</span>@<span class='kw'>sqs</span>@<span class='kw'>sqs</span><span class='kw'>[[</span><span class='fl'>1</span>]]
 <span class='co'># this is a SeqRec object</span>
 <span class='co'># it contains sequence records</span>
-<span class='fu'>show</span>(<span class='no'>seqrec</span>)</div><div class='output co'>#&gt; SeqRec [ID: AY947712.1/104..396]</div><div class='input'><span class='co'># you can access its different data slots with @</span>
-<span class='no'>seqrec</span>@<span class='kw'>id</span>       <span class='co'># sequence ID, accession + feature location</span></div><div class='output co'>#&gt; [1] "AY947712.1/104..396"</div><div class='input'><span class='no'>seqrec</span>@<span class='kw'>nm</span>       <span class='co'># feature name, '' if none</span></div><div class='output co'>#&gt; [1] "AluSg"</div><div class='input'><span class='no'>seqrec</span>@<span class='kw'>accssn</span>   <span class='co'># accession</span></div><div class='output co'>#&gt; [1] "AY947712"</div><div class='input'><span class='no'>seqrec</span>@<span class='kw'>vrsn</span>     <span class='co'># accession version</span></div><div class='output co'>#&gt; [1] "AY947712.1"</div><div class='input'><span class='no'>seqrec</span>@<span class='kw'>url</span>      <span class='co'># NCBI GenBank URL</span></div><div class='output co'>#&gt; [1] "https://www.ncbi.nlm.nih.gov/nuccore/AY947712.1/104..396"</div><div class='input'><span class='no'>seqrec</span>@<span class='kw'>txid</span>     <span class='co'># Taxonomic ID</span></div><div class='output co'>#&gt; [1] "30591"</div><div class='input'><span class='no'>seqrec</span>@<span class='kw'>orgnsm</span>   <span class='co'># free-text organism name</span></div><div class='output co'>#&gt; [1] "Aotus azarai"</div><div class='input'><span class='no'>seqrec</span>@<span class='kw'>sq</span>       <span class='co'># sequence, in raw format</span></div><div class='output co'>#&gt;   [1] 67 63 74 67 67 67 63 67 63 61 67 74 67 67 63 74 63 61 63 61 63 63 74 67 74
-#&gt;  [26] 61 61 74 63 63 61 61 67 63 61 63 74 74 74 67 67 67 61 67 67 63 63 67 61 67
-#&gt;  [51] 67 63 67 67 67 74 67 67 61 74 63 61 67 63 61 67 67 74 67 61 61 67 61 67 74
-#&gt;  [76] 74 74 67 61 67 61 63 63 61 67 63 63 74 67 67 63 61 61 61 63 74 67 67 74 67
-#&gt; [101] 61 67 61 63 63 63 63 61 74 63 74 63 74 61 67 74 61 61 67 61 61 74 61 63 61
-#&gt; [126] 61 61 61 61 74 74 61 67 63 63 61 67 67 63 63 74 67 67 74 67 67 74 67 74 67
-#&gt; [151] 63 63 74 67 74 61 61 74 63 63 63 61 67 63 74 61 63 74 74 61 67 67 61 67 67
-#&gt; [176] 74 74 67 61 67 67 63 61 67 67 61 67 61 61 74 74 67 63 74 74 67 61 61 63 63
-#&gt; [201] 74 67 61 67 61 61 67 63 67 67 61 67 67 74 74 67 63 61 67 74 67 61 74 63 74
-#&gt; [226] 67 61 67 61 63 63 61 63 67 63 63 61 63 74 67 63 61 63 74 63 63 61 67 63 61
-#&gt; [251] 74 67 67 63 74 67 61 63 61 67 61 67 63 61 61 67 61 63 67 63 63 67 74 63 74
-#&gt; [276] 63 61 67 67 61 67 61 61 61 61 61 61 61 61 61 67 61 61</div><div class='input'><span class='no'>seqrec</span>@<span class='kw'>dfln</span>     <span class='co'># sequence definition</span></div><div class='output co'>#&gt; [1] "Aotus azarai clone AaM4 intron"</div><div class='input'><span class='no'>seqrec</span>@<span class='kw'>ml_typ</span>   <span class='co'># molecule type</span></div><div class='output co'>#&gt; [1] "DNA"</div><div class='input'><span class='no'>seqrec</span>@<span class='kw'>rec_typ</span>  <span class='co'># whole record or feature</span></div><div class='output co'>#&gt; [1] "feature"</div><div class='input'><span class='no'>seqrec</span>@<span class='kw'>nncltds</span>  <span class='co'># sequence length</span></div><div class='output co'>#&gt; [1] 293</div><div class='input'><span class='no'>seqrec</span>@<span class='kw'>nambgs</span>   <span class='co'># number of non-ATCGs</span></div><div class='output co'>#&gt; [1] 0</div><div class='input'><span class='no'>seqrec</span>@<span class='kw'>pambgs</span>   <span class='co'># proportion of non-ATCGs</span></div><div class='output co'>#&gt; [1] 0</div><div class='input'><span class='no'>seqrec</span>@<span class='kw'>gcr</span>      <span class='co'># GC-ratio</span></div><div class='output co'>#&gt; [1] 0.4641638</div><div class='input'><span class='no'>seqrec</span>@<span class='kw'>age</span>      <span class='co'># days since being added to GenBank</span></div><div class='output co'>#&gt; [1] 4714</div><div class='input'><span class='co'># get the sequence like so....</span>
-(<span class='fu'>rawToChar</span>(<span class='no'>seqrec</span>@<span class='kw'>sq</span>))</div><div class='output co'>#&gt; [1] "gctgggcgcagtggctcacacctgtaatccaagcactttgggaggccgaggcgggtggatcagcaggtgaagagtttgagaccagcctggcaaactggtgagaccccatctctagtaagaatacaaaaattagccaggcctggtggtgtgcctgtaatcccagctacttaggaggttgaggcaggagaattgcttgaacctgagaagcggaggttgcagtgatctgagaccacgccactgcactccagcatggctgacagagcaagacgccgtctcaggagaaaaaaaaagaa"</div></pre>
+<span class='fu'>show</span>(<span class='no'>seqrec</span>)</div><div class='output co'>#&gt; SeqRec [ID: FJ623078.1]</div><div class='input'><span class='co'># you can access its different data slots with @</span>
+<span class='no'>seqrec</span>@<span class='kw'>id</span>       <span class='co'># sequence ID, accession + feature location</span></div><div class='output co'>#&gt; [1] "FJ623078.1"</div><div class='input'><span class='no'>seqrec</span>@<span class='kw'>nm</span>       <span class='co'># feature name, '' if none</span></div><div class='output co'>#&gt; [1] ""</div><div class='input'><span class='no'>seqrec</span>@<span class='kw'>accssn</span>   <span class='co'># accession</span></div><div class='output co'>#&gt; [1] "FJ623078"</div><div class='input'><span class='no'>seqrec</span>@<span class='kw'>vrsn</span>     <span class='co'># accession version</span></div><div class='output co'>#&gt; [1] "FJ623078.1"</div><div class='input'><span class='no'>seqrec</span>@<span class='kw'>url</span>      <span class='co'># NCBI GenBank URL</span></div><div class='output co'>#&gt; [1] "https://www.ncbi.nlm.nih.gov/nuccore/FJ623078.1"</div><div class='input'><span class='no'>seqrec</span>@<span class='kw'>txid</span>     <span class='co'># Taxonomic ID</span></div><div class='output co'>#&gt; [1] "37293"</div><div class='input'><span class='no'>seqrec</span>@<span class='kw'>orgnsm</span>   <span class='co'># free-text organism name</span></div><div class='output co'>#&gt; [1] "Aotus nancymaae"</div><div class='input'><span class='no'>seqrec</span>@<span class='kw'>sq</span>       <span class='co'># sequence, in raw format</span></div><div class='output co'>#&gt;    [1] 61 74 67 67 61 74 67 67 67 67 67 61 61 74 63 63 63 74 74 74 63 63 67 67
+#&gt;   [25] 63 61 63 74 74 67 63 74 63 63 74 67 67 74 67 63 74 67 63 61 61 63 74 67
+#&gt;   [49] 67 63 67 63 74 61 63 74 63 63 63 61 67 63 61 67 74 63 61 63 74 63 61 63
+#&gt;   [73] 67 67 61 61 61 67 61 63 61 67 74 67 67 74 67 63 74 67 67 67 63 67 61 61
+#&gt;   [97] 61 61 61 67 67 67 67 61 67 61 63 67 67 74 67 67 61 67 63 74 67 63 63 63
+#&gt;  [121] 74 67 74 67 61 61 61 63 74 74 63 63 63 74 67 61 61 67 61 61 67 61 61 63
+#&gt;  [145] 67 74 61 63 61 61 74 74 63 63 61 63 74 67 67 61 61 61 61 63 63 74 63 63
+#&gt;  [169] 67 61 63 63 61 67 61 74 61 61 61 67 61 74 74 63 74 67 67 67 61 61 61 74
+#&gt;  [193] 63 61 67 67 67 63 74 63 63 74 74 63 74 74 67 61 63 74 61 67 61 67 67 74
+#&gt;  [217] 63 61 61 74 63 63 61 61 67 63 74 67 67 63 63 67 61 74 63 67 63 61 74 74
+#&gt;  [241] 67 61 63 74 63 61 61 61 67 61 61 61 61 67 63 74 63 74 74 67 67 67 61 63
+#&gt;  [265] 63 67 61 67 67 61 74 63 63 74 74 74 63 63 63 63 74 67 61 74 63 61 74 63
+#&gt;  [289] 61 61 67 61 61 74 67 74 74 63 61 67 67 74 61 67 61 61 67 61 63 74 63 61
+#&gt;  [313] 67 61 67 61 63 74 74 61 63 61 74 63 74 67 74 67 61 61 67 74 67 67 61 67
+#&gt;  [337] 61 67 61 61 61 67 61 61 67 67 61 67 67 61 67 67 74 67 67 61 61 74 74 67
+#&gt;  [361] 63 61 67 67 74 67 74 74 63 67 67 61 74 74 67 61 63 74 67 63 63 61 67 63
+#&gt;  [385] 63 63 74 67 61 63 61 63 63 63 61 63 63 74 67 63 74 74 63 61 67 67 67 67
+#&gt;  [409] 63 61 67 61 67 63 63 74 67 61 63 63 63 74 67 61 63 63 74 74 67 67 61 67
+#&gt;  [433] 61 67 63 63 63 63 63 63 74 67 67 74 61 67 74 61 67 63 63 63 63 74 63 61
+#&gt;  [457] 67 74 67 67 61 61 74 67 63 61 63 67 61 67 74 63 63 61 63 67 67 67 67 74
+#&gt;  [481] 61 61 61 61 67 67 61 74 61 63 61 67 67 67 67 61 74 67 61 61 67 61 63 63
+#&gt;  [505] 63 74 74 74 63 74 67 74 61 74 63 74 63 61 67 63 74 67 67 61 67 61 74 63
+#&gt;  [529] 63 61 67 67 61 74 61 67 74 67 67 63 61 63 63 74 67 67 61 61 61 74 67 63
+#&gt;  [553] 61 63 63 67 74 63 74 63 63 63 61 67 63 61 63 63 63 67 67 61 67 63 74 67
+#&gt;  [577] 74 74 67 74 74 63 61 61 61 61 74 61 61 61 63 67 74 63 67 74 67 67 74 61
+#&gt;  [601] 63 74 61 67 63 74 74 74 63 63 61 67 63 61 67 67 63 63 74 63 63 61 67 63
+#&gt;  [625] 61 63 61 67 74 67 74 61 74 61 61 67 61 61 61 67 61 67 67 67 67 67 61 61
+#&gt;  [649] 63 61 67 67 74 67 67 61 67 74 74 63 74 63 63 74 74 63 63 63 61 63 74 63
+#&gt;  [673] 67 63 63 74 74 74 67 63 61 67 63 74 67 61 61 61 61 67 63 74 67 61 63 67
+#&gt;  [697] 67 67 63 61 67 74 67 67 63 67 61 67 63 74 67 74 67 63 74 67 67 63 61 67
+#&gt;  [721] 67 63 67 67 61 67 61 61 67 67 63 74 74 63 63 74 63 63 74 63 63 61 61 67
+#&gt;  [745] 74 63 63 74 67 67 61 74 63 74 63 63 74 74 63 61 61 63 63 74 67 61 63 67
+#&gt;  [769] 61 67 63 63 61 67 67 61 67 67 74 67 74 67 74 67 74 61 61 61 61 67 74 67
+#&gt;  [793] 67 74 74 61 63 63 63 61 67 67 61 63 63 63 63 61 61 67 63 74 63 61 67 67
+#&gt;  [817] 61 74 67 67 67 63 61 61 67 61 61 67 63 74 74 63 63 61 63 74 74 63 61 63
+#&gt;  [841] 63 74 63 61 63 63 63 74 67 63 63 63 63 61 67 67 63 63 74 74 67 63 63 74
+#&gt;  [865] 63 61 67 74 61 74 67 63 74 67 67 63 74 63 63 67 67 61 61 61 63 74 74 63
+#&gt;  [889] 61 63 63 63 74 67 67 63 74 63 74 74 61 61 61 67 67 67 61 61 61 61 74 67
+#&gt;  [913] 67 67 61 61 61 67 74 74 67 63 61 74 63 61 67 61 61 61 67 74 67 61 61 63
+#&gt;  [937] 63 74 74 67 74 67 67 74 67 61 74 67 61 67 61 67 63 61 61 63 74 63 61 67
+#&gt;  [961] 63 74 63 63 61 67 61 61 63 61 61 74 74 74 67 61 63 63 74 67 74 67 61 67
+#&gt;  [985] 67 74 67 74 67 67 67 67 61 63 63 63 61 63 63 74 63 63 63 63 74 61 61 67
+#&gt; [1009] 63 74 67 61 74 67 63 74 67 61 67 63 74 74 67 61 61 61 63 74 67 67 61 67
+#&gt; [1033] 61 61 63 63 61 67 67 61 67 67 63 61 61 61 67 67 74 63 74 63 63 61 61 67
+#&gt; [1057] 63 61 67 67 61 67 61 61 67 67 63 67 67 74 67 74 67 67 67 74 67 63 74 67
+#&gt; [1081] 61 61 63 63 63 74 67 61 67 67 63 67 67 67 67 67 74 67 74 67 67 63 61 67
+#&gt; [1105] 74 67 74 63 74 67 63 74 67 61 67 74 67 61 63 74 63 61 67 67 61 63 61 67
+#&gt; [1129] 67 74 63 63 74 67 63 74 67 67 61 61 74 63 63 61 61 67 67 74 63 67 61 67
+#&gt; [1153] 67 74 74 63 74 67 63 63 63 61 63 61 74 67 67 74 63 74 63 63 63 63 63 67
+#&gt; [1177] 67 74 67 63 61 67 63 63 61 61 74 67 67 63 63 63 74 67 61 74 74 67 74 67
+#&gt; [1201] 63 63 67 67 67 67 67 67 74 67 74 63 67 63 67 67 67 63 63 74 63 63 74 67
+#&gt; [1225] 67 74 74 74 74 74 61 63 74 67 67 67 63 74 61 67 67 63 61 74 63 74 74 63
+#&gt; [1249] 74 74 63 74 67 74 67 74 63 61 67 61 74 67 63 63 67 67 63 61 74 63 67 61
+#&gt; [1273] 61 67 67 63 67 63 63 61 61 67 63 61 67 61 67 63 67 67 61 74 67 74 63 74
+#&gt; [1297] 63 61 67 61 74 63 61 61 67 61 67 61 63 74 74 63 74 63 61 67 74 67 61 67
+#&gt; [1321] 61 61 67 61 61 67 61 63 63 74 67 63 63 61 67 74 67 63 63 63 63 63 61 63
+#&gt; [1345] 63 67 67 74 74 74 63 61 67 61 61 67 61 63 61 74 67 74 61 67 63 63 63 63
+#&gt; [1369] 61 74 74 74 67 61</div><div class='input'><span class='no'>seqrec</span>@<span class='kw'>dfln</span>     <span class='co'># sequence definition</span></div><div class='output co'>#&gt; [1] "Aotus nancymaae CD4 antigen (CD4) mRNA, complete cds"</div><div class='input'><span class='no'>seqrec</span>@<span class='kw'>ml_typ</span>   <span class='co'># molecule type</span></div><div class='output co'>#&gt; [1] "mRNA"</div><div class='input'><span class='no'>seqrec</span>@<span class='kw'>rec_typ</span>  <span class='co'># whole record or feature</span></div><div class='output co'>#&gt; [1] "whole"</div><div class='input'><span class='no'>seqrec</span>@<span class='kw'>nncltds</span>  <span class='co'># sequence length</span></div><div class='output co'>#&gt; [1] 1374</div><div class='input'><span class='no'>seqrec</span>@<span class='kw'>nambgs</span>   <span class='co'># number of non-ATCGs</span></div><div class='output co'>#&gt; [1] 0</div><div class='input'><span class='no'>seqrec</span>@<span class='kw'>pambgs</span>   <span class='co'># proportion of non-ATCGs</span></div><div class='output co'>#&gt; [1] 0</div><div class='input'><span class='no'>seqrec</span>@<span class='kw'>gcr</span>      <span class='co'># GC-ratio</span></div><div class='output co'>#&gt; [1] 0.4468705</div><div class='input'><span class='no'>seqrec</span>@<span class='kw'>age</span>      <span class='co'># days since being added to GenBank</span></div><div class='output co'>#&gt; [1] 3412</div><div class='input'><span class='co'># get the sequence like so....</span>
+(<span class='fu'>rawToChar</span>(<span class='no'>seqrec</span>@<span class='kw'>sq</span>))</div><div class='output co'>#&gt; [1] "atggatgggggaatccctttccggcacttgctcctggtgctgcaactggcgctactcccagcagtcactcacggaaagacagtggtgctgggcgaaaaaggggagacggtggagctgccctgtgaaacttccctgaagaagaacgtacaattccactggaaaacctccgaccagataaagattctgggaaatcagggctccttcttgactagaggtcaatccaagctggccgatcgcattgactcaaagaaaagctcttgggaccgaggatcctttcccctgatcatcaagaatgttcaggtagaagactcagagacttacatctgtgaagtggagagaaagaaggaggaggtggaattgcaggtgttcggattgactgccagccctgacacccacctgcttcaggggcagagcctgaccctgaccttggagagcccccctggtagtagcccctcagtggaatgcacgagtccacggggtaaaaggatacaggggatgaagaccctttctgtatctcagctggagatccaggatagtggcacctggaaatgcaccgtctcccagcacccggagctgttgttcaaaataaacgtcgtggtactagctttccagcaggcctccagcacagtgtataagaaagagggggaacaggtggagttctccttcccactcgcctttgcagctgaaaagctgacgggcagtggcgagctgtgctggcaggcggagaaggcttcctcctccaagtcctggatctccttcaacctgacgagccaggaggtgtgtgtaaaagtggttacccaggaccccaagctcaggatgggcaagaagcttccacttcacctcaccctgccccaggccttgcctcagtatgctggctccggaaacttcaccctggctcttaaagggaaaatgggaaagttgcatcagaaagtgaaccttgtggtgatgagagcaactcagctccagaacaatttgacctgtgaggtgtggggacccacctcccctaagctgatgctgagcttgaaactggagaaccaggaggcaaaggtctccaagcaggagaaggcggtgtgggtgctgaaccctgaggcgggggtgtggcagtgtctgctgagtgactcaggacaggtcctgctggaatccaaggtcgaggttctgcccacatggtctcccccggtgcagccaatggccctgattgtgccggggggtgtcgcgggcctcctggtttttactgggctaggcatcttcttctgtgtcagatgccggcatcgaaggcgccaagcagagcggatgtctcagatcaagagacttctcagtgagaagaagacctgccagtgcccccaccggtttcagaagacatgtagccccatttga"</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

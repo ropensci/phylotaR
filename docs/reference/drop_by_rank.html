@@ -188,8 +188,8 @@ sequences, then by youngest, then by sequence length.</p>
                            <span class='kw'>choose_by</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>'pambgs'</span>, <span class='st'>'age'</span>, <span class='st'>'nncltds'</span>),
                            <span class='kw'>greatest</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>FALSE</span>, <span class='fl'>FALSE</span>, <span class='fl'>TRUE</span>)))</div><div class='output co'>#&gt; Phylota Table (Anisoptera)
 #&gt; - [5] clusters
-#&gt; - [114] sequences
-#&gt; - [70] source taxa</div><div class='input'>
+#&gt; - [1764] sequences
+#&gt; - [498] source taxa</div><div class='input'>
 <span class='co'># We can specify what aspects of the sequences we would like to select per genus</span>
 <span class='co'># By default we select the sequences with fewest ambiguous nucleotides (e.g.</span>
 <span class='co'># we avoid Ns), the youngest age and then longest sequence.</span>
@@ -198,15 +198,15 @@ sequences, then by youngest, then by sequence length.</p>
                            <span class='kw'>choose_by</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>'pambgs'</span>, <span class='st'>'age'</span>, <span class='st'>'nncltds'</span>),
                            <span class='kw'>greatest</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>TRUE</span>, <span class='fl'>TRUE</span>, <span class='fl'>FALSE</span>)))</div><div class='output co'>#&gt; Phylota Table (Anisoptera)
 #&gt; - [5] clusters
-#&gt; - [114] sequences
-#&gt; - [68] source taxa</div><div class='input'>
+#&gt; - [1764] sequences
+#&gt; - [540] source taxa</div><div class='input'>
 
 <span class='co'># Leading to smaller sequnces ...</span>
 <span class='no'>r1_sqlngth</span> <span class='kw'>&lt;-</span> <span class='fu'>mean</span>(<span class='fu'><a href='get_sq_slot.html'>get_sq_slot</a></span>(<span class='kw'>phylota</span> <span class='kw'>=</span> <span class='no'>reduced_1</span>,
                                 <span class='kw'>sid</span> <span class='kw'>=</span> <span class='no'>reduced_1</span>@<span class='kw'>sids</span>, <span class='kw'>slt_nm</span> <span class='kw'>=</span> <span class='st'>'nncltds'</span>))
 <span class='no'>r2_sqlngth</span> <span class='kw'>&lt;-</span> <span class='fu'>mean</span>(<span class='fu'><a href='get_sq_slot.html'>get_sq_slot</a></span>(<span class='kw'>phylota</span> <span class='kw'>=</span> <span class='no'>reduced_2</span>,
                                 <span class='kw'>sid</span> <span class='kw'>=</span> <span class='no'>reduced_2</span>@<span class='kw'>sids</span>, <span class='kw'>slt_nm</span> <span class='kw'>=</span> <span class='st'>'nncltds'</span>))
-(<span class='no'>r1_sqlngth</span> <span class='kw'>&gt;</span> <span class='no'>r2_sqlngth</span>)</div><div class='output co'>#&gt; [1] TRUE</div><div class='input'><span class='co'># ... with more ambigous characters ....</span>
+(<span class='no'>r1_sqlngth</span> <span class='kw'>&gt;</span> <span class='no'>r2_sqlngth</span>)</div><div class='output co'>#&gt; [1] FALSE</div><div class='input'><span class='co'># ... with more ambigous characters ....</span>
 <span class='no'>r1_pambgs</span> <span class='kw'>&lt;-</span> <span class='fu'>mean</span>(<span class='fu'><a href='get_sq_slot.html'>get_sq_slot</a></span>(<span class='kw'>phylota</span> <span class='kw'>=</span> <span class='no'>reduced_1</span>, <span class='kw'>sid</span> <span class='kw'>=</span> <span class='no'>reduced_1</span>@<span class='kw'>sids</span>,
                               <span class='kw'>slt_nm</span> <span class='kw'>=</span> <span class='st'>'pambgs'</span>))
 <span class='no'>r2_pambgs</span> <span class='kw'>&lt;-</span> <span class='fu'>mean</span>(<span class='fu'><a href='get_sq_slot.html'>get_sq_slot</a></span>(<span class='kw'>phylota</span> <span class='kw'>=</span> <span class='no'>reduced_2</span>, <span class='kw'>sid</span> <span class='kw'>=</span> <span class='no'>reduced_2</span>@<span class='kw'>sids</span>,
@@ -221,8 +221,8 @@ sequences, then by youngest, then by sequence length.</p>
 <span class='co'># Or... we can simply reduce the clusters to just one sequence per genus</span>
 (<span class='no'>dragonflies</span> <span class='kw'>&lt;-</span> <span class='fu'>drop_by_rank</span>(<span class='kw'>phylota</span> <span class='kw'>=</span> <span class='no'>dragonflies</span>, <span class='kw'>rnk</span> <span class='kw'>=</span> <span class='st'>'genus'</span>, <span class='kw'>n</span> <span class='kw'>=</span> <span class='fl'>1</span>))</div><div class='output co'>#&gt; Phylota Table (Anisoptera)
 #&gt; - [5] clusters
-#&gt; - [30] sequences
-#&gt; - [29] source taxa</div></pre>
+#&gt; - [339] sequences
+#&gt; - [241] source taxa</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

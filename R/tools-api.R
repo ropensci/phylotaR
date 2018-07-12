@@ -96,7 +96,7 @@ batcher <- function(ids, func, ps, lvl = 0) {
     lower <- i + 1
     upper <- ifelse(i + btch < n, i + btch, n)
     prt_ids <- ids[lower:upper]
-    info(lvl = lvl, ps = ps, "[", lower, "-", upper, "]");
+    info(lvl = lvl, ps = ps, "[", lower, "-", upper, "]")
     res <- c(res, func(ids = prt_ids, ps = ps))
   }
   res

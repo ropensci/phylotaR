@@ -123,9 +123,9 @@
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'>data</span>(<span class='no'>tardigrades</span>) <span class='co'># load object</span>
 <span class='fu'>str</span>(<span class='no'>tardigrades</span>)</div><div class='output co'>#&gt; Formal class 'Phylota' [package "phylotaR"] with 8 slots
-#&gt;   ..@ cids   : chr [1:4] "0" "1" "2" "3"
-#&gt;   ..@ txids  : chr "459433"
-#&gt;   ..@ sids   : chr [1:3] "EF620422.1/128..481" "EF620421.1/128..481" "EF620420.1/128..481"
+#&gt;   ..@ cids   : chr [1:195] "0" "1" "2" "3" ...
+#&gt;   ..@ txids  : chr [1:261] "1767026" "1767025" "1353345" "467049" ...
+#&gt;   ..@ sids   : chr [1:945] "KT951664.1" "KT951663.1" "KT951667.1" "KT951666.1" ...
 #&gt;   ..@ txdct  :Formal class 'TaxDict' [package "phylotaR"] with 4 slots
 #&gt;   ..@ sqs    :Formal class 'SeqArc' [package "phylotaR"] with 5 slots
 #&gt;   ..@ clstrs :Formal class 'ClstrArc' [package "phylotaR"] with 2 slots
