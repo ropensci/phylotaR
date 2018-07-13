@@ -11,3 +11,4 @@ test.fasta
 examples/
 logo.png
 ^codemeta\.json$
+.github
