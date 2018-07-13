@@ -7,8 +7,8 @@
   "identifier": "phylotaR",
   "description": "phylotaR is a pipeline for the identification within taxonomic\n    groups of orthologous sequence clusters from GenBank as the first step in a\n    phylogenetic analysis. The pipeline depends on a local alignment search tool\n    and is, therefore, not dependent on differences in gene naming conventions\n    and naming errors.",
   "name": "phylotaR: Automated phylogenetic sequence cluster identification from GenBank",
-  "codeRepository": "https://github.com/AntonelliLab/phylotaR#readme",
-  "issueTracker": "https://github.com/AntonelliLab/phylotaR/issues",
+  "codeRepository": "https://github.com/ropensci/phylotaR#readme",
+  "issueTracker": "https://github.com/ropensci/phylotaR/issues",
   "license": "https://spdx.org/licenses/MIT",
   "version": "1.0.0",
   "programmingLanguage": {
@@ -202,7 +202,7 @@
     }
   ],
   "readme": "https://github.com/AntonelliLab/phylotaR/blob/master/README.md",
-  "fileSize": "2428.946KB",
+  "fileSize": "2428.93KB",
   "contIntegration": [
     "https://travis-ci.org/AntonelliLab/phylotaR",
     "https://coveralls.io/github/AntonelliLab/phylotaR?branch=master"

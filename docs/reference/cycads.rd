@@ -85,7 +85,7 @@
       
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/AntonelliLab/phylotaR#readme">
+  <a href="https://github.com/ropensci/phylotaR#readme">
     <span class="fa fa-github fa-lg"></span>
      
   </a>

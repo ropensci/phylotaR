@@ -55,7 +55,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/AntonelliLab/phylotaR#readme">
+  <a href="https://github.com/ropensci/phylotaR#readme">
     <span class="fa fa-github fa-lg"></span>
      
   </a>
@@ -76,12 +76,12 @@
 <a href="#automated-retrieval-of-orthologous-dna-sequences-from-genbank" class="anchor"></a>Automated Retrieval of Orthologous DNA Sequences from GenBank <img src="logo.png" height="300" align="right">
 </h1></div>
 
-<p>R implementation of the <a href="http://phylota.net/">PhyLoTa sequence cluster pipeline</a>. For more information see the accompanying website. Tested and demonstrated on Unix and Windows. <strong>Find out more by visiting the <a href="https://antonellilab.github.io/phylotaR/">phylotaR website</a>.</strong></p>
+<p>R implementation of the <a href="http://phylota.net/">PhyLoTa sequence cluster pipeline</a>. For more information see the accompanying website. Tested and demonstrated on Unix and Windows. <strong>Find out more by visiting the <a href="https://ropensci.github.io/phylotaR/">phylotaR website</a>.</strong></p>
 <div id="install" class="section level2">
 <h2 class="hasAnchor">
 <a href="#install" class="anchor"></a>Install</h2>
 <p>Currently only the devlopment package is available:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(<span class="dt">repo=</span><span class="st">'AntonelliLab/phylotaR'</span>,
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(<span class="dt">repo=</span><span class="st">'ropensci/phylotaR'</span>,
                          <span class="dt">build_vignettes=</span><span class="ot">TRUE</span>)</code></pre></div>
 <p><strong>Full functionality depends on a local copy of BLAST+ (&gt;= 2.0.0)</strong>. For details on downloading and compiling BLAST+ on your machine please visit the <a href="https://www.ncbi.nlm.nih.gov/books/NBK279690/">NCBI website</a>.</p>
 </div>
@@ -89,7 +89,7 @@
 <h2 class="hasAnchor">
 <a href="#pipeline" class="anchor"></a>Pipeline</h2>
 <p><code>phylotaR</code> runs the PhyLoTa pipeline in four automated stages: identify and retrieve taxonomic information on all descendent nodes of the taxonomic group of interest (<code>taxise</code>), download sequence data for every identified node (<code>download</code>), identify orthologous clusters using BLAST (<code>cluster</code>), and identify sister clusters for sets of clusters identified in the previous stage (<code>cluster^2</code>) After these stages are complete, <code>phylotaR</code> provides tools for exploring, identifying and exporting suitable clusters for subsequent analysis.</p>
-<p><img src="https://raw.githubusercontent.com/AntonelliLab/phylotaR/master/other/stages.png" alt="phylotaR pipeline"></p>
+<p><img src="https://raw.githubusercontent.com/ropensci/phylotaR/master/other/stages.png" alt="phylotaR pipeline"></p>
 <p>For more information on the pipeline and how it works see the publication, <a href="https://doi.org/10.3390/life8020020">phylotaR: An Automated Pipeline for Retrieving Orthologous DNA Sequences from GenBank in R</a>.</p>
 </div>
 <div id="running" class="section level2">
@@ -224,7 +224,7 @@ txid &lt;-<span class="st"> </span><span class="dv">9443</span>  <span class="co
 </tr>
 </tbody>
 </table>
-<p>To run these same demonstrations see <a href="https://github.com/AntonelliLab/phylotaR/blob/master/demos/demo_run.R">´demos/demo_run.R´</a>.</p>
+<p>To run these same demonstrations see <a href="https://github.com/ropensci/phylotaR/blob/master/demos/demo_run.R">´demos/demo_run.R´</a>.</p>
 </div>
 <div id="license" class="section level2">
 <h2 class="hasAnchor">
@@ -246,6 +246,7 @@ txid &lt;-<span class="st"> </span><span class="dv">9443</span>  <span class="co
 <a href="#reference" class="anchor"></a>Reference</h2>
 <p>Bennett, D., Hettling, H., Silvestro, D., Zizka, A., Bacon, C., Faurby, S., … Antonelli, A. (2018). phylotaR: An Automated Pipeline for Retrieving Orthologous DNA Sequences from GenBank in R. <em>Life</em>, <strong>8</strong>(2), 20. <a href="https://doi.org/10.3390/life8020020">DOI:10.3390/life8020020</a></p>
 <p>Sanderson, M. J., Boss, D., Chen, D., Cranston, K. A., &amp; Wehe, A. (2008). The PhyLoTA Browser: Processing GenBank for molecular phylogenetics research. <em>Systematic Biology</em>, <strong>57</strong>(3), 335–346. <a href="https://doi.org/10.1080/10635150802158688">DOI:10.1080/10635150802158688</a></p>
+<p><a href="https://ropensci.org"><img src="https://ropensci.org/public_images/ropensci_footer.png" alt="ropensci_footer"></a></p>
 </div>
 </div>
   </div>
@@ -254,9 +255,9 @@ txid &lt;-<span class="st"> </span><span class="dv">9443</span>  <span class="co
     <div class="links">
 <h2>Links</h2>
 <ul class="list-unstyled">
-<li>Browse source code at <br><a href="https://github.com/AntonelliLab/phylotaR#readme">https://​github.com/​AntonelliLab/​phylotaR#readme</a>
+<li>Browse source code at <br><a href="https://github.com/ropensci/phylotaR#readme">https://​github.com/​ropensci/​phylotaR#readme</a>
 </li>
-<li>Report a bug at <br><a href="https://github.com/AntonelliLab/phylotaR/issues">https://​github.com/​AntonelliLab/​phylotaR/​issues</a>
+<li>Report a bug at <br><a href="https://github.com/ropensci/phylotaR/issues">https://​github.com/​ropensci/​phylotaR/​issues</a>
 </li>
 </ul>
 </div>
@@ -282,8 +283,8 @@ txid &lt;-<span class="st"> </span><span class="dv">9443</span>  <span class="co
   <div class="dev-status">
 <h2>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://travis-ci.org/AntonelliLab/phylotaR"><img src="https://travis-ci.org/AntonelliLab/phylotaR.svg?branch=master" alt="Build Status"></a></li>
-<li><a href="https://coveralls.io/github/AntonelliLab/phylotaR?branch=master"><img src="https://coveralls.io/repos/github/AntonelliLab/phylotaR/badge.svg?branch=master" alt="Coverage Status"></a></li>
+<li><a href="https://travis-ci.org/ropensci/phylotaR"><img src="https://travis-ci.org/ropensci/phylotaR.svg?branch=master" alt="Build Status"></a></li>
+<li><a href="https://coveralls.io/github/ropensci/phylotaR?branch=master"><img src="https://coveralls.io/repos/github/ropensci/phylotaR/badge.svg?branch=master" alt="Coverage Status"></a></li>
 <li><a href="https://github.com/ropensci/onboarding/issues/187"><img src="https://badges.ropensci.org/187_status.svg"></a></li>
 </ul>
 </div>

@@ -1,13 +1,13 @@
 # Automated Retrieval of Orthologous DNA Sequences from GenBank <img src="logo.png" height="300" align="right"/>
-[![Build Status](https://travis-ci.org/AntonelliLab/phylotaR.svg?branch=master)](https://travis-ci.org/AntonelliLab/phylotaR) [![Coverage Status](https://coveralls.io/repos/github/AntonelliLab/phylotaR/badge.svg?branch=master)](https://coveralls.io/github/AntonelliLab/phylotaR?branch=master) [![](https://badges.ropensci.org/187_status.svg)](https://github.com/ropensci/onboarding/issues/187)
+[![Build Status](https://travis-ci.org/ropensci/phylotaR.svg?branch=master)](https://travis-ci.org/ropensci/phylotaR) [![Coverage Status](https://coveralls.io/repos/github/ropensci/phylotaR/badge.svg?branch=master)](https://coveralls.io/github/ropensci/phylotaR?branch=master) [![](https://badges.ropensci.org/187_status.svg)](https://github.com/ropensci/onboarding/issues/187)
 
-R implementation of the [PhyLoTa sequence cluster pipeline](http://phylota.net/). For more information see the accompanying website. Tested and demonstrated on Unix and Windows. **Find out more by visiting the [phylotaR website](https://antonellilab.github.io/phylotaR/).**
+R implementation of the [PhyLoTa sequence cluster pipeline](http://phylota.net/). For more information see the accompanying website. Tested and demonstrated on Unix and Windows. **Find out more by visiting the [phylotaR website](https://ropensci.github.io/phylotaR/).**
 
 ## Install
 Currently only the devlopment package is available:
 
 ```r
-devtools::install_github(repo='AntonelliLab/phylotaR',
+devtools::install_github(repo='ropensci/phylotaR',
                          build_vignettes=TRUE)
 ```
 
@@ -17,7 +17,7 @@ devtools::install_github(repo='AntonelliLab/phylotaR',
 
 `phylotaR` runs the PhyLoTa pipeline in four automated stages: identify and retrieve taxonomic information on all descendent nodes of the taxonomic group of interest (`taxise`), download sequence data for every identified node (`download`), identify orthologous clusters using BLAST (`cluster`), and identify sister clusters for sets of clusters identified in the previous stage (`cluster^2`) After these stages are complete, `phylotaR` provides tools for exploring, identifying and exporting suitable clusters for subsequent analysis.
 
-![phylotaR pipeline](https://raw.githubusercontent.com/AntonelliLab/phylotaR/master/other/stages.png)
+![phylotaR pipeline](https://raw.githubusercontent.com/ropensci/phylotaR/master/other/stages.png)
 
 For more information on the pipeline and how it works see the publication, [phylotaR: An Automated Pipeline for Retrieving Orthologous DNA Sequences from GenBank in R](https://doi.org/10.3390/life8020020).
 
@@ -57,7 +57,7 @@ Eutardigrada|261|945|195|0.27|9.5|1|0.033|11|
 Kazachstania|40|593|92|0.067|17|1.2|0.033|18|
 Platyrrhini|213|12823|3108|0.3|38|2.2|0.42|41|
 
-To run these same demonstrations see [´demos/demo_run.R´](https://github.com/AntonelliLab/phylotaR/blob/master/demos/demo_run.R). 
+To run these same demonstrations see [´demos/demo_run.R´](https://github.com/ropensci/phylotaR/blob/master/demos/demo_run.R). 
 
 ## License
 

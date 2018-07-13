@@ -10,8 +10,8 @@ Description: phylotaR is a pipeline for the identification within taxonomic
     and is, therefore, not dependent on differences in gene naming conventions
     and naming errors.
 License: MIT + file LICENSE
-URL: https://github.com/AntonelliLab/phylotaR#readme
-BugReports: https://github.com/AntonelliLab/phylotaR/issues
+URL: https://github.com/ropensci/phylotaR#readme
+BugReports: https://github.com/ropensci/phylotaR/issues
 SystemRequirements: BLAST+ (>=2.0)
 Depends:
     R (>= 3.3.0),
