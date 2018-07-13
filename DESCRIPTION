@@ -31,3 +31,4 @@ Suggests:
     rmarkdown
 RoxygenNote: 6.0.1
 VignetteBuilder: knitr
+X-schema.org-isPartOf: https://ropensci.org
