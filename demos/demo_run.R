@@ -45,7 +45,9 @@ for (i in seq_along(demos)) {
 }
 
 # MARKDOWN ----
-mrkdwn <- 'Taxon|Taxa|Sequences|Clusters|Taxise|Download|Cluster|Cluster2|Total|\n'
+mrkdwn <- 'Taxon|N. taxa|N. sequences|N. clusters|Taxise (mins.)|'
+mrkdwn <- paste0(mrkdwn, 'Download (mins.)|Cluster (mins.)|Cluster2 (mins.)|')
+mrkdwn <- paste0(mrkdwn, 'Total (mins.)|\n')
 mrkdwn <- paste0(mrkdwn, '|:--|--:|--:|--:|--:|--:|--:|--:|--:|\n')
 for (i in seq_along(timings)) {
   mrkdwn <- paste0(mrkdwn, Hmisc::capitalize(names(timings)[[i]]), '|',

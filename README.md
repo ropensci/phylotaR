@@ -45,7 +45,7 @@ vignette("phylotaR")
 
 How long does it take for a phylotaR pipeline to complete? Below is a table listing the runtimes in minutes for different demonstration, taxonomic groups. 
 
-Taxon|Taxa|Sequences|Clusters|Taxise|Download|Cluster|Cluster2|Total|
+Taxon|N. taxa|N. sequences|N. clusters|Taxise (mins.)|Download (mins.)|Cluster (mins.)|Cluster2 (mins.)|Total (mins.)|
 |:--|--:|--:|--:|--:|--:|--:|--:|--:|
 Anisoptera|1175|11432|796|1.6|23|48|0.017|72|
 Acipenseridae|51|2407|333|0.1|6.9|6.4|0.017|13|
