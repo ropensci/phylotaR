@@ -1,4 +1,4 @@
-# Automated Retrieval of Orthologous DNA Sequences from GenBank <img src="logo.png" height="300" align="right"/>
+# Automated Retrieval of Orthologous DNA Sequences from GenBank <img src="https://raw.githubusercontent.com/ropensci/phylotaR/master/logo.png" height="300" align="right"/>
 [![Build Status](https://travis-ci.org/ropensci/phylotaR.svg?branch=master)](https://travis-ci.org/ropensci/phylotaR) [![Coverage Status](https://coveralls.io/repos/github/ropensci/phylotaR/badge.svg?branch=master)](https://coveralls.io/github/ropensci/phylotaR?branch=master) [![](https://badges.ropensci.org/187_status.svg)](https://github.com/ropensci/onboarding/issues/187)
 
 R implementation of the [PhyLoTa sequence cluster pipeline](http://phylota.net/). For more information see the accompanying website. Tested and demonstrated on Unix and Windows. **Find out more by visiting the [phylotaR website](https://ropensci.github.io/phylotaR/).**
@@ -57,7 +57,7 @@ Eutardigrada|261|960|211|0.3|11|1.8|0.05|14|
 Kazachstania|40|623|101|0.1|20|3|0.05|23|
 Platyrrhini|212|12731|3112|0.35|51|6.9|1.2|60|
 
-To run these same demonstrations see [´demos/demo_run.R´](https://github.com/ropensci/phylotaR/blob/master/demos/demo_run.R). 
+To run these same demonstrations see `[demos/demo_run.R](https://github.com/ropensci/phylotaR/blob/master/demos/demo_run.R)`.
 
 ## License
 
