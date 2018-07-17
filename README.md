@@ -47,15 +47,15 @@ How long does it take for a phylotaR pipeline to complete? Below is a table list
 
 Taxon|Taxa|Sequences|Clusters|Taxise|Download|Cluster|Cluster2|Total|
 |:--|--:|--:|--:|--:|--:|--:|--:|--:|
-Anisoptera|1143|10619|784|0.75|14|14|0.017|28|
-Acipenseridae|51|2417|332|0.067|35|1.5|0|37|
-Tinamiformes|25|250|98|0.05|1.9|0.083|0|2|
-Aotus|13|1499|193|0.05|2|0.12|0|2.1|
-Bromeliaceae|1172|9840|721|0.7|18|9.4|0.017|28|
-Cycadidae|353|8331|540|0.18|13|3.4|0|17|
-Eutardigrada|261|945|195|0.27|9.5|1|0.033|11|
-Kazachstania|40|593|92|0.067|17|1.2|0.033|18|
-Platyrrhini|213|12823|3108|0.3|38|2.2|0.42|41|
+Anisoptera|1175|11432|796|1.6|23|48|0.017|72|
+Acipenseridae|51|2407|333|0.1|6.9|6.4|0.017|13|
+Tinamiformes|25|251|98|0.067|2.4|0.18|0.017|2.7|
+Aotus|13|1499|193|0.067|3.2|0.6|0|3.9|
+Bromeliaceae|1171|9833|724|1.2|28|37|0.033|66|
+Cycadidae|353|8331|540|0.32|19|18|0.033|37|
+Eutardigrada|261|960|211|0.3|11|1.8|0.05|14|
+Kazachstania|40|623|101|0.1|20|3|0.05|23|
+Platyrrhini|212|12731|3112|0.35|51|6.9|1.2|60|
 
 To run these same demonstrations see [´demos/demo_run.R´](https://github.com/ropensci/phylotaR/blob/master/demos/demo_run.R). 
 

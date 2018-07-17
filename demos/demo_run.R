@@ -21,8 +21,7 @@ for (i in seq_along(demos)) {
   }
   dir.create(wd)
   # run
-  phylotaR::setup(wd = wd, txid = txid, ncbi_dr = ncbi_dr, v = TRUE,
-                  btchsz = 100)
+  phylotaR::setup(wd = wd, txid = txid, ncbi_dr = ncbi_dr, v = TRUE)
   run(wd = wd)
 }
 
