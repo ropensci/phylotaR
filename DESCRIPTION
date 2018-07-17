@@ -4,8 +4,8 @@ Title: Automated Phylogenetic Sequence Cluster Identification from GenBank
 Version: 1.0.0
 Authors@R: c(person("Hannes", "Hettling", role = "aut"), person("Rutger", "Vos", role = "aut"), person("Alexander", "Zizka", role = "aut"), person("Dom", "Bennett", role = c("aut", "cre"), email = "dominic.john.bennett@gmail.com"), person("Alexandre", "Antonelli", role = c("aut")))
 Maintainer: Dom Bennett <dominic.john.bennett@gmail.com>
-Description: phylotaR is a pipeline for the identification within taxonomic
-    groups of orthologous sequence clusters from GenBank as the first step in a
+Description: A pipeline for the identification, within taxonomic groups, of
+    orthologous sequence clusters from 'GenBank' as the first step in a
     phylogenetic analysis. The pipeline depends on a local alignment search tool
     and is, therefore, not dependent on differences in gene naming conventions
     and naming errors.
