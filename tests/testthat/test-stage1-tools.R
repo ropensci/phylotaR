@@ -4,11 +4,12 @@ library(testthat)
 
 # DATA
 raw_recs <- readRDS(phylotaR:::datadir_get('raw_txrecs.rda'))
-ps <- parameters()
+wd <- tempdir()
+ps <- parameters(wd = wd)
 
 # RUNNING
 context('Testing \'stage1-tools\'')
-phylotaR:::cleanup()
+phylotaR:::cleanup(wd)
 test_that('tax_download() works', {
   example_res <- raw_recs[[sample(seq_along(raw_recs), 1)]]
   res <- with_mock(
@@ -19,7 +20,7 @@ test_that('tax_download() works', {
                 FUN.VALUE = logical(1))
   expect_true(all(res))
 })
-phylotaR:::cleanup()
+phylotaR:::cleanup(wd)
 
 
 # # Example raw_txrecs ----

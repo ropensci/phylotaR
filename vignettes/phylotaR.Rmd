@@ -33,10 +33,10 @@ library(phylotaR)
 wd <- '[YOUR PATH TO AOTUS FOLDER]'
 ncbi_dr <- '[YOUR PATH TO NCBI BLAST TOOLS]'
 txid <- 9504
-setup(wd = wd, txid = txid, ncbi_dr = ncbi_dr, v=TRUE)
+setup(wd = wd, txid = txid, ncbi_dr = ncbi_dr, v = TRUE)
 ```
 
-The above imports the `phylotaR` package and initiates a cache that will contain the pipeline parameters. For this tutorial we will keep the parameters as their default. See the function `parameters()` for a complete list and description of all the parameters and their default values. For more detailed information on the parameters please see the publication, [phylotaR: An Automated Pipeline for Retrieving Orthologous DNA Sequences from GenBank in R](https://doi.org/10.3390/life8020020). `wd` must be a file path to the folder we called `aotus/`. `ncbi_dr` must be a file path to the folder containing all the NCBI BLAST+ tools -- see above 'Installing NCBI BLAST+ Tools'. Depending on your system and how you installed the tools, they may be in your system path in which case you can simply supply '.' to the `ncbi_dr` argument. Running `setup()` will verify whether the BLAST tools are installed correctly.
+The above imports the `phylotaR` package and initiates a cache that will contain the pipeline parameters. For this tutorial we will keep the parameters as their default. See the function `parameters()` for a complete list and description of all the parameters and their default values. For more detailed information on the parameters please see the publication, [phylotaR: An Automated Pipeline for Retrieving Orthologous DNA Sequences from GenBank in R](https://doi.org/10.3390/life8020020). `wd` must be a file path to the folder we called `aotus/`. `ncbi_dr` must be a file path to the folder containing all the NCBI BLAST+ tools -- see above 'Installing NCBI BLAST+ Tools'. Depending on your system and how you installed the tools, they may be in your system path in which case you can simply supply '.' to the `ncbi_dr` argument. On my computer I provide the path to the where the `blastn` executable is located, e.g. `/usr/local/ncbi/blast/bin/`. Running `setup()` will verify whether the BLAST tools are installed correctly.
 
 ##Running
 
@@ -71,36 +71,32 @@ restart(wd = wd)
 
 ##Cluster selection
 
-After a pipeline has completed, the identified clusters can be interrogated. In the below code, we generate a phylota object using `read_phylota()`. Again, all that is required as an argument is the working directory. The produced object contains cluster, sequence and taxonomic information on all the clusters. It has 6 data slots: cids, sids, txids, txdct, sqs and cls. Each of these slots can be accessed with `@`, see ?\`Phylota-class\` for more information. The `phylotaR` package has a range of functions for probing clusters in a phylota object. For example, if we want to know how many different taxonomic groups are represented by each cluster we can use `get_ntaxa()`.
+After a pipeline has completed, the identified clusters can be interrogated. We can generate a phylota object using `read_phylota()` but in the code below we will load a pre-existing phylota object from the package data. The phylota object contains cluster, sequence and taxonomic information on all the clusters. It has 6 data slots: cids, sids, txids, txdct, sqs, clstrs, prnt_id and prnt_nm. Each of these slots can be accessed with `@`, see ?\`Phylota-class\` for more information. The `phylotaR` package has a range of functions for probing clusters in a phylota object. For example, if we want to know how many different taxonomic groups are represented by each cluster we can use `get_ntaxa()`.
 
-```{r selection1, eval=FALSE, message=FALSE, warning=FALSE, include=TRUE, paged.print=FALSE}
-all_clusters <- read_phylota(wd)
+```{r selection1, eval=TRUE, message=FALSE, warning=FALSE, include=TRUE, paged.print=FALSE}
+library(phylotaR)
+# pre-load already run aotus from package data
+data('aotus')
+all_clusters <- aotus
+print(all_clusters)
+# otherwise, run:
+# all_clusters <- read_phylota(wd)
 cids <- all_clusters@cids
 n_taxa <- get_ntaxa(phylota = all_clusters, cid = cids)
 ```
 
 We can then drop all the clusters with fewer than 6 taxa and create a new phylota object using the `drop_cls()` function. Let's then take a peak of the now smaller object's clusters using `summary()`.
 
-```{r selection2, eval=FALSE, message=FALSE, warning=FALSE, include=TRUE, paged.print=FALSE}
+```{r selection2, eval=TRUE, message=FALSE, warning=FALSE, include=TRUE, paged.print=FALSE}
 keep <- cids[n_taxa > 6]
 selected <- drop_clstrs(phylota = all_clusters, cid = keep)
 smmry <- summary(selected)
-```
-
-In my session, I have the following output:
-
-```
-> smmry
-  ID    Type               Seed Parent N_taxa N_seqs Med_sql       MAD                        Definition                   Feature
-1  1 subtree    U36844.1/1..602   9504     11     77     688 0.8575607 gene (0.09), mitochondrial (0.07) aotus (0.3), azarai (0.2)
-2  5 subtree AJ489745.1/1..1140   9504     11     41    1140 0.9264139       aotus (0.1), complete (0.1)   aotus (0.4), cytb (0.2)
-3 11 subtree HQ005472.1/1..1557   9504     10     27    1557 1.0000000        complete (0.1), and (0.07)     co1 (0.7), cox1 (0.3)
-4 38 subtree  AF338374.1/1..829   9504      8     10     829 0.9518697            sry (0.2), aotus (0.1) aotus (0.4), azarai (0.2)
+print(smmry)
 ```
 
 This summary provides information on each cluster in the phylota object, such as median sequence length, MAD score (the mean alignment density, values closer to 1 indicate all the sequences are of a similar length), most common words in the sequence descriptions and feature names. Let's select the second ID in this table for further investigation. We can extract its cluster and sequences records in the following way.
 
-```{r selection3, eval=FALSE, message=FALSE, warning=FALSE, include=TRUE, paged.print=FALSE}
+```{r selection3, eval=TRUE, message=FALSE, warning=FALSE, include=TRUE, paged.print=FALSE}
 cid <- smmry[2, 'ID']
 # get the cluster record
 cluster_record <- selected@clstrs[[cid]]
@@ -108,13 +104,15 @@ cluster_record <- selected@clstrs[[cid]]
 seq_records <- selected@sqs[cluster_record@sids]
 # extract a single record
 seq_record <- seq_records[[seq_records@ids[[1]]]]
+summary(seq_record)
 # get the sequence
 seq <- rawToChar(seq_record@sq)
+print(substr(x = seq, start = 1, stop = 80))
 ```
 
 We could extract and write out each of the sequences for a cluster in the above manner. Handily, however, `phylotaR` comes with some tools to make outputting sequences easier. First because there are multiple sequences per taxon, we need to select a single representative sequence. We can do this with the `drop_by_rank()` function. With this function we choose a taxonomic rank at which we would like our sequences to be represented. The function then chooses the 'best' sequence representing each taxon for that rank using a range of criteria. With this new phylota object, we can then extract the scientific names and write out the sequences.
 
-```{r selection4, eval=FALSE, message=FALSE, warning=FALSE, include=TRUE, paged.print=FALSE}
+```{r selection4, eval=TRUE, message=FALSE, warning=FALSE, include=TRUE, paged.print=FALSE}
 # choose best sequence per species
 reduced <- drop_by_rank(phylota = selected, rnk = 'species', n = 1)
 # get txids at the species level for each sequence
@@ -124,16 +122,18 @@ scientific_names <- get_tx_slot(phylota = reduced, txid = txids, slt_nm = 'scnm'
 # clean the names
 scientific_names <- gsub('\\.', '', scientific_names)
 scientific_names <- gsub('\\s+', '_', scientific_names)
+print(scientific_names)
 # look up sequence IDs for our chosen cluster
 sids <- reduced@clstrs[[cid]]@sids
 # write out
-write_sqs(phylota = reduced, sid = sids, outfile = 'cytb.fasta',
-          sq_nm = scientific_names)
+write_sqs(phylota = reduced, sid = sids, sq_nm = scientific_names,
+          outfile = file.path(tempdir(), 'cytb.fasta'))
+# ^ to avoid clutter, we're writing to a temporary folder
 ```
 
 ##Testing output
 
-We can sanity check our cluster sequences by running a very quick phylogenetic analysis using mafft and raxml. The below code will use the  cluster to generate an alignment and a tree through R. In order for the code to run, it requires the installation of mafft and raxml and, additionally, may require tweaking to work on your system.
+We can sanity check our cluster sequences by running a very quick phylogenetic analysis using mafft and raxml. The below code will use the cluster to generate an alignment and a tree through R. In order for the code to run, it requires the installation of mafft and raxml and, additionally, may require tweaking to work on your system.
 
 ```{r testing, eval=FALSE, message=FALSE, warning=FALSE, include=TRUE, paged.print=FALSE}
 library(ape)

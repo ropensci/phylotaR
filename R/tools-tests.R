@@ -37,13 +37,16 @@ random_phylota <- function() {
 #' deleted.
 #' @return NULL
 #' @noRd
-cleanup <- function() {
+cleanup <- function(wd) {
   # remove any test generated datasets
-  if (dir.exists('cache')) {
-    unlink('cache', recursive = TRUE)
+  cch_dir <- file.path(wd, 'cache')
+  if (dir.exists(cch_dir)) {
+    unlink(cch_dir, recursive = TRUE)
   }
-  fls <- c(datadir_get(file.path('blast', 'testdb')), 'log.txt',
-           'log.log', 'test.fasta', 'session_info.txt', 'blast_versions.txt')
+  fls <- c('log.txt', 'log.log', 'test.fasta', 'session_info.txt',
+           'blast_versions.txt')
+  fls <- file.path(wd, fls)
+  fls <- c(fls, datadir_get(file.path('blast', 'testdb')))
   for (fl in fls) {
     if (file.exists(fl)) {
       file.remove(fl)

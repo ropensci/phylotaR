@@ -3,6 +3,7 @@ library(phylotaR)
 library(testthat)
 
 # DATA
+wd <- tempdir()
 phylota <- phylotaR:::random_phylota()
 
 # RUNNING
@@ -67,7 +68,7 @@ test_that('get_tx_slot() works', {
   rec <- phylota@txdct@recs[[txid]]
   expect_equal(slot(rec, sltnm), res[[1]])
 })
-phylotaR:::cleanup()
+phylotaR:::cleanup(wd)
 test_that('get_stage_times() works', {
   with_mock(
     `phylotaR:::blast_setup` = function(...) {
@@ -77,10 +78,10 @@ test_that('get_stage_times() works', {
     `phylotaR:::batcher` = function(...) NULL,
     `phylotaR:::taxdict_gen` = function(...) NULL,
     `phylotaR:::obj_save` = function(...) NULL,
-    phylotaR::setup(wd = '.', txid = 9606),
-    taxise_run(wd = '.')
+    phylotaR::setup(wd = wd, txid = 9606),
+    taxise_run(wd = wd)
   )
-  timings <- get_stage_times(wd = '.')
+  timings <- get_stage_times(wd = wd)
   expect_true(inherits(timings, 'numeric'))
 })
-phylotaR:::cleanup()
+phylotaR:::cleanup(wd)

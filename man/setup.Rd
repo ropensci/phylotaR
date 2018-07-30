@@ -28,8 +28,17 @@ with \code{\link{parameters_reset}}().
 \examples{
 \dontrun{
   
+  # Note: this example requires BLAST to run.
+  
+  # example with temp folder
+  wd <- file.path(tempdir(), 'aotus')
   # setup for aotus, make sure aotus/ folder already exists
-  setup(wd = 'aotus', txid = 9504)
+  if (!dir.exists(wd)) {
+    dir.create(wd)
+  }
+  ncbi_dr <- '[SET BLAST+ BIN PATH HERE]'
+  # e.g. "/usr/local/ncbi/blast/bin/"
+  setup(wd = wd, txid = 9504, ncbi_dr = ncbi_dr)  # txid for Aotus primate genus
   # see ?parameters for all available parameter options
 }
 }

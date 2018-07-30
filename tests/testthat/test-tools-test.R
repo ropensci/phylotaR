@@ -13,9 +13,10 @@ test_that('random_phylota() works', {
   expect_true(inherits(res, 'Phylota'))
 })
 test_that('cleanup() works', {
-  res <- phylotaR:::cleanup()
+  wd <- tempdir()
+  res <- phylotaR:::cleanup(wd)
   expect_null(res)
-  expect_false(dir.exists('cache'))
+  expect_false(dir.exists(file.path(wd, 'cache')))
 })
 test_that('cmdln_blastcheck() works', {
   res <- phylotaR:::cmdln_blastcheck(cmd = 'blastn', args = NULL)

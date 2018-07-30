@@ -5,8 +5,8 @@
   ],
   "@type": "SoftwareSourceCode",
   "identifier": "phylotaR",
-  "description": "A pipeline for the identification, within taxonomic groups, of\n    orthologous sequence clusters from 'GenBank' as the first step in a\n    phylogenetic analysis. The pipeline depends on a local alignment search tool\n    and is, therefore, not dependent on differences in gene naming conventions\n    and naming errors.",
-  "name": "phylotaR: Automated Phylogenetic Sequence Cluster Identification from GenBank",
+  "description": "A pipeline for the identification, within taxonomic groups, of\n    orthologous sequence clusters from\n    'GenBank'<https://www.ncbi.nlm.nih.gov/genbank/> as the first step in a\n    phylogenetic analysis. The pipeline depends on a local alignment search tool\n    and is, therefore, not dependent on differences in gene naming conventions\n    and naming errors.",
+  "name": "phylotaR: Automated Phylogenetic Sequence Cluster Identification from 'GenBank'",
   "codeRepository": "https://github.com/ropensci/phylotaR#readme",
   "issueTracker": "https://github.com/ropensci/phylotaR/issues",
   "license": "https://spdx.org/licenses/MIT",
@@ -202,7 +202,7 @@
     }
   ],
   "readme": "https://github.com/ropensci/phylotaR/blob/master/README.md",
-  "fileSize": "2428.372KB",
+  "fileSize": "2429.731KB",
   "contIntegration": [
     "https://travis-ci.org/AntonelliLab/phylotaR",
     "https://coveralls.io/github/AntonelliLab/phylotaR?branch=master"
@@ -214,5 +214,10 @@
     "r",
     "genbank"
   ],
-  "isPartOf": "https://ropensci.org"
+  "isPartOf": "https://ropensci.org",
+  "review": {
+    "@type": "Review",
+    "url": "https://github.com/ropensci/onboarding/issues/187",
+    "provider": "http://ropensci.org"
+  }
 }

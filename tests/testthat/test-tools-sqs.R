@@ -4,7 +4,8 @@ library(testthat)
 
 # DATA
 raw_recs <- readRDS(phylotaR:::datadir_get('raw_seqrecs.rda'))
-ps <- parameters()
+wd <- tempdir()
+ps <- parameters(wd = wd)
 
 # RUNNING
 context('Testing \'tools-sqs\'')

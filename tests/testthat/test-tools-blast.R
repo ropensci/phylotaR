@@ -18,15 +18,13 @@ test_that('blastdb_gen() works', {
   expect_null(res)
   res <- with_mock(
     `phylotaR:::cmdln` = function(...) 1,
-    expect_error(phylotaR:::blastdb_gen(sqs = sqs, dbfl = 'testdb',
-                                        ps = ps))
+    expect_error(phylotaR:::blastdb_gen(sqs = sqs, dbfl = 'testdb', ps = ps))
   )
 })
 test_that('blastn_run() works', {
   res <- with_mock(
     `phylotaR:::cmdln` = function(...) 0,
-    phylotaR:::blastn_run(dbfl = 'testdb', outfl = 'testblstn',
-                          ps = ps)
+    phylotaR:::blastn_run(dbfl = 'testdb', outfl = 'testblstn', ps = ps)
   )
   nms <- colnames(res)
   expect_true(all(nms %in% names(blast_res)))

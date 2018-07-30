@@ -19,14 +19,22 @@ Resets the pipeline to a specified stage.
 \examples{
 \dontrun{
   
-  # reset and restart aotus run
-  setup(wd = 'aotus', txid = 9504)
-  run(wd = 'aotus')
-  # use ctrl+c or Esc to kill
-  # reset to an earlier stage
-  reset(wd = 'aotus', stage = 'download')
-  # restart with from download
-  restart(wd = 'aotus')
+  # Note: this example requires BLAST and internet to run.
+  
+  # example with temp folder
+  wd <- file.path(tempdir(), 'aotus')
+  # setup for aotus, make sure aotus/ folder already exists
+  if (!dir.exists(wd)) {
+    dir.create(wd)
+  }
+  ncbi_dr <- '[SET BLAST+ BIN PATH HERE]'
+  setup(wd = wd, txid = 9504, ncbi_dr = ncbi_dr)  # txid for Aotus primate genus
+  # individually run taxise
+  taxise_run(wd = wd)
+  # reset back to taxise as if it has not been run
+  reset(wd = 'aotus', stage = 'taxise')
+  # run taxise again ....
+  taxise_run(wd = wd)
 }
 }
 \seealso{
