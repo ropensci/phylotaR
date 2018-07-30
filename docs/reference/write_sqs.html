@@ -170,8 +170,8 @@ same order as sid.</p>
 <span class='co'># get sequences for a cluster and write out</span>
 <span class='no'>random_cid</span> <span class='kw'>&lt;-</span> <span class='fu'>sample</span>(<span class='no'>aotus</span>@<span class='kw'>cids</span>, <span class='fl'>1</span>)
 <span class='no'>sids</span> <span class='kw'>&lt;-</span> <span class='no'>aotus</span><span class='kw'>[[</span><span class='no'>random_cid</span>]]@<span class='kw'>sids</span>
-<span class='fu'>write_sqs</span>(<span class='kw'>phylota</span> <span class='kw'>=</span> <span class='no'>aotus</span>, <span class='kw'>outfile</span> <span class='kw'>=</span> <span class='st'>'test.fasta'</span>, <span class='kw'>sq_nm</span> <span class='kw'>=</span> <span class='st'>'my_gene'</span>,
-          <span class='kw'>sid</span> <span class='kw'>=</span> <span class='no'>sids</span>)</div></pre>
+<span class='fu'>write_sqs</span>(<span class='kw'>phylota</span> <span class='kw'>=</span> <span class='no'>aotus</span>, <span class='kw'>outfile</span> <span class='kw'>=</span> <span class='fu'>file.path</span>(<span class='fu'>tempdir</span>(), <span class='st'>'test.fasta'</span>),
+          <span class='kw'>sq_nm</span> <span class='kw'>=</span> <span class='st'>'my_gene'</span>, <span class='kw'>sid</span> <span class='kw'>=</span> <span class='no'>sids</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <h2>Contents</h2>

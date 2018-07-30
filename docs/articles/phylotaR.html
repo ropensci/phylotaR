@@ -102,8 +102,8 @@
 wd &lt;-<span class="st"> '[YOUR PATH TO AOTUS FOLDER]'</span>
 ncbi_dr &lt;-<span class="st"> '[YOUR PATH TO NCBI BLAST TOOLS]'</span>
 txid &lt;-<span class="st"> </span><span class="dv">9504</span>
-<span class="kw"><a href="../reference/setup.html">setup</a></span>(<span class="dt">wd =</span> wd, <span class="dt">txid =</span> txid, <span class="dt">ncbi_dr =</span> ncbi_dr, <span class="dt">v=</span><span class="ot">TRUE</span>)</code></pre></div>
-<p>The above imports the <code>phylotaR</code> package and initiates a cache that will contain the pipeline parameters. For this tutorial we will keep the parameters as their default. See the function <code><a href="../reference/parameters.html">parameters()</a></code> for a complete list and description of all the parameters and their default values. For more detailed information on the parameters please see the publication, <a href="https://doi.org/10.3390/life8020020">phylotaR: An Automated Pipeline for Retrieving Orthologous DNA Sequences from GenBank in R</a>. <code>wd</code> must be a file path to the folder we called <code>aotus/</code>. <code>ncbi_dr</code> must be a file path to the folder containing all the NCBI BLAST+ tools – see above ‘Installing NCBI BLAST+ Tools’. Depending on your system and how you installed the tools, they may be in your system path in which case you can simply supply ‘.’ to the <code>ncbi_dr</code> argument. Running <code><a href="../reference/setup.html">setup()</a></code> will verify whether the BLAST tools are installed correctly.</p>
+<span class="kw"><a href="../reference/setup.html">setup</a></span>(<span class="dt">wd =</span> wd, <span class="dt">txid =</span> txid, <span class="dt">ncbi_dr =</span> ncbi_dr, <span class="dt">v =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<p>The above imports the <code>phylotaR</code> package and initiates a cache that will contain the pipeline parameters. For this tutorial we will keep the parameters as their default. See the function <code><a href="../reference/parameters.html">parameters()</a></code> for a complete list and description of all the parameters and their default values. For more detailed information on the parameters please see the publication, <a href="https://doi.org/10.3390/life8020020">phylotaR: An Automated Pipeline for Retrieving Orthologous DNA Sequences from GenBank in R</a>. <code>wd</code> must be a file path to the folder we called <code>aotus/</code>. <code>ncbi_dr</code> must be a file path to the folder containing all the NCBI BLAST+ tools – see above ‘Installing NCBI BLAST+ Tools’. Depending on your system and how you installed the tools, they may be in your system path in which case you can simply supply ‘.’ to the <code>ncbi_dr</code> argument. On my computer I provide the path to the where the <code>blastn</code> executable is located, e.g. <code>/usr/local/ncbi/blast/bin/</code>. Running <code><a href="../reference/setup.html">setup()</a></code> will verify whether the BLAST tools are installed correctly.</p>
 </div>
 <div id="running" class="section level2">
 <h2 class="hasAnchor">
@@ -132,21 +132,30 @@ txid &lt;-<span class="st"> </span><span class="dv">9504</span>
 <div id="cluster-selection" class="section level2">
 <h2 class="hasAnchor">
 <a href="#cluster-selection" class="anchor"></a>Cluster selection</h2>
-<p>After a pipeline has completed, the identified clusters can be interrogated. In the below code, we generate a phylota object using <code><a href="../reference/read_phylota.html">read_phylota()</a></code>. Again, all that is required as an argument is the working directory. The produced object contains cluster, sequence and taxonomic information on all the clusters. It has 6 data slots: cids, sids, txids, txdct, sqs and cls. Each of these slots can be accessed with <code>@</code>, see ?`Phylota-class` for more information. The <code>phylotaR</code> package has a range of functions for probing clusters in a phylota object. For example, if we want to know how many different taxonomic groups are represented by each cluster we can use <code><a href="../reference/get_ntaxa.html">get_ntaxa()</a></code>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">all_clusters &lt;-<span class="st"> </span><span class="kw"><a href="../reference/read_phylota.html">read_phylota</a></span>(wd)
+<p>After a pipeline has completed, the identified clusters can be interrogated. We can generate a phylota object using <code><a href="../reference/read_phylota.html">read_phylota()</a></code> but in the code below we will load a pre-existing phylota object from the package data. The phylota object contains cluster, sequence and taxonomic information on all the clusters. It has 6 data slots: cids, sids, txids, txdct, sqs, clstrs, prnt_id and prnt_nm. Each of these slots can be accessed with <code>@</code>, see ?`Phylota-class` for more information. The <code>phylotaR</code> package has a range of functions for probing clusters in a phylota object. For example, if we want to know how many different taxonomic groups are represented by each cluster we can use <code><a href="../reference/get_ntaxa.html">get_ntaxa()</a></code>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(phylotaR)
+<span class="co"># pre-load already run aotus from package data</span>
+<span class="kw">data</span>(<span class="st">'aotus'</span>)
+all_clusters &lt;-<span class="st"> </span>aotus
+<span class="kw">print</span>(all_clusters)</code></pre></div>
+<pre><code>## [1] "Phylota Table (Aotus)\n- [193] clusters\n- [1499] sequences\n- [13] source taxa\n"</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># otherwise, run:</span>
+<span class="co"># all_clusters &lt;- read_phylota(wd)</span>
 cids &lt;-<span class="st"> </span>all_clusters<span class="op">@</span>cids
 n_taxa &lt;-<span class="st"> </span><span class="kw"><a href="../reference/get_ntaxa.html">get_ntaxa</a></span>(<span class="dt">phylota =</span> all_clusters, <span class="dt">cid =</span> cids)</code></pre></div>
 <p>We can then drop all the clusters with fewer than 6 taxa and create a new phylota object using the <code>drop_cls()</code> function. Let’s then take a peak of the now smaller object’s clusters using <code>summary()</code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">keep &lt;-<span class="st"> </span>cids[n_taxa <span class="op">&gt;</span><span class="st"> </span><span class="dv">6</span>]
 selected &lt;-<span class="st"> </span><span class="kw"><a href="../reference/drop_clstrs.html">drop_clstrs</a></span>(<span class="dt">phylota =</span> all_clusters, <span class="dt">cid =</span> keep)
-smmry &lt;-<span class="st"> </span><span class="kw">summary</span>(selected)</code></pre></div>
-<p>In my session, I have the following output:</p>
-<pre><code>&gt; smmry
-  ID    Type               Seed Parent N_taxa N_seqs Med_sql       MAD                        Definition                   Feature
-1  1 subtree    U36844.1/1..602   9504     11     77     688 0.8575607 gene (0.09), mitochondrial (0.07) aotus (0.3), azarai (0.2)
-2  5 subtree AJ489745.1/1..1140   9504     11     41    1140 0.9264139       aotus (0.1), complete (0.1)   aotus (0.4), cytb (0.2)
-3 11 subtree HQ005472.1/1..1557   9504     10     27    1557 1.0000000        complete (0.1), and (0.07)     co1 (0.7), cox1 (0.3)
-4 38 subtree  AF338374.1/1..829   9504      8     10     829 0.9518697            sry (0.2), aotus (0.1) aotus (0.4), azarai (0.2)</code></pre>
+smmry &lt;-<span class="st"> </span><span class="kw">summary</span>(selected)
+<span class="kw">print</span>(smmry)</code></pre></div>
+<pre><code>##   ID    Type                Seed Parent N_taxa N_seqs Med_sql       MAD
+## 1  4 subtree            U36844.1   9504      9     41     549 0.8397112
+## 2  9 subtree          AJ489745.1   9504     10     29    1140 1.0000000
+## 3 29 subtree AF338374.1/177..829   9504      8     10     653 0.9658499
+##                        Definition                      Feature
+## 1 gene (0.1), mitochondrial (0.1)                     coii (1)
+## 2   aotus (0.1), cytochrome (0.1) cytb (0.4), cytochrome (0.3)
+## 3          sry (0.2), aotus (0.1)                      sry (1)</code></pre>
 <p>This summary provides information on each cluster in the phylota object, such as median sequence length, MAD score (the mean alignment density, values closer to 1 indicate all the sequences are of a similar length), most common words in the sequence descriptions and feature names. Let’s select the second ID in this table for further investigation. We can extract its cluster and sequences records in the following way.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">cid &lt;-<span class="st"> </span>smmry[<span class="dv">2</span>, <span class="st">'ID'</span>]
 <span class="co"># get the cluster record</span>
@@ -155,8 +164,12 @@ cluster_record &lt;-<span class="st"> </span>selected<span class="op">@</span>cl
 seq_records &lt;-<span class="st"> </span>selected<span class="op">@</span>sqs[cluster_record<span class="op">@</span>sids]
 <span class="co"># extract a single record</span>
 seq_record &lt;-<span class="st"> </span>seq_records[[seq_records<span class="op">@</span>ids[[<span class="dv">1</span>]]]]
-<span class="co"># get the sequence</span>
-seq &lt;-<span class="st"> </span><span class="kw">rawToChar</span>(seq_record<span class="op">@</span>sq)</code></pre></div>
+<span class="kw">summary</span>(seq_record)</code></pre></div>
+<pre><code>## SeqRec [ID: AJ489745.1]</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># get the sequence</span>
+seq &lt;-<span class="st"> </span><span class="kw">rawToChar</span>(seq_record<span class="op">@</span>sq)
+<span class="kw">print</span>(<span class="kw">substr</span>(<span class="dt">x =</span> seq, <span class="dt">start =</span> <span class="dv">1</span>, <span class="dt">stop =</span> <span class="dv">80</span>))</code></pre></div>
+<pre><code>## [1] "atgacttctccccgcaaaacacacccactaacaaagatcattaacgaatcattcattgatctacccacaccacccaacat"</code></pre>
 <p>We could extract and write out each of the sequences for a cluster in the above manner. Handily, however, <code>phylotaR</code> comes with some tools to make outputting sequences easier. First because there are multiple sequences per taxon, we need to select a single representative sequence. We can do this with the <code><a href="../reference/drop_by_rank.html">drop_by_rank()</a></code> function. With this function we choose a taxonomic rank at which we would like our sequences to be represented. The function then chooses the ‘best’ sequence representing each taxon for that rank using a range of criteria. With this new phylota object, we can then extract the scientific names and write out the sequences.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># choose best sequence per species</span>
 reduced &lt;-<span class="st"> </span><span class="kw"><a href="../reference/drop_by_rank.html">drop_by_rank</a></span>(<span class="dt">phylota =</span> selected, <span class="dt">rnk =</span> <span class="st">'species'</span>, <span class="dt">n =</span> <span class="dv">1</span>)
@@ -167,11 +180,19 @@ scientific_names &lt;-<span class="st"> </span><span class="kw"><a href="../refe
 <span class="co"># clean the names</span>
 scientific_names &lt;-<span class="st"> </span><span class="kw">gsub</span>(<span class="st">'</span><span class="ch">\\</span><span class="st">.'</span>, <span class="st">''</span>, scientific_names)
 scientific_names &lt;-<span class="st"> </span><span class="kw">gsub</span>(<span class="st">'</span><span class="ch">\\</span><span class="st">s+'</span>, <span class="st">'_'</span>, scientific_names)
-<span class="co"># look up sequence IDs for our chosen cluster</span>
+<span class="kw">print</span>(scientific_names)</code></pre></div>
+<pre><code>##           AJ489745.1           DQ098865.1           DQ098869.1 
+##    "Aotus_nancymaae"       "Aotus_azarai" "Aotus_griseimembra" 
+##           DQ098873.1           HQ005497.1           HQ005502.1 
+##  "Aotus_trivirgatus"    "Aotus_nigriceps"   "Aotus_vociferans" 
+##           HQ005506.1   KR528418.1/1..1140 
+##    "Aotus_lemurinus"           "Aotus_sp"</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># look up sequence IDs for our chosen cluster</span>
 sids &lt;-<span class="st"> </span>reduced<span class="op">@</span>clstrs[[cid]]<span class="op">@</span>sids
 <span class="co"># write out</span>
-<span class="kw"><a href="../reference/write_sqs.html">write_sqs</a></span>(<span class="dt">phylota =</span> reduced, <span class="dt">sid =</span> sids, <span class="dt">outfile =</span> <span class="st">'cytb.fasta'</span>,
-          <span class="dt">sq_nm =</span> scientific_names)</code></pre></div>
+<span class="kw"><a href="../reference/write_sqs.html">write_sqs</a></span>(<span class="dt">phylota =</span> reduced, <span class="dt">sid =</span> sids, <span class="dt">sq_nm =</span> scientific_names,
+          <span class="dt">outfile =</span> <span class="kw">file.path</span>(<span class="kw">tempdir</span>(), <span class="st">'cytb.fasta'</span>))
+<span class="co"># ^ to avoid clutter, we're writing to a temporary folder</span></code></pre></div>
 </div>
 <div id="testing-output" class="section level2">
 <h2 class="hasAnchor">

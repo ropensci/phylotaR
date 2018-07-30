@@ -150,9 +150,18 @@ dictionary for user interaction after phylotaR has completed.</p>
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><span class='co'># NOT RUN {</span>
 
-  <span class='co'># individually run a stage</span>
-  <span class='fu'><a href='setup.html'>setup</a></span>(<span class='kw'>wd</span> <span class='kw'>=</span> <span class='st'>'aotus'</span>, <span class='kw'>txid</span> <span class='kw'>=</span> <span class='fl'>9504</span>)
-  <span class='fu'>taxise_run</span>(<span class='kw'>wd</span> <span class='kw'>=</span> <span class='st'>'aotus'</span>)
+  <span class='co'># Note: this example requires BLAST and internet to run.</span>
+
+  <span class='co'># example with temp folder</span>
+  <span class='no'>wd</span> <span class='kw'>&lt;-</span> <span class='fu'>file.path</span>(<span class='fu'>tempdir</span>(), <span class='st'>'aotus'</span>)
+  <span class='co'># setup for aotus, make sure aotus/ folder already exists</span>
+  <span class='kw'>if</span> (!<span class='fu'>dir.exists</span>(<span class='no'>wd</span>)) {
+    <span class='fu'>dir.create</span>(<span class='no'>wd</span>)
+  }
+  <span class='no'>ncbi_dr</span> <span class='kw'>&lt;-</span> <span class='st'>'[SET BLAST+ BIN PATH HERE]'</span>
+  <span class='fu'><a href='setup.html'>setup</a></span>(<span class='kw'>wd</span> <span class='kw'>=</span> <span class='no'>wd</span>, <span class='kw'>txid</span> <span class='kw'>=</span> <span class='fl'>9504</span>, <span class='kw'>ncbi_dr</span> <span class='kw'>=</span> <span class='no'>ncbi_dr</span>)  <span class='co'># txid for Aotus primate genus</span>
+  <span class='co'># individually run stages</span>
+  <span class='fu'>taxise_run</span>(<span class='kw'>wd</span> <span class='kw'>=</span> <span class='no'>wd</span>)
 <span class='co'># }</span></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

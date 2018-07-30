@@ -57,7 +57,7 @@ Eutardigrada|261|960|211|0.3|11|1.8|0.05|14|
 Kazachstania|40|623|101|0.1|20|3|0.05|23|
 Platyrrhini|212|12731|3112|0.35|51|6.9|1.2|60|
 
-To run these same demonstrations see `[demos/demo_run.R](https://github.com/ropensci/phylotaR/blob/master/demos/demo_run.R)`.
+To run these same demonstrations see [demos/demo_run.R](https://github.com/ropensci/phylotaR/blob/master/demos/demo_run.R).
 
 ## License
 
