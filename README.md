@@ -1,14 +1,19 @@
 # Automated Retrieval of Orthologous DNA Sequences from GenBank <img src="https://raw.githubusercontent.com/ropensci/phylotaR/master/logo.png" height="300" align="right"/>
-[![Build Status](https://travis-ci.org/ropensci/phylotaR.svg?branch=master)](https://travis-ci.org/ropensci/phylotaR) [![Coverage Status](https://coveralls.io/repos/github/ropensci/phylotaR/badge.svg?branch=master)](https://coveralls.io/github/ropensci/phylotaR?branch=master) [![](https://badges.ropensci.org/187_status.svg)](https://github.com/ropensci/onboarding/issues/187)
+[![Build Status](https://travis-ci.org/ropensci/phylotaR.svg?branch=master)](https://travis-ci.org/ropensci/phylotaR) [![Coverage Status](https://coveralls.io/repos/github/ropensci/phylotaR/badge.svg?branch=master)](https://coveralls.io/github/ropensci/phylotaR?branch=master) [![](https://badges.ropensci.org/187_status.svg)](https://github.com/ropensci/onboarding/issues/187) [![CRAN downloads](http://cranlogs.r-pkg.org/badges/grand-total/phylotaR)](https://CRAN.R-project.org/package=phylotaR)
 
 R implementation of the [PhyLoTa sequence cluster pipeline](http://phylota.net/). For more information see the accompanying website. Tested and demonstrated on Unix and Windows. **Find out more by visiting the [phylotaR website](https://ropensci.github.io/phylotaR/).**
 
 ## Install
-Currently only the devlopment package is available:
+From CRAN:
 
 ```r
-devtools::install_github(repo='ropensci/phylotaR',
-                         build_vignettes=TRUE)
+install.packages('phylotaR')
+```
+
+Or, download the development package from GitHub:
+
+```r
+devtools::install_github(repo='ropensci/phylotaR', build_vignettes=TRUE)
 ```
 
 **Full functionality depends on a local copy of BLAST+ (>= 2.0.0)**. For details on downloading and compiling BLAST+ on your machine please visit the [NCBI website](https://www.ncbi.nlm.nih.gov/books/NBK279690/).
