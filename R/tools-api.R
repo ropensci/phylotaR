@@ -73,6 +73,10 @@ download_obj_check <- function(obj) {
     if (grepl(pattern = 'timeout', x = obj)) {
       return(FALSE)
     }
+    if (grepl(pattern = 'Error occurred:', x = obj)) {
+      # Fix for 'malformed-xmlBackend', NCBI returning object
+      return(FALSE)
+    }
   }
   TRUE
 }
