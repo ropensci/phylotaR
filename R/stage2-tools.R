@@ -43,6 +43,10 @@ seqrec_augment <- function(sqs, txdct) {
   txdct_ids <- vapply(txdct@recs, function(x) x@id, '')
   sqs_nms <- vapply(sqs, function(x) x@orgnsm, '')
   sqs_ids <- txdct_ids[match(sqs_nms, txdct_nms)]
+  # tax name may be missing from taxdict
+  pull <- !is.na(sqs_ids)
+  sqs <- sqs[pull]
+  sqs_ids <- sqs_ids[pull]
   for (i in seq_along(sqs)) {
     sqs[[i]]@txid <- as.character(sqs_ids[[i]])
   }

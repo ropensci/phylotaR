@@ -187,6 +187,7 @@ clstrrec_gen <- function(clstr_list, txid, sqs, typ) {
   for (i in seq_along(clstr_list)) {
     clstr <- clstr_list[[i]]
     clstr_sqs <- sqs[clstr[['sids']]]
+    clstr_sqs <- sqs[clstr[['sids']]]
     nsqs <- length(clstr[['sids']])
     ntx <- length(unique(clstr_sqs@txids))
     clstrrec <- new('ClstrRec', sids = clstr[['sids']], txids = clstr_sqs@txids,

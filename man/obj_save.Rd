@@ -51,9 +51,9 @@ Other run-private: \code{\link{batcher}},
   \code{\link{seqrec_get}}, \code{\link{sids_check}},
   \code{\link{sids_get}}, \code{\link{sids_load}},
   \code{\link{sids_save}}, \code{\link{sqs_count}},
-  \code{\link{sqs_load}}, \code{\link{sqs_save}},
-  \code{\link{stage_args_check}}, \code{\link{stages_run}},
-  \code{\link{tax_download}}, \code{\link{taxdict_gen}},
-  \code{\link{taxtree_gen}}, \code{\link{txids_get}},
-  \code{\link{txnds_count}}, \code{\link{warn}}
+  \code{\link{sqs_save}}, \code{\link{stage_args_check}},
+  \code{\link{stages_run}}, \code{\link{tax_download}},
+  \code{\link{taxdict_gen}}, \code{\link{taxtree_gen}},
+  \code{\link{txids_get}}, \code{\link{txnds_count}},
+  \code{\link{warn}}
 }

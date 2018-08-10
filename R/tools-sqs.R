@@ -158,7 +158,7 @@ seqarc_gen <- function(seqrecs) {
   nambgs <- vapply(seqrecs, function(x) x@nambgs, 1)
   nncltds <- vapply(seqrecs, function(x) x@nncltds, 1)
   ids <- vapply(seqrecs, function(x) x@id, '')
-  txids <- vapply(seqrecs, function(x) x@txid, '')
+  txids <- vapply(seqrecs, slot, name = 'txid', '')
   new('SeqArc', ids = ids, nncltds = nncltds, nambgs = nambgs, txids = txids,
       sqs = seqrecs)
 }

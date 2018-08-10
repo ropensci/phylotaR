@@ -81,11 +81,11 @@ descendants_get <- function(id, txdct, direct=FALSE) {
 #' @family run-private
 parent_get <- function(id, txdct) {
   if (length(id) > 1) {
-    res <- treeman::getPrnt(tree = txdct@txtr,
-                            ids = unique(id))
+    ids <- unique(id)
+    ids <- ids[!is.na(ids)]
+    res <- treeman::getPrnt(tree = txdct@txtr, ids = ids)
   } else {
-    res <- treeman::getNdSlt(tree = txdct@txtr,
-                             slt_nm = 'prid', id = id)
+    res <- treeman::getNdSlt(tree = txdct@txtr, slt_nm = 'prid', id = id)
   }
   res
 }

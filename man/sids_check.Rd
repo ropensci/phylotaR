@@ -17,6 +17,34 @@ T/F
 \description{
 Check if sids are already downloaded for a txid.
 }
+\details{
+#' @name sqs_load
+#' @title Load sequences from cache
+#' @description Load sequences downloaded by \code{dwnld} function.
+#' @param wd Working directory
+#' @param txid Taxonomic ID, numeric
+#' @family run-private
+#' @return SeqArc
+sqs_load <- function(wd, txid) {
+  d <- file.path(wd, 'cache')
+  if (!file.exists(d)) {
+    stop('Cache does not exist.')
+  }
+  d <- file.path(d, 'sqs')
+  if (!file.exists(d)) {
+    stop('`sqs` not in cache. Have you run the download stage?')
+  }
+  fl <- file.path(d, paste0(txid, '.RData'))
+  if (!file.exists(fl)) {
+    stop(paste0('[', txid, '] not in `sqs` of cache.'))
+  }
+  sqs <- try(readRDS(file = fl), silent = TRUE)
+  if (inherits(sqs, 'try-error')) {
+    file.remove(fl)
+  }
+  sqs
+}
+}
 \seealso{
 Other run-private: \code{\link{batcher}},
   \code{\link{blast_clstr}}, \code{\link{blast_filter}},
@@ -51,10 +79,9 @@ Other run-private: \code{\link{batcher}},
   \code{\link{seqrec_convert}}, \code{\link{seqrec_gen}},
   \code{\link{seqrec_get}}, \code{\link{sids_get}},
   \code{\link{sids_load}}, \code{\link{sids_save}},
-  \code{\link{sqs_count}}, \code{\link{sqs_load}},
-  \code{\link{sqs_save}}, \code{\link{stage_args_check}},
-  \code{\link{stages_run}}, \code{\link{tax_download}},
-  \code{\link{taxdict_gen}}, \code{\link{taxtree_gen}},
-  \code{\link{txids_get}}, \code{\link{txnds_count}},
-  \code{\link{warn}}
+  \code{\link{sqs_count}}, \code{\link{sqs_save}},
+  \code{\link{stage_args_check}}, \code{\link{stages_run}},
+  \code{\link{tax_download}}, \code{\link{taxdict_gen}},
+  \code{\link{taxtree_gen}}, \code{\link{txids_get}},
+  \code{\link{txnds_count}}, \code{\link{warn}}
 }
