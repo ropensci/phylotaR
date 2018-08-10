@@ -67,10 +67,9 @@ clstrs_merge <- function(jnd_clstrs, txdct) {
     prnt <- parent_get(id = cl[['txids']], txdct = txdct)
     nsqs <- length(cl[['sids']])
     ntx <- length(unique(cl[['txids']]))
-    clstrrec <- new('ClstrRec', sids = cl[['sids']],
-                      txids = cl[['txids']], nsqs = nsqs,
-                      ntx = ntx, typ = 'merged', prnt = prnt,
-                      seed = cl[['seed']])
+    clstrrec <- new('ClstrRec', sids = cl[['sids']], txids = cl[['txids']],
+                    nsqs = nsqs, ntx = ntx, typ = 'merged', prnt = prnt,
+                    seed = cl[['seed']])
     mrg_clstrs[[i]] <- clstrrec
   }
   mrg_clstrs
