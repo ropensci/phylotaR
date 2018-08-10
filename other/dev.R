@@ -13,3 +13,7 @@ run(wd)
 taxise_run(wd)
 download_run(wd)
 
+
+# Polyporaltes error
+# problem: KY475568 does not have the correct organism name, cannot be found in txdct
+# 'Polyporaceae sp. W-2017a'
