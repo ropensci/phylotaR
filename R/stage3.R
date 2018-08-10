@@ -41,7 +41,7 @@ clstrs_calc <- function(txdct, ps) {
     }
     sqs <- readRDS(file = file.path(ps[['wd']], 'cache', 'sqs', sq_fl))
     txid <- as.character(sub('\\.RData', '', sq_fl))
-    info(lvl = 1, ps = ps, "Working on [id ", txid, "]")
+    info(lvl = 1, ps = ps, "Working from [id ", txid, "] down hierarchy")
     clstrs <- clstr_all(txid = txid, sqs = sqs, txdct = txdct, ps = ps)
     if (length(clstrs@ids) > 0) {
       clstrs_save(wd = ps[['wd']], txid = txid, clstrs = clstrs)

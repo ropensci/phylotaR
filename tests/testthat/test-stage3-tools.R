@@ -25,7 +25,7 @@ test_that('blast_sqs() works', {
     `phylotaR:::blastn_run` = function(...) blast_res,
     `phylotaR:::blastdb_gen` = function(...) NULL,
     phylotaR:::blast_sqs(txid = '1', typ = 'direct', sqs = sqs, ps = ps,
-                         lvl = 0)
+                         lvl = 1)
   )
   expect_true('data.frame' %in% is(res))
 })

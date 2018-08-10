@@ -100,9 +100,10 @@ blastn_run <- function(dbfl, outfl, ps) {
 #' \code{qcovs}.
 #' @param blast_res BLAST results
 #' @template ps
+#' @template lvl
 #' @return data.frame blast res
 #' @family run-private
-blast_filter <- function(blast_res, ps) {
+blast_filter <- function(blast_res, ps, lvl=3) {
   pull <- blast_res[['qcovs']] < ps[['mncvrg']]
   if (any(pull)) {
     # drop all with < mncvrg
@@ -112,8 +113,8 @@ blast_filter <- function(blast_res, ps) {
       blast_res[['subject.id']] %in% qsids[['query.id']]) | pull
   }
   ndrp <- sum(pull)
-  info(lvl = 3, ps = ps, "Removed [", ndrp, "/",
-       nrow(blast_res), "] BLAST hits due to insufficient coverage")
+  info(lvl = lvl, ps = ps, "Removed [", ndrp, "/",
+       nrow(blast_res), "] hits due to insufficient coverage")
   if (sum(pull) > 0) {
     blast_res <- blast_res[!pull, ]
   }

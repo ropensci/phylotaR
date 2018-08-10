@@ -4,12 +4,15 @@
 \alias{blast_filter}
 \title{Filter BLAST results}
 \usage{
-blast_filter(blast_res, ps)
+blast_filter(blast_res, ps, lvl = 3)
 }
 \arguments{
 \item{blast_res}{BLAST results}
 
 \item{ps}{Parameters list, generated with parameters()}
+
+\item{lvl}{Integer, number of message indentations indicating code
+depth.}
 }
 \value{
 data.frame blast res
