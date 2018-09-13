@@ -55,7 +55,7 @@ write_sqs <- function(phylota, outfile, sid, sq_nm = sid, width=80) {
     sq <- rawToChar(rec@sq)
     n <- nchar(sq)
     if (n > width) {
-      slices <- c(seq(from = 1, to = nchar(sq), by = width), nchar(sq))
+      slices <- c(seq(from = 1, to = nchar(sq), by = width), nchar(sq) + 1)
       sq <- vapply(X = 2:length(slices), function(x) {
         substr(x = sq, start = slices[x - 1], stop = slices[x] - 1)
         }, character(1))
