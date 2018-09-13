@@ -49,7 +49,7 @@ safely_connect <- function(func, args, fnm, ps) {
       # too large a request
       if (grepl('the request is too large', query[[1]])) {
         error(ps = ps, 'NCBI is limiting the size of your request. ',
-              'Consider reducing btchsz.')
+              'Consider reducing btchsz with parameters_reset().')
       }
       info(lvl = 1, ps = ps, "Retrying in [", wt_tm, "s] for [", fnm, ']')
       Sys.sleep(wt_tm)
@@ -71,6 +71,10 @@ download_obj_check <- function(obj) {
   }
   if (length(obj) == 1 & inherits(x = obj, what = 'character')) {
     if (grepl(pattern = 'timeout', x = obj)) {
+      return(FALSE)
+    }
+    if (grepl(pattern = 'Error occurred:', x = obj)) {
+      # Fix for 'malformed-xmlBackend', NCBI returning object
       return(FALSE)
     }
   }
@@ -96,9 +100,6 @@ batcher <- function(ids, func, ps, lvl = 0) {
     lower <- i + 1
     upper <- ifelse(i + btch < n, i + btch, n)
     prt_ids <- ids[lower:upper]
-    # for debugging purposes
-    write(x = prt_ids, file = file.path(ps[['wd']], 'cache',
-                                        'last_searched_ids.txt'))
     info(lvl = lvl, ps = ps, "[", lower, "-", upper, "]")
     res <- c(res, func(ids = prt_ids, ps = ps))
   }

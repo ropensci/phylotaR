@@ -3,7 +3,8 @@ library(testthat)
 library(phylotaR)
 
 # DATA
-ps <- parameters()
+wd <- tempdir()
+ps <- parameters(wd = wd)
 sqs <- readRDS(phylotaR:::datadir_get('sqrecs.rda'))
 sqs <- phylotaR:::seqarc_gen(sqs)
 blastres_flpth <- phylotaR:::datadir_get(file.path('blast', 'blast_res.rda'))
@@ -16,7 +17,7 @@ blast_res_sqs <- phylotaR:::seqarc_gen(blast_res_sqs)
 blast_res_sqs@ids <- sids
 
 # RUNNING
-phylotaR:::cleanup()
+phylotaR:::cleanup(wd)
 context('Testing \'stage4-tools\'')
 test_that('clstrs_join() works', {
   clstrs_jnd <- phylotaR:::clstrs_join(ps = ps, seed_ids = sids,
@@ -48,4 +49,4 @@ test_that('seeds_blast() works', {
   )
   expect_true(inherits(res, 'data.frame'))
 })
-phylotaR:::cleanup()
+phylotaR:::cleanup(wd)

@@ -3,7 +3,8 @@ library(phylotaR)
 library(testthat)
 
 # DATA
-ps <- parameters()
+wd <- tempdir()
+ps <- parameters(wd = wd)
 exclstrarc <- phylotaR:::clstrarc_gen(list())
 sqs <- readRDS(phylotaR:::datadir_get('sqrecs.rda'))
 sqs <- phylotaR:::seqarc_gen(sqs)
@@ -16,7 +17,7 @@ blast_res_sqs <- phylotaR:::seqarc_gen(blast_res_sqs)
 blast_res_sqs@ids <- sids
 
 # RUNNING
-phylotaR:::cleanup()
+phylotaR:::cleanup(wd)
 context('Testing \'stage3-tools\'')
 test_that('blast_sqs() works', {
   phylotaR:::cache_setup(ps)
@@ -24,11 +25,11 @@ test_that('blast_sqs() works', {
     `phylotaR:::blastn_run` = function(...) blast_res,
     `phylotaR:::blastdb_gen` = function(...) NULL,
     phylotaR:::blast_sqs(txid = '1', typ = 'direct', sqs = sqs, ps = ps,
-                         lvl = 0)
+                         lvl = 1)
   )
   expect_true('data.frame' %in% is(res))
 })
-phylotaR:::cleanup()
+phylotaR:::cleanup(wd)
 test_that('clstr_sqs() works', {
   phylotaR:::cache_setup(ps)
   ps[['v']] <- TRUE
@@ -39,7 +40,7 @@ test_that('clstr_sqs() works', {
   )
   expect_true(inherits(res, 'ClstrArc'))
 })
-phylotaR:::cleanup()
+phylotaR:::cleanup(wd)
 # no cache tests
 test_that('clstr_all() works', {
   mock_dscdnts_get <- function(id, ...) {
@@ -53,7 +54,7 @@ test_that('clstr_all() works', {
   )
   expect_true(inherits(res, 'ClstrArc'))
 })
-test_that('clstrSbtr() works', {
+test_that('clstr_subtree() works', {
   res <- with_mock(
     `phylotaR:::clstr_sqs` = function(...) exclstrarc,
     `phylotaR:::clstr_direct` = function(...) exclstrarc,

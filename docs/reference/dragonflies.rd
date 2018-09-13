@@ -85,7 +85,7 @@
       
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/AntonelliLab/phylotaR#readme">
+  <a href="https://github.com/ropensci/phylotaR#readme">
     <span class="fa fa-github fa-lg"></span>
      
   </a>
@@ -123,9 +123,9 @@
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'>data</span>(<span class='no'>dragonflies</span>) <span class='co'># load object</span>
 <span class='fu'>str</span>(<span class='no'>dragonflies</span>)</div><div class='output co'>#&gt; Formal class 'Phylota' [package "phylotaR"] with 8 slots
-#&gt;   ..@ cids   : chr [1:410] "0" "1" "2" "3" ...
-#&gt;   ..@ txids  : chr [1:452] "126203" "1168703" "1168702" "1168701" ...
-#&gt;   ..@ sids   : chr [1:2901] "LC009182.1/113..1276" "LC009181.1/216..1364" "LC009180.1/215..1363" "LC009179.1/195..1334" ...
+#&gt;   ..@ cids   : chr [1:784] "0" "1" "2" "3" ...
+#&gt;   ..@ txids  : chr [1:1143] "1080975" "476805" "126213" "476689" ...
+#&gt;   ..@ sids   : chr [1:10619] "JN615256.1" "EU055352.1" "EU055329.1" "EU055461.1" ...
 #&gt;   ..@ txdct  :Formal class 'TaxDict' [package "phylotaR"] with 4 slots
 #&gt;   ..@ sqs    :Formal class 'SeqArc' [package "phylotaR"] with 5 slots
 #&gt;   ..@ clstrs :Formal class 'ClstrArc' [package "phylotaR"] with 2 slots

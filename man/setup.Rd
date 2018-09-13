@@ -23,13 +23,24 @@ setup(wd, txid, ncbi_dr = ".", v = FALSE, overwrite = FALSE, ...)
 Set up working directory with parameters.
 }
 \details{
-If overwrite=TRUE, any pre-existing cache will be deleted.
+See \code{\link{parameters}}() for a description of all parameters
+and their defaults. You can change parameters after a folder has been set up
+with \code{\link{parameters_reset}}().
 }
 \examples{
 \dontrun{
   
+  # Note: this example requires BLAST to run.
+  
+  # example with temp folder
+  wd <- file.path(tempdir(), 'aotus')
   # setup for aotus, make sure aotus/ folder already exists
-  setup(wd = 'aotus', txid = 9504)
+  if (!dir.exists(wd)) {
+    dir.create(wd)
+  }
+  ncbi_dr <- '[SET BLAST+ BIN PATH HERE]'
+  # e.g. "/usr/local/ncbi/blast/bin/"
+  setup(wd = wd, txid = 9504, ncbi_dr = ncbi_dr)  # txid for Aotus primate genus
   # see ?parameters for all available parameter options
 }
 }

@@ -1,6 +1,6 @@
 data("dragonflies")
-# For faster computations, let's only work with the first 5 clusters.
-dragonflies <- drop_clstrs(phylota = dragonflies, cid = dragonflies@cids[1:5])
+# For faster computations, let's only work with the 5 clusters.
+dragonflies <- drop_clstrs(phylota = dragonflies, cid = dragonflies@cids[10:15])
 
 
 # We can use drop_by_rank() to reduce to 10 sequences per genus for each cluster

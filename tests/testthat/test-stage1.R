@@ -4,11 +4,12 @@ library(testthat)
 
 # DATA
 recs <- readRDS(phylotaR:::datadir_get('txrecs.rda'))
-ps <- parameters()
+wd <- tempdir()
+ps <- parameters(wd = wd)
 
 # RUNNING
 context('Testing \'test-stage1\'')
-phylotaR:::cleanup()
+phylotaR:::cleanup(wd)
 test_that('taxise_run() works', {
   with_mock(
     `phylotaR:::blast_setup` = function(...) {
@@ -18,13 +19,13 @@ test_that('taxise_run() works', {
     `phylotaR:::batcher` = function(...) NULL,
     `phylotaR:::taxdict_gen` = function(...) NULL,
     `phylotaR:::obj_save` = function(...) NULL,
-    phylotaR::setup(wd = '.', txid = 9606),
-    taxise_run(wd = '.')
+    phylotaR::setup(wd = wd, txid = 9606),
+    taxise_run(wd = wd)
   )
-  lglns <- readLines('log.txt')
+  lglns <- readLines(file.path(wd, 'log.txt'))
   expect_true(grepl('Completed stage', lglns[length(lglns) - 1]))
 })
-phylotaR:::cleanup()
+phylotaR:::cleanup(wd)
 test_that('txids_get() works', {
   mock_search <- function(...) {
     list('count' = 100, 'ids' = as.character(1:100))
@@ -35,16 +36,16 @@ test_that('txids_get() works', {
     phylotaR:::txids_get(ps = ps, retmax = 150)
   )
   expect_true(length(res) == 100)
-  phylotaR:::cleanup()
+  phylotaR:::cleanup(wd)
 })
-phylotaR:::cleanup()
+phylotaR:::cleanup(wd)
 test_that('taxdict_gen() works', {
   phylotaR:::cache_setup(ps)
   txids <- vapply(X = recs, FUN = function(x) x@id, character(1))
   res <- phylotaR:::taxdict_gen(txids, recs, ps)
   expect_true(inherits(res, 'TaxDict'))
 })
-phylotaR:::cleanup()
+phylotaR:::cleanup(wd)
 
 # Example recs
 # devtools::load_all('~/Coding/phylotaR')

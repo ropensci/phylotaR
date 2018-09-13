@@ -3,12 +3,13 @@ library(phylotaR)
 library(testthat)
 
 # DATA
-ps <- parameters()
+wd <- tempdir()
+ps <- parameters(wd = wd)
 phylota <- phylotaR:::random_phylota()
 
 # RUNNING
 context('Testing \'user-special\'')
-phylotaR:::cleanup()
+phylotaR:::cleanup(wd)
 test_that('read_phylota() works', {
   # setup clstrs_sqs
   phylotaR:::cache_setup(ps)
@@ -19,17 +20,17 @@ test_that('read_phylota() works', {
   res <- read_phylota(wd = ps[['wd']])
   expect_true(inherits(res, 'Phylota'))
 })
-phylotaR:::cleanup()
+phylotaR:::cleanup(wd)
 test_that('write_sqs() works', {
   cid <- sample(phylota@cids, 1)
   sids <- phylota@clstrs@clstrs[[cid]]@sids
   n <- ifelse(length(sids) > 50, 50, length(sids))
   sids <- sample(sids, n)
-  write_sqs(phylota = phylota, outfile = 'test.fasta', sid = sids,
-            sq_nm = 'myfavouritegene')
-  expect_true(file.exists('test.fasta'))
+  write_sqs(phylota = phylota, outfile = file.path(wd, 'test.fasta'),
+            sid = sids, sq_nm = 'myfavouritegene')
+  expect_true(file.exists(file.path(wd, 'test.fasta')))
 })
-phylotaR:::cleanup()
+phylotaR:::cleanup(wd)
 test_that('plot_phylota_treemap() works', {
   n <- ifelse(length(phylota@cids) > 5, 5, length(phylota@cids))
   cids <- phylota@cids[1:n]

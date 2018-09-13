@@ -5,13 +5,14 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Automated phylogenetic sequence cluster identification from GenBank • phylotaR</title>
+<title>Automated Phylogenetic Sequence Cluster Identification from 'GenBank' • phylotaR</title>
 <!-- jquery --><script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 <!-- clipboard.js --><script src="https://cdnjs.cloudflare.com/ajax/libs/clipboard.js/1.7.1/clipboard.min.js" integrity="sha384-cV+rhyOuRHc9Ub/91rihWcGmMmCXDeksTtCihMupQHSsi8GIIRDG0ThDc3HGQFJ3" crossorigin="anonymous"></script><!-- sticky kit --><script src="https://cdnjs.cloudflare.com/ajax/libs/sticky-kit/1.1.3/sticky-kit.min.js" integrity="sha256-c4Rlo1ZozqTPE2RLuvbusY3+SU1pQaJC0TjuhygMipw=" crossorigin="anonymous"></script><!-- pkgdown --><link href="pkgdown.css" rel="stylesheet">
-<script src="pkgdown.js"></script><meta property="og:title" content="Automated phylogenetic sequence cluster identification from GenBank">
-<meta property="og:description" content="phylotaR is a pipeline for the identification within taxonomic
-    groups of orthologous sequence clusters from GenBank as the first step in a
+<script src="pkgdown.js"></script><meta property="og:title" content="Automated Phylogenetic Sequence Cluster Identification from 'GenBank'">
+<meta property="og:description" content="A pipeline for the identification, within taxonomic groups, of
+    orthologous sequence clusters from
+    'GenBank' &lt;https://www.ncbi.nlm.nih.gov/genbank/&gt; as the first step in a
     phylogenetic analysis. The pipeline depends on a local alignment search tool
     and is, therefore, not dependent on differences in gene naming conventions
     and naming errors.">
@@ -55,7 +56,7 @@
       </ul>
 <ul class="nav navbar-nav navbar-right">
 <li>
-  <a href="https://github.com/AntonelliLab/phylotaR#readme">
+  <a href="https://github.com/ropensci/phylotaR#readme">
     <span class="fa fa-github fa-lg"></span>
      
   </a>
@@ -73,23 +74,24 @@
   <div class="contents col-md-9">
     <div id="automated-retrieval-of-orthologous-dna-sequences-from-genbank" class="section level1">
 <div class="page-header"><h1 class="hasAnchor">
-<a href="#automated-retrieval-of-orthologous-dna-sequences-from-genbank" class="anchor"></a>Automated Retrieval of Orthologous DNA Sequences from GenBank</h1></div>
+<a href="#automated-retrieval-of-orthologous-dna-sequences-from-genbank" class="anchor"></a>Automated Retrieval of Orthologous DNA Sequences from GenBank <img src="https://raw.githubusercontent.com/ropensci/phylotaR/master/logo.png" height="300" align="right">
+</h1></div>
 
-<p><img src="logo.png" height="300" align="right"></p>
-<p>R implementation of the <a href="http://phylota.net/">PhyLoTa sequence cluster pipeline</a>. For more information see the accompanying website. Tested and demonstrated on Unix and Windows. <strong>Find out more by visiting the <a href="https://antonellilab.github.io/phylotaR/">phylotaR website</a>.</strong></p>
+<p>R implementation of the <a href="http://phylota.net/">PhyLoTa sequence cluster pipeline</a>. For more information see the accompanying website. Tested and demonstrated on Unix and Windows. <strong>Find out more by visiting the <a href="https://ropensci.github.io/phylotaR/">phylotaR website</a>.</strong></p>
 <div id="install" class="section level2">
 <h2 class="hasAnchor">
 <a href="#install" class="anchor"></a>Install</h2>
-<p>Currently only the devlopment package is available:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(<span class="dt">repo=</span><span class="st">'AntonelliLab/phylotaR'</span>,
-                         <span class="dt">build_vignettes=</span><span class="ot">TRUE</span>)</code></pre></div>
+<p>From CRAN:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">install.packages</span>(<span class="st">'phylotaR'</span>)</code></pre></div>
+<p>Or, download the development package from GitHub:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(<span class="dt">repo=</span><span class="st">'ropensci/phylotaR'</span>, <span class="dt">build_vignettes=</span><span class="ot">TRUE</span>)</code></pre></div>
 <p><strong>Full functionality depends on a local copy of BLAST+ (&gt;= 2.0.0)</strong>. For details on downloading and compiling BLAST+ on your machine please visit the <a href="https://www.ncbi.nlm.nih.gov/books/NBK279690/">NCBI website</a>.</p>
 </div>
 <div id="pipeline" class="section level2">
 <h2 class="hasAnchor">
 <a href="#pipeline" class="anchor"></a>Pipeline</h2>
 <p><code>phylotaR</code> runs the PhyLoTa pipeline in four automated stages: identify and retrieve taxonomic information on all descendent nodes of the taxonomic group of interest (<code>taxise</code>), download sequence data for every identified node (<code>download</code>), identify orthologous clusters using BLAST (<code>cluster</code>), and identify sister clusters for sets of clusters identified in the previous stage (<code>cluster^2</code>) After these stages are complete, <code>phylotaR</code> provides tools for exploring, identifying and exporting suitable clusters for subsequent analysis.</p>
-<p><img src="https://raw.githubusercontent.com/AntonelliLab/phylotaR/master/other/stages.png" alt="phylotaR pipeline"></p>
+<p><img src="https://raw.githubusercontent.com/ropensci/phylotaR/master/other/stages.png" alt="phylotaR pipeline"></p>
 <p>For more information on the pipeline and how it works see the publication, <a href="https://doi.org/10.3390/life8020020">phylotaR: An Automated Pipeline for Retrieving Orthologous DNA Sequences from GenBank in R</a>.</p>
 </div>
 <div id="running" class="section level2">
@@ -110,121 +112,132 @@ txid &lt;-<span class="st"> </span><span class="dv">9443</span>  <span class="co
 <h2 class="hasAnchor">
 <a href="#timings" class="anchor"></a>Timings</h2>
 <p>How long does it take for a phylotaR pipeline to complete? Below is a table listing the runtimes in minutes for different demonstration, taxonomic groups.</p>
-<table class="table">
+<table style="width:50%;" class="table">
+<colgroup>
+<col width="5%">
+<col width="5%">
+<col width="5%">
+<col width="5%">
+<col width="5%">
+<col width="5%">
+<col width="5%">
+<col width="5%">
+<col width="5%">
+</colgroup>
 <thead><tr class="header">
 <th align="left">Taxon</th>
-<th align="right">Taxa</th>
-<th align="right">Sequences</th>
-<th align="right">Clusters</th>
-<th align="right">Taxise</th>
-<th align="right">Download</th>
-<th align="right">Cluster</th>
-<th align="right">Cluster2</th>
-<th align="right">Total</th>
+<th align="right">N. taxa</th>
+<th align="right">N. sequences</th>
+<th align="right">N. clusters</th>
+<th align="right">Taxise (mins.)</th>
+<th align="right">Download (mins.)</th>
+<th align="right">Cluster (mins.)</th>
+<th align="right">Cluster2 (mins.)</th>
+<th align="right">Total (mins.)</th>
 </tr></thead>
 <tbody>
 <tr class="odd">
 <td align="left">Anisoptera</td>
-<td align="right">1143</td>
-<td align="right">10619</td>
-<td align="right">784</td>
-<td align="right">0.75</td>
-<td align="right">14</td>
-<td align="right">14</td>
+<td align="right">1175</td>
+<td align="right">11432</td>
+<td align="right">796</td>
+<td align="right">1.6</td>
+<td align="right">23</td>
+<td align="right">48</td>
 <td align="right">0.017</td>
-<td align="right">28</td>
+<td align="right">72</td>
 </tr>
 <tr class="even">
 <td align="left">Acipenseridae</td>
 <td align="right">51</td>
-<td align="right">2417</td>
-<td align="right">332</td>
-<td align="right">0.067</td>
-<td align="right">35</td>
-<td align="right">1.5</td>
-<td align="right">0</td>
-<td align="right">37</td>
+<td align="right">2407</td>
+<td align="right">333</td>
+<td align="right">0.1</td>
+<td align="right">6.9</td>
+<td align="right">6.4</td>
+<td align="right">0.017</td>
+<td align="right">13</td>
 </tr>
 <tr class="odd">
 <td align="left">Tinamiformes</td>
 <td align="right">25</td>
-<td align="right">250</td>
+<td align="right">251</td>
 <td align="right">98</td>
-<td align="right">0.05</td>
-<td align="right">1.9</td>
-<td align="right">0.083</td>
-<td align="right">0</td>
-<td align="right">2</td>
+<td align="right">0.067</td>
+<td align="right">2.4</td>
+<td align="right">0.18</td>
+<td align="right">0.017</td>
+<td align="right">2.7</td>
 </tr>
 <tr class="even">
 <td align="left">Aotus</td>
 <td align="right">13</td>
 <td align="right">1499</td>
 <td align="right">193</td>
-<td align="right">0.05</td>
-<td align="right">2</td>
-<td align="right">0.12</td>
+<td align="right">0.067</td>
+<td align="right">3.2</td>
+<td align="right">0.6</td>
 <td align="right">0</td>
-<td align="right">2.1</td>
+<td align="right">3.9</td>
 </tr>
 <tr class="odd">
 <td align="left">Bromeliaceae</td>
-<td align="right">1172</td>
-<td align="right">9840</td>
-<td align="right">721</td>
-<td align="right">0.7</td>
-<td align="right">18</td>
-<td align="right">9.4</td>
-<td align="right">0.017</td>
+<td align="right">1171</td>
+<td align="right">9833</td>
+<td align="right">724</td>
+<td align="right">1.2</td>
 <td align="right">28</td>
+<td align="right">37</td>
+<td align="right">0.033</td>
+<td align="right">66</td>
 </tr>
 <tr class="even">
 <td align="left">Cycadidae</td>
 <td align="right">353</td>
 <td align="right">8331</td>
 <td align="right">540</td>
-<td align="right">0.18</td>
-<td align="right">13</td>
-<td align="right">3.4</td>
-<td align="right">0</td>
-<td align="right">17</td>
+<td align="right">0.32</td>
+<td align="right">19</td>
+<td align="right">18</td>
+<td align="right">0.033</td>
+<td align="right">37</td>
 </tr>
 <tr class="odd">
 <td align="left">Eutardigrada</td>
-<td align="right">1</td>
-<td align="right">3</td>
-<td align="right">4</td>
-<td align="right">0.28</td>
-<td align="right">5</td>
-<td align="right">0.82</td>
-<td align="right">0</td>
-<td align="right">6</td>
+<td align="right">261</td>
+<td align="right">960</td>
+<td align="right">211</td>
+<td align="right">0.3</td>
+<td align="right">11</td>
+<td align="right">1.8</td>
+<td align="right">0.05</td>
+<td align="right">14</td>
 </tr>
 <tr class="even">
 <td align="left">Kazachstania</td>
-<td align="right">26</td>
-<td align="right">164</td>
-<td align="right">33</td>
-<td align="right">0.067</td>
-<td align="right">9.3</td>
-<td align="right">1.1</td>
-<td align="right">0.033</td>
-<td align="right">10</td>
+<td align="right">40</td>
+<td align="right">623</td>
+<td align="right">101</td>
+<td align="right">0.1</td>
+<td align="right">20</td>
+<td align="right">3</td>
+<td align="right">0.05</td>
+<td align="right">23</td>
 </tr>
 <tr class="odd">
 <td align="left">Platyrrhini</td>
-<td align="right">273</td>
-<td align="right">19384</td>
-<td align="right">543</td>
-<td align="right">0.2</td>
-<td align="right">30</td>
-<td align="right">1.6</td>
-<td align="right">0.28</td>
-<td align="right">32</td>
+<td align="right">212</td>
+<td align="right">12731</td>
+<td align="right">3112</td>
+<td align="right">0.35</td>
+<td align="right">51</td>
+<td align="right">6.9</td>
+<td align="right">1.2</td>
+<td align="right">60</td>
 </tr>
 </tbody>
 </table>
-<p>To run these same demonstrations see <a href="https://github.com/AntonelliLab/phylotaR/blob/master/demos/demo_run.R">´demos/demo_run.R´</a>.</p>
+<p>To run these same demonstrations see <a href="https://github.com/ropensci/phylotaR/blob/master/demos/demo_run.R">demos/demo_run.R</a>.</p>
 </div>
 <div id="license" class="section level2">
 <h2 class="hasAnchor">
@@ -246,6 +259,7 @@ txid &lt;-<span class="st"> </span><span class="dv">9443</span>  <span class="co
 <a href="#reference" class="anchor"></a>Reference</h2>
 <p>Bennett, D., Hettling, H., Silvestro, D., Zizka, A., Bacon, C., Faurby, S., … Antonelli, A. (2018). phylotaR: An Automated Pipeline for Retrieving Orthologous DNA Sequences from GenBank in R. <em>Life</em>, <strong>8</strong>(2), 20. <a href="https://doi.org/10.3390/life8020020">DOI:10.3390/life8020020</a></p>
 <p>Sanderson, M. J., Boss, D., Chen, D., Cranston, K. A., &amp; Wehe, A. (2008). The PhyLoTA Browser: Processing GenBank for molecular phylogenetics research. <em>Systematic Biology</em>, <strong>57</strong>(3), 335–346. <a href="https://doi.org/10.1080/10635150802158688">DOI:10.1080/10635150802158688</a></p>
+<p><a href="https://ropensci.org"><img src="https://ropensci.org/public_images/ropensci_footer.png" alt="ropensci_footer"></a></p>
 </div>
 </div>
   </div>
@@ -254,9 +268,11 @@ txid &lt;-<span class="st"> </span><span class="dv">9443</span>  <span class="co
     <div class="links">
 <h2>Links</h2>
 <ul class="list-unstyled">
-<li>Browse source code at <br><a href="https://github.com/AntonelliLab/phylotaR#readme">https://​github.com/​AntonelliLab/​phylotaR#readme</a>
+<li>Download from CRAN at <br><a href="https://cloud.r-project.org/package=phylotaR">https://​cloud.r-project.org/​package=phylotaR</a>
 </li>
-<li>Report a bug at <br><a href="https://github.com/AntonelliLab/phylotaR/issues">https://​github.com/​AntonelliLab/​phylotaR/​issues</a>
+<li>Browse source code at <br><a href="https://github.com/ropensci/phylotaR#readme">https://​github.com/​ropensci/​phylotaR#readme</a>
+</li>
+<li>Report a bug at <br><a href="https://github.com/ropensci/phylotaR/issues">https://​github.com/​ropensci/​phylotaR/​issues</a>
 </li>
 </ul>
 </div>
@@ -282,9 +298,10 @@ txid &lt;-<span class="st"> </span><span class="dv">9443</span>  <span class="co
   <div class="dev-status">
 <h2>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://travis-ci.org/AntonelliLab/phylotaR"><img src="https://travis-ci.org/AntonelliLab/phylotaR.svg?branch=master" alt="Build Status"></a></li>
-<li><a href="https://coveralls.io/github/AntonelliLab/phylotaR?branch=master"><img src="https://coveralls.io/repos/github/AntonelliLab/phylotaR/badge.svg?branch=master" alt="Coverage Status"></a></li>
+<li><a href="https://travis-ci.org/ropensci/phylotaR"><img src="https://travis-ci.org/ropensci/phylotaR.svg?branch=master" alt="Build Status"></a></li>
+<li><a href="https://coveralls.io/github/ropensci/phylotaR?branch=master"><img src="https://coveralls.io/repos/github/ropensci/phylotaR/badge.svg?branch=master" alt="Coverage Status"></a></li>
 <li><a href="https://github.com/ropensci/onboarding/issues/187"><img src="https://badges.ropensci.org/187_status.svg"></a></li>
+<li><a href="https://CRAN.R-project.org/package=phylotaR"><img src="http://cranlogs.r-pkg.org/badges/grand-total/phylotaR" alt="CRAN downloads"></a></li>
 </ul>
 </div>
 </div>

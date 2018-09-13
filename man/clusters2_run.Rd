@@ -17,12 +17,21 @@ merging sister clusters.
 \examples{
 \dontrun{
   
+  # Note: this example requires BLAST and internet to run.
+  
+  # example with temp folder
+  wd <- file.path(tempdir(), 'aotus')
+  # setup for aotus, make sure aotus/ folder already exists
+  if (!dir.exists(wd)) {
+    dir.create(wd)
+  }
+  ncbi_dr <- '[SET BLAST+ BIN PATH HERE]'
+  setup(wd = wd, txid = 9504, ncbi_dr = ncbi_dr)  # txid for Aotus primate genus
   # individually run stages
-  setup(wd = 'aotus', txid = 9504)
-  taxise_run(wd = 'aotus')
-  download_run(wd = 'aotus')
-  clusters_run(wd = 'aotus')
-  clusters2_run(wd = 'aotus')
+  taxise_run(wd = wd)
+  download_run(wd = wd)
+  clusters_run(wd = wd)
+  clusters2_run(wd = wd)
 }
 }
 \seealso{

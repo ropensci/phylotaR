@@ -3,7 +3,8 @@ library(testthat)
 library(phylotaR)
 
 # DATA
-ps <- parameters()
+wd <- tempdir()
+ps <- parameters(wd = wd)
 sqs <- readRDS(phylotaR:::datadir_get('sqrecs.rda'))
 sqs <- phylotaR:::seqarc_gen(sqs)
 clstrs <- readRDS(phylotaR:::datadir_get('clstrarc.rda'))
@@ -16,7 +17,7 @@ for (i in seq_along(sqs)) {
 sqs <- phylotaR:::seqarc_gen(sqs)
 
 # RUNNING
-phylotaR:::cleanup()
+phylotaR:::cleanup(wd)
 context('Testing \'cluster^2 tools\'')
 test_that('clusters2_run() works', {
   phylotaR:::cache_setup(ps)
@@ -24,10 +25,10 @@ test_that('clusters2_run() works', {
     `phylotaR:::clstr2_calc` = function(...) NULL,
     phylotaR::clusters2_run(wd = ps[['wd']])
   )
-  lglns <- readLines('log.txt')
+  lglns <- readLines(file.path(wd, 'log.txt'))
   expect_true(grepl('Completed stage', lglns[length(lglns) - 1]))
 })
-phylotaR:::cleanup()
+phylotaR:::cleanup(wd)
 test_that('clstr2_calc() works', {
   phylotaR:::cache_setup(ps)
   # skip cluster^2
@@ -40,10 +41,10 @@ test_that('clstr2_calc() works', {
     phylotaR:::clstr2_calc(ps = ps)
   )
   expect_null(res)
-  saveRDS(clstrs, file = file.path('cache', 'clstrs', 'id1.RData'))
-  saveRDS(clstrs, file = file.path('cache', 'clstrs', 'id2.RData'))
-  saveRDS(sqs, file = file.path('cache', 'sqs', 'id1.RData'))
-  saveRDS(sqs, file = file.path('cache', 'sqs', 'id2.RData'))
+  saveRDS(clstrs, file = file.path(wd, 'cache', 'clstrs', 'id1.RData'))
+  saveRDS(clstrs, file = file.path(wd, 'cache', 'clstrs', 'id2.RData'))
+  saveRDS(sqs, file = file.path(wd, 'cache', 'sqs', 'id1.RData'))
+  saveRDS(sqs, file = file.path(wd, 'cache', 'sqs', 'id2.RData'))
   # don't skip cluster^2
   res <- with_mock(
     `phylotaR:::seeds_blast` = function(...) NA,
@@ -56,4 +57,4 @@ test_that('clstr2_calc() works', {
   resfl <- file.path(ps[['wd']], 'cache', 'clstrs_sqs.RData')
   expect_true(file.exists(resfl))
 })
-phylotaR:::cleanup()
+phylotaR:::cleanup(wd)

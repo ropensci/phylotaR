@@ -2,7 +2,8 @@
 library(testthat)
 
 # DATA ----
-ps <- parameters()
+wd <- tempdir()
+ps <- parameters(wd = wd)
 n <- integer(1)
 #9607
 
@@ -21,7 +22,7 @@ efetch_mock <- function(retmax, ...) {
 }
 
 # RUNNING
-phylotaR:::cleanup()
+phylotaR:::cleanup(wd)
 context('Testing \'entrez-tools\'')
 test_that('searchterm_gen() works', {
   trm <- phylotaR:::searchterm_gen(txid = '9606', ps = ps, direct = FALSE)
@@ -46,7 +47,7 @@ test_that('seqs_count() works', {
   )
   expect_true(grepl(':noexp', res[['term']]))
 })
-phylotaR:::cleanup()
+phylotaR:::cleanup(wd)
 test_that('txnds_count() works', {
   phylotaR:::cache_setup(ps = ps)
   res <- with_mock(
@@ -57,9 +58,9 @@ test_that('txnds_count() works', {
   )
   expect_true(res[['term']] == "txid9606[Subtree]")
 })
-phylotaR:::cleanup()
+phylotaR:::cleanup(wd)
 test_that('sids_get() works', {
-  phylotaR:::cleanup()
+  phylotaR:::cleanup(wd)
   phylotaR:::cache_setup(ps = ps)
   n <<- 100
   res <- with_mock(
@@ -68,7 +69,7 @@ test_that('sids_get() works', {
     phylotaR:::sids_get(txid = '9606', direct = FALSE, ps = ps)
   )
   expect_true(length(res) == n)
-  phylotaR:::cleanup()
+  phylotaR:::cleanup(wd)
   phylotaR:::cache_setup(ps = ps)
   n <<- 100
   res <- with_mock(
@@ -79,4 +80,4 @@ test_that('sids_get() works', {
   )
   expect_true(length(res) != n)
 })
-phylotaR:::cleanup()
+phylotaR:::cleanup(wd)

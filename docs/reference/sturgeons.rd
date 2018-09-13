@@ -85,7 +85,7 @@
       
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/AntonelliLab/phylotaR#readme">
+  <a href="https://github.com/ropensci/phylotaR#readme">
     <span class="fa fa-github fa-lg"></span>
      
   </a>
@@ -123,9 +123,9 @@
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'>data</span>(<span class='no'>sturgeons</span>) <span class='co'># load object</span>
 <span class='fu'>str</span>(<span class='no'>sturgeons</span>)</div><div class='output co'>#&gt; Formal class 'Phylota' [package "phylotaR"] with 8 slots
-#&gt;   ..@ cids   : chr [1:309] "0" "1" "2" "3" ...
-#&gt;   ..@ txids  : chr [1:42] "328639" "1358436" "228914" "136628" ...
-#&gt;   ..@ sids   : chr [1:2034] "MG670582.1/72..978" "MG670581.1/63..1129" "MG670580.1/64..1130" "MG670579.1/71..1137" ...
+#&gt;   ..@ cids   : chr [1:332] "0" "1" "2" "3" ...
+#&gt;   ..@ txids  : chr [1:51] "328639" "1358436" "228914" "1358431" ...
+#&gt;   ..@ sids   : chr [1:2417] "MG670582.1/72..978" "MG670581.1/63..1129" "MG670580.1/64..1130" "MG670579.1/71..1137" ...
 #&gt;   ..@ txdct  :Formal class 'TaxDict' [package "phylotaR"] with 4 slots
 #&gt;   ..@ sqs    :Formal class 'SeqArc' [package "phylotaR"] with 5 slots
 #&gt;   ..@ clstrs :Formal class 'ClstrArc' [package "phylotaR"] with 2 slots

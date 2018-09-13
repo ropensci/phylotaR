@@ -1,16 +1,19 @@
-# Automated Retrieval of Orthologous DNA Sequences from GenBank
-[![Build Status](https://travis-ci.org/AntonelliLab/phylotaR.svg?branch=master)](https://travis-ci.org/AntonelliLab/phylotaR) [![Coverage Status](https://coveralls.io/repos/github/AntonelliLab/phylotaR/badge.svg?branch=master)](https://coveralls.io/github/AntonelliLab/phylotaR?branch=master) [![](https://badges.ropensci.org/187_status.svg)](https://github.com/ropensci/onboarding/issues/187)
+# Automated Retrieval of Orthologous DNA Sequences from GenBank <img src="https://raw.githubusercontent.com/ropensci/phylotaR/master/logo.png" height="300" align="right"/>
+[![Build Status](https://travis-ci.org/ropensci/phylotaR.svg?branch=master)](https://travis-ci.org/ropensci/phylotaR) [![Coverage Status](https://coveralls.io/repos/github/ropensci/phylotaR/badge.svg?branch=master)](https://coveralls.io/github/ropensci/phylotaR?branch=master) [![](https://badges.ropensci.org/187_status.svg)](https://github.com/ropensci/onboarding/issues/187) [![CRAN downloads](http://cranlogs.r-pkg.org/badges/grand-total/phylotaR)](https://CRAN.R-project.org/package=phylotaR)
 
-<img src="logo.png" height="300" align="right"/>
-
-R implementation of the [PhyLoTa sequence cluster pipeline](http://phylota.net/). For more information see the accompanying website. Tested and demonstrated on Unix and Windows. **Find out more by visiting the [phylotaR website](https://antonellilab.github.io/phylotaR/).**
+R implementation of the [PhyLoTa sequence cluster pipeline](http://phylota.net/). For more information see the accompanying website. Tested and demonstrated on Unix and Windows. **Find out more by visiting the [phylotaR website](https://ropensci.github.io/phylotaR/).**
 
 ## Install
-Currently only the devlopment package is available:
+From CRAN:
 
 ```r
-devtools::install_github(repo='AntonelliLab/phylotaR',
-                         build_vignettes=TRUE)
+install.packages('phylotaR')
+```
+
+Or, download the development package from GitHub:
+
+```r
+devtools::install_github(repo='ropensci/phylotaR', build_vignettes=TRUE)
 ```
 
 **Full functionality depends on a local copy of BLAST+ (>= 2.0.0)**. For details on downloading and compiling BLAST+ on your machine please visit the [NCBI website](https://www.ncbi.nlm.nih.gov/books/NBK279690/).
@@ -19,7 +22,7 @@ devtools::install_github(repo='AntonelliLab/phylotaR',
 
 `phylotaR` runs the PhyLoTa pipeline in four automated stages: identify and retrieve taxonomic information on all descendent nodes of the taxonomic group of interest (`taxise`), download sequence data for every identified node (`download`), identify orthologous clusters using BLAST (`cluster`), and identify sister clusters for sets of clusters identified in the previous stage (`cluster^2`) After these stages are complete, `phylotaR` provides tools for exploring, identifying and exporting suitable clusters for subsequent analysis.
 
-![phylotaR pipeline](https://raw.githubusercontent.com/AntonelliLab/phylotaR/master/other/stages.png)
+![phylotaR pipeline](https://raw.githubusercontent.com/ropensci/phylotaR/master/other/stages.png)
 
 For more information on the pipeline and how it works see the publication, [phylotaR: An Automated Pipeline for Retrieving Orthologous DNA Sequences from GenBank in R](https://doi.org/10.3390/life8020020).
 
@@ -47,19 +50,19 @@ vignette("phylotaR")
 
 How long does it take for a phylotaR pipeline to complete? Below is a table listing the runtimes in minutes for different demonstration, taxonomic groups. 
 
-Taxon|Taxa|Sequences|Clusters|Taxise|Download|Cluster|Cluster2|Total|
+Taxon|N. taxa|N. sequences|N. clusters|Taxise (mins.)|Download (mins.)|Cluster (mins.)|Cluster2 (mins.)|Total (mins.)|
 |:--|--:|--:|--:|--:|--:|--:|--:|--:|
-Anisoptera|1143|10619|784|0.75|14|14|0.017|28|
-Acipenseridae|51|2417|332|0.067|35|1.5|0|37|
-Tinamiformes|25|250|98|0.05|1.9|0.083|0|2|
-Aotus|13|1499|193|0.05|2|0.12|0|2.1|
-Bromeliaceae|1172|9840|721|0.7|18|9.4|0.017|28|
-Cycadidae|353|8331|540|0.18|13|3.4|0|17|
-Eutardigrada|261|945|195|0.27|9.5|1|0.033|11|
-Kazachstania|40|593|92|0.067|17|1.2|0.033|18|
-Platyrrhini|213|12823|3108|0.3|38|2.2|0.42|41|
+Anisoptera|1175|11432|796|1.6|23|48|0.017|72|
+Acipenseridae|51|2407|333|0.1|6.9|6.4|0.017|13|
+Tinamiformes|25|251|98|0.067|2.4|0.18|0.017|2.7|
+Aotus|13|1499|193|0.067|3.2|0.6|0|3.9|
+Bromeliaceae|1171|9833|724|1.2|28|37|0.033|66|
+Cycadidae|353|8331|540|0.32|19|18|0.033|37|
+Eutardigrada|261|960|211|0.3|11|1.8|0.05|14|
+Kazachstania|40|623|101|0.1|20|3|0.05|23|
+Platyrrhini|212|12731|3112|0.35|51|6.9|1.2|60|
 
-To run these same demonstrations see [´demos/demo_run.R´](https://github.com/AntonelliLab/phylotaR/blob/master/demos/demo_run.R). 
+To run these same demonstrations see [demos/demo_run.R](https://github.com/ropensci/phylotaR/blob/master/demos/demo_run.R).
 
 ## License
 
@@ -78,3 +81,5 @@ Dom Bennett (maintainer, R package dev), Hannes Hettling (workhouse code dev), R
 Bennett, D., Hettling, H., Silvestro, D., Zizka, A., Bacon, C., Faurby, S., … Antonelli, A. (2018). phylotaR: An Automated Pipeline for Retrieving Orthologous DNA Sequences from GenBank in R. *Life*, **8**(2), 20. [DOI:10.3390/life8020020](https://doi.org/10.3390/life8020020)
 
 Sanderson, M. J., Boss, D., Chen, D., Cranston, K. A., & Wehe, A. (2008). The PhyLoTA Browser: Processing GenBank for molecular phylogenetics research. *Systematic Biology*, **57**(3), 335–346. [DOI:10.1080/10635150802158688](https://doi.org/10.1080/10635150802158688)
+
+[![ropensci_footer](https://ropensci.org/public_images/ropensci_footer.png)](https://ropensci.org)

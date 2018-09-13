@@ -87,7 +87,7 @@ name." />
       
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/AntonelliLab/phylotaR#readme">
+  <a href="https://github.com/ropensci/phylotaR#readme">
     <span class="fa fa-github fa-lg"></span>
      
   </a>
@@ -105,7 +105,7 @@ name." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Calculate word frequencies</h1>
-    <small class="dont-index">Source: <a href='https://github.com/AntonelliLab/phylotaR#readme/blob/master/R/user-calc.R'><code>R/user-calc.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/ropensci/phylotaR#readme/blob/master/R/user-calc.R'><code>R/user-calc.R</code></a></small>
     <div class="hidden name"><code>calc_wrdfrq.Rd</code></div>
     </div>
 
@@ -182,85 +182,83 @@ and 'nm' match the slot names in a SeqRec, see list_seqrec_slots().</p>
 <span class='co'># work out what gene region the cluster is likely representing with word freqs.</span>
 <span class='no'>random_cids</span> <span class='kw'>&lt;-</span> <span class='fu'>sample</span>(<span class='no'>dragonflies</span>@<span class='kw'>cids</span>, <span class='fl'>10</span>)
 <span class='co'># most frequent words in definition line</span>
-(<span class='fu'>calc_wrdfrq</span>(<span class='kw'>phylota</span> <span class='kw'>=</span> <span class='no'>dragonflies</span>, <span class='kw'>cid</span> <span class='kw'>=</span> <span class='no'>random_cids</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>'dfln'</span>))</div><div class='output co'>#&gt; $`358`
+(<span class='fu'>calc_wrdfrq</span>(<span class='kw'>phylota</span> <span class='kw'>=</span> <span class='no'>dragonflies</span>, <span class='kw'>cid</span> <span class='kw'>=</span> <span class='no'>random_cids</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>'dfln'</span>))</div><div class='output co'>#&gt; $`685`
 #&gt; named numeric(0)
 #&gt; 
-#&gt; $`71`
+#&gt; $`136`
 #&gt; named numeric(0)
 #&gt; 
-#&gt; $`13`
+#&gt; $`26`
 #&gt; wrds
-#&gt;  sequence      gene 
-#&gt; 0.1430412 0.1423969 
+#&gt;        h3      gene   partial       cds   histone 
+#&gt; 0.1487768 0.1118323 0.1118323 0.1113330 0.1113330 
 #&gt; 
-#&gt; $`130`
+#&gt; $`250`
+#&gt;  sequence 
+#&gt; 0.1363636 
+#&gt; 
+#&gt; $`313`
+#&gt; named numeric(0)
+#&gt; 
+#&gt; $`152`
 #&gt; wrds
 #&gt;      rrna       and 
-#&gt; 0.1632653 0.1088435 
+#&gt; 0.1543739 0.1029160 
 #&gt; 
-#&gt; $`163`
+#&gt; $`779`
 #&gt; wrds
-#&gt;      complete        genome mitochondrion       isolate     orthetrum 
-#&gt;     0.1578947     0.1578947     0.1578947     0.1052632     0.1052632 
+#&gt;      rrna       and 
+#&gt; 0.1578947 0.1052632 
 #&gt; 
-#&gt; $`79`
+#&gt; $`49`
+#&gt; named numeric(0)
+#&gt; 
+#&gt; $`301`
 #&gt; wrds
-#&gt;      gene   partial 
-#&gt; 0.1111111 0.1111111 
+#&gt;       18s      gene   partial ribosomal       rna  sequence 
+#&gt; 0.1181818 0.1181818 0.1181818 0.1181818 0.1181818 0.1181818 
 #&gt; 
-#&gt; $`405`
-#&gt; named numeric(0)
-#&gt; 
-#&gt; $`25`
-#&gt; named numeric(0)
-#&gt; 
-#&gt; $`156`
-#&gt; named numeric(0)
-#&gt; 
-#&gt; $`391`
+#&gt; $`756`
 #&gt; wrds
 #&gt;      gene  sequence 
 #&gt; 0.1451613 0.1451613 
 #&gt; </div><div class='input'><span class='co'># most frequent words in feature name</span>
-(<span class='fu'>calc_wrdfrq</span>(<span class='kw'>phylota</span> <span class='kw'>=</span> <span class='no'>dragonflies</span>, <span class='kw'>cid</span> <span class='kw'>=</span> <span class='no'>random_cids</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>'nm'</span>))</div><div class='output co'>#&gt; $`358`
+(<span class='fu'>calc_wrdfrq</span>(<span class='kw'>phylota</span> <span class='kw'>=</span> <span class='no'>dragonflies</span>, <span class='kw'>cid</span> <span class='kw'>=</span> <span class='no'>random_cids</span>, <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>'nm'</span>))</div><div class='output co'>#&gt; $`685`
+#&gt; numeric(0)
+#&gt; 
+#&gt; $`136`
+#&gt; numeric(0)
+#&gt; 
+#&gt; $`26`
+#&gt; numeric(0)
+#&gt; 
+#&gt; $`250`
 #&gt; wrds
-#&gt;       16s ribosomal       rna 
-#&gt; 0.3333333 0.3333333 0.3333333 
+#&gt;         28s         and    contains    internal   ribosomal         rna 
+#&gt;       0.125       0.125       0.125       0.125       0.125       0.125 
+#&gt;      spacer transcribed 
+#&gt;       0.125       0.125 
 #&gt; 
-#&gt; $`71`
-#&gt; co1 
-#&gt;   1 
+#&gt; $`313`
+#&gt; numeric(0)
 #&gt; 
-#&gt; $`13`
-#&gt; wrds
-#&gt;       12s ribosomal       rna 
-#&gt; 0.3333333 0.3333333 0.3333333 
-#&gt; 
-#&gt; $`130`
+#&gt; $`152`
 #&gt; wrds
 #&gt;    internal      spacer transcribed 
 #&gt;   0.3333333   0.3333333   0.3333333 
 #&gt; 
-#&gt; $`163`
-#&gt; nd4 
-#&gt;   1 
+#&gt; $`779`
+#&gt; wrds
+#&gt;    internal      spacer transcribed 
+#&gt;   0.3333333   0.3333333   0.3333333 
 #&gt; 
-#&gt; $`79`
-#&gt; coii 
-#&gt;    1 
+#&gt; $`49`
+#&gt; numeric(0)
 #&gt; 
-#&gt; $`405`
-#&gt; nd1 
-#&gt;   1 
+#&gt; $`301`
+#&gt; numeric(0)
 #&gt; 
-#&gt; $`25`
-#&gt;       co1 
-#&gt; 0.9852941 
-#&gt; 
-#&gt; $`156`
-#&gt; named numeric(0)
-#&gt; 
-#&gt; $`391`
+#&gt; $`756`
 #&gt; wrds
 #&gt;       16s ribosomal       rna 
 #&gt; 0.3333333 0.3333333 0.3333333 

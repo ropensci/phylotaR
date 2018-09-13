@@ -32,8 +32,7 @@
 
 <meta property="og:title" content="Default parameters — parameters" />
 
-<meta property="og:description" content="Returns a parameter list with default
-parameter values." />
+<meta property="og:description" content="Returns a parameter list with default parameter values." />
 
 <meta property="og:image" content="/logo.png" />
 <meta name="twitter:card" content="summary" />
@@ -86,7 +85,7 @@ parameter values." />
       
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/AntonelliLab/phylotaR#readme">
+  <a href="https://github.com/ropensci/phylotaR#readme">
     <span class="fa fa-github fa-lg"></span>
      
   </a>
@@ -104,21 +103,20 @@ parameter values." />
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Default parameters</h1>
-    <small class="dont-index">Source: <a href='https://github.com/AntonelliLab/phylotaR#readme/blob/master/R/phylotaR.R'><code>R/phylotaR.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/ropensci/phylotaR#readme/blob/master/R/phylotaR.R'><code>R/phylotaR.R</code></a></small>
     <div class="hidden name"><code>parameters.Rd</code></div>
     </div>
 
     <div class="ref-description">
     
-    <p>Returns a parameter list with default
-parameter values.</p>
+    <p>Returns a parameter list with default parameter values.</p>
     
     </div>
 
     <pre class="usage"><span class='fu'>parameters</span>(<span class='kw'>wd</span> <span class='kw'>=</span> <span class='st'>"."</span>, <span class='kw'>txid</span> <span class='kw'>=</span> <span class='fu'>character</span>(), <span class='kw'>mkblstdb</span> <span class='kw'>=</span> <span class='st'>""</span>, <span class='kw'>blstn</span> <span class='kw'>=</span> <span class='st'>""</span>,
   <span class='kw'>v</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>ncps</span> <span class='kw'>=</span> <span class='fl'>1</span>, <span class='kw'>mxnds</span> <span class='kw'>=</span> <span class='fl'>1e+05</span>, <span class='kw'>mdlthrs</span> <span class='kw'>=</span> <span class='fl'>3000</span>, <span class='kw'>mnsql</span> <span class='kw'>=</span> <span class='fl'>250</span>,
   <span class='kw'>mxsql</span> <span class='kw'>=</span> <span class='fl'>2000</span>, <span class='kw'>mxrtry</span> <span class='kw'>=</span> <span class='fl'>100</span>, <span class='kw'>mxsqs</span> <span class='kw'>=</span> <span class='fl'>50000</span>, <span class='kw'>mxevl</span> <span class='kw'>=</span> <span class='fl'>1e-10</span>,
-  <span class='kw'>mncvrg</span> <span class='kw'>=</span> <span class='fl'>51</span>, <span class='kw'>btchsz</span> <span class='kw'>=</span> <span class='fl'>300</span>, <span class='kw'>date</span> <span class='kw'>=</span> <span class='fu'>Sys.Date</span>())</pre>
+  <span class='kw'>mncvrg</span> <span class='kw'>=</span> <span class='fl'>51</span>, <span class='kw'>btchsz</span> <span class='kw'>=</span> <span class='fl'>100</span>, <span class='kw'>date</span> <span class='kw'>=</span> <span class='fu'>Sys.Date</span>())</pre>
     
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -203,6 +201,12 @@ Sequences with BLAST matches with lower values are not considered orthologous.</
 
     <p>list</p>
     
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>This function is NOT used to change the parameters in a folder.
+Use parameters_reset() instead. The purpose of this function is to describe
+the paramaters and present their default values.</p>
+    
 
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
@@ -211,6 +215,8 @@ Sequences with BLAST matches with lower values are not considered orthologous.</
       <li><a href="#arguments">Arguments</a></li>
       
       <li><a href="#value">Value</a></li>
+
+      <li><a href="#details">Details</a></li>
           </ul>
 
   </div>

@@ -85,7 +85,7 @@
       
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/AntonelliLab/phylotaR#readme">
+  <a href="https://github.com/ropensci/phylotaR#readme">
     <span class="fa fa-github fa-lg"></span>
      
   </a>
@@ -103,7 +103,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Cluster record archive</h1>
-    <small class="dont-index">Source: <a href='https://github.com/AntonelliLab/phylotaR#readme/blob/master/R/all-classes.R'><code>R/all-classes.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/ropensci/phylotaR#readme/blob/master/R/all-classes.R'><code>R/all-classes.R</code></a></small>
     <div class="hidden name"><code>ClstrArc-class.Rd</code></div>
     </div>
 
@@ -193,362 +193,1369 @@ summary(object)
 <span class='co'># this is a ClstrArc object</span>
 <span class='co'># it contains cluster records</span>
 <span class='fu'>show</span>(<span class='no'>clstrarc</span>)</div><div class='output co'>#&gt; Archive of cluster record(s)
-#&gt;  - [51] clusters</div><div class='input'><span class='co'># you can access its different data slots with @</span>
-<span class='no'>clstrarc</span>@<span class='kw'>ids</span>     <span class='co'># unique cluster ID</span></div><div class='output co'>#&gt;  [1] "0"  "1"  "2"  "3"  "4"  "5"  "6"  "7"  "8"  "9"  "10" "11" "12" "13" "14"
-#&gt; [16] "15" "16" "17" "18" "19" "20" "21" "22" "23" "24" "25" "26" "27" "28" "29"
-#&gt; [31] "30" "31" "32" "33" "34" "35" "36" "37" "38" "39" "40" "41" "42" "43" "44"
-#&gt; [46] "45" "46" "47" "48" "49" "50"</div><div class='input'><span class='no'>clstrarc</span>@<span class='kw'>clstrs</span>  <span class='co'># list of cluster records</span></div><div class='output co'>#&gt; $`0`
+#&gt;  - [193] clusters</div><div class='input'><span class='co'># you can access its different data slots with @</span>
+<span class='no'>clstrarc</span>@<span class='kw'>ids</span>     <span class='co'># unique cluster ID</span></div><div class='output co'>#&gt;   [1] "0"   "1"   "2"   "3"   "4"   "5"   "6"   "7"   "8"   "9"   "10"  "11" 
+#&gt;  [13] "12"  "13"  "14"  "15"  "16"  "17"  "18"  "19"  "20"  "21"  "22"  "23" 
+#&gt;  [25] "24"  "25"  "26"  "27"  "28"  "29"  "30"  "31"  "32"  "33"  "34"  "35" 
+#&gt;  [37] "36"  "37"  "38"  "39"  "40"  "41"  "42"  "43"  "44"  "45"  "46"  "47" 
+#&gt;  [49] "48"  "49"  "50"  "51"  "52"  "53"  "54"  "55"  "56"  "57"  "58"  "59" 
+#&gt;  [61] "60"  "61"  "62"  "63"  "64"  "65"  "66"  "67"  "68"  "69"  "70"  "71" 
+#&gt;  [73] "72"  "73"  "74"  "75"  "76"  "77"  "78"  "79"  "80"  "81"  "82"  "83" 
+#&gt;  [85] "84"  "85"  "86"  "87"  "88"  "89"  "90"  "91"  "92"  "93"  "94"  "95" 
+#&gt;  [97] "96"  "97"  "98"  "99"  "100" "101" "102" "103" "104" "105" "106" "107"
+#&gt; [109] "108" "109" "110" "111" "112" "113" "114" "115" "116" "117" "118" "119"
+#&gt; [121] "120" "121" "122" "123" "124" "125" "126" "127" "128" "129" "130" "131"
+#&gt; [133] "132" "133" "134" "135" "136" "137" "138" "139" "140" "141" "142" "143"
+#&gt; [145] "144" "145" "146" "147" "148" "149" "150" "151" "152" "153" "154" "155"
+#&gt; [157] "156" "157" "158" "159" "160" "161" "162" "163" "164" "165" "166" "167"
+#&gt; [169] "168" "169" "170" "171" "172" "173" "174" "175" "176" "177" "178" "179"
+#&gt; [181] "180" "181" "182" "183" "184" "185" "186" "187" "188" "189" "190" "191"
+#&gt; [193] "192"</div><div class='input'><span class='no'>clstrarc</span>@<span class='kw'>clstrs</span>  <span class='co'># list of cluster records</span></div><div class='output co'>#&gt; $`0`
 #&gt; Cluster Record [id 0]
 #&gt;  - [subtree] type
-#&gt;  - [AF352254.1/34..729] seed sequence
-#&gt;  - [36] sequences
-#&gt;  - [10] taxa
+#&gt;  - [AF129794.1] seed sequence
+#&gt;  - [204] sequences
+#&gt;  - [5] taxa
 #&gt; 
 #&gt; $`1`
 #&gt; Cluster Record [id 1]
 #&gt;  - [subtree] type
-#&gt;  - [KF447735.1/16..285] seed sequence
-#&gt;  - [34] sequences
-#&gt;  - [2] taxa
+#&gt;  - [U52114.1] seed sequence
+#&gt;  - [63] sequences
+#&gt;  - [5] taxa
 #&gt; 
 #&gt; $`2`
 #&gt; Cluster Record [id 2]
 #&gt;  - [subtree] type
-#&gt;  - [AY250707.1/2677..4215] seed sequence
-#&gt;  - [29] sequences
-#&gt;  - [10] taxa
+#&gt;  - [DI178118.1] seed sequence
+#&gt;  - [52] sequences
+#&gt;  - [2] taxa
 #&gt; 
 #&gt; $`3`
 #&gt; Cluster Record [id 3]
 #&gt;  - [subtree] type
-#&gt;  - [KF014117.1/1..1263] seed sequence
-#&gt;  - [16] sequences
-#&gt;  - [1] taxa
+#&gt;  - [JQ932794.1] seed sequence
+#&gt;  - [43] sequences
+#&gt;  - [4] taxa
 #&gt; 
 #&gt; $`4`
 #&gt; Cluster Record [id 4]
 #&gt;  - [subtree] type
-#&gt;  - [AB181218.1/718..1038] seed sequence
-#&gt;  - [14] sequences
-#&gt;  - [4] taxa
+#&gt;  - [U36844.1] seed sequence
+#&gt;  - [41] sequences
+#&gt;  - [9] taxa
 #&gt; 
 #&gt; $`5`
 #&gt; Cluster Record [id 5]
 #&gt;  - [subtree] type
-#&gt;  - [AY250707.1/11495..12634] seed sequence
-#&gt;  - [12] sequences
-#&gt;  - [7] taxa
+#&gt;  - [KF014117.1/1..1263] seed sequence
+#&gt;  - [35] sequences
+#&gt;  - [1] taxa
 #&gt; 
 #&gt; $`6`
 #&gt; Cluster Record [id 6]
 #&gt;  - [subtree] type
-#&gt;  - [AF420045.1/255..1619] seed sequence
-#&gt;  - [11] sequences
-#&gt;  - [5] taxa
+#&gt;  - [LC075891.1] seed sequence
+#&gt;  - [33] sequences
+#&gt;  - [2] taxa
 #&gt; 
 #&gt; $`7`
 #&gt; Cluster Record [id 7]
 #&gt;  - [subtree] type
-#&gt;  - [AY250707.1/78..1034] seed sequence
-#&gt;  - [11] sequences
-#&gt;  - [6] taxa
+#&gt;  - [JN161069.1] seed sequence
+#&gt;  - [30] sequences
+#&gt;  - [1] taxa
 #&gt; 
 #&gt; $`8`
 #&gt; Cluster Record [id 8]
 #&gt;  - [subtree] type
-#&gt;  - [AY250707.1/1245..2285] seed sequence
-#&gt;  - [11] sequences
-#&gt;  - [6] taxa
+#&gt;  - [JN161069.1] seed sequence
+#&gt;  - [30] sequences
+#&gt;  - [1] taxa
 #&gt; 
 #&gt; $`9`
 #&gt; Cluster Record [id 9]
 #&gt;  - [subtree] type
-#&gt;  - [AY250707.1/5276..5956] seed sequence
-#&gt;  - [11] sequences
-#&gt;  - [6] taxa
+#&gt;  - [AJ489745.1] seed sequence
+#&gt;  - [29] sequences
+#&gt;  - [10] taxa
 #&gt; 
 #&gt; $`10`
 #&gt; Cluster Record [id 10]
 #&gt;  - [subtree] type
-#&gt;  - [AY250707.1/5956..6739] seed sequence
-#&gt;  - [11] sequences
-#&gt;  - [6] taxa
+#&gt;  - [AF333711.1] seed sequence
+#&gt;  - [28] sequences
+#&gt;  - [1] taxa
 #&gt; 
 #&gt; $`11`
 #&gt; Cluster Record [id 11]
-#&gt;  - [subtree] type
-#&gt;  - [AY250707.1/6807..7152] seed sequence
-#&gt;  - [11] sequences
-#&gt;  - [6] taxa
+#&gt;  - [direct] type
+#&gt;  - [LC075891.1] seed sequence
+#&gt;  - [26] sequences
+#&gt;  - [1] taxa
 #&gt; 
 #&gt; $`12`
 #&gt; Cluster Record [id 12]
 #&gt;  - [subtree] type
-#&gt;  - [AY250707.1/7220..7516] seed sequence
-#&gt;  - [11] sequences
-#&gt;  - [6] taxa
+#&gt;  - [JQ932884.1] seed sequence
+#&gt;  - [24] sequences
+#&gt;  - [4] taxa
 #&gt; 
 #&gt; $`13`
 #&gt; Cluster Record [id 13]
 #&gt;  - [subtree] type
-#&gt;  - [AY250707.1/7510..8884] seed sequence
-#&gt;  - [11] sequences
-#&gt;  - [6] taxa
+#&gt;  - [AF378747.1] seed sequence
+#&gt;  - [20] sequences
+#&gt;  - [1] taxa
 #&gt; 
 #&gt; $`14`
 #&gt; Cluster Record [id 14]
 #&gt;  - [subtree] type
-#&gt;  - [AY250707.1/9081..10892] seed sequence
-#&gt;  - [11] sequences
-#&gt;  - [6] taxa
+#&gt;  - [JQ932881.1] seed sequence
+#&gt;  - [19] sequences
+#&gt;  - [4] taxa
 #&gt; 
 #&gt; $`15`
 #&gt; Cluster Record [id 15]
 #&gt;  - [subtree] type
-#&gt;  - [AY250707.1/10889..11422] seed sequence
-#&gt;  - [11] sequences
-#&gt;  - [6] taxa
+#&gt;  - [AY900546.1] seed sequence
+#&gt;  - [19] sequences
+#&gt;  - [1] taxa
 #&gt; 
 #&gt; $`16`
 #&gt; Cluster Record [id 16]
 #&gt;  - [subtree] type
-#&gt;  - [FJ785421.1/71..1026] seed sequence
-#&gt;  - [10] sequences
-#&gt;  - [5] taxa
+#&gt;  - [JQ932999.1] seed sequence
+#&gt;  - [18] sequences
+#&gt;  - [1] taxa
 #&gt; 
 #&gt; $`17`
 #&gt; Cluster Record [id 17]
 #&gt;  - [subtree] type
-#&gt;  - [AF338374.1/177..829] seed sequence
-#&gt;  - [9] sequences
-#&gt;  - [8] taxa
+#&gt;  - [AF027542.1] seed sequence
+#&gt;  - [18] sequences
+#&gt;  - [1] taxa
 #&gt; 
 #&gt; $`18`
 #&gt; Cluster Record [id 18]
 #&gt;  - [subtree] type
-#&gt;  - [AF042144.1/11..370] seed sequence
-#&gt;  - [8] sequences
-#&gt;  - [3] taxa
+#&gt;  - [AF333712.1] seed sequence
+#&gt;  - [18] sequences
+#&gt;  - [1] taxa
 #&gt; 
 #&gt; $`19`
 #&gt; Cluster Record [id 19]
 #&gt;  - [subtree] type
-#&gt;  - [FJ785421.1/15420..16580] seed sequence
-#&gt;  - [8] sequences
+#&gt;  - [JQ932845.1] seed sequence
+#&gt;  - [17] sequences
 #&gt;  - [4] taxa
 #&gt; 
 #&gt; $`20`
 #&gt; Cluster Record [id 20]
 #&gt;  - [subtree] type
-#&gt;  - [HQ005472.1/1..1557] seed sequence
-#&gt;  - [8] sequences
-#&gt;  - [3] taxa
+#&gt;  - [JQ933027.1] seed sequence
+#&gt;  - [16] sequences
+#&gt;  - [2] taxa
 #&gt; 
 #&gt; $`21`
 #&gt; Cluster Record [id 21]
 #&gt;  - [subtree] type
-#&gt;  - [HQ005472.1/1686..2381] seed sequence
-#&gt;  - [8] sequences
-#&gt;  - [3] taxa
+#&gt;  - [JQ932800.1] seed sequence
+#&gt;  - [14] sequences
+#&gt;  - [4] taxa
 #&gt; 
 #&gt; $`22`
 #&gt; Cluster Record [id 22]
 #&gt;  - [subtree] type
-#&gt;  - [AB181217.1/324..590] seed sequence
-#&gt;  - [7] sequences
+#&gt;  - [DQ321662.1] seed sequence
+#&gt;  - [13] sequences
 #&gt;  - [2] taxa
 #&gt; 
 #&gt; $`23`
 #&gt; Cluster Record [id 23]
 #&gt;  - [subtree] type
-#&gt;  - [AB081265.2/1048..1344] seed sequence
-#&gt;  - [6] sequences
-#&gt;  - [2] taxa
+#&gt;  - [JQ932874.1] seed sequence
+#&gt;  - [12] sequences
+#&gt;  - [1] taxa
 #&gt; 
 #&gt; $`24`
 #&gt; Cluster Record [id 24]
 #&gt;  - [subtree] type
-#&gt;  - [AF201293.1/23..790] seed sequence
-#&gt;  - [6] sequences
+#&gt;  - [KY508404.1] seed sequence
+#&gt;  - [12] sequences
 #&gt;  - [1] taxa
 #&gt; 
 #&gt; $`25`
 #&gt; Cluster Record [id 25]
 #&gt;  - [subtree] type
-#&gt;  - [JN161099.1/16115..16417] seed sequence
-#&gt;  - [5] sequences
-#&gt;  - [2] taxa
+#&gt;  - [JQ932840.1] seed sequence
+#&gt;  - [11] sequences
+#&gt;  - [1] taxa
 #&gt; 
 #&gt; $`26`
 #&gt; Cluster Record [id 26]
 #&gt;  - [subtree] type
-#&gt;  - [AB181217.1/324..590] seed sequence
-#&gt;  - [5] sequences
+#&gt;  - [AF107750.1] seed sequence
+#&gt;  - [11] sequences
 #&gt;  - [1] taxa
 #&gt; 
 #&gt; $`27`
 #&gt; Cluster Record [id 27]
-#&gt;  - [subtree] type
-#&gt;  - [AB181217.1/721..1026] seed sequence
-#&gt;  - [5] sequences
+#&gt;  - [direct] type
+#&gt;  - [AB761995.1] seed sequence
+#&gt;  - [11] sequences
 #&gt;  - [1] taxa
 #&gt; 
 #&gt; $`28`
 #&gt; Cluster Record [id 28]
 #&gt;  - [subtree] type
-#&gt;  - [AB181217.1/1545..1839] seed sequence
-#&gt;  - [4] sequences
-#&gt;  - [3] taxa
+#&gt;  - [JQ932868.1] seed sequence
+#&gt;  - [10] sequences
+#&gt;  - [2] taxa
 #&gt; 
 #&gt; $`29`
 #&gt; Cluster Record [id 29]
 #&gt;  - [subtree] type
-#&gt;  - [AF042144.1/371..877] seed sequence
-#&gt;  - [4] sequences
-#&gt;  - [2] taxa
+#&gt;  - [AF338374.1/177..829] seed sequence
+#&gt;  - [10] sequences
+#&gt;  - [8] taxa
 #&gt; 
 #&gt; $`30`
 #&gt; Cluster Record [id 30]
 #&gt;  - [subtree] type
-#&gt;  - [NM_001308533.1/409..1102] seed sequence
-#&gt;  - [4] sequences
-#&gt;  - [1] taxa
+#&gt;  - [LC075890.1] seed sequence
+#&gt;  - [10] sequences
+#&gt;  - [2] taxa
 #&gt; 
 #&gt; $`31`
 #&gt; Cluster Record [id 31]
-#&gt;  - [direct] type
-#&gt;  - [DQ098851.1/1..495] seed sequence
-#&gt;  - [4] sequences
-#&gt;  - [1] taxa
+#&gt;  - [subtree] type
+#&gt;  - [AY972694.1] seed sequence
+#&gt;  - [10] sequences
+#&gt;  - [4] taxa
 #&gt; 
 #&gt; $`32`
 #&gt; Cluster Record [id 32]
 #&gt;  - [subtree] type
-#&gt;  - [AB081277.2/1507..1803] seed sequence
-#&gt;  - [4] sequences
+#&gt;  - [AY894647.1] seed sequence
+#&gt;  - [10] sequences
 #&gt;  - [1] taxa
 #&gt; 
 #&gt; $`33`
 #&gt; Cluster Record [id 33]
 #&gt;  - [subtree] type
-#&gt;  - [AY646198.1/152..1576] seed sequence
-#&gt;  - [3] sequences
+#&gt;  - [JQ932807.1] seed sequence
+#&gt;  - [9] sequences
 #&gt;  - [1] taxa
 #&gt; 
 #&gt; $`34`
 #&gt; Cluster Record [id 34]
 #&gt;  - [subtree] type
-#&gt;  - [AF397604.1/737..1037] seed sequence
-#&gt;  - [3] sequences
-#&gt;  - [2] taxa
+#&gt;  - [AF042144.1/11..370] seed sequence
+#&gt;  - [8] sequences
+#&gt;  - [3] taxa
 #&gt; 
 #&gt; $`35`
 #&gt; Cluster Record [id 35]
 #&gt;  - [subtree] type
-#&gt;  - [NM_001308485.1/482..2098] seed sequence
-#&gt;  - [3] sequences
+#&gt;  - [AY900559.1] seed sequence
+#&gt;  - [8] sequences
 #&gt;  - [1] taxa
 #&gt; 
 #&gt; $`36`
 #&gt; Cluster Record [id 36]
-#&gt;  - [direct] type
-#&gt;  - [AF420045.1/255..1619] seed sequence
-#&gt;  - [3] sequences
-#&gt;  - [1] taxa
+#&gt;  - [subtree] type
+#&gt;  - [HM758648.1] seed sequence
+#&gt;  - [8] sequences
+#&gt;  - [6] taxa
 #&gt; 
 #&gt; $`37`
 #&gt; Cluster Record [id 37]
 #&gt;  - [subtree] type
-#&gt;  - [JN161099.1/72..1028] seed sequence
-#&gt;  - [3] sequences
-#&gt;  - [2] taxa
+#&gt;  - [JQ932913.1] seed sequence
+#&gt;  - [7] sequences
+#&gt;  - [1] taxa
 #&gt; 
 #&gt; $`38`
 #&gt; Cluster Record [id 38]
 #&gt;  - [subtree] type
-#&gt;  - [JN161099.1/1097..2651] seed sequence
-#&gt;  - [3] sequences
-#&gt;  - [2] taxa
+#&gt;  - [AY449013.1] seed sequence
+#&gt;  - [7] sequences
+#&gt;  - [1] taxa
 #&gt; 
 #&gt; $`39`
 #&gt; Cluster Record [id 39]
 #&gt;  - [subtree] type
-#&gt;  - [JN161099.1/2729..3684] seed sequence
-#&gt;  - [3] sequences
-#&gt;  - [2] taxa
+#&gt;  - [AY900538.1] seed sequence
+#&gt;  - [7] sequences
+#&gt;  - [1] taxa
 #&gt; 
 #&gt; $`40`
 #&gt; Cluster Record [id 40]
 #&gt;  - [subtree] type
-#&gt;  - [JN161099.1/3896..4934] seed sequence
-#&gt;  - [3] sequences
-#&gt;  - [2] taxa
+#&gt;  - [HM759273.1] seed sequence
+#&gt;  - [7] sequences
+#&gt;  - [6] taxa
 #&gt; 
 #&gt; $`41`
 #&gt; Cluster Record [id 41]
-#&gt;  - [subtree] type
-#&gt;  - [JN161099.1/7930..8610] seed sequence
-#&gt;  - [3] sequences
-#&gt;  - [2] taxa
+#&gt;  - [direct] type
+#&gt;  - [AY449013.1] seed sequence
+#&gt;  - [7] sequences
+#&gt;  - [1] taxa
 #&gt; 
 #&gt; $`42`
 #&gt; Cluster Record [id 42]
-#&gt;  - [subtree] type
-#&gt;  - [JN161099.1/8610..9393] seed sequence
-#&gt;  - [3] sequences
-#&gt;  - [2] taxa
+#&gt;  - [direct] type
+#&gt;  - [EF658652.1] seed sequence
+#&gt;  - [7] sequences
+#&gt;  - [1] taxa
 #&gt; 
 #&gt; $`43`
 #&gt; Cluster Record [id 43]
 #&gt;  - [subtree] type
-#&gt;  - [JN161099.1/9461..9806] seed sequence
-#&gt;  - [3] sequences
+#&gt;  - [DQ098867.1] seed sequence
+#&gt;  - [7] sequences
 #&gt;  - [2] taxa
 #&gt; 
 #&gt; $`44`
 #&gt; Cluster Record [id 44]
 #&gt;  - [subtree] type
-#&gt;  - [JN161099.1/9874..10170] seed sequence
-#&gt;  - [3] sequences
-#&gt;  - [2] taxa
+#&gt;  - [NM_001308532.1/14..457] seed sequence
+#&gt;  - [6] sequences
+#&gt;  - [4] taxa
 #&gt; 
 #&gt; $`45`
 #&gt; Cluster Record [id 45]
 #&gt;  - [subtree] type
-#&gt;  - [JN161099.1/10164..11538] seed sequence
-#&gt;  - [3] sequences
-#&gt;  - [2] taxa
+#&gt;  - [AY646198.1/152..1576] seed sequence
+#&gt;  - [6] sequences
+#&gt;  - [1] taxa
 #&gt; 
 #&gt; $`46`
 #&gt; Cluster Record [id 46]
 #&gt;  - [subtree] type
-#&gt;  - [JN161099.1/11741..13546] seed sequence
-#&gt;  - [3] sequences
-#&gt;  - [2] taxa
+#&gt;  - [AF201293.1/23..790] seed sequence
+#&gt;  - [6] sequences
+#&gt;  - [1] taxa
 #&gt; 
 #&gt; $`47`
 #&gt; Cluster Record [id 47]
 #&gt;  - [subtree] type
-#&gt;  - [JN161099.1/13543..14076] seed sequence
-#&gt;  - [3] sequences
-#&gt;  - [2] taxa
+#&gt;  - [GQ279878.1] seed sequence
+#&gt;  - [6] sequences
+#&gt;  - [4] taxa
 #&gt; 
 #&gt; $`48`
 #&gt; Cluster Record [id 48]
 #&gt;  - [subtree] type
-#&gt;  - [JN161099.1/14149..15288] seed sequence
-#&gt;  - [3] sequences
-#&gt;  - [2] taxa
+#&gt;  - [KC761051.1] seed sequence
+#&gt;  - [6] sequences
+#&gt;  - [4] taxa
 #&gt; 
 #&gt; $`49`
 #&gt; Cluster Record [id 49]
 #&gt;  - [subtree] type
-#&gt;  - [JN161099.1/15426..16585] seed sequence
-#&gt;  - [3] sequences
-#&gt;  - [2] taxa
+#&gt;  - [GQ279822.1] seed sequence
+#&gt;  - [6] sequences
+#&gt;  - [4] taxa
 #&gt; 
 #&gt; $`50`
 #&gt; Cluster Record [id 50]
+#&gt;  - [subtree] type
+#&gt;  - [HM756838.1] seed sequence
+#&gt;  - [6] sequences
+#&gt;  - [6] taxa
+#&gt; 
+#&gt; $`51`
+#&gt; Cluster Record [id 51]
+#&gt;  - [subtree] type
+#&gt;  - [HM757379.1] seed sequence
+#&gt;  - [6] sequences
+#&gt;  - [6] taxa
+#&gt; 
+#&gt; $`52`
+#&gt; Cluster Record [id 52]
+#&gt;  - [subtree] type
+#&gt;  - [HM757554.1] seed sequence
+#&gt;  - [6] sequences
+#&gt;  - [6] taxa
+#&gt; 
+#&gt; $`53`
+#&gt; Cluster Record [id 53]
+#&gt;  - [subtree] type
+#&gt;  - [HM757720.1] seed sequence
+#&gt;  - [6] sequences
+#&gt;  - [6] taxa
+#&gt; 
+#&gt; $`54`
+#&gt; Cluster Record [id 54]
+#&gt;  - [subtree] type
+#&gt;  - [HM758212.1] seed sequence
+#&gt;  - [6] sequences
+#&gt;  - [6] taxa
+#&gt; 
+#&gt; $`55`
+#&gt; Cluster Record [id 55]
+#&gt;  - [subtree] type
+#&gt;  - [HM758295.1] seed sequence
+#&gt;  - [6] sequences
+#&gt;  - [6] taxa
+#&gt; 
+#&gt; $`56`
+#&gt; Cluster Record [id 56]
+#&gt;  - [subtree] type
+#&gt;  - [HM758463.1] seed sequence
+#&gt;  - [6] sequences
+#&gt;  - [6] taxa
+#&gt; 
+#&gt; $`57`
+#&gt; Cluster Record [id 57]
+#&gt;  - [subtree] type
+#&gt;  - [HM758930.1] seed sequence
+#&gt;  - [6] sequences
+#&gt;  - [6] taxa
+#&gt; 
+#&gt; $`58`
+#&gt; Cluster Record [id 58]
+#&gt;  - [subtree] type
+#&gt;  - [HM759101.1] seed sequence
+#&gt;  - [6] sequences
+#&gt;  - [6] taxa
+#&gt; 
+#&gt; $`59`
+#&gt; Cluster Record [id 59]
+#&gt;  - [subtree] type
+#&gt;  - [HM759370.1] seed sequence
+#&gt;  - [6] sequences
+#&gt;  - [6] taxa
+#&gt; 
+#&gt; $`60`
+#&gt; Cluster Record [id 60]
+#&gt;  - [subtree] type
+#&gt;  - [HM759641.1] seed sequence
+#&gt;  - [6] sequences
+#&gt;  - [6] taxa
+#&gt; 
+#&gt; $`61`
+#&gt; Cluster Record [id 61]
+#&gt;  - [subtree] type
+#&gt;  - [HM759729.1] seed sequence
+#&gt;  - [6] sequences
+#&gt;  - [6] taxa
+#&gt; 
+#&gt; $`62`
+#&gt; Cluster Record [id 62]
+#&gt;  - [subtree] type
+#&gt;  - [HM759894.1] seed sequence
+#&gt;  - [6] sequences
+#&gt;  - [6] taxa
+#&gt; 
+#&gt; $`63`
+#&gt; Cluster Record [id 63]
+#&gt;  - [subtree] type
+#&gt;  - [HM760078.1] seed sequence
+#&gt;  - [6] sequences
+#&gt;  - [6] taxa
+#&gt; 
+#&gt; $`64`
+#&gt; Cluster Record [id 64]
+#&gt;  - [subtree] type
+#&gt;  - [HM760254.1] seed sequence
+#&gt;  - [6] sequences
+#&gt;  - [6] taxa
+#&gt; 
+#&gt; $`65`
+#&gt; Cluster Record [id 65]
+#&gt;  - [subtree] type
+#&gt;  - [HM760525.1] seed sequence
+#&gt;  - [6] sequences
+#&gt;  - [6] taxa
+#&gt; 
+#&gt; $`66`
+#&gt; Cluster Record [id 66]
+#&gt;  - [subtree] type
+#&gt;  - [HM760606.1] seed sequence
+#&gt;  - [6] sequences
+#&gt;  - [6] taxa
+#&gt; 
+#&gt; $`67`
+#&gt; Cluster Record [id 67]
+#&gt;  - [subtree] type
+#&gt;  - [HM761193.1] seed sequence
+#&gt;  - [6] sequences
+#&gt;  - [6] taxa
+#&gt; 
+#&gt; $`68`
+#&gt; Cluster Record [id 68]
+#&gt;  - [subtree] type
+#&gt;  - [HM761505.1] seed sequence
+#&gt;  - [6] sequences
+#&gt;  - [6] taxa
+#&gt; 
+#&gt; $`69`
+#&gt; Cluster Record [id 69]
+#&gt;  - [subtree] type
+#&gt;  - [HM761768.1] seed sequence
+#&gt;  - [6] sequences
+#&gt;  - [6] taxa
+#&gt; 
+#&gt; $`70`
+#&gt; Cluster Record [id 70]
+#&gt;  - [subtree] type
+#&gt;  - [HM761925.1] seed sequence
+#&gt;  - [6] sequences
+#&gt;  - [6] taxa
+#&gt; 
+#&gt; $`71`
+#&gt; Cluster Record [id 71]
+#&gt;  - [subtree] type
+#&gt;  - [HM762092.1] seed sequence
+#&gt;  - [6] sequences
+#&gt;  - [6] taxa
+#&gt; 
+#&gt; $`72`
+#&gt; Cluster Record [id 72]
+#&gt;  - [subtree] type
+#&gt;  - [HM762180.1] seed sequence
+#&gt;  - [6] sequences
+#&gt;  - [6] taxa
+#&gt; 
+#&gt; $`73`
+#&gt; Cluster Record [id 73]
+#&gt;  - [subtree] type
+#&gt;  - [HM762427.1] seed sequence
+#&gt;  - [6] sequences
+#&gt;  - [6] taxa
+#&gt; 
+#&gt; $`74`
+#&gt; Cluster Record [id 74]
+#&gt;  - [subtree] type
+#&gt;  - [HM762765.1] seed sequence
+#&gt;  - [6] sequences
+#&gt;  - [6] taxa
+#&gt; 
+#&gt; $`75`
+#&gt; Cluster Record [id 75]
+#&gt;  - [subtree] type
+#&gt;  - [HM763261.1] seed sequence
+#&gt;  - [6] sequences
+#&gt;  - [6] taxa
+#&gt; 
+#&gt; $`76`
+#&gt; Cluster Record [id 76]
+#&gt;  - [subtree] type
+#&gt;  - [HM763429.1] seed sequence
+#&gt;  - [6] sequences
+#&gt;  - [6] taxa
+#&gt; 
+#&gt; $`77`
+#&gt; Cluster Record [id 77]
+#&gt;  - [subtree] type
+#&gt;  - [HM763727.1] seed sequence
+#&gt;  - [6] sequences
+#&gt;  - [6] taxa
+#&gt; 
+#&gt; $`78`
+#&gt; Cluster Record [id 78]
+#&gt;  - [subtree] type
+#&gt;  - [HM764102.1] seed sequence
+#&gt;  - [6] sequences
+#&gt;  - [6] taxa
+#&gt; 
+#&gt; $`79`
+#&gt; Cluster Record [id 79]
+#&gt;  - [subtree] type
+#&gt;  - [HM764317.1] seed sequence
+#&gt;  - [6] sequences
+#&gt;  - [6] taxa
+#&gt; 
+#&gt; $`80`
+#&gt; Cluster Record [id 80]
+#&gt;  - [subtree] type
+#&gt;  - [HM764901.1] seed sequence
+#&gt;  - [6] sequences
+#&gt;  - [6] taxa
+#&gt; 
+#&gt; $`81`
+#&gt; Cluster Record [id 81]
+#&gt;  - [subtree] type
+#&gt;  - [HM765175.1] seed sequence
+#&gt;  - [6] sequences
+#&gt;  - [6] taxa
+#&gt; 
+#&gt; $`82`
+#&gt; Cluster Record [id 82]
+#&gt;  - [subtree] type
+#&gt;  - [GQ279948.1] seed sequence
+#&gt;  - [5] sequences
+#&gt;  - [3] taxa
+#&gt; 
+#&gt; $`83`
+#&gt; Cluster Record [id 83]
+#&gt;  - [subtree] type
+#&gt;  - [HM762509.1] seed sequence
+#&gt;  - [5] sequences
+#&gt;  - [5] taxa
+#&gt; 
+#&gt; $`84`
+#&gt; Cluster Record [id 84]
+#&gt;  - [subtree] type
+#&gt;  - [HM764645.1] seed sequence
+#&gt;  - [5] sequences
+#&gt;  - [5] taxa
+#&gt; 
+#&gt; $`85`
+#&gt; Cluster Record [id 85]
+#&gt;  - [subtree] type
+#&gt;  - [HM764813.1] seed sequence
+#&gt;  - [5] sequences
+#&gt;  - [5] taxa
+#&gt; 
+#&gt; $`86`
+#&gt; Cluster Record [id 86]
+#&gt;  - [subtree] type
+#&gt;  - [FJ638414.1] seed sequence
+#&gt;  - [5] sequences
+#&gt;  - [3] taxa
+#&gt; 
+#&gt; $`87`
+#&gt; Cluster Record [id 87]
+#&gt;  - [subtree] type
+#&gt;  - [JQ933005.1] seed sequence
+#&gt;  - [5] sequences
+#&gt;  - [1] taxa
+#&gt; 
+#&gt; $`88`
+#&gt; Cluster Record [id 88]
+#&gt;  - [subtree] type
+#&gt;  - [JQ932259.1] seed sequence
+#&gt;  - [5] sequences
+#&gt;  - [1] taxa
+#&gt; 
+#&gt; $`89`
+#&gt; Cluster Record [id 89]
+#&gt;  - [subtree] type
+#&gt;  - [JQ932280.1] seed sequence
+#&gt;  - [5] sequences
+#&gt;  - [4] taxa
+#&gt; 
+#&gt; $`90`
+#&gt; Cluster Record [id 90]
+#&gt;  - [subtree] type
+#&gt;  - [JQ932662.1] seed sequence
+#&gt;  - [5] sequences
+#&gt;  - [4] taxa
+#&gt; 
+#&gt; $`91`
+#&gt; Cluster Record [id 91]
+#&gt;  - [subtree] type
+#&gt;  - [JQ932630.1] seed sequence
+#&gt;  - [5] sequences
+#&gt;  - [1] taxa
+#&gt; 
+#&gt; $`92`
+#&gt; Cluster Record [id 92]
+#&gt;  - [subtree] type
+#&gt;  - [JQ932880.1] seed sequence
+#&gt;  - [5] sequences
+#&gt;  - [1] taxa
+#&gt; 
+#&gt; $`93`
+#&gt; Cluster Record [id 93]
+#&gt;  - [subtree] type
+#&gt;  - [DQ989366.1] seed sequence
+#&gt;  - [5] sequences
+#&gt;  - [5] taxa
+#&gt; 
+#&gt; $`94`
+#&gt; Cluster Record [id 94]
+#&gt;  - [subtree] type
+#&gt;  - [FJ623078.1] seed sequence
+#&gt;  - [4] sequences
+#&gt;  - [3] taxa
+#&gt; 
+#&gt; $`95`
+#&gt; Cluster Record [id 95]
+#&gt;  - [subtree] type
+#&gt;  - [DQ334827.1] seed sequence
+#&gt;  - [4] sequences
+#&gt;  - [2] taxa
+#&gt; 
+#&gt; $`96`
+#&gt; Cluster Record [id 96]
+#&gt;  - [subtree] type
+#&gt;  - [AF042144.1/371..877] seed sequence
+#&gt;  - [4] sequences
+#&gt;  - [2] taxa
+#&gt; 
+#&gt; $`97`
+#&gt; Cluster Record [id 97]
+#&gt;  - [subtree] type
+#&gt;  - [AB181217.1/1545..1839] seed sequence
+#&gt;  - [4] sequences
+#&gt;  - [4] taxa
+#&gt; 
+#&gt; $`98`
+#&gt; Cluster Record [id 98]
+#&gt;  - [subtree] type
+#&gt;  - [AF397604.1/737..1037] seed sequence
+#&gt;  - [4] sequences
+#&gt;  - [2] taxa
+#&gt; 
+#&gt; $`99`
+#&gt; Cluster Record [id 99]
+#&gt;  - [subtree] type
+#&gt;  - [AY449010.1] seed sequence
+#&gt;  - [4] sequences
+#&gt;  - [1] taxa
+#&gt; 
+#&gt; $`100`
+#&gt; Cluster Record [id 100]
+#&gt;  - [subtree] type
+#&gt;  - [AY900524.1] seed sequence
+#&gt;  - [4] sequences
+#&gt;  - [1] taxa
+#&gt; 
+#&gt; $`101`
+#&gt; Cluster Record [id 101]
+#&gt;  - [subtree] type
+#&gt;  - [AF489244.1/762..1058] seed sequence
+#&gt;  - [4] sequences
+#&gt;  - [2] taxa
+#&gt; 
+#&gt; $`102`
+#&gt; Cluster Record [id 102]
+#&gt;  - [subtree] type
+#&gt;  - [AB081280.2] seed sequence
+#&gt;  - [4] sequences
+#&gt;  - [1] taxa
+#&gt; 
+#&gt; $`103`
+#&gt; Cluster Record [id 103]
+#&gt;  - [subtree] type
+#&gt;  - [AB081278.2] seed sequence
+#&gt;  - [4] sequences
+#&gt;  - [1] taxa
+#&gt; 
+#&gt; $`104`
+#&gt; Cluster Record [id 104]
+#&gt;  - [subtree] type
+#&gt;  - [AB181209.1] seed sequence
+#&gt;  - [4] sequences
+#&gt;  - [1] taxa
+#&gt; 
+#&gt; $`105`
+#&gt; Cluster Record [id 105]
+#&gt;  - [subtree] type
+#&gt;  - [HM761011.1] seed sequence
+#&gt;  - [4] sequences
+#&gt;  - [4] taxa
+#&gt; 
+#&gt; $`106`
+#&gt; Cluster Record [id 106]
+#&gt;  - [subtree] type
+#&gt;  - [HM761143.1] seed sequence
+#&gt;  - [4] sequences
+#&gt;  - [4] taxa
+#&gt; 
+#&gt; $`107`
+#&gt; Cluster Record [id 107]
+#&gt;  - [subtree] type
+#&gt;  - [HM762856.1] seed sequence
+#&gt;  - [4] sequences
+#&gt;  - [4] taxa
+#&gt; 
+#&gt; $`108`
+#&gt; Cluster Record [id 108]
+#&gt;  - [subtree] type
+#&gt;  - [HM763019.1] seed sequence
+#&gt;  - [4] sequences
+#&gt;  - [4] taxa
+#&gt; 
+#&gt; $`109`
+#&gt; Cluster Record [id 109]
+#&gt;  - [subtree] type
+#&gt;  - [HM763994.1] seed sequence
+#&gt;  - [4] sequences
+#&gt;  - [4] taxa
+#&gt; 
+#&gt; $`110`
+#&gt; Cluster Record [id 110]
+#&gt;  - [subtree] type
+#&gt;  - [HM764394.1] seed sequence
+#&gt;  - [4] sequences
+#&gt;  - [4] taxa
+#&gt; 
+#&gt; $`111`
+#&gt; Cluster Record [id 111]
+#&gt;  - [subtree] type
+#&gt;  - [KC760417.1] seed sequence
+#&gt;  - [4] sequences
+#&gt;  - [4] taxa
+#&gt; 
+#&gt; $`112`
+#&gt; Cluster Record [id 112]
+#&gt;  - [subtree] type
+#&gt;  - [KC760385.1] seed sequence
+#&gt;  - [4] sequences
+#&gt;  - [4] taxa
+#&gt; 
+#&gt; $`113`
+#&gt; Cluster Record [id 113]
+#&gt;  - [subtree] type
+#&gt;  - [KC760326.1] seed sequence
+#&gt;  - [4] sequences
+#&gt;  - [4] taxa
+#&gt; 
+#&gt; $`114`
+#&gt; Cluster Record [id 114]
+#&gt;  - [subtree] type
+#&gt;  - [KC760263.1] seed sequence
+#&gt;  - [4] sequences
+#&gt;  - [4] taxa
+#&gt; 
+#&gt; $`115`
+#&gt; Cluster Record [id 115]
+#&gt;  - [subtree] type
+#&gt;  - [KC760228.1] seed sequence
+#&gt;  - [4] sequences
+#&gt;  - [4] taxa
+#&gt; 
+#&gt; $`116`
+#&gt; Cluster Record [id 116]
+#&gt;  - [subtree] type
+#&gt;  - [AB239200.1] seed sequence
+#&gt;  - [4] sequences
+#&gt;  - [1] taxa
+#&gt; 
+#&gt; $`117`
+#&gt; Cluster Record [id 117]
+#&gt;  - [subtree] type
+#&gt;  - [AF027546.1/1..274] seed sequence
+#&gt;  - [4] sequences
+#&gt;  - [1] taxa
+#&gt; 
+#&gt; $`118`
+#&gt; Cluster Record [id 118]
+#&gt;  - [subtree] type
+#&gt;  - [KC762160.1] seed sequence
+#&gt;  - [4] sequences
+#&gt;  - [4] taxa
+#&gt; 
+#&gt; $`119`
+#&gt; Cluster Record [id 119]
+#&gt;  - [subtree] type
+#&gt;  - [KC762072.1] seed sequence
+#&gt;  - [4] sequences
+#&gt;  - [4] taxa
+#&gt; 
+#&gt; $`120`
+#&gt; Cluster Record [id 120]
+#&gt;  - [subtree] type
+#&gt;  - [KC762014.1] seed sequence
+#&gt;  - [4] sequences
+#&gt;  - [4] taxa
+#&gt; 
+#&gt; $`121`
+#&gt; Cluster Record [id 121]
+#&gt;  - [subtree] type
+#&gt;  - [KC761980.1] seed sequence
+#&gt;  - [4] sequences
+#&gt;  - [4] taxa
+#&gt; 
+#&gt; $`122`
+#&gt; Cluster Record [id 122]
+#&gt;  - [subtree] type
+#&gt;  - [KC761951.1] seed sequence
+#&gt;  - [4] sequences
+#&gt;  - [4] taxa
+#&gt; 
+#&gt; $`123`
+#&gt; Cluster Record [id 123]
+#&gt;  - [subtree] type
+#&gt;  - [KC761918.1] seed sequence
+#&gt;  - [4] sequences
+#&gt;  - [4] taxa
+#&gt; 
+#&gt; $`124`
+#&gt; Cluster Record [id 124]
+#&gt;  - [subtree] type
+#&gt;  - [KC761889.1] seed sequence
+#&gt;  - [4] sequences
+#&gt;  - [4] taxa
+#&gt; 
+#&gt; $`125`
+#&gt; Cluster Record [id 125]
+#&gt;  - [subtree] type
+#&gt;  - [KC761833.1] seed sequence
+#&gt;  - [4] sequences
+#&gt;  - [4] taxa
+#&gt; 
+#&gt; $`126`
+#&gt; Cluster Record [id 126]
+#&gt;  - [subtree] type
+#&gt;  - [KC761782.1] seed sequence
+#&gt;  - [4] sequences
+#&gt;  - [4] taxa
+#&gt; 
+#&gt; $`127`
+#&gt; Cluster Record [id 127]
+#&gt;  - [subtree] type
+#&gt;  - [KC761695.1] seed sequence
+#&gt;  - [4] sequences
+#&gt;  - [4] taxa
+#&gt; 
+#&gt; $`128`
+#&gt; Cluster Record [id 128]
+#&gt;  - [subtree] type
+#&gt;  - [KC761632.1] seed sequence
+#&gt;  - [4] sequences
+#&gt;  - [4] taxa
+#&gt; 
+#&gt; $`129`
+#&gt; Cluster Record [id 129]
+#&gt;  - [subtree] type
+#&gt;  - [KC761601.1] seed sequence
+#&gt;  - [4] sequences
+#&gt;  - [4] taxa
+#&gt; 
+#&gt; $`130`
+#&gt; Cluster Record [id 130]
+#&gt;  - [subtree] type
+#&gt;  - [KC761569.1] seed sequence
+#&gt;  - [4] sequences
+#&gt;  - [4] taxa
+#&gt; 
+#&gt; $`131`
+#&gt; Cluster Record [id 131]
+#&gt;  - [subtree] type
+#&gt;  - [KC761504.1] seed sequence
+#&gt;  - [4] sequences
+#&gt;  - [4] taxa
+#&gt; 
+#&gt; $`132`
+#&gt; Cluster Record [id 132]
+#&gt;  - [subtree] type
+#&gt;  - [KC761470.1] seed sequence
+#&gt;  - [4] sequences
+#&gt;  - [4] taxa
+#&gt; 
+#&gt; $`133`
+#&gt; Cluster Record [id 133]
+#&gt;  - [subtree] type
+#&gt;  - [KC761405.1] seed sequence
+#&gt;  - [4] sequences
+#&gt;  - [4] taxa
+#&gt; 
+#&gt; $`134`
+#&gt; Cluster Record [id 134]
+#&gt;  - [subtree] type
+#&gt;  - [KC761242.1] seed sequence
+#&gt;  - [4] sequences
+#&gt;  - [4] taxa
+#&gt; 
+#&gt; $`135`
+#&gt; Cluster Record [id 135]
+#&gt;  - [subtree] type
+#&gt;  - [KC761177.1] seed sequence
+#&gt;  - [4] sequences
+#&gt;  - [4] taxa
+#&gt; 
+#&gt; $`136`
+#&gt; Cluster Record [id 136]
+#&gt;  - [subtree] type
+#&gt;  - [KC761016.1] seed sequence
+#&gt;  - [4] sequences
+#&gt;  - [4] taxa
+#&gt; 
+#&gt; $`137`
+#&gt; Cluster Record [id 137]
+#&gt;  - [subtree] type
+#&gt;  - [KC760988.1] seed sequence
+#&gt;  - [4] sequences
+#&gt;  - [4] taxa
+#&gt; 
+#&gt; $`138`
+#&gt; Cluster Record [id 138]
+#&gt;  - [subtree] type
+#&gt;  - [KC760954.1] seed sequence
+#&gt;  - [4] sequences
+#&gt;  - [4] taxa
+#&gt; 
+#&gt; $`139`
+#&gt; Cluster Record [id 139]
+#&gt;  - [subtree] type
+#&gt;  - [KC760866.1] seed sequence
+#&gt;  - [4] sequences
+#&gt;  - [4] taxa
+#&gt; 
+#&gt; $`140`
+#&gt; Cluster Record [id 140]
+#&gt;  - [subtree] type
+#&gt;  - [KC760833.1] seed sequence
+#&gt;  - [4] sequences
+#&gt;  - [4] taxa
+#&gt; 
+#&gt; $`141`
+#&gt; Cluster Record [id 141]
+#&gt;  - [subtree] type
+#&gt;  - [KC760802.1] seed sequence
+#&gt;  - [4] sequences
+#&gt;  - [4] taxa
+#&gt; 
+#&gt; $`142`
+#&gt; Cluster Record [id 142]
+#&gt;  - [subtree] type
+#&gt;  - [KC760738.1] seed sequence
+#&gt;  - [4] sequences
+#&gt;  - [4] taxa
+#&gt; 
+#&gt; $`143`
+#&gt; Cluster Record [id 143]
+#&gt;  - [subtree] type
+#&gt;  - [KC760712.1] seed sequence
+#&gt;  - [4] sequences
+#&gt;  - [4] taxa
+#&gt; 
+#&gt; $`144`
+#&gt; Cluster Record [id 144]
+#&gt;  - [subtree] type
+#&gt;  - [KC760681.1] seed sequence
+#&gt;  - [4] sequences
+#&gt;  - [4] taxa
+#&gt; 
+#&gt; $`145`
+#&gt; Cluster Record [id 145]
+#&gt;  - [subtree] type
+#&gt;  - [KC760611.1] seed sequence
+#&gt;  - [4] sequences
+#&gt;  - [4] taxa
+#&gt; 
+#&gt; $`146`
+#&gt; Cluster Record [id 146]
+#&gt;  - [subtree] type
+#&gt;  - [KC760514.1] seed sequence
+#&gt;  - [4] sequences
+#&gt;  - [4] taxa
+#&gt; 
+#&gt; $`147`
+#&gt; Cluster Record [id 147]
+#&gt;  - [subtree] type
+#&gt;  - [AF014508.1] seed sequence
+#&gt;  - [4] sequences
+#&gt;  - [4] taxa
+#&gt; 
+#&gt; $`148`
+#&gt; Cluster Record [id 148]
+#&gt;  - [subtree] type
+#&gt;  - [AF014506.1] seed sequence
+#&gt;  - [4] sequences
+#&gt;  - [4] taxa
+#&gt; 
+#&gt; $`149`
+#&gt; Cluster Record [id 149]
+#&gt;  - [subtree] type
+#&gt;  - [AF014509.1] seed sequence
+#&gt;  - [4] sequences
+#&gt;  - [4] taxa
+#&gt; 
+#&gt; $`150`
+#&gt; Cluster Record [id 150]
+#&gt;  - [direct] type
+#&gt;  - [AY449010.1] seed sequence
+#&gt;  - [4] sequences
+#&gt;  - [1] taxa
+#&gt; 
+#&gt; $`151`
+#&gt; Cluster Record [id 151]
+#&gt;  - [direct] type
+#&gt;  - [DQ098863.1] seed sequence
+#&gt;  - [4] sequences
+#&gt;  - [1] taxa
+#&gt; 
+#&gt; $`152`
+#&gt; Cluster Record [id 152]
+#&gt;  - [direct] type
+#&gt;  - [DQ098851.1/1..495] seed sequence
+#&gt;  - [4] sequences
+#&gt;  - [1] taxa
+#&gt; 
+#&gt; $`153`
+#&gt; Cluster Record [id 153]
+#&gt;  - [direct] type
+#&gt;  - [LC075890.1] seed sequence
+#&gt;  - [4] sequences
+#&gt;  - [1] taxa
+#&gt; 
+#&gt; $`154`
+#&gt; Cluster Record [id 154]
+#&gt;  - [subtree] type
+#&gt;  - [AB081280.2] seed sequence
+#&gt;  - [4] sequences
+#&gt;  - [1] taxa
+#&gt; 
+#&gt; $`155`
+#&gt; Cluster Record [id 155]
+#&gt;  - [subtree] type
+#&gt;  - [AB081279.2] seed sequence
+#&gt;  - [4] sequences
+#&gt;  - [1] taxa
+#&gt; 
+#&gt; $`156`
+#&gt; Cluster Record [id 156]
+#&gt;  - [subtree] type
+#&gt;  - [AB081278.2] seed sequence
+#&gt;  - [4] sequences
+#&gt;  - [1] taxa
+#&gt; 
+#&gt; $`157`
+#&gt; Cluster Record [id 157]
+#&gt;  - [subtree] type
+#&gt;  - [AB181209.1] seed sequence
+#&gt;  - [4] sequences
+#&gt;  - [1] taxa
+#&gt; 
+#&gt; $`158`
+#&gt; Cluster Record [id 158]
+#&gt;  - [subtree] type
+#&gt;  - [HM758657.1] seed sequence
+#&gt;  - [4] sequences
+#&gt;  - [2] taxa
+#&gt; 
+#&gt; $`159`
+#&gt; Cluster Record [id 159]
+#&gt;  - [subtree] type
+#&gt;  - [AY449065.1] seed sequence
+#&gt;  - [3] sequences
+#&gt;  - [1] taxa
+#&gt; 
+#&gt; $`160`
+#&gt; Cluster Record [id 160]
+#&gt;  - [subtree] type
+#&gt;  - [AY449057.1] seed sequence
+#&gt;  - [3] sequences
+#&gt;  - [1] taxa
+#&gt; 
+#&gt; $`161`
+#&gt; Cluster Record [id 161]
+#&gt;  - [subtree] type
+#&gt;  - [AY455162.1] seed sequence
+#&gt;  - [3] sequences
+#&gt;  - [1] taxa
+#&gt; 
+#&gt; $`162`
+#&gt; Cluster Record [id 162]
+#&gt;  - [subtree] type
+#&gt;  - [AB181208.1/452..749] seed sequence
+#&gt;  - [3] sequences
+#&gt;  - [1] taxa
+#&gt; 
+#&gt; $`163`
+#&gt; Cluster Record [id 163]
+#&gt;  - [subtree] type
+#&gt;  - [AB181207.1] seed sequence
+#&gt;  - [3] sequences
+#&gt;  - [1] taxa
+#&gt; 
+#&gt; $`164`
+#&gt; Cluster Record [id 164]
+#&gt;  - [subtree] type
+#&gt;  - [AB023937.1] seed sequence
+#&gt;  - [3] sequences
+#&gt;  - [1] taxa
+#&gt; 
+#&gt; $`165`
+#&gt; Cluster Record [id 165]
+#&gt;  - [subtree] type
+#&gt;  - [HM756999.1] seed sequence
+#&gt;  - [3] sequences
+#&gt;  - [3] taxa
+#&gt; 
+#&gt; $`166`
+#&gt; Cluster Record [id 166]
+#&gt;  - [subtree] type
+#&gt;  - [HM760774.1] seed sequence
+#&gt;  - [3] sequences
+#&gt;  - [3] taxa
+#&gt; 
+#&gt; $`167`
+#&gt; Cluster Record [id 167]
+#&gt;  - [subtree] type
+#&gt;  - [HM763503.1] seed sequence
+#&gt;  - [3] sequences
+#&gt;  - [3] taxa
+#&gt; 
+#&gt; $`168`
+#&gt; Cluster Record [id 168]
+#&gt;  - [subtree] type
+#&gt;  - [HM763844.1] seed sequence
+#&gt;  - [3] sequences
+#&gt;  - [3] taxa
+#&gt; 
+#&gt; $`169`
+#&gt; Cluster Record [id 169]
+#&gt;  - [subtree] type
+#&gt;  - [AB181217.1/324..590] seed sequence
+#&gt;  - [3] sequences
+#&gt;  - [2] taxa
+#&gt; 
+#&gt; $`170`
+#&gt; Cluster Record [id 170]
+#&gt;  - [subtree] type
+#&gt;  - [KC760295.1] seed sequence
+#&gt;  - [3] sequences
+#&gt;  - [3] taxa
+#&gt; 
+#&gt; $`171`
+#&gt; Cluster Record [id 171]
+#&gt;  - [subtree] type
+#&gt;  - [AB239246.1] seed sequence
+#&gt;  - [3] sequences
+#&gt;  - [1] taxa
+#&gt; 
+#&gt; $`172`
+#&gt; Cluster Record [id 172]
+#&gt;  - [subtree] type
+#&gt;  - [AB239226.1] seed sequence
+#&gt;  - [3] sequences
+#&gt;  - [1] taxa
+#&gt; 
+#&gt; $`173`
+#&gt; Cluster Record [id 173]
+#&gt;  - [subtree] type
+#&gt;  - [AF486448.1] seed sequence
+#&gt;  - [3] sequences
+#&gt;  - [1] taxa
+#&gt; 
+#&gt; $`174`
+#&gt; Cluster Record [id 174]
+#&gt;  - [subtree] type
+#&gt;  - [KM206804.1] seed sequence
+#&gt;  - [3] sequences
+#&gt;  - [3] taxa
+#&gt; 
+#&gt; $`175`
+#&gt; Cluster Record [id 175]
+#&gt;  - [subtree] type
+#&gt;  - [KC762127.1] seed sequence
+#&gt;  - [3] sequences
+#&gt;  - [3] taxa
+#&gt; 
+#&gt; $`176`
+#&gt; Cluster Record [id 176]
+#&gt;  - [subtree] type
+#&gt;  - [KC762104.1] seed sequence
+#&gt;  - [3] sequences
+#&gt;  - [3] taxa
+#&gt; 
+#&gt; $`177`
+#&gt; Cluster Record [id 177]
+#&gt;  - [subtree] type
+#&gt;  - [KC761755.1] seed sequence
+#&gt;  - [3] sequences
+#&gt;  - [3] taxa
+#&gt; 
+#&gt; $`178`
+#&gt; Cluster Record [id 178]
+#&gt;  - [subtree] type
+#&gt;  - [KC761438.1] seed sequence
+#&gt;  - [3] sequences
+#&gt;  - [3] taxa
+#&gt; 
+#&gt; $`179`
+#&gt; Cluster Record [id 179]
+#&gt;  - [subtree] type
+#&gt;  - [KC761371.1] seed sequence
+#&gt;  - [3] sequences
+#&gt;  - [3] taxa
+#&gt; 
+#&gt; $`180`
+#&gt; Cluster Record [id 180]
+#&gt;  - [subtree] type
+#&gt;  - [KC761338.1] seed sequence
+#&gt;  - [3] sequences
+#&gt;  - [3] taxa
+#&gt; 
+#&gt; $`181`
+#&gt; Cluster Record [id 181]
+#&gt;  - [subtree] type
+#&gt;  - [KC761277.1] seed sequence
+#&gt;  - [3] sequences
+#&gt;  - [3] taxa
+#&gt; 
+#&gt; $`182`
+#&gt; Cluster Record [id 182]
+#&gt;  - [subtree] type
+#&gt;  - [KC761210.1] seed sequence
+#&gt;  - [3] sequences
+#&gt;  - [3] taxa
+#&gt; 
+#&gt; $`183`
+#&gt; Cluster Record [id 183]
+#&gt;  - [subtree] type
+#&gt;  - [KC760920.1] seed sequence
+#&gt;  - [3] sequences
+#&gt;  - [3] taxa
+#&gt; 
+#&gt; $`184`
+#&gt; Cluster Record [id 184]
+#&gt;  - [subtree] type
+#&gt;  - [KC760770.1] seed sequence
+#&gt;  - [3] sequences
+#&gt;  - [3] taxa
+#&gt; 
+#&gt; $`185`
+#&gt; Cluster Record [id 185]
+#&gt;  - [subtree] type
+#&gt;  - [KC760546.1] seed sequence
+#&gt;  - [3] sequences
+#&gt;  - [3] taxa
+#&gt; 
+#&gt; $`186`
+#&gt; Cluster Record [id 186]
+#&gt;  - [direct] type
+#&gt;  - [AY449065.1] seed sequence
+#&gt;  - [3] sequences
+#&gt;  - [1] taxa
+#&gt; 
+#&gt; $`187`
+#&gt; Cluster Record [id 187]
+#&gt;  - [direct] type
+#&gt;  - [AY449057.1] seed sequence
+#&gt;  - [3] sequences
+#&gt;  - [1] taxa
+#&gt; 
+#&gt; $`188`
+#&gt; Cluster Record [id 188]
+#&gt;  - [direct] type
+#&gt;  - [AY455162.1] seed sequence
+#&gt;  - [3] sequences
+#&gt;  - [1] taxa
+#&gt; 
+#&gt; $`189`
+#&gt; Cluster Record [id 189]
+#&gt;  - [subtree] type
+#&gt;  - [AB181208.1/452..749] seed sequence
+#&gt;  - [3] sequences
+#&gt;  - [1] taxa
+#&gt; 
+#&gt; $`190`
+#&gt; Cluster Record [id 190]
+#&gt;  - [subtree] type
+#&gt;  - [AB181207.1] seed sequence
+#&gt;  - [3] sequences
+#&gt;  - [1] taxa
+#&gt; 
+#&gt; $`191`
+#&gt; Cluster Record [id 191]
+#&gt;  - [subtree] type
+#&gt;  - [HM759274.1] seed sequence
+#&gt;  - [3] sequences
+#&gt;  - [2] taxa
+#&gt; 
+#&gt; $`192`
+#&gt; Cluster Record [id 192]
 #&gt;  - [subtree] type
 #&gt;  - [AF338376.1/177..829] seed sequence
 #&gt;  - [3] sequences
@@ -556,9 +1563,9 @@ summary(object)
 #&gt; </div><div class='input'><span class='co'># access cluster records [[</span>
 (<span class='no'>clstrarc</span><span class='kw'>[[</span><span class='no'>clstrarc</span>@<span class='kw'>ids</span><span class='kw'>[[</span><span class='fl'>1</span>]]]])  <span class='co'># first cluster record</span></div><div class='output co'>#&gt; Cluster Record [id 0]
 #&gt;  - [subtree] type
-#&gt;  - [AF352254.1/34..729] seed sequence
-#&gt;  - [36] sequences
-#&gt;  - [10] taxa</div><div class='input'><span class='co'># generate new cluster archives with [</span>
+#&gt;  - [AF129794.1] seed sequence
+#&gt;  - [204] sequences
+#&gt;  - [5] taxa</div><div class='input'><span class='co'># generate new cluster archives with [</span>
 (<span class='no'>clstrarc</span>[<span class='no'>clstrarc</span>@<span class='kw'>ids</span>[<span class='fl'>1</span>:<span class='fl'>10</span>]])  <span class='co'># first 10 clusters</span></div><div class='output co'>#&gt; Archive of cluster record(s)
 #&gt;  - [10] clusters</div></pre>
   </div>

@@ -39,10 +39,21 @@ hierarchic_download <- function(txid, txdct, ps, lvl=0) {
 #' @family run-private
 seqrec_augment <- function(sqs, txdct) {
   # txids are not downloaded as part of sequence, added here
+  # hopefully, restez integration will make this function redundant
   txdct_nms <- vapply(txdct@recs, function(x) x@scnm, '')
   txdct_ids <- vapply(txdct@recs, function(x) x@id, '')
   sqs_nms <- vapply(sqs, function(x) x@orgnsm, '')
   sqs_ids <- txdct_ids[match(sqs_nms, txdct_nms)]
+  # tax name may be missing from taxdict
+  pull <- !is.na(sqs_ids)
+  sqs <- sqs[pull]
+  sqs_ids <- sqs_ids[pull]
+  # Look up with entrez if missing -- needs developing
+  # if (any(pull)) {
+  #   sq_smmrs <- rentrez::entrez_fetch(db = 'nucleotide', id = sqs_ids[pull])
+  #   sqs_ids <- vapply(X = sq_smmrs, FUN = '[[', FUN.VALUE = character(1),
+  #                     i = 'taxid')
+  # }
   for (i in seq_along(sqs)) {
     sqs[[i]]@txid <- as.character(sqs_ids[[i]])
   }
@@ -76,7 +87,7 @@ seqrec_get <- function(txid, ps, direct=FALSE, lvl=0) {
   if (length(sids) > ps[['mdlthrs']]) {
     info(lvl = lvl + 3, ps = ps, "More than [", ps[['mdlthrs']],
          ' sqs] available. Choosing at random.')
-    sids <- sids[sample(1:length(sids), size = ps[['mdlthrs']],
+    sids <- sids[sample(seq_along(sids), size = ps[['mdlthrs']],
                         replace = FALSE)]
   }
   if (restez::restez_ready()) {

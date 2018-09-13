@@ -195,28 +195,32 @@ sqs_save <- function(wd, txid, sqs) {
   saveRDS(object = sqs, file = fl)
 }
 
-#' @name sqs_load
-#' @title Load sequences from cache
-#' @description Load sequences downloaded by \code{dwnld} function.
-#' @param wd Working directory
-#' @param txid Taxonomic ID, numeric
-#' @family run-private
-#' @return SeqArc
-sqs_load <- function(wd, txid) {
-  d <- file.path(wd, 'cache')
-  if (!file.exists(d)) {
-    stop('Cache does not exist.')
-  }
-  d <- file.path(d, 'sqs')
-  if (!file.exists(d)) {
-    stop('`sqs` not in cache. Have you run the download stage?')
-  }
-  fl <- file.path(d, paste0(txid, '.RData'))
-  if (!file.exists(fl)) {
-    stop(paste0('[', txid, '] not in `sqs` of cache.'))
-  }
-  readRDS(file = fl)
-}
+#' #' @name sqs_load
+#' #' @title Load sequences from cache
+#' #' @description Load sequences downloaded by \code{dwnld} function.
+#' #' @param wd Working directory
+#' #' @param txid Taxonomic ID, numeric
+#' #' @family run-private
+#' #' @return SeqArc
+#' sqs_load <- function(wd, txid) {
+#'   d <- file.path(wd, 'cache')
+#'   if (!file.exists(d)) {
+#'     stop('Cache does not exist.')
+#'   }
+#'   d <- file.path(d, 'sqs')
+#'   if (!file.exists(d)) {
+#'     stop('`sqs` not in cache. Have you run the download stage?')
+#'   }
+#'   fl <- file.path(d, paste0(txid, '.RData'))
+#'   if (!file.exists(fl)) {
+#'     stop(paste0('[', txid, '] not in `sqs` of cache.'))
+#'   }
+#'   sqs <- try(readRDS(file = fl), silent = TRUE)
+#'   if (inherits(sqs, 'try-error')) {
+#'     file.remove(fl)
+#'   }
+#'   sqs
+#' }
 
 #' @name sids_check
 #' @title Check if sids exist
@@ -305,8 +309,7 @@ clstrs_save <- function(wd, txid, clstrs) {
 #' @family run-private
 #' @return rentrez result
 ncbicache_load <- function(fnm, args, wd) {
-  flpth <- file.path(wd, 'cache', 'ncbi',
-                     fnm, args[['db']])
+  flpth <- file.path(wd, 'cache', 'ncbi', fnm, args[['db']])
   fldctnry_pth <- file.path(flpth, 'fldctnry.RData')
   if (file.exists(fldctnry_pth)) {
     fldctnry <- readRDS(fldctnry_pth)
@@ -328,7 +331,12 @@ ncbicache_load <- function(fnm, args, wd) {
   }
   flnm <- paste0(which(pull), '.RData')
   flpth <- file.path(flpth, flnm)
-  readRDS(file = flpth)
+  res <- try(expr = readRDS(file = flpth), silent = TRUE)
+  if (inherits(res, 'try-error')) {
+    res <- NULL
+    file.remove(flpth)
+  }
+  res
 }
 
 #' @name ncbicache_save
@@ -379,7 +387,7 @@ blastcache_load <- function(sids, wd) {
   } else {
     return(NULL)
   }
-  pull <- sapply(fldctnry, function(x) all(sids %in% x))
+  pull <- vapply(fldctnry, function(x) all(sids %in% x), logical(1))
   if (sum(pull) == 0) {
     return(NULL)
   }
@@ -389,7 +397,7 @@ blastcache_load <- function(sids, wd) {
     return(readRDS(file = flpth))
   }
   pssbls <- which(pull)
-  lngs <- sapply(fldctnry[pssbls], length)
+  lngs <- vapply(fldctnry[pssbls], length, integer(1))
   flnm <- paste0(pssbls[which.min(lngs)], '.RData')
   flpth <- file.path(wd, 'cache', 'blast', flnm)
   blst_rs <- readRDS(file = flpth)

@@ -39,8 +39,9 @@ clade_select <- function(txdct, ps) {
     queue <- tail(queue, length(queue) - 1)
     sqcnt <- sqs_count(txid = tmp_id, ps = ps)
     ndcnt <- txnds_count(txid = tmp_id, ps = ps)
-    mx_pssbl_sqcnt <- ps[['mdlthrs']] * ndcnt
-    sqcnt <- ifelse(sqcnt > mx_pssbl_sqcnt, mx_pssbl_sqcnt, sqcnt)
+    # mx_pssbl_sqcnt <- ps[['mdlthrs']] * ndcnt
+    # sqcnt <- ifelse(sqcnt > mx_pssbl_sqcnt, mx_pssbl_sqcnt, sqcnt)
+    # Unnecessary lines ^^ seq_count alreadys takes into account the subtree.
     if (sqcnt <= ps[['mxsqs']] & ndcnt <= ps[['mxnds']]) {
       res <- c(res, tmp_id)
     } else {
@@ -78,9 +79,12 @@ seq_download <- function(txids, txdct, ps) {
          "/", length(txids), "] ...")
     sqs <- hierarchic_download(txid = txid, txdct = txdct, ps = ps)
     if (length(sqs) > 0) {
-      sqcnt <- sqcnt + length(sqs)
+      # ugly, but need two checks as seqrec_augment filters out any seqs wo txid
       sqs <- seqrec_augment(sqs = sqs, txdct = txdct)
-      sqs_save(wd = ps[['wd']], txid = txid, sqs = sqs)
+      if (length(sqs@sqs) > 0) {
+        sqcnt <- sqcnt + length(sqs@sqs)
+        sqs_save(wd = ps[['wd']], txid = txid, sqs = sqs)
+      }
     }
   }
   info(lvl = 1, ps = ps, "Successfully retrieved [", sqcnt,

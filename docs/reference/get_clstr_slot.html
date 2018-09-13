@@ -85,7 +85,7 @@
       
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/AntonelliLab/phylotaR#readme">
+  <a href="https://github.com/ropensci/phylotaR#readme">
     <span class="fa fa-github fa-lg"></span>
      
   </a>
@@ -103,7 +103,7 @@
   <div class="col-md-9 contents">
     <div class="page-header">
     <h1>Get slot data for each cluster record</h1>
-    <small class="dont-index">Source: <a href='https://github.com/AntonelliLab/phylotaR#readme/blob/master/R/user-get.R'><code>R/user-get.R</code></a></small>
+    <small class="dont-index">Source: <a href='https://github.com/ropensci/phylotaR#readme/blob/master/R/user-get.R'><code>R/user-get.R</code></a></small>
     <div class="hidden name"><code>get_clstr_slot.Rd</code></div>
     </div>
 
@@ -158,8 +158,8 @@
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='fu'>data</span>(<span class='st'>'aotus'</span>)
 <span class='no'>random_cid</span> <span class='kw'>&lt;-</span> <span class='fu'>sample</span>(<span class='no'>aotus</span>@<span class='kw'>cids</span>, <span class='fl'>1</span>)
-(<span class='fu'>get_clstr_slot</span>(<span class='kw'>phylota</span> <span class='kw'>=</span> <span class='no'>aotus</span>, <span class='kw'>cid</span> <span class='kw'>=</span> <span class='no'>random_cid</span>, <span class='kw'>slt_nm</span> <span class='kw'>=</span> <span class='st'>'seed'</span>))</div><div class='output co'>#&gt;                      21 
-#&gt; "HQ005472.1/1686..2381" </div><div class='input'><span class='co'># see list_clstrrec_slots() for available slots</span>
+(<span class='fu'>get_clstr_slot</span>(<span class='kw'>phylota</span> <span class='kw'>=</span> <span class='no'>aotus</span>, <span class='kw'>cid</span> <span class='kw'>=</span> <span class='no'>random_cid</span>, <span class='kw'>slt_nm</span> <span class='kw'>=</span> <span class='st'>'seed'</span>))</div><div class='output co'>#&gt;           80 
+#&gt; "HM764901.1" </div><div class='input'><span class='co'># see list_clstrrec_slots() for available slots</span>
 (<span class='fu'><a href='list_clstrrec_slots.html'>list_clstrrec_slots</a></span>())</div><div class='output co'>#&gt; [1] "id"   "nsqs" "ntx"  "typ"  "prnt" "seed"</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">

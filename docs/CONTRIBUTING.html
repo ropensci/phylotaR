@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Contributing • phylotaR</title>
+<title>CONTRIBUTING • phylotaR</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
@@ -30,7 +30,7 @@
 
 
 
-<meta property="og:title" content="Contributing" />
+<meta property="og:title" content="CONTRIBUTING" />
 
 <meta property="og:image" content="/logo.png" />
 <meta name="twitter:card" content="summary" />
@@ -83,7 +83,7 @@
       
       <ul class="nav navbar-nav navbar-right">
         <li>
-  <a href="https://github.com/AntonelliLab/phylotaR#readme">
+  <a href="https://github.com/ropensci/phylotaR#readme">
     <span class="fa fa-github fa-lg"></span>
      
   </a>
@@ -100,66 +100,68 @@
 <div class="row">
   <div class="contents col-md-9">
     <div class="page-header">
-      <h1>Contributing</h1>
+      <h1>CONTRIBUTING</h1>
     </div>
 
 <div id="contributing" class="section level1">
 
-<p>You are very welcome to help out in the development of phylotaR. If you have any ideas for future features than please add them to the <a href="https://github.com/AntonelliLab/phylotaR/issues">issues page</a>. If you have the impetus to add those features yourself, then please fork and send a pull request.</p>
-<div id="areas-for-possible-contribution" class="section level2">
-<h2 class="hasAnchor">
-<a href="#areas-for-possible-contribution" class="anchor"></a>Areas for possible contribution</h2>
-<div id="alternatives-to-blast" class="section level3">
+<div id="fixing-typos" class="section level3">
 <h3 class="hasAnchor">
-<a href="#alternatives-to-blast" class="anchor"></a>Alternatives to BLAST</h3>
-<p>Currently, phylotaR only makes use of BLAST. BLAST is good because it can work with any sequence type and is very sensitive. It is, however, slower than alternatives local alignment search tools. A set of generic input, run and output functions for working with any BLAST-alternative with an accompanying vignette would allow a user to any of the available alternatives.</p>
+<a href="#fixing-typos" class="anchor"></a>Fixing typos</h3>
+<p>Small typos or grammatical errors in documentation may be edited directly using the GitHub web interface, so long as the changes are made in the <em>source</em> file.</p>
+<ul>
+<li>YES: you edit a roxygen comment in a <code>.R</code> file below <code>R/</code>.</li>
+<li>NO: you edit an <code>.Rd</code> file below <code>man/</code>.</li>
+</ul>
 </div>
-<div id="blast-api" class="section level3">
+<div id="prerequisites" class="section level3">
 <h3 class="hasAnchor">
-<a href="#blast-api" class="anchor"></a>BLAST API</h3>
-<p>A big issue with phylotaR is the need to install and run a local copy of BLAST. One possibility is add API functionality so that a user can send the jobs to the cloud instead of having to install their own version of BLAST.</p>
+<a href="#prerequisites" class="anchor"></a>Prerequisites</h3>
+<p>Before you make a substantial pull request, you should always file an issue and make sure someone from the team agrees that it’s a problem. If you’ve found a bug, create an associated issue and illustrate the bug with a minimal <a href="https://www.tidyverse.org/help/#reprex">reprex</a>.</p>
 </div>
-<div id="inputting-ones-own-sequences" class="section level3">
+<div id="pull-request-process" class="section level3">
 <h3 class="hasAnchor">
-<a href="#inputting-ones-own-sequences" class="anchor"></a>Inputting one’s own sequences</h3>
-<p>A user may wish to make use of sequences they have generated themselves in conjunction with those available from GenBank. Currently there is no effort to allow a user to do this. It is a little tricky to do because of phylotaR’s reliance on IDs.</p>
+<a href="#pull-request-process" class="anchor"></a>Pull request process</h3>
+<ul>
+<li>We recommend that you create a Git branch for each pull request (PR).<br>
+</li>
+<li>Look at the Travis and AppVeyor build status before and after making changes. The <code>README</code> should contain badges for any continuous integration services used by the package.<br>
+</li>
+<li>We recommend the tidyverse <a href="http://style.tidyverse.org">style guide</a>. You can use the <a href="https://CRAN.R-project.org/package=styler">styler</a> package to apply these styles, but please don’t restyle code that has nothing to do with your PR.<br>
+</li>
+<li>We use <a href="https://cran.r-project.org/package=roxygen2">roxygen2</a>.<br>
+</li>
+<li>We use <a href="https://cran.r-project.org/package=testthat">testthat</a>. Contributions with test cases included are easier to accept.<br>
+</li>
+<li>For user-facing changes, add a bullet to the top of <code>NEWS.md</code> below the current development version header describing the changes made followed by your GitHub username, and links to relevant issue(s)/PR(s).</li>
+</ul>
 </div>
-<div id="multiple-taxids" class="section level3">
+<div id="code-of-conduct" class="section level3">
 <h3 class="hasAnchor">
-<a href="#multiple-taxids" class="anchor"></a>Multiple taxids</h3>
-<p>Many users wish to run a single phylotaR run for multiple, potentially paraphyletic, taxonomic IDs.</p>
+<a href="#code-of-conduct" class="anchor"></a>Code of Conduct</h3>
+<p>Please note that the phylotaR project is released with a <a href="CODE_OF_CONDUCT.html">Contributor Code of Conduct</a>. By contributing to this project you agree to abide by its terms.</p>
 </div>
-<div id="a-user-determined-taxonomy" class="section level3">
+<div id="see-ropensci-contributing-guide" class="section level3">
 <h3 class="hasAnchor">
-<a href="#a-user-determined-taxonomy" class="anchor"></a>A user determined taxonomy</h3>
-<p>Currrently, phylotaR depends on NCBI’s taxonomy. In theory, a user could provide their own newick tree representing their preferred taxonomy instead.</p>
+<a href="#see-ropensci-contributing-guide" class="anchor"></a>See rOpenSci <a href="https://ropensci.github.io/dev_guide/contributingguide.html">contributing guide</a>
+</h3>
+<p>for further details.</p>
 </div>
-<div id="refseq" class="section level3">
+<div id="discussion-forum" class="section level3">
 <h3 class="hasAnchor">
-<a href="#refseq" class="anchor"></a>RefSeq</h3>
-<p>Identify sequences that are orthologous to a specified sequence.</p>
+<a href="#discussion-forum" class="anchor"></a>Discussion forum</h3>
+<p>Check out our <a href="https://discuss.ropensci.org">discussion forum</a> if you think your issue requires a longer form discussion.</p>
 </div>
+<div id="prefer-to-email" class="section level3">
+<h3 class="hasAnchor">
+<a href="#prefer-to-email" class="anchor"></a>Prefer to Email?</h3>
+<p>Email the person listed as maintainer in the <code>DESCRIPTION</code> file of this repo.</p>
+<p>Though note that private discussions over email don’t help others - of course email is totally warranted if it’s a sensitive problem of any kind.</p>
 </div>
-<div id="how-to-contribute" class="section level2">
-<h2 class="hasAnchor">
-<a href="#how-to-contribute" class="anchor"></a>How to contribute</h2>
-<p>To contribute you will need a GitHub account and to have basic knowledge of the R language. You can then create a fork of the repo in your own GitHub account and download the repository to your local machine. <code>devtools</code> is recommended.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/install_github">install_github</a></span>(<span class="st">'[your account]/phylotaR'</span>)</code></pre></div>
-<p>All new functions must be tested. For every new file in <code>R/</code>, a new test file must be created in <code>tests/testthat/</code>. To test the package and make sure it meets CRAN guidelines use <code>devtools</code>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/test">test</a></span>()
-devtools<span class="op">::</span><span class="kw"><a href="http://www.rdocumentation.org/packages/devtools/topics/check_cran">check_cran</a></span>()</code></pre></div>
-<p>For help, refer to Hadley Wickham’s book, <a href="http://r-pkgs.had.co.nz/">R packages</a>.</p>
-</div>
-<div id="style-guide" class="section level2">
-<h2 class="hasAnchor">
-<a href="#style-guide" class="anchor"></a>Style guide</h2>
-<p>phylotaR is being developed for submission to ROpenSci. This means the package and its code should meet ROpenSci style and standards. For example, function names should be all lowercase, separated by underscores and the last word should, ideally, be a verb.</p>
-<pre><code># e.g.
-species_ids_retrieve()  # good
-sppIDs()                # not great
-sp.IDS_part2()          # really bad
-sigNXTprt.p()           # awful</code></pre>
-<p>It is best to make functions small, with specific names. Feel free to break up code into multiple separate files (e.g. tools, helper functions, stages …). For more details and better explanations refer to the ROpenSci <a href="https://github.com/ropensci/onboarding/blob/master/packaging_guide.html">guide</a>.</p>
+<div id="thanks-for-contributing" class="section level3">
+<h3 class="hasAnchor">
+<a href="#thanks-for-contributing" class="anchor"></a>Thanks for contributing!</h3>
+<p>This contributing guide is adapted from the tidyverse contributing guide available at <a href="https://raw.githubusercontent.com/r-lib/usethis/master/inst/templates/tidy-contributing.html" class="uri">https://raw.githubusercontent.com/r-lib/usethis/master/inst/templates/tidy-contributing.md</a></p>
 </div>
 </div>
 

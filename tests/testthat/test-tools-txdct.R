@@ -8,7 +8,7 @@ txids_recs <- readRDS(file = flpth)
 rndmn <- sample(x = seq_along(txids_recs), size = 1)
 txids <- txids_recs[[rndmn]][['txids']]
 recs <- txids_recs[[rndmn]][['records']]
-ps <- parameters()
+ps <- parameters(wd = tempdir())
 txdct <- phylotaR:::taxdict_gen(txids = txids, recs = recs, ps = ps)
 
 # RUNNING
@@ -29,14 +29,12 @@ test_that('rank_get() works', {
 })
 test_that('descendants_get(direct=TRUE) works', {
   txid <- sample(x = txdct@txids, size = 1)
-  dds <- phylotaR:::descendants_get(id = txid, txdct = txdct,
-                                    direct = TRUE)
+  dds <- phylotaR:::descendants_get(id = txid, txdct = txdct, direct = TRUE)
   expect_true(is.character(dds))
 })
 test_that('descendants_get(direct=FALSE) works', {
   txid <- sample(x = txdct@txids, size = 1)
-  ads <- phylotaR:::descendants_get(id = txid, txdct = txdct,
-                                    direct = FALSE)
+  ads <- phylotaR:::descendants_get(id = txid, txdct = txdct, direct = FALSE)
   expect_true(is.character(ads))
 })
 test_that('parent_get() works', {

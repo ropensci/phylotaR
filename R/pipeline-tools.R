@@ -33,7 +33,7 @@ parameters_setup <- function(wd, ncbi_execs, overwrite=FALSE, ...) {
   # log parameters
   msg <- paste0('Setting up pipeline with the following parameters:')
   info(lvl = 1, ps = ps, msg)
-  mxnchrs <- max(sapply(names(ps), nchar)) + 3
+  mxnchrs <- max(vapply(names(ps), nchar, integer(1))) + 3
   pnms <- names(ps)[names(ps) != 'wt_tms'] # too big to print
   pnms <- sort(pnms)
   for (pnm in pnms) {

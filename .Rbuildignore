@@ -10,3 +10,5 @@ CONTRIBUTING.md
 test.fasta
 examples/
 logo.png
+^codemeta\.json$
+.github

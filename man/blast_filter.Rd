@@ -4,12 +4,15 @@
 \alias{blast_filter}
 \title{Filter BLAST results}
 \usage{
-blast_filter(blast_res, ps)
+blast_filter(blast_res, ps, lvl = 3)
 }
 \arguments{
 \item{blast_res}{BLAST results}
 
 \item{ps}{Parameters list, generated with parameters()}
+
+\item{lvl}{Integer, number of message indentations indicating code
+depth.}
 }
 \value{
 data.frame blast res
@@ -58,9 +61,9 @@ Other run-private: \code{\link{batcher}},
   \code{\link{seqrec_get}}, \code{\link{sids_check}},
   \code{\link{sids_get}}, \code{\link{sids_load}},
   \code{\link{sids_save}}, \code{\link{sqs_count}},
-  \code{\link{sqs_load}}, \code{\link{sqs_save}},
-  \code{\link{stage_args_check}}, \code{\link{stages_run}},
-  \code{\link{tax_download}}, \code{\link{taxdict_gen}},
-  \code{\link{taxtree_gen}}, \code{\link{txids_get}},
-  \code{\link{txnds_count}}, \code{\link{warn}}
+  \code{\link{sqs_save}}, \code{\link{stage_args_check}},
+  \code{\link{stages_run}}, \code{\link{tax_download}},
+  \code{\link{taxdict_gen}}, \code{\link{taxtree_gen}},
+  \code{\link{txids_get}}, \code{\link{txnds_count}},
+  \code{\link{warn}}
 }
