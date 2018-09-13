@@ -81,19 +81,19 @@ sids_get <- function(txid, direct, ps, retmax=100, hrdmx=100000) {
   args <- list(db = 'nucleotide', retmax = 0, term = trm, use_history = TRUE)
   srch <- safely_connect(func = rentrez::entrez_search, args = args, ps = ps,
                          fnm = 'search')
-  nsqs <- srch[['count']]
-  if (nsqs == 0) {
+  nsqs <- srch[['count']] - 1
+  if (nsqs == -1) {
     return(NULL)
   }
   ids <- NULL
   if (nsqs > hrdmx) {
-    ret_strts <- sample(seq(1, (nsqs - retmax), retmax),
+    ret_strts <- sample(seq(0, (nsqs - retmax), retmax),
                         round(hrdmx/retmax), replace = FALSE)
   } else {
     if (nsqs <= retmax) {
-      ret_strts <- 1
+      ret_strts <- 0
     } else {
-      ret_strts <- seq(1, (nsqs - retmax), retmax)
+      ret_strts <- seq(0, (nsqs - retmax), retmax)
     }
   }
   rsrch <- FALSE
@@ -109,7 +109,7 @@ sids_get <- function(txid, direct, ps, retmax=100, hrdmx=100000) {
                         retmax = retmax, rettype = 'acc', retstart = ret_strt)
       id_ftch <- try(do.call(what = rentrez::entrez_fetch, args = ftch_args),
                      silent = TRUE)
-      if (inherits(id_ftch, 'try-error')) {
+      if (download_obj_check(id_ftch)) {
         rsrch <- TRUE
         if (i == mxtry) {
           error(ps = ps, 'Failed to get IDs for [', txid, ']')
