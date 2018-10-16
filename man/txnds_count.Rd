@@ -58,3 +58,4 @@ Other run-private: \code{\link{batcher}},
   \code{\link{taxdict_gen}}, \code{\link{taxtree_gen}},
   \code{\link{txids_get}}, \code{\link{warn}}
 }
+\concept{run-private}

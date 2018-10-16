@@ -19,6 +19,26 @@ taxise_run <- function(wd) {
   txids <- txids_get(ps = ps)
   info(lvl = 1, ps = ps, 'Downloading taxonomic records ...')
   recs <- batcher(ids = txids, func = tax_download, ps = ps, lvl = 2)
+  # 16/10/2018 patch to allow multiple txids ----
+  if (length(ps[['txid']]) > 1) {
+    # look up the root taxon for all txids provided
+    lngs <- lapply(X = recs[ps[['txid']]], FUN = function(x) {
+      slot(object = x, name = 'lng')[['ids']]
+    })
+    candidates <- lngs[[1]]
+    for (lng in lngs) {
+      candidates <- candidates[candidates %in% lng]
+    }
+    root_txid <- candidates[length(candidates)]
+    root_rec <- tax_download(ids = root_txid, ps = ps)
+    recs <- c(recs, root_rec)
+    txids <- c(txids, root_txid)
+    # replace the ncbi parent with the new root in order to create that taxtree
+    for (txid in ps[['txid']]) {
+      recs[[txid]]@prnt <- root_txid
+    }
+  }
+  # patch end ^
   info(lvl = 1, ps = ps, 'Generating taxonomic dictionary ...')
   txdct <- taxdict_gen(recs = recs, txids = txids, ps = ps)
   obj_save(wd = wd, obj = txdct, nm = 'txdct')
@@ -36,7 +56,7 @@ taxise_run <- function(wd) {
 #' @family run-private
 txids_get <- function(ps, retmax = 1E4) {
   # TODO: handle multiple txids
-  trm <- paste0('txid', ps[['txid']],'[Subtree]')
+  trm <- paste0(paste0('txid', ps[['txid']],'[Subtree]'), collapse = ' OR ')
   args <- list(db = 'taxonomy', term = trm, retmax = retmax)
   srch_rs <- search_and_cache(func = rentrez::entrez_search,
                               args = args, fnm = 'search', ps = ps)

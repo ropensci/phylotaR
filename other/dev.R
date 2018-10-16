@@ -2,13 +2,14 @@
 devtools::load_all('~/Coding/phylotaR')
 library(phylotaR)
 
-ncbi_dr <- file.path('NCBI', 'bin')
-wd <- 'aotus'
+# test multiple txids
+ncbi_dr <- '/usr/bin/'
+wd <- 'aotus_aloutta'
 if (file.exists(wd)) {
   unlink(wd, recursive = TRUE)
 }
 dir.create(wd)
-setup(wd = wd, txid = '9504', ncbi_dr = ncbi_dr, v = TRUE)
+setup(wd = wd, txid = c('9504', '9499'), ncbi_dr = ncbi_dr, v = TRUE)
 run(wd)
 taxise_run(wd)
 download_run(wd)

@@ -24,3 +24,4 @@ determine whether each txid is represented by the sequence.
 Other tools-private: \code{\link{summary_phylota}},
   \code{\link{update_phylota}}
 }
+\concept{tools-private}

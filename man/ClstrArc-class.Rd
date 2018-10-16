@@ -25,7 +25,8 @@
 
 \S4method{[[}{ClstrArc,character}(x, i)
 
-\S4method{[}{ClstrArc,character,missing,missing}(x, i, j, ..., drop = TRUE)
+\S4method{[}{ClstrArc,character,missing,missing}(x, i, j, ...,
+  drop = TRUE)
 }
 \arguments{
 \item{x}{\code{ClstrArc} object}
@@ -77,3 +78,4 @@ Other run-public: \code{\link{ClstrRec-class}},
   \code{\link{restart}}, \code{\link{run}},
   \code{\link{setup}}, \code{\link{taxise_run}}
 }
+\concept{run-public}

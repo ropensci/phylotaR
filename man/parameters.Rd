@@ -5,9 +5,9 @@
 \title{Default parameters}
 \usage{
 parameters(wd = ".", txid = character(), mkblstdb = "", blstn = "",
-  v = FALSE, ncps = 1, mxnds = 1e+05, mdlthrs = 3000, mnsql = 250,
-  mxsql = 2000, mxrtry = 100, mxsqs = 50000, mxevl = 1e-10,
-  mncvrg = 51, btchsz = 100, date = Sys.Date())
+  v = FALSE, ncps = 1, mxnds = 1e+05, mdlthrs = 3000,
+  mnsql = 250, mxsql = 2000, mxrtry = 100, mxsqs = 50000,
+  mxevl = 1e-10, mncvrg = 51, btchsz = 100, date = Sys.Date())
 }
 \arguments{
 \item{wd}{The working directory where all output files are saved.}
@@ -63,3 +63,4 @@ This function is NOT used to change the parameters in a folder.
 Use parameters_reset() instead. The purpose of this function is to describe
 the paramaters and present their default values.
 }
+\concept{public-pipeline}

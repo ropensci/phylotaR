@@ -44,3 +44,4 @@ Other tools-public: \code{\link{calc_wrdfrq}},
   \code{\link{plot_phylota_treemap}},
   \code{\link{read_phylota}}, \code{\link{write_sqs}}
 }
+\concept{tools-public}

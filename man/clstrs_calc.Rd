@@ -55,3 +55,4 @@ Other run-private: \code{\link{batcher}},
   \code{\link{txids_get}}, \code{\link{txnds_count}},
   \code{\link{warn}}
 }
+\concept{run-private}
