@@ -33,7 +33,7 @@ taxise_run <- function(wd) {
     root_rec <- tax_download(ids = root_txid, ps = ps)
     recs <- c(recs, root_rec)
     txids <- c(txids, root_txid)
-    # replace the ncbi parent with the new root in order to create that taxtree
+    # replace the ncbi parent with the new root in order to create the taxtree
     for (txid in ps[['txid']]) {
       recs[[txid]]@prnt <- root_txid
     }

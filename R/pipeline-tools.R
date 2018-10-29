@@ -33,11 +33,15 @@ parameters_setup <- function(wd, ncbi_execs, ...) {
   msg <- paste0('Setting up pipeline with the following parameters:')
   info(lvl = 1, ps = ps, msg)
   mxnchrs <- max(vapply(names(ps), nchar, integer(1))) + 3
-  pnms <- names(ps)[names(ps) != 'wt_tms'] # too big to print
-  pnms <- sort(pnms)
+  #pnms <- names(ps)[names(ps) != 'wt_tms'] # too big to print
+  pnms <- sort(names(ps))
   for (pnm in pnms) {
     spcr <- paste0(rep(' ', mxnchrs - nchar(pnm)), collapse = '')
-    prmtr_msg <- paste0(pnm, spcr, '[', ps[[pnm]], ']')
+    val <- ps[[pnm]]
+    if (length(val) > 1) {
+      val <- paste0(paste0(val[1:3], collapse = ', '), ' ...')
+    }
+    prmtr_msg <- paste0(pnm, spcr, '[', val, ']')
     info(lvl = 2, ps = ps, prmtr_msg)
   }
   cache_setup(ps = ps)

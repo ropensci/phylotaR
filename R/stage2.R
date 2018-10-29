@@ -33,7 +33,13 @@ download_run <- function(wd) {
 #' @family run-private
 clade_select <- function(txdct, ps) {
   res <- vector()
-  queue <- ps[['txid']]
+  # 29/10/2018 patch: if multiple txids, use parent
+  if (length(ps[['txid']]) > 1) {
+    queue <- parent_get(ps[['txid']], txdct)
+  } else {
+    queue <- ps[['txid']]
+  }
+  # ^^^
   while (length(queue) > 0) {
     tmp_id <- head(queue, 1)
     queue <- tail(queue, length(queue) - 1)
