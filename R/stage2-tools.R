@@ -8,24 +8,34 @@
 #' @family run-private
 #' @return Vector of SeqRecs
 hierarchic_download <- function(txid, txdct, ps, lvl=0) {
-  # get subtree counts if that is smaller than ps[['mdlthrs']]
-  # or if there are no direct descendants
-  dds <- descendants_get(id = txid, txdct = txdct, direct = TRUE)
-  subtree_count <- sqs_count(txid, direct = FALSE, ps = ps)
-  if (subtree_count <= ps[['mdlthrs']] | length(dds) == 0) {
-    info(lvl = 2 + lvl, ps = ps, "+ whole subtree ...")
-    sqs <- seqrec_get(txid = txid, direct = FALSE, ps = ps, lvl = lvl)
-    return(sqs)
+  if (ps[['multiple_ids']]) {
+    ignore <- obj_load(wd = ps[['wd']], 'ignore_ids')
+  } else {
+    ignore <- NULL
   }
-  # 1st direct sqs from focal taxon, then from DDs
-  info(lvl = 2 + lvl, ps = ps, "+ direct ...")
-  sqs <- seqrec_get(txid = txid, direct = TRUE, ps = ps, lvl = lvl)
+  dds <- descendants_get(id = txid, txdct = txdct, direct = TRUE)
+  # only download for ids not in "ignore_ids"
+  if (!txid %in% ignore) {
+    # get subtree counts if that is smaller than ps[['mdlthrs']]
+    # or if there are no direct descendants
+    subtree_count <- sqs_count(txid, direct = FALSE, ps = ps)
+    if (subtree_count <= ps[['mdlthrs']] | length(dds) == 0) {
+      info(lvl = 2 + lvl, ps = ps, "+ whole subtree ...")
+      sqs <- seqrec_get(txid = txid, direct = FALSE, ps = ps, lvl = lvl)
+      return(sqs)
+    }
+    # 1st direct sqs from focal taxon, then from DDs
+    info(lvl = 2 + lvl, ps = ps, "+ direct ...")
+    sqs <- seqrec_get(txid = txid, direct = TRUE, ps = ps, lvl = lvl)
+  } else {
+    sqs <- list()
+  }
   info(lvl = 2 + lvl, ps = ps, "+ by child ...")
   for (dd in dds) {
     lvl <- lvl + 1
     info(lvl = 2 + lvl, ps = ps, "Working on child [id ", dd,"]")
-    sqs <- c(sqs, hierarchic_download(txid = dd, txdct = txdct,
-                                      ps = ps, lvl = lvl))
+    sqs <- c(sqs, hierarchic_download(txid = dd, txdct = txdct, ps = ps,
+                                      lvl = lvl))
   }
   sqs
 }

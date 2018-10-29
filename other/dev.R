@@ -11,11 +11,11 @@ culex_spp <- downstream(x = '7174', db = 'ncbi', downto = 'species')
 txids <- culex_spp$`7174`$childtaxa_id
 txids <- c(aedes_spp$`7158`$childtaxa_id, culex_spp$`7174`$childtaxa_id)
 txids <- sample(txids, 60)
-# save(txids, 'sample_txids.RData')
+# save(txids, file = 'sample_txids.RData')
 # load('sample_txids.RData')
 
 # test lots of txids
-ncbi_dr <- '/usr/bin/'
+ncbi_dr <- '/usr/local/ncbi/blast/bin/'
 wd <- 'aedes_culex'
 if (file.exists(wd)) {
   unlink(wd, recursive = TRUE)
@@ -26,7 +26,8 @@ setup(wd = wd, txid = txids, ncbi_dr = ncbi_dr, v = TRUE)
 run(wd)
 taxise_run(wd)
 download_run(wd)
-
+clusters_run(wd)
+clusters2_run(wd)
 
 # test multiple txids
 ncbi_dr <- '/usr/bin/'

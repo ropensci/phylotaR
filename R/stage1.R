@@ -19,8 +19,9 @@ taxise_run <- function(wd) {
   txids <- txids_get(ps = ps)
   info(lvl = 1, ps = ps, 'Downloading taxonomic records ...')
   recs <- batcher(ids = txids, func = tax_download, ps = ps, lvl = 2)
-  if (length(ps[['txid']]) > 1) {
-    txids_recs <- parent_recs_get(recs = recs, txids = txids)
+  if (ps[['multiple_ids']]) {
+    info(lvl = 1, ps = ps, 'Extra look-up for multi-ids ...')
+    txids_recs <- parent_recs_get(recs = recs, txids = txids, ps = ps)
     txids <- txids_recs[['txids']]
     recs <- txids_recs[['recs']]
   }

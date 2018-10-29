@@ -34,18 +34,31 @@ download_run <- function(wd) {
 clade_select <- function(txdct, ps) {
   res <- vector()
   # 29/10/2018 patch: if multiple txids, use parent
-  if (length(ps[['txid']]) > 1) {
+  if (ps[['multiple_ids']]) {
     queue <- parent_get(ps[['txid']], txdct)
+    multiple_ids <- TRUE
   } else {
     queue <- ps[['txid']]
+    multiple_ids <- FALSE
   }
   # ^^^
   while (length(queue) > 0) {
     tmp_id <- head(queue, 1)
     queue <- tail(queue, length(queue) - 1)
-    # TODO: add multiple txids provided logical
-    sqcnt <- sqs_count(txid = tmp_id, ps = ps)
-    ndcnt <- txnds_count(txid = tmp_id, ps = ps)
+    # look up just the info on the multiple IDs provided by user
+    if (ps[['multiple_ids']]) {
+      txids <- descendants_get(id = tmp_id, txdct = txdct)
+      # only the txids of interest
+      txids <- txids[!txids %in% obj_load(wd = ps[['wd']], 'ignore_ids')]
+      ndcnt <- sqcnt <- 0
+      for (txid in txids) {
+        sqcnt <- sqs_count(txid = txid, ps = ps) + sqcnt
+        ndcnt <- txnds_count(txid = txid, ps = ps) + ndcnt
+      }
+    } else {
+      sqcnt <- sqs_count(txid = tmp_id, ps = ps)
+      ndcnt <- txnds_count(txid = tmp_id, ps = ps)
+    }
     # mx_pssbl_sqcnt <- ps[['mdlthrs']] * ndcnt
     # sqcnt <- ifelse(sqcnt > mx_pssbl_sqcnt, mx_pssbl_sqcnt, sqcnt)
     # Unnecessary lines ^^ seq_count alreadys takes into account the subtree.

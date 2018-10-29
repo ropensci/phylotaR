@@ -40,7 +40,7 @@ tax_download <- function(ids, ps) {
   recs
 }
 
-parent_recs_get <- function(recs, txids) {
+parent_recs_get <- function(recs, txids, ps) {
   # look up the root taxon for all txids provided
   lngs <- lapply(X = recs[ps[['txid']]], FUN = function(x) {
     slot(object = x, name = 'lng')[['ids']]
@@ -55,6 +55,7 @@ parent_recs_get <- function(recs, txids) {
     }))))
   node_txids <- node_txids[!node_txids %in% txids]
   node_txids <- c(node_txids, root_txid)
+  obj_save(wd = ps[['wd']], obj = node_txids, nm = 'ignore_ids')
   node_recs <- batcher(ids = node_txids, func = tax_download, ps = ps, lvl = 2)
   recs <- c(recs, node_recs)
   txids <- c(txids, node_txids)

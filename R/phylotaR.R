@@ -44,6 +44,11 @@ parameters <- function(wd='.', txid=character(), mkblstdb='', blstn='', v=FALSE,
                        mncvrg=51, btchsz=100, date=Sys.Date()) {
   ps <- as.list(environment())
   ps[['txid']] <- as.character(ps[['txid']])
+  if (length(ps[['txid']]) > 1) {
+    ps[['multiple_ids']] <- TRUE
+  } else {
+    ps[['multiple_ids']] <- FALSE
+  }
   ps[['wt_tms']] <- c(1, 3, 6, 10, 60, 300)
   ps
 }

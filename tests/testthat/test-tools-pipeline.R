@@ -29,7 +29,7 @@ test_that('parameters_setup() works', {
   ncbi_execs <- list('mkblstdb' = NA, 'blstn' = NA)
   phylotaR:::parameters_setup(wd = wd, txid = 9606, ncbi_execs = ncbi_execs)
   ps <- phylotaR:::parameters_load(wd = wd)
-  expect_true(length(ps) == 17)
+  expect_true(length(ps) == 18)
 })
 phylotaR:::cleanup(wd)
 test_that('stage_args_check() works', {
