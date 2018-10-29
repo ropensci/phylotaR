@@ -43,6 +43,7 @@ clade_select <- function(txdct, ps) {
   while (length(queue) > 0) {
     tmp_id <- head(queue, 1)
     queue <- tail(queue, length(queue) - 1)
+    # TODO: add multiple txids provided logical
     sqcnt <- sqs_count(txid = tmp_id, ps = ps)
     ndcnt <- txnds_count(txid = tmp_id, ps = ps)
     # mx_pssbl_sqcnt <- ps[['mdlthrs']] * ndcnt

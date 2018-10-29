@@ -39,3 +39,24 @@ tax_download <- function(ids, ps) {
   }
   recs
 }
+
+parent_recs_get <- function(recs, txids) {
+  # look up the root taxon for all txids provided
+  lngs <- lapply(X = recs[ps[['txid']]], FUN = function(x) {
+    slot(object = x, name = 'lng')[['ids']]
+  })
+  candidates <- lngs[[1]]
+  for (lng in lngs) {
+    candidates <- candidates[candidates %in% lng]
+  }
+  root_txid <- candidates[length(candidates)]
+  node_txids <- unique(unname(unlist(lapply(X = lngs, function(x) {
+    x[!x %in% candidates]
+    }))))
+  node_txids <- node_txids[!node_txids %in% txids]
+  node_txids <- c(node_txids, root_txid)
+  node_recs <- batcher(ids = node_txids, func = tax_download, ps = ps, lvl = 2)
+  recs <- c(recs, node_recs)
+  txids <- c(txids, node_txids)
+  list('recs' = recs, 'txids' = txids)
+}

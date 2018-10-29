@@ -8,10 +8,11 @@ aedes_spp <- downstream(x = '7158', db = 'ncbi', downto = 'species')
 # 7174 -- Culex genus
 culex_spp <- downstream(x = '7174', db = 'ncbi', downto = 'species')
 
+txids <- culex_spp$`7174`$childtaxa_id
 txids <- c(aedes_spp$`7158`$childtaxa_id, culex_spp$`7174`$childtaxa_id)
 txids <- sample(txids, 60)
-save(txids, 'sample_txids.RData')
-load('sample_txids.RData')
+# save(txids, 'sample_txids.RData')
+# load('sample_txids.RData')
 
 # test lots of txids
 ncbi_dr <- '/usr/bin/'
