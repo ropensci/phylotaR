@@ -45,13 +45,17 @@ txids_get <- function(ps, retmax = 1E4) {
   if (txcnt <= retmax) {
     return(txids)
   }
-  ret_strts <- seq(from = retmax, to = txcnt, by = retmax)
+  ret_strts <- seq(from = retmax + 1, to = txcnt, by = retmax)
   for (ret_strt in ret_strts) {
     args <- list(db = 'taxonomy', term = trm, retmax = retmax,
                  retstart = ret_strt)
     srch_rs <- search_and_cache(func = rentrez::entrez_search,
                                 args = args, fnm = 'search', ps = ps)
     txids <- c(txids, srch_rs[['ids']])
+  }
+  txids <- unique(txids)
+  if (length(txids) != srch_rs[['count']]) {
+    warn(ps = ps, 'Not all known txids could be retrieved.')
   }
   txids
 }
