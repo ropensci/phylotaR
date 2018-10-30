@@ -41,23 +41,37 @@ taxise_run <- function(wd) {
 #' @return vector of ids
 #' @family run-private
 txids_get <- function(ps, retmax = 1E4) {
-  # TODO: handle multiple txids
-  trm <- paste0(paste0('txid', ps[['txid']],'[Subtree]'), collapse = ' OR ')
-  args <- list(db = 'taxonomy', term = trm, retmax = retmax)
-  srch_rs <- search_and_cache(func = rentrez::entrez_search,
-                              args = args, fnm = 'search', ps = ps)
-  txcnt <- srch_rs[['count']]
-  txids <- srch_rs[['ids']]
-  if (txcnt <= retmax) {
-    return(txids)
-  }
-  ret_strts <- seq(from = retmax, to = txcnt, by = retmax)
-  for (ret_strt in ret_strts) {
-    args <- list(db = 'taxonomy', term = trm, retmax = retmax,
-                 retstart = ret_strt)
+  .get <- function(txid) {
+    trm <- paste0(paste0('txid', txid,'[Subtree]'), collapse = ' OR ')
+    args <- list(db = 'taxonomy', term = trm, retmax = retmax)
     srch_rs <- search_and_cache(func = rentrez::entrez_search,
                                 args = args, fnm = 'search', ps = ps)
-    txids <- c(txids, srch_rs[['ids']])
+    txcnt <- srch_rs[['count']]
+    txids <- srch_rs[['ids']]
+    if (txcnt <= retmax) {
+      return(txids)
+    }
+    ret_strts <- seq(from = retmax, to = txcnt, by = retmax)
+    for (ret_strt in ret_strts) {
+      args <- list(db = 'taxonomy', term = trm, retmax = retmax,
+                   retstart = ret_strt)
+      srch_rs <- search_and_cache(func = rentrez::entrez_search,
+                                  args = args, fnm = 'search', ps = ps)
+      txids <- c(txids, srch_rs[['ids']])
+    }
+    txids
+  }
+  ntxids <- length(ps[['txid']])
+  if (ntxids > 10) {
+    indxs <- seq(from = 0, to = ntxids, by = 10)
+    txids <- NULL
+    for (i in seq_along(indxs[-1])) {
+      i1 <- indxs[i] + 1
+      i2 <- indxs[i + 1]
+      txids <- c(txids, .get(ps[['txid']][i1:i2]))
+    }
+  } else {
+    txids <- .get(ps[['txid']])
   }
   txids
 }
