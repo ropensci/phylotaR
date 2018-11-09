@@ -4,8 +4,8 @@
 \alias{get_txids}
 \title{Get taxonomic IDs by rank}
 \usage{
-get_txids(phylota, cid = NULL, sid = NULL, txids = NULL, rnk = NULL,
-  keep_higher = FALSE)
+get_txids(phylota, cid = NULL, sid = NULL, txids = NULL,
+  rnk = NULL, keep_higher = FALSE)
 }
 \arguments{
 \item{phylota}{Phylota object}
@@ -62,3 +62,4 @@ Other tools-public: \code{\link{calc_mad}},
   \code{\link{plot_phylota_treemap}},
   \code{\link{read_phylota}}, \code{\link{write_sqs}}
 }
+\concept{tools-public}

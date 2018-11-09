@@ -72,3 +72,4 @@ Other tools-public: \code{\link{calc_mad}},
   \code{\link{plot_phylota_pa}},
   \code{\link{read_phylota}}, \code{\link{write_sqs}}
 }
+\concept{tools-public}
