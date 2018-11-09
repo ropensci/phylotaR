@@ -38,8 +38,8 @@ txids_get <- function(ps, retmax = 1E4) {
   # TODO: handle multiple txids
   trm <- paste0('txid', ps[['txid']],'[Subtree]')
   args <- list(db = 'taxonomy', term = trm, retmax = retmax)
-  srch_rs <- search_and_cache(func = rentrez::entrez_search,
-                              args = args, fnm = 'search', ps = ps)
+  srch_rs <- search_and_cache(func = rentrez::entrez_search, args = args,
+                              fnm = 'search', ps = ps)
   txcnt <- srch_rs[['count']]
   txids <- srch_rs[['ids']]
   if (txcnt <= retmax) {
@@ -48,10 +48,14 @@ txids_get <- function(ps, retmax = 1E4) {
   ret_strts <- seq(from = retmax, to = txcnt, by = retmax)
   for (ret_strt in ret_strts) {
     args <- list(db = 'taxonomy', term = trm, retmax = retmax,
-                 retstart = ret_strt)
+                 retstart = as.integer(ret_strt))
     srch_rs <- search_and_cache(func = rentrez::entrez_search,
                                 args = args, fnm = 'search', ps = ps)
     txids <- c(txids, srch_rs[['ids']])
+  }
+  txids <- unique(txids)
+  if (length(txids) != srch_rs[['count']]) {
+    warn(ps = ps, 'Not all known txids could be retrieved.')
   }
   txids
 }
