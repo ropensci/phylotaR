@@ -61,3 +61,4 @@ Other run-private: \code{\link{batcher}},
   \code{\link{taxdict_gen}}, \code{\link{taxtree_gen}},
   \code{\link{txnds_count}}, \code{\link{warn}}
 }
+\concept{run-private}

@@ -17,3 +17,4 @@ Phylota object.
 Other tools-private: \code{\link{mk_txid_in_sq_mtrx}},
   \code{\link{update_phylota}}
 }
+\concept{tools-private}

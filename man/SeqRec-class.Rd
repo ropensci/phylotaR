@@ -108,3 +108,4 @@ Other run-public: \code{\link{ClstrArc-class}},
   \code{\link{restart}}, \code{\link{run}},
   \code{\link{setup}}, \code{\link{taxise_run}}
 }
+\concept{run-public}

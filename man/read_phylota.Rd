@@ -41,3 +41,4 @@ Other tools-public: \code{\link{calc_mad}},
   \code{\link{plot_phylota_treemap}},
   \code{\link{write_sqs}}
 }
+\concept{tools-public}
