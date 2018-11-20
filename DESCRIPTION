@@ -31,6 +31,6 @@ Suggests:
     testthat,
     knitr,
     rmarkdown
-RoxygenNote: 6.1.0
+RoxygenNote: 6.1.1
 VignetteBuilder: knitr
 X-schema.org-isPartOf: https://ropensci.org
