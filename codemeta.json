@@ -207,7 +207,7 @@
     }
   ],
   "readme": "https://github.com/ropensci/phylotaR/blob/master/README.md",
-  "fileSize": "2602.096KB",
+  "fileSize": "2647.875KB",
   "contIntegration": [
     "https://travis-ci.org/AntonelliLab/phylotaR",
     "https://coveralls.io/github/AntonelliLab/phylotaR?branch=master"
@@ -232,5 +232,6 @@
     "name": "Comprehensive R Archive Network (CRAN)",
     "url": "https://cran.r-project.org"
   },
-  "relatedLink": "https://CRAN.R-project.org/package=phylotaR"
+  "relatedLink": "https://CRAN.R-project.org/package=phylotaR",
+  "releaseNotes": "https://github.com/ropensci/phylotaR/blob/master/NEWS.md"
 }
