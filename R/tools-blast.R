@@ -63,6 +63,9 @@ blastn_run <- function(dbfl, outfl, ps) {
   }
   args <- c('-query', dbfl, '-db', dbfl, '-outfmt', outfmt, '-dust', 'no',
             '-strand', 'plus', '-evalue', ps[['mxevl']], '-out', outfl)
+  if (ps[['ncps']] > 1) {
+    args <- c(args, '-num_threads', ps[['ncps']])
+  }
   info(lvl = 3, ps = ps, "Running blastn")
   res <- cmdln(cmd = ps[['blstn']], args = args, lgfl = dbfl)
   if (res != 0) {

@@ -59,6 +59,9 @@ txids_get <- function(ps, retmax = 1E4) {
                                   args = args, fnm = 'search', ps = ps)
       txids <- c(txids, srch_rs[['ids']])
     }
+    if (length(txids) != srch_rs[['count']]) {
+      warn(ps = ps, 'Not all known txids could be retrieved.')
+    }
     txids
   }
   ntxids <- length(ps[['txid']])
@@ -73,6 +76,7 @@ txids_get <- function(ps, retmax = 1E4) {
   } else {
     txids <- .get(ps[['txid']])
   }
+  txids <- unique(txids)
   txids
 }
 

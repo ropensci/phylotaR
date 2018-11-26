@@ -2,7 +2,12 @@ Package: phylotaR
 Type: Package
 Title: Automated Phylogenetic Sequence Cluster Identification from 'GenBank'
 Version: 1.0.0
-Authors@R: c(person("Hannes", "Hettling", role = "aut"), person("Rutger", "Vos", role = "aut"), person("Alexander", "Zizka", role = "aut"), person("Dom", "Bennett", role = c("aut", "cre"), email = "dominic.john.bennett@gmail.com"), person("Alexandre", "Antonelli", role = c("aut")))
+Authors@R: c(person("Hannes", "Hettling", role = "aut"),
+    person("Rutger", "Vos", role = "aut"),
+    person("Alexander", "Zizka", role = "aut"),
+    person("Dom", "Bennett", role = c("aut", "cre"),
+    email = "dominic.john.bennett@gmail.com"),
+    person("Alexandre", "Antonelli", role = c("aut")))
 Maintainer: Dom Bennett <dominic.john.bennett@gmail.com>
 Description: A pipeline for the identification, within taxonomic groups, of
     orthologous sequence clusters from
@@ -25,11 +30,12 @@ Imports:
     sys,
     treeman,
     treemapify,
+    restez,
     R.utils
 Suggests:
     testthat,
     knitr,
     rmarkdown
-RoxygenNote: 6.1.0
+RoxygenNote: 6.1.1
 VignetteBuilder: knitr
 X-schema.org-isPartOf: https://ropensci.org

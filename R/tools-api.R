@@ -77,6 +77,10 @@ download_obj_check <- function(obj) {
       # Fix for 'malformed-xmlBackend', NCBI returning object
       return(FALSE)
     }
+    if (grepl(pattern = 'Error', x = obj)) {
+      # "Error : HTTP failure: 400"
+      return(FALSE)
+    }
   }
   TRUE
 }

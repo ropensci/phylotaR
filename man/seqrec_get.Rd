@@ -22,6 +22,11 @@ Vector of sequence records
 \description{
 Downloads sequences from GenBank in batches.
 }
+\details{
+If a restez database is available and the number of sequences to
+retrieve is less than 'btchsz', the function will look the sequences up
+from the database rather than download.
+}
 \seealso{
 Other run-private: \code{\link{batcher}},
   \code{\link{blast_clstr}}, \code{\link{blast_filter}},
@@ -39,6 +44,7 @@ Other run-private: \code{\link{batcher}},
   \code{\link{clstrs_renumber}}, \code{\link{clstrs_save}},
   \code{\link{cmdln}}, \code{\link{descendants_get}},
   \code{\link{download_obj_check}}, \code{\link{error}},
+  \code{\link{gb_extract}},
   \code{\link{hierarchic_download}}, \code{\link{info}},
   \code{\link{ncbicache_load}},
   \code{\link{ncbicache_save}}, \code{\link{obj_check}},
@@ -48,6 +54,7 @@ Other run-private: \code{\link{batcher}},
   \code{\link{progress_init}}, \code{\link{progress_read}},
   \code{\link{progress_reset}},
   \code{\link{progress_save}}, \code{\link{rank_get}},
+  \code{\link{rawseqrec_breakdown}},
   \code{\link{safely_connect}},
   \code{\link{search_and_cache}},
   \code{\link{searchterm_gen}}, \code{\link{seeds_blast}},

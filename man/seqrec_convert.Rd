@@ -2,12 +2,12 @@
 % Please edit documentation in R/tools-sqs.R
 \name{seqrec_convert}
 \alias{seqrec_convert}
-\title{Convert raw Entrez gbwithparts record to SeqRecs}
+\title{Convert raw Entrez gb text record to SeqRecs}
 \usage{
 seqrec_convert(raw_recs, ps)
 }
 \arguments{
-\item{raw_recs}{Raw records returned from Entrez fetch}
+\item{raw_recs}{Raw text records returned from Entrez fetch}
 
 \item{ps}{Parameters list, generated with parameters()}
 }
@@ -15,8 +15,8 @@ seqrec_convert(raw_recs, ps)
 SeqRecs
 }
 \description{
-Parses returned sequences features with Entrez,
-returns a SeqRec for each raw record.
+Parses returned sequences features with Entrez, returns one or
+more SeqRec objects for each raw record.
 }
 \seealso{
 Other run-private: \code{\link{batcher}},
@@ -35,6 +35,7 @@ Other run-private: \code{\link{batcher}},
   \code{\link{clstrs_renumber}}, \code{\link{clstrs_save}},
   \code{\link{cmdln}}, \code{\link{descendants_get}},
   \code{\link{download_obj_check}}, \code{\link{error}},
+  \code{\link{gb_extract}},
   \code{\link{hierarchic_download}}, \code{\link{info}},
   \code{\link{ncbicache_load}},
   \code{\link{ncbicache_save}}, \code{\link{obj_check}},
@@ -44,6 +45,7 @@ Other run-private: \code{\link{batcher}},
   \code{\link{progress_init}}, \code{\link{progress_read}},
   \code{\link{progress_reset}},
   \code{\link{progress_save}}, \code{\link{rank_get}},
+  \code{\link{rawseqrec_breakdown}},
   \code{\link{safely_connect}},
   \code{\link{search_and_cache}},
   \code{\link{searchterm_gen}}, \code{\link{seeds_blast}},

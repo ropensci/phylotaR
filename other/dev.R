@@ -1,6 +1,13 @@
 
-devtools::load_all('~/Coding/phylotaR')
-library(phylotaR)
+
+
+
+devtools::load_all('~/Coding/phylotaR_restez')
+
+wd <- '~/Coding/restez/hystricomorpha'
+ps <- parameters_load(wd)
+ps[['wd']] <- '~/Coding/restez/hystricomorpha'
+
 
 library(taxize)
 # 7158 -- Aedes genus

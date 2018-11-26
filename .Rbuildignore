@@ -7,6 +7,7 @@ _pkgdown.yml
 docs/
 man-roxygen/
 CONTRIBUTING.md
+NEWS.md
 test.fasta
 examples/
 logo.png

@@ -17,6 +17,11 @@ download_run <- function(wd) {
   clds_ids <- clade_select(txdct = txdct, ps = ps)
   info(lvl = 1, ps = ps, 'Identified [', length(clds_ids),
        '] suitable clades.')
+  if (!is.null(restez::restez_path_get())) {
+    info(lvl = 1, ps = ps, 'Connecting to restez database ...')
+    suppressMessages(restez::restez_connect())
+    on.exit(restez::restez_disconnect())
+  }
   info(lvl = 1, ps = ps, 'Downloading hierarchically ...')
   seq_download(txids = clds_ids, txdct = txdct, ps = ps)
   msg <- paste0('Completed stage DOWNLOAD: [', Sys.time(), ']')
@@ -107,6 +112,6 @@ seq_download <- function(txids, txdct, ps) {
       }
     }
   }
-  info(lvl = 1, ps = ps, "Successfully downloaded [", sqcnt,
+  info(lvl = 1, ps = ps, "Successfully retrieved [", sqcnt,
        " sqs] in total.")
 }

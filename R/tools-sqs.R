@@ -1,114 +1,119 @@
+#' @name gb_extract
+#' @title Extract elements from a raw GenBank record
+#' @description Returns a list of elements from a GenBank record such as
+#' 'organism', 'sequence' and features.
+#' @details Uses restez extract functions. See restez package for more details.
+#' @param record raw GenBank text record
+#' @family run-private
+#' @return list of GenBank elements
+gb_extract <- function(record) {
+  accession <- restez::gb_extract(record, what = 'accession')
+  vrsn <- restez::gb_extract(record, what = 'version')
+  locus <- restez::gb_extract(record, what = 'locus')
+  organism <- restez::gb_extract(record, what = 'organism')
+  seq <- restez::gb_extract(record, what = 'sequence')
+  def <- restez::gb_extract(record, what = 'definition')
+  keywords <- restez::gb_extract(record, what = 'keywords')
+  features <- restez::gb_extract(record, what = 'features')
+  date <- locus[['date']]
+  moltype <- paste0(locus[['mol']], '-', locus[['type']])
+  list('accession' = accession, 'version' = vrsn, 'definition' = def,
+       'sequence' = seq, 'moltype' = moltype, 'features' = features,
+       'date' = date, 'organism' = organism, 'keywords' = keywords)
+}
+
+#' @name rawseqrec_breakdown
+#' @title Breakdown a sequence record into its features
+#' @description Takes GenBank record's elements and returns a SeqRec. For
+#' sequences with lots of features, the sequence is broken down into these
+#' features provided they are of the right size. Sequences are either returned
+#' as features or whole sequence records, never both.
+#' @param record_parts list of record elements from a GenBank record
+#' @template ps
+#' @family run-private
+#' @return list of SeqRecs
+rawseqrec_breakdown <- function(record_parts, ps) {
+  # get details
+  seq <- record_parts[['sequence']]
+  accssn <- record_parts[['accession']]
+  orgnsm <- record_parts[['organism']]
+  create_date <- as.Date(record_parts[['date']], format = "%d-%b-%Y")
+  age <- as.integer(difftime(ps[['date']], create_date, units = 'days'))
+  vrsn <- record_parts[['version']]
+  dfln <- record_parts[['definition']]
+  moltype <- record_parts[['moltype']]
+  kywrds <- record_parts[['keywords']]
+  # filter features
+  features <- record_parts[['features']]
+  types <- vapply(X = features, FUN = '[[', FUN.VALUE = character(1), 'type')
+  pull <- types != 'source'
+  while (any(pull)) {
+    locations <- vapply(X = features, FUN = '[[', FUN.VALUE = character(1),
+                        'location')
+    pull <- grepl(pattern = '^[0-9]+\\.\\.[0-9]+$', x = locations) & pull
+    features <- features[pull]
+    locations <- locations[pull]
+    # remove dups
+    pull <- !duplicated(locations)
+    features <- features[pull]
+    locations <- locations[pull]
+    # filter by length
+    locations <- strsplit(x = locations, split = '\\.\\.')
+    locations <- lapply(X = locations, FUN = as.integer)
+    lengths <- vapply(X = locations, FUN = function(x) x[[2]] - x[[1]],
+                      FUN.VALUE = integer(1))
+    pull <- lengths > ps[['mnsql']] & lengths < ps[['mxsql']]
+    features <- features[pull]
+    locations <- locations[pull]
+    pull <- FALSE
+  }
+  # extract sequences
+  if (any(pull)) {
+    seqrecs <- vector(mode = 'list', length = length(features))
+    for (i in seq_along(features)) {
+      strt <- locations[[i]][[1]]
+      stp <- locations[[i]][[2]]
+      ftr_nm <- features[[i]][[3]]
+      lctn <- paste0(strt, '..', stp)
+      tmp <- substr(x = seq, start = strt, stop = stp)
+      seqrecs[[i]] <- seqrec_gen(accssn = accssn, lctn = lctn, age = age,
+                                 orgnsm = orgnsm, txid = '', vrsn = vrsn,
+                                 sq = tmp, dfln = dfln, ml_typ = moltype,
+                                 nm = ftr_nm, rec_typ = 'feature')
+    }
+  } else {
+    seqrecs <- seqrec_gen(accssn = accssn, txid = '', nm = kywrds, age = age,
+                          orgnsm = orgnsm, sq = seq, dfln = dfln, vrsn = vrsn,
+                          ml_typ = moltype, rec_typ = 'whole')
+    seqrecs <- list(seqrecs)
+  }
+  seqrecs
+}
+
 #' @name seqrec_convert
-#' @title Convert raw Entrez gbwithparts record to SeqRecs
-#' @description Parses returned sequences features with Entrez,
-#' returns a SeqRec for each raw record.
-#' @param raw_recs Raw records returned from Entrez fetch
+#' @title Convert raw Entrez gb text record to SeqRecs
+#' @description Parses returned sequences features with Entrez, returns one or
+#' more SeqRec objects for each raw record.
+#' @param raw_recs Raw text records returned from Entrez fetch
 #' @template ps
 #' @family run-private
 #' @return SeqRecs
 seqrec_convert <- function(raw_recs, ps) {
-  # gis <- '558614019'
+  # gis <- c('558614019', '558051', '1283191328', 'NR_040059')
   # raw_recs <- rentrez::entrez_fetch(db = "nucleotide",
   #                                   rettype = 'gbwithparts',
-  #                                   retmode = 'xml',
+  #                                   retmode = 'text',
   #                                   id = gis)
-  res <- NULL
-  recs <- try(XML::xmlToList(raw_recs), silent = TRUE)
-  if (inherits(recs, 'try-error')) {
-    msg <- paste0('XML parsing error:',
-                  'This can occur with GenBank data. ',
-                  'Try pipeline again to see if warning reoccurs. ',
-                  'If it does, contact maintainer.')
-    warn(ps = ps, msg)
-    return(NULL)
-  }
-  for (i in seq_along(recs)) {
-    rec <- recs[[i]]
-    # for debugging.... save last record
-    obj_save(wd = ps[['wd']], obj = rec, nm = 'last_seqrec')
-    wftrs <-  FALSE
-    # key info
-    accssn <- rec[['GBSeq_primary-accession']]
-    vrsn <- rec[["GBSeq_accession-version"]]
-    ml_typ <- rec[['GBSeq_moltype']]
-    if (is.null(vrsn)) {
-      next
-    }
-    if(is.null(ml_typ)) {
-      # ml_typ not always recorded, e.g. NR_040059
-      ml_typ <- ''
-    }
-    sq <- rec[['GBSeq_sequence']]
-    create_date <- rec[["GBSeq_create-date"]]
-    create_date <- as.Date(create_date,
-                           format="%d-%b-%Y")
-    age <- as.integer(difftime(ps[['date']],
-                               create_date, units = 'days'))
-    if(is.null(sq)) {
-      # master records have no sequences
-      # e.g. https://www.ncbi.nlm.nih.gov/nuccore/1283191328
-      next
-    }
-    dfln <- rec[['GBSeq_definition']]
-    orgnsm <- rec[['GBSeq_organism']]
-    ftr_tbl <- rec[['GBSeq_feature-table']]
-    kywrds <- vapply(rec[['GBSeq_keywords']], '[', '')
-    kywrds <- paste0(kywrds, collapse = ' | ')
-    # extract features
-    for (ftr in ftr_tbl) {
-      # TODO: perhaps make sure locations don't overlap
-      if (grepl('^source$', ftr[['GBFeature_key']],
-               ignore.case = TRUE)) {
-        next
-      }
-      lctn <- ftr[['GBFeature_location']]
-      lctn <- gsub('[^0-9\\.]', '', lctn)
-      if (nchar(lctn) == 0) {
-        next
-      }
-      strtstp <- strsplit(x = lctn, split = '\\.\\.')[[1]]
-      if (length(strtstp) != 2) {
-        next
-      }
-      strtstp <- as.numeric(strtstp)
-      sqlngth <- strtstp[2] - strtstp[1]
-      if (all(strtstp == c(1, nchar(sq)))) {
-        # feature should not span entire sequence
-        next
-      }
-      if (sqlngth > ps[['mnsql']] & sqlngth < ps[['mxsql']]) {
-        ftr_nm <- ftr[['GBFeature_quals']][[
-          'GBQualifier']][['GBQualifier_value']]
-        if (is.null(ftr_nm)) {
-          ftr_nm <- ftr[['GBFeature_key']]
-        }
-        tmp <- substr(x = sq, start = strtstp[1], stop = strtstp[2])
-        seqrec <- seqrec_gen(accssn = accssn, lctn = lctn, age = age,
-                             orgnsm = orgnsm, txid = '', vrsn = vrsn, sq = tmp,
-                             dfln = dfln, ml_typ = ml_typ, nm = ftr_nm,
-                             rec_typ = 'feature')
-        res <- c(res, seqrec)
-        wftrs <- TRUE
-      }
-    }
-    # if no features, add entire sequence
-    if (!wftrs) {
-      sqlngth <- as.numeric(rec[['GBSeq_length']])
-      if (sqlngth < ps[['mxsql']]) {
-        seqrec <- seqrec_gen(accssn = accssn, txid = '', nm = kywrds,
-                             orgnsm = orgnsm, sq = sq, dfln = dfln,
-                             ml_typ = ml_typ, rec_typ = 'whole',
-                             vrsn = vrsn, age = age)
-        res <- c(res, seqrec)
-      }
-    }
-  }
-  # filter out ambiguous sequences and dups
-  nonambgs <- vapply(res, function(x) x@pambgs < 0.1, logical(1))
-  res <- res[nonambgs]
-  ids <- vapply(res, function(x) x@id, '')
-  nondups <- !duplicated(ids)
-  res[nondups]
+  #  write(x = raw_recs, file = 'raw_recs.txt')
+  recs <- strsplit(x = raw_recs, split = '//\n\n')[[1]]
+  recs <- paste0(recs, '//') # record not complete without //
+  records_parts <- lapply(X = recs, FUN = gb_extract)
+  pull <- vapply(X = records_parts, FUN = function(x) x[['sequence']] != '',
+                 logical(1))
+  records_parts <- records_parts[pull]
+  seqrecs <- unlist(lapply(X = records_parts, FUN = rawseqrec_breakdown,
+                           ps = ps))
+  seqrecs
 }
 
 #' @name seqrec_gen

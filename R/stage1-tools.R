@@ -10,9 +10,16 @@ tax_download <- function(ids, ps) {
   recs <- vector('list', length = length(ids))
   names(recs) <- ids
   args <- list(db = "taxonomy", id = ids, rettype = 'xml')
-  raw_recs <- search_and_cache(func = rentrez::entrez_fetch,
-                               fnm = 'fetch', args = args, ps = ps)
+  raw_recs <- search_and_cache(func = rentrez::entrez_fetch, fnm = 'fetch',
+                               args = args, ps = ps)
   raw_recs <- XML::xmlToList(raw_recs)
+  if (length(raw_recs) != length(ids)) {
+    # remove cached object
+    ncbicache_save(fnm = 'fetch', args = args, wd = ps[['wd']], obj = NULL)
+    warn(ps, 'Not all taxonomic records could be downloaded.',
+         'NCBI may be limiting usage, run taxise step again.')
+    return(NULL)
+  }
   for (i in seq_along(raw_recs)) {
     raw_rec <- raw_recs[[i]]
     rw_lng <- raw_rec[['LineageEx']]

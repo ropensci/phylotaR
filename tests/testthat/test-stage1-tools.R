@@ -12,9 +12,11 @@ context('Testing \'stage1-tools\'')
 phylotaR:::cleanup(wd)
 test_that('tax_download() works', {
   example_res <- raw_recs[[sample(seq_along(raw_recs), 1)]]
+  ids <- unname(vapply(X = XML::xmlToList(example_res), FUN = '[[',
+                       FUN.VALUE = character(1), 'TaxId'))
   res <- with_mock(
     `phylotaR:::search_and_cache` = function(...) example_res,
-    phylotaR:::tax_download(ids = NULL, ps = ps)
+    phylotaR:::tax_download(ids = ids, ps = ps)
   )
   res <- vapply(X = res, FUN = function(x) inherits(x, 'TaxRec'),
                 FUN.VALUE = logical(1))

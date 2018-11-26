@@ -3,10 +3,11 @@
 #' @description Initiates cache of parameters.
 #' @param wd Working directory
 #' @param ncbi_execs File directories for NCBI tools, see \code{blast_setup()}
+#' @param overwrite Overwrite existing cache?
 #' @param ... Set parameters, see parameters()
 #' @return NULL
 #' @family run-private
-parameters_setup <- function(wd, ncbi_execs, ...) {
+parameters_setup <- function(wd, ncbi_execs, overwrite=FALSE, ...) {
   if (!file.exists(wd)) {
     stop(paste0('Invalid `wd`. [', wd, '] does not exist.'))
   }
@@ -44,7 +45,7 @@ parameters_setup <- function(wd, ncbi_execs, ...) {
     prmtr_msg <- paste0(pnm, spcr, '[', val, ']')
     info(lvl = 2, ps = ps, prmtr_msg)
   }
-  cache_setup(ps = ps)
+  cache_setup(ps = ps, ovrwrt = overwrite)
   progress_init(wd = wd)
 }
 

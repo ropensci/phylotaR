@@ -4,7 +4,7 @@
 \alias{setup}
 \title{Set-up parameters}
 \usage{
-setup(wd, txid, ncbi_dr = ".", v = FALSE, ...)
+setup(wd, txid, ncbi_dr = ".", v = FALSE, overwrite = FALSE, ...)
 }
 \arguments{
 \item{wd}{Working directory}
@@ -14,6 +14,8 @@ setup(wd, txid, ncbi_dr = ".", v = FALSE, ...)
 \item{ncbi_dr}{Directory to NCBI BLAST tools, default '.'}
 
 \item{v}{Verbose, T/F}
+
+\item{overwrite}{Overwrite existing cache?}
 
 \item{...}{Additional parameters}
 }

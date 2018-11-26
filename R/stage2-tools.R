@@ -72,6 +72,9 @@ seqrec_augment <- function(sqs, txdct) {
 
 #' @title seqrec_get
 #' @description Downloads sequences from GenBank in batches.
+#' @details If a restez database is available and the number of sequences to
+#' retrieve is less than 'btchsz', the function will look the sequences up
+#' from the database rather than download.
 #' @param txid NCBI taxonomic ID
 #' @param direct Node-level only or subtree as well? Default FALSE.
 #' @template ps
@@ -81,8 +84,8 @@ seqrec_augment <- function(sqs, txdct) {
 seqrec_get <- function(txid, ps, direct=FALSE, lvl=0) {
   # test w/ golden moles 9389
   downloader <- function(ids, ps) {
-    ftch_args <- list(db = "nucleotide", rettype = 'gbwithparts',
-                      retmode = 'xml', id = ids)
+    ftch_args <- list(db = "nucleotide", rettype = 'gb', retmode = 'text',
+                      id = ids)
     search_and_cache(func = rentrez::entrez_fetch, args = ftch_args,
                      fnm = 'fetch', ps = ps)
   }
@@ -97,14 +100,24 @@ seqrec_get <- function(txid, ps, direct=FALSE, lvl=0) {
     sids <- sids[sample(seq_along(sids), size = ps[['mdlthrs']],
                         replace = FALSE)]
   }
-  info(lvl = lvl + 3, ps = ps, "Getting [", length(sids), " sqs] ...")
-  # return whole GB record
-  raw_recs <- batcher(sids, func = downloader, ps = ps, lvl = lvl + 4)
-  #  split up by feature, return SeqRecs
+  if (restez::restez_ready()) {
+    info(lvl = lvl + 3, ps = ps, "Getting [", length(sids),
+         " sqs] from restez database...")
+    unversioned <- sub(pattern = '\\.[0-9]+', replacement = '', x = sids)
+    raw_recs <- restez::gb_record_get(id = unversioned)
+    sids <- sids[!unversioned %in% names(raw_recs)]
+  } else {
+    raw_recs <- NULL
+  }
+  if (length(sids) > 0) {
+    info(lvl = lvl + 3, ps = ps, "Downloading [", length(sids), " sqs] ...")
+    raw_recs <- c(batcher(sids, func = downloader, ps = ps, lvl = lvl + 4),
+                  raw_recs)
+  }
+  # split up by feature, return SeqRecs
   seqrecs <- numeric()
   for (i in seq_along(raw_recs)) {
-    seqrecs <- c(seqrec_convert(raw_recs = raw_recs[[i]], ps = ps),
-                 seqrecs)
+    seqrecs <- c(seqrec_convert(raw_recs = raw_recs[[i]], ps = ps), seqrecs)
   }
   seqrecs
 }
