@@ -13,3 +13,4 @@ examples/
 logo.png
 ^codemeta\.json$
 .github
+pkgdown/
