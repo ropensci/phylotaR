@@ -77,7 +77,9 @@ blast_setup <- function(d, v, wd) {
       # test version
       stdout <- rawToChar(res[['stdout']])
       stdout <- strsplit(x = stdout, split = '\n')[[1]]
-      vrsn <- gsub('[a-zA-Z:+]', '', stdout[[1]])
+      # remove contraction symbol create on windows(?), issue 39
+      stdout <- sub('~1:', '', stdout[[1]])
+      vrsn <- gsub('[a-zA-Z:+]', '', stdout)
       vrsn <- gsub('\\s', '', vrsn)
       write(x = paste0('Filepath: ', ech, ', version: ', vrsn, '\n'),
             append = TRUE, file = file.path(wd, 'blast_versions.txt'))

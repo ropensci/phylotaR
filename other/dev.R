@@ -1,5 +1,22 @@
 
+cmd_path <- file.path('/usr/local/ncbi/blast/bin', 'makeblastdb')
+res <- phylotaR:::cmdln(cmd = cmd_path, args = '-version')
+# Is the status TRUE?
+(res[['status']] == 0)
+# What are the details?
+stdout <- rawToChar(res[['stdout']])
+(stdout <- strsplit(x = stdout, split = '\n')[[1]])
+# Can we extract the version number?
+vrsn <- gsub('[a-zA-Z:+]', '', stdout[[1]])
+vrsn <- gsub('\\s', '', vrsn)
+(vrsn <- as.numeric(strsplit(vrsn, '\\.')[[1]]))
+# Version should be 2 +, expect TRUE
+(vrsn[1] >= 2 & vrsn[2] >= 0)
 
+cmd_path <- '/usr/local/ncbi/blast/bin'
+phylotaR:::blast_setup(d = cmd_path, v = TRUE, wd = getwd())
+
+stdout <- "MAKEBL~1: 2.7.1+\n Package: blast 2.7.1, build Oct 18 2017 19:55:35\n"
 
 
 devtools::load_all('~/Coding/phylotaR_restez')
