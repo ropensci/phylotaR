@@ -71,6 +71,7 @@ test_that('get_tx_slot() works', {
 phylotaR:::cleanup(wd)
 test_that('get_stage_times() works', {
   with_mock(
+    `phylotaR::outfmt_get` = function(...) '',
     `phylotaR:::blast_setup` = function(...) {
       list('mkblstdb' = '.', 'blstn' = '.')}
     ,

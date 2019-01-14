@@ -12,6 +12,7 @@ context('Testing \'test-stage1\'')
 phylotaR:::cleanup(wd)
 test_that('taxise_run() works', {
   with_mock(
+    `phylotaR::outfmt_get` = function(...) '',
     `phylotaR:::blast_setup` = function(...) {
       list('mkblstdb' = '.', 'blstn' = '.')}
     ,

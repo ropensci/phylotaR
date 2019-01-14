@@ -9,6 +9,7 @@ context('Testing \'pipeline\'')
 phylotaR:::cleanup(wd)
 test_that('setup() works', {
   res <- with_mock(
+    `phylotaR::outfmt_get` = function(...) '',
     `phylotaR::cmdln` = phylotaR:::cmdln_blastcheck,
     phylotaR::setup(wd = wd, txid = 9606)
   )
@@ -68,6 +69,7 @@ test_that('reset(hard=TRUE) works', {
 })
 test_that('parameters_reset() works', {
   res <- with_mock(
+    `phylotaR::outfmt_get` = function(...) '',
     `phylotaR:::cmdln` = phylotaR:::cmdln_blastcheck,
     phylotaR:::setup(wd = wd, txid = 9606)
   )

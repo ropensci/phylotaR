@@ -1,3 +1,47 @@
+# LIBS
+library(phylotaR)
+
+# VARS ----
+demos <- c('anisoptera' = '6962', 'acipenseridae' = '7900',
+           'tinamiformes' = '8802', 'aotus' = '9504',
+           'bromeliaceae' = '4613', 'cycadidae' = '1445963',
+           'eutardigrada' = '42242', 'kazachstania' = '71245',
+           'platyrrhini' = '9479', 'primates' = '9443')
+demos <- demos[4]
+# set these paths for your own system
+ncbi_dr <- readLines(file.path('demos', 'ncbi_dr.txt'))
+
+# FOR LOOP ----
+for (i in seq_along(demos)) {
+  txid <- demos[[i]]
+  wd <- file.path(getwd(), 'demos', names(demos)[[i]])
+  # create folder, delete if already exists
+  if (file.exists(wd)) {
+    unlink(wd, recursive = TRUE)
+  }
+  dir.create(wd)
+  # run
+  phylotaR::setup(wd = wd, txid = txid, ncbi_dr = ncbi_dr, v = TRUE)
+  run(wd = wd)
+}
+
+
+
+
+# Additional sequence information ----
+library(phylotaR)
+data("yeasts")
+# not all info is stored on the seq object
+str(yeasts@sqs@sqs[[1]])
+# but the accession can be used to download extra info
+accssn <- yeasts@sqs@sqs[[1]]@id
+library(rentrez)
+smmry_obj <- entrez_summary(db = 'nucleotide', id = accssn)
+str(smmry_obj)
+# e.g. getting country
+subtypes <- strsplit(smmry_obj[['subtype']], split = '\\|')[[1]]
+subnames <- strsplit(smmry_obj[['subname']], split = '\\|')[[1]]
+(subnames[subtypes == 'country'])
 
 cmd_path <- file.path('/usr/local/ncbi/blast/bin', 'makeblastdb')
 res <- phylotaR:::cmdln(cmd = cmd_path, args = '-version')

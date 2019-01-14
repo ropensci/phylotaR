@@ -29,6 +29,14 @@ test_that('blastn_run() works', {
   nms <- colnames(res)
   expect_true(all(nms %in% names(blast_res)))
 })
+test_that('outfmt_get() works', {
+  res <- with_mock(
+    `phylotaR:::blastdb_gen` = function(...) 0,
+    `phylotaR:::blastn_run` = function(...) 0,
+    phylotaR:::outfmt_get(ps = ps)
+  )
+  expect_true(inherits(res, 'character'))
+})
 test_that('blast_filter() works', {
   blast_res <- blast_res[-1, ]
   rnd <- sample(2:nrow(blast_res), 2)

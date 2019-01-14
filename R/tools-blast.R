@@ -56,13 +56,8 @@ blastn_run <- function(dbfl, outfl, ps) {
   if (!file.exists(dbfl)) {
     error(ps = ps, paste0('[', dbfl, '] does not exist. '))
   }
-  if (grepl('windows', .Platform$OS.type)) {
-    outfmt <- "\"6 qseqid sseqid pident length evalue qcovs qcovhsp\""
-  } else {
-    outfmt <- "6 qseqid sseqid pident length evalue qcovs qcovhsp"
-  }
-  args <- c('-query', dbfl, '-db', dbfl, '-outfmt', outfmt, '-dust', 'no',
-            '-strand', 'plus', '-evalue', ps[['mxevl']], '-out', outfl)
+  args <- c('-query', dbfl, '-db', dbfl, '-outfmt', ps[['outfmt']], '-dust',
+            'no', '-strand', 'plus', '-evalue', ps[['mxevl']], '-out', outfl)
   if (ps[['ncps']] > 1) {
     args <- c(args, '-num_threads', ps[['ncps']])
   }
@@ -84,6 +79,39 @@ blastn_run <- function(dbfl, outfl, ps) {
                            'alignment.length', 'evalue',
                            'qcovs', 'qcovhsp')
   blast_res
+}
+
+#' @name outfmt_get
+#' @title Determine 'outformat' format
+#' @description Depending on operating system, BLAST may or may not require ""
+#' around \code{outfmt}. This function will run a micro BLAST analysis
+#' to test. It will return the \code{outfmt} for use in \code{blastn_run}.
+#' @template ps
+#' @family run-private
+#' @return character
+# Patch for issue 39: https://github.com/ropensci/phylotaR/issues/39
+outfmt_get <- function(ps) {
+  dbfl <- 'testdbfl'
+  outfl <- 'testoutfl'
+  on.exit({
+    suppressWarnings(file.remove(file.path(ps[['wd']], c(dbfl, outfl))))
+    })
+  run <- function(outfmt) {
+    args <- c('-query', dbfl, '-db', dbfl, '-outfmt', outfmt, '-dust',
+              'no', '-strand', 'plus', '-evalue', ps[['mxevl']], '-out', outfl)
+    cmdln(cmd = ps[['blstn']], args = args, lgfl = dbfl)
+  }
+  sqs <- testsqs_gen(n = 3)
+  blastdb_gen(sqs = sqs, dbfl = dbfl, ps = ps)
+  outfmt_noquotes <- "6 qseqid sseqid pident length evalue qcovs qcovhsp"
+  if (run(outfmt_noquotes) != 0) {
+    return(outfmt_noquotes)
+  }
+  outfmt_quotes <- "\"6 qseqid sseqid pident length evalue qcovs qcovhsp\""
+  if (run(outfmt_quotes) != 0) {
+    return(outfmt_quotes)
+  }
+  error(ps = ps, 'BLAST not working.')
 }
 
 # FILTER NOTES
