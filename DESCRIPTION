@@ -1,7 +1,7 @@
 Package: phylotaR
 Type: Package
 Title: Automated Phylogenetic Sequence Cluster Identification from 'GenBank'
-Version: 1.0.0
+Version: 1.1.1
 Authors@R: c(person("Hannes", "Hettling", role = "aut"),
     person("Rutger", "Vos", role = "aut"),
     person("Alexander", "Zizka", role = "aut"),

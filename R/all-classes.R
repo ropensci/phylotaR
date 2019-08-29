@@ -169,6 +169,14 @@ setMethod('[', c('ClstrArc', 'character', 'missing', 'missing'),
           })
 
 # SeqRec ----
+seqrec_check <- function(object) {
+  slt_nms <- slotNames(object)
+  slt_nms <- slt_nms[slt_nms != 'sq']
+  # all slots should be of length 1 (except sq)
+  all(vapply(X = slt_nms, FUN = function(x) {
+    length(slot(object, x)) <= 1
+  }, logical(1)))
+}
 #' @name SeqRec-class
 #' @family run-public
 #' @aliases SeqRec-method
