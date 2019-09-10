@@ -139,6 +139,10 @@ seqrec_gen <- function(accssn, nm, txid, sq, dfln, orgnsm, ml_typ,
   } else {
     id <- paste0(vrsn, '/', lctn)
   }
+  # make sure "nm" is a single character
+  if (length(nm) > 1) {
+    nm <- paste0(nm, collapse = '/')
+  }
   url <- paste0('https://www.ncbi.nlm.nih.gov/nuccore/', id)
   nncltds <- nchar(sq)
   unambsq <- gsub(pattern = '[^atcgATCG]', replacement = '',

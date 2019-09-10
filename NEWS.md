@@ -6,7 +6,13 @@
 * New parameter: `db_only`, avoid downloads by fetching exclusively from
 `restez` database
 
-# `phylotaR` 1.1.0
+# phylotaR 1.1.1
+
+## Minor fixes
+
+* Validity check for `SeqRec`
+
+# phylotaR 1.1.0
 
 ## restez integration
 
