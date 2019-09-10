@@ -12,7 +12,7 @@ test_that('blast_setup() works', {
   res <- with_mock(
     `phylotaR::outfmt_get` = function(...) '',
     `phylotaR:::cmdln` = phylotaR:::cmdln_blastcheck,
-    phylotaR:::blast_setup(d  =  '.', v  =  FALSE, wd  =  wd)
+    phylotaR:::blast_setup(d  =  '.', v  =  FALSE, wd  =  wd, otsdr = FALSE)
   )
   expect_true(length(res) == 2)
   # make sure wrong versions are flagged
@@ -20,10 +20,11 @@ test_that('blast_setup() works', {
     `phylotaR::outfmt_get` = function(...) '',
     `phylotaR:::cmdln`  =  phylotaR:::cmdln_blastcheck,
     expect_error(phylotaR:::blast_setup(d  =  'wrngvrsn', v  =  FALSE,
-                                        wd  =  wd))
+                                        wd  =  wd, otsdr = FALSE))
   )
   # make sure wrong dirs are flagged
-  expect_error(phylotaR:::blast_setup(d  =  '.', v  =  FALSE, wd  =  NULL))
+  expect_error(phylotaR:::blast_setup(d  =  '.', v  =  FALSE, wd  =  NULL,
+                                      otsdr = FALSE))
 })
 test_that('parameters_setup() works', {
   expect_error(phylotaR:::parameters_setup(wd = wd, txid = 9606,
@@ -34,7 +35,7 @@ test_that('parameters_setup() works', {
     phylotaR:::parameters_setup(wd = wd, txid = 9606, ncbi_execs = ncbi_execs)
   )
   ps <- phylotaR:::parameters_load(wd = wd)
-  expect_true(length(ps) == 19)
+  expect_true(length(ps) == 21)
 })
 phylotaR:::cleanup(wd)
 test_that('stage_args_check() works', {

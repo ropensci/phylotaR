@@ -9,12 +9,14 @@
 #' @param ncbi_dr Directory to NCBI BLAST tools, default '.'
 #' @param v Verbose, T/F
 #' @param overwrite Overwrite existing cache?
+#' @param outsider Run through \code{outsider}? T/F
 #' @param ... Additional parameters
 #' @export
 #' @return NULL
 #' @family run-public
 #' @example examples/setup.R
-setup <- function(wd, txid, ncbi_dr='.', v=FALSE, overwrite=FALSE, ...) {
+setup <- function(wd, txid, ncbi_dr='.', v=FALSE, overwrite=FALSE,
+                  outsider=FALSE, ...) {
   # no ~
   checks <- vapply(X = c(wd, ncbi_dr), FUN = grepl, FUN.VALUE = logical(1),
                    pattern = '~')
@@ -28,9 +30,9 @@ setup <- function(wd, txid, ncbi_dr='.', v=FALSE, overwrite=FALSE, ...) {
   msg <- paste0(brdr, '\n', msg, '\n', brdr, '\n')
   .log(v = v, wd = wd, msg)
   # set up
-  ncbi_execs <- blast_setup(d = ncbi_dr, v = v, wd = wd)
+  ncbi_execs <- blast_setup(d = ncbi_dr, v = v, wd = wd, otsdr = outsider)
   parameters_setup(wd = wd, txid = txid, ncbi_execs = ncbi_execs, v = v,
-                   overwrite=overwrite, ...)
+                   overwrite = overwrite, outsider = outsider, ...)
   # record session info
   writeLines(capture.output(sessionInfo()), file.path(wd, "session_info.txt"))
   # end

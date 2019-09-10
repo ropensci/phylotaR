@@ -35,13 +35,21 @@
 #' If there are more sequences for a node, BLAST is performed at the lower
 #' taxonomic level.
 #' @param mxevl The maximum E-value for a successful BLAST.
-#' @param mncvrg The maximum percentile coverage defining an overlapping BLAST hit.
-#' Sequences with BLAST matches with lower values are not considered orthologous.
+#' @param mncvrg The maximum percentile coverage defining an overlapping BLAST
+#' hit. Sequences with BLAST matches with lower values are not considered
+#' orthologous.
+#' @param db_only Take sequences only from \code{restez} library? TRUE/FALSE.
+#' If TRUE, internet is still required (for taxonomic look-up) and a
+#' \code{restez} will need to be set up.
+#' @param outsider Use \code{om..blast}? TRUE/FALSE. If TRUE, a module for
+#' running \code{blastn} will be installed and all BLAST commands will be run
+#' through it. \code{outsider} package is required.
 #' @export
 parameters <- function(wd='.', txid=character(), mkblstdb='', blstn='', v=FALSE,
                        ncps=1, mxnds=100000, mdlthrs=3000, mnsql=250,
                        mxsql=2000, mxrtry=100, mxsqs=50000, mxevl=1.0e-10,
-                       mncvrg=51, btchsz=100, date=Sys.Date()) {
+                       mncvrg=51, btchsz=100, db_only = FALSE, outsider = FALSE,
+                       date=Sys.Date()) {
   ps <- as.list(environment())
   ps[['txid']] <- as.character(ps[['txid']])
   if (length(ps[['txid']]) > 1) {

@@ -24,7 +24,7 @@ blastdb_gen <- function(sqs, dbfl, ps) {
   args <- c('-in', fl, '-dbtype', 'nucl')
   info(lvl = 3, ps = ps, "Running makeblastdb")
   res <- cmdln(cmd = ps[['mkblstdb']], args = args,
-               lgfl = fl)
+               lgfl = fl, ps = ps)
   if (res != 0) {
     error(ps = ps, paste0('makeblastdb failed to run. Check BLAST log files.'))
   }
@@ -62,7 +62,7 @@ blastn_run <- function(dbfl, outfl, ps) {
     args <- c(args, '-num_threads', ps[['ncps']])
   }
   info(lvl = 3, ps = ps, "Running blastn")
-  res <- cmdln(cmd = ps[['blstn']], args = args, lgfl = dbfl)
+  res <- cmdln(cmd = ps[['blstn']], args = args, lgfl = dbfl, ps = ps)
   if (res != 0) {
     error(ps = ps, 'blastn failed to run. Check BLAST log files.')
   }
@@ -97,18 +97,20 @@ outfmt_get <- function(ps) {
     suppressWarnings(file.remove(file.path(ps[['wd']], c(dbfl, outfl))))
     })
   run <- function(outfmt) {
+    dbfl <- file.path(ps[['wd']], 'blast', dbfl)
+    outfl <- file.path(ps[['wd']], 'blast', outfl)
     args <- c('-query', dbfl, '-db', dbfl, '-outfmt', outfmt, '-dust',
               'no', '-strand', 'plus', '-evalue', ps[['mxevl']], '-out', outfl)
-    cmdln(cmd = ps[['blstn']], args = args, lgfl = dbfl)
+    cmdln(cmd = ps[['blstn']], args = args, lgfl = dbfl, ps = ps)
   }
   sqs <- testsqs_gen(n = 3)
   blastdb_gen(sqs = sqs, dbfl = dbfl, ps = ps)
   outfmt_noquotes <- "6 qseqid sseqid pident length evalue qcovs qcovhsp"
-  if (run(outfmt_noquotes) != 0) {
+  if (run(outfmt_noquotes) == 0) {
     return(outfmt_noquotes)
   }
   outfmt_quotes <- "\"6 qseqid sseqid pident length evalue qcovs qcovhsp\""
-  if (run(outfmt_quotes) != 0) {
+  if (run(outfmt_quotes) == 0) {
     return(outfmt_quotes)
   }
   error(ps = ps, 'BLAST not working.')

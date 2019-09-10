@@ -109,7 +109,7 @@ seqrec_get <- function(txid, ps, direct=FALSE, lvl=0) {
   } else {
     raw_recs <- NULL
   }
-  if (length(sids) > 0) {
+  if (length(sids) > 0 & !ps[['db_only']]) {
     info(lvl = lvl + 3, ps = ps, "Downloading [", length(sids), " sqs] ...")
     raw_recs <- c(batcher(sids, func = downloader, ps = ps, lvl = lvl + 4),
                   raw_recs)

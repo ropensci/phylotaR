@@ -58,17 +58,24 @@ parameters_setup <- function(wd, ncbi_execs, overwrite=FALSE, ...) {
 #' @param d Directory to NCBI BLAST tools
 #' @param wd Working directory
 #' @param v v, T/F
+#' @param otsdr Run through \code{outsider}?
 #' @details BLAST tools must be version >= 2.0
 #' @family run-private
 #' @return list
-blast_setup <- function(d, v, wd) {
+blast_setup <- function(d, v, wd, otsdr) {
   .log(v = v, wd = wd, 'Checking for valid NCBI BLAST+ Tools ...\n')
   sccdd <- TRUE
-  mkblstdb <- file.path(d, 'makeblastdb')
-  blstn <- file.path(d, 'blastn')
+  if (otsdr) {
+    mkblstdb <- 'makeblastdb'
+    blstn <- 'blastn'
+  } else {
+    mkblstdb <- file.path(d, 'makeblastdb')
+    blstn <- file.path(d, 'blastn')
+  }
   for (ech in c(mkblstdb, blstn)) {
     args <- '-version'
-    res <- cmdln(cmd = ech, args = args)
+    res <- cmdln(cmd = ech, args = args,
+                 ps = list('outsider' = otsdr))
     if (res[['status']] != 0) {
       tst <- FALSE
       stderr <- rawToChar(res[['stderr']])
@@ -76,22 +83,26 @@ blast_setup <- function(d, v, wd) {
                                   '[', stderr, ']'))
       sccdd <- FALSE
     } else {
-      # test version
-      stdout <- rawToChar(res[['stdout']])
-      stdout <- strsplit(x = stdout, split = '\n')[[1]]
-      # remove contraction symbol create on windows(?), issue 39
-      stdout <- sub('~1:', '', stdout[[1]])
-      vrsn <- gsub('[a-zA-Z:+]', '', stdout)
-      vrsn <- gsub('\\s', '', vrsn)
-      write(x = paste0('Filepath: ', ech, ', version: ', vrsn, '\n'),
-            append = TRUE, file = file.path(wd, 'blast_versions.txt'))
-      vrsn <- as.numeric(strsplit(vrsn, '\\.')[[1]])
-      tst <- vrsn[1] >= 2 & vrsn[2] >= 0
-      if (tst) {
-        .log(v = v, wd = wd, paste0('Found: [', ech, ']\n'))
+      if (otsdr) {
+        .log(v = v, wd = wd, paste0('Using otsdr BLAST.\n'))
       } else {
-        .log(v = v, wd = wd, paste0('Incorrect version: [', ech, ']\n'))
-        sccdd <- FALSE
+        # test version
+        stdout <- rawToChar(res[['stdout']])
+        stdout <- strsplit(x = stdout, split = '\n')[[1]]
+        # remove contraction symbol create on windows(?), issue 39
+        stdout <- sub('~1:', '', stdout[[1]])
+        vrsn <- gsub('[a-zA-Z:+]', '', stdout)
+        vrsn <- gsub('\\s', '', vrsn)
+        write(x = paste0('Filepath: ', ech, ', version: ', vrsn, '\n'),
+              append = TRUE, file = file.path(wd, 'blast_versions.txt'))
+        vrsn <- as.numeric(strsplit(vrsn, '\\.')[[1]])
+        tst <- vrsn[1] >= 2 & vrsn[2] >= 0
+        if (tst) {
+          .log(v = v, wd = wd, paste0('Found: [', ech, ']\n'))
+        } else {
+          .log(v = v, wd = wd, paste0('Incorrect version: [', ech, ']\n'))
+          sccdd <- FALSE
+        }
       }
     }
   }

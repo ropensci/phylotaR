@@ -9,24 +9,22 @@
 #' @param args Vector of command arguments, each parameter and value
 #' must be a separate element
 #' @param lgfl File to which stdout/err will be written
+#' @param ps Paramters
 #' @details Note, stdout/err are returned as 'raw'. Use rawToChar() to
 #' convert to characters.
 #' @family run-private
 #' @return status, integer or character
-cmdln <- function(cmd, args, lgfl=NULL) {
+cmdln <- function(cmd, args, ps, lgfl=NULL) {
   if (!is.null(lgfl)) {
     # remove any filetype and replace with .log
     lgfl <- paste0(sub('\\.[^.]+$', '', lgfl), '.log')
-    res <- try(sys::exec_wait(cmd = cmd, args = args,
-                              std_out = lgfl, std_err = lgfl),
-               silent = TRUE)
+    res <- sys_exec(cmd = cmd, args = args, ps = ps, lgfl = lgfl)
     if (inherits(res, 'try-error')) {
       cat(as.character(res), file = lgfl)
       res <- 1
     }
   } else {
-    res <- try(sys::exec_internal(cmd = cmd, args = args),
-               silent = TRUE)
+    res <- sys_exec(cmd = cmd, args = args, ps = ps)
     if (inherits(res, 'try-error')) {
       stderr <- charToRaw(as.character(res))
       res <- list('status' = 1, 'stderr' = stderr,
@@ -40,4 +38,35 @@ cmdln <- function(cmd, args, lgfl=NULL) {
 # required for testing as they need to be mocked
 .untar <- function(...) {
   utils::untar(...)
+}
+
+# 9 Sept 2019 outsider integration
+repo <- 'dombennett/om..blast'
+sys_exec <- function(cmd = cmd, args = args, ps, lgfl = NULL) {
+  if (ps[['outsider']]) {
+    if (!outsider::is_module_installed(repo = repo)) {
+      message('Installing BLAST with outsider')
+      outsider::module_install(repo = repo, service = 'github', tag = 'latest',
+                               force = TRUE)
+    }
+    cmd <- outsider::module_import(fname = cmd, repo = repo)
+    if (!is.null(lgfl)) {
+      outsider::verbosity_set(show_program = lgfl)
+    }
+    res <- try(cmd(arglist = args), silent = TRUE)
+    if (is.logical(res) && res) {
+      res <- 0
+    }
+    if (is.null(lgfl)) {
+      res <- list('status' = res, 'stderr' = raw(), 'stdout' = raw())
+    }
+  } else {
+    if (!is.null(lgfl)) {
+      res <- try(sys::exec_wait(cmd = cmd, args = args, std_out = lgfl,
+                                std_err = lgfl), silent = TRUE)
+    } else {
+      res <- try(sys::exec_internal(cmd = cmd, args = args), silent = TRUE)
+    }
+  }
+  res
 }

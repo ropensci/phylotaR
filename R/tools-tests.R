@@ -59,7 +59,7 @@ cleanup <- function(wd) {
 #' responses.
 #' @return list
 #' @noRd
-cmdln_blastcheck <- function(cmd, args, lgfl = NULL) {
+cmdln_blastcheck <- function(cmd, args, ps, lgfl = NULL) {
   if (grepl('makeblastdb', cmd)) {
     out <- "makeblastdb: 2.7.1+\nPackage: blast 2.7.1, build [date]"
   }

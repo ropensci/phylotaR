@@ -7,7 +7,8 @@
 parameters(wd = ".", txid = character(), mkblstdb = "", blstn = "",
   v = FALSE, ncps = 1, mxnds = 1e+05, mdlthrs = 3000,
   mnsql = 250, mxsql = 2000, mxrtry = 100, mxsqs = 50000,
-  mxevl = 1e-10, mncvrg = 51, btchsz = 100, date = Sys.Date())
+  mxevl = 1e-10, mncvrg = 51, btchsz = 100, db_only = FALSE,
+  outsider = FALSE, date = Sys.Date())
 }
 \arguments{
 \item{wd}{The working directory where all output files are saved.}
@@ -45,10 +46,19 @@ taxonomic level.}
 
 \item{mxevl}{The maximum E-value for a successful BLAST.}
 
-\item{mncvrg}{The maximum percentile coverage defining an overlapping BLAST hit.
-Sequences with BLAST matches with lower values are not considered orthologous.}
+\item{mncvrg}{The maximum percentile coverage defining an overlapping BLAST
+hit. Sequences with BLAST matches with lower values are not considered
+orthologous.}
 
 \item{btchsz}{Batch size when querying NCBI}
+
+\item{db_only}{Take sequences only from \code{restez} library? TRUE/FALSE.
+If TRUE, internet is still required (for taxonomic look-up) and a
+\code{restez} will need to be set up.}
+
+\item{outsider}{Use \code{om..blast}? TRUE/FALSE. If TRUE, a module for
+running \code{blastn} will be installed and all BLAST commands will be run
+through it. \code{outsider} package is required.}
 
 \item{date}{Date when pipeline was initiated}
 }

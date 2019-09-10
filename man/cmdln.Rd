@@ -4,13 +4,15 @@
 \alias{cmdln}
 \title{Run a command via terminal/command prompt}
 \usage{
-cmdln(cmd, args, lgfl = NULL)
+cmdln(cmd, args, ps, lgfl = NULL)
 }
 \arguments{
 \item{cmd}{Command to be run}
 
 \item{args}{Vector of command arguments, each parameter and value
 must be a separate element}
+
+\item{ps}{Paramters}
 
 \item{lgfl}{File to which stdout/err will be written}
 }

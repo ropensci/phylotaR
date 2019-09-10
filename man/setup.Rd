@@ -4,7 +4,8 @@
 \alias{setup}
 \title{Set-up parameters}
 \usage{
-setup(wd, txid, ncbi_dr = ".", v = FALSE, overwrite = FALSE, ...)
+setup(wd, txid, ncbi_dr = ".", v = FALSE, overwrite = FALSE,
+  outsider = FALSE, ...)
 }
 \arguments{
 \item{wd}{Working directory}
@@ -16,6 +17,8 @@ setup(wd, txid, ncbi_dr = ".", v = FALSE, overwrite = FALSE, ...)
 \item{v}{Verbose, T/F}
 
 \item{overwrite}{Overwrite existing cache?}
+
+\item{outsider}{Run through \code{outsider}? T/F}
 
 \item{...}{Additional parameters}
 }

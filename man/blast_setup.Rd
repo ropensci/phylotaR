@@ -4,7 +4,7 @@
 \alias{blast_setup}
 \title{Ensures NCBI BLAST tools are installed}
 \usage{
-blast_setup(d, v, wd)
+blast_setup(d, v, wd, otsdr)
 }
 \arguments{
 \item{d}{Directory to NCBI BLAST tools}
@@ -12,6 +12,8 @@ blast_setup(d, v, wd)
 \item{v}{v, T/F}
 
 \item{wd}{Working directory}
+
+\item{otsdr}{Run through \code{outsider}?}
 }
 \value{
 list
