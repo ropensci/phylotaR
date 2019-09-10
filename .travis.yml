@@ -12,7 +12,9 @@ r_binary_packages:
  - sys
 r_github_packages:
  - jimhester/covr
- - AntonelliLab/restez
+ - ropensci/restez
+ - AntonelliLab/outsider.base
+ - AntonelliLab/outsider
 
 after_success:
   - Rscript -e 'covr::coveralls()'

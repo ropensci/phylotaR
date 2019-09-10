@@ -1,4 +1,12 @@
-# phylotaR 1.1.0
+# phylotaR 1.2.0
+
+## `outsider` integration
+
+* Now work with `outsider`, reduing user need to install BLAST+
+* New parameter: `db_only`, avoid downloads by fetching exclusively from
+`restez` database
+
+# `phylotaR` 1.1.0
 
 ## restez integration
 
