@@ -66,7 +66,7 @@ txids_get <- function(ps, retmax = 1E4) {
   }
   ntxids <- length(ps[['txid']])
   if (ntxids > 10) {
-    indxs <- seq(from = 0, to = ntxids, by = 10)
+    indxs <- unique(c(seq(from = 0, to = ntxids, by = 10), ntxids))
     txids <- NULL
     for (i in seq_along(indxs[-1])) {
       i1 <- indxs[i] + 1
