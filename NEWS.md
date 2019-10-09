@@ -5,6 +5,7 @@
 * Now work with `outsider`, reduing user need to install BLAST+
 * New parameter: `db_only`, avoid downloads by fetching exclusively from
 `restez` database
+* Excluding Transcriptome Shotgun Assembly sequences, making downloading faster
 
 # phylotaR 1.1.1
 

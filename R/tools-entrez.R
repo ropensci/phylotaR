@@ -14,8 +14,10 @@ searchterm_gen <- function(txid, ps, direct = FALSE) {
   avd1 <- ' NOT predicted[TI] NOT "whole genome shotgun"[TI]'
   avd2 <- ' NOT unverified[TI] NOT "synthetic construct"[Organism]'
   not_refseq <- ' NOT refseq[filter]'
+  # exclude Transcriptome Shotgun Assembly
+  not_tsa <- ' NOT TSA[Keyword]'
   paste0('(txid', txid, org_trm, ' AND ', ps[['mnsql']],
-         ':', ps[['mxsql']], '[SLEN])', avd1, avd2, not_refseq)
+         ':', ps[['mxsql']], '[SLEN])', avd1, avd2, not_refseq, not_tsa)
 }
 
 #' @name txnds_count
