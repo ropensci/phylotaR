@@ -51,7 +51,7 @@ txids_get <- function(ps, retmax = 1E4) {
     if (txcnt <= retmax) {
       return(txids)
     }
-    ret_strts <- seq(from = retmax, to = txcnt, by = retmax)
+    ret_strts <- as.integer(seq(from = retmax, to = txcnt, by = retmax))
     for (ret_strt in ret_strts) {
       args <- list(db = 'taxonomy', term = trm, retmax = retmax,
                    retstart = ret_strt)
