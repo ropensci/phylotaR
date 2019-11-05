@@ -44,11 +44,15 @@
 #' @param outsider Use \code{om..blast}? TRUE/FALSE. If TRUE, a module for
 #' running \code{blastn} will be installed and all BLAST commands will be run
 #' through it. \code{outsider} package is required.
+#' @param srch_trm Sequence NCBI search term modifier. Use this parameter to
+#' change the default search term options. Default: avoid predicted, WGS,
+#' unverified, synthetic, RefSeq and Transcriptome Shotgun Assembly sequences.
 #' @export
 parameters <- function(wd='.', txid=character(), mkblstdb='', blstn='', v=FALSE,
                        ncps=1, mxnds=100000, mdlthrs=3000, mnsql=250,
                        mxsql=2000, mxrtry=100, mxsqs=50000, mxevl=1.0e-10,
                        mncvrg=51, btchsz=100, db_only = FALSE, outsider = FALSE,
+                       srch_trm='NOT predicted[TI] NOT "whole genome shotgun"[TI] NOT unverified[TI] NOT "synthetic construct"[Organism] NOT refseq[filter] NOT TSA[Keyword]',
                        date=Sys.Date()) {
   ps <- as.list(environment())
   ps[['txid']] <- as.character(ps[['txid']])
