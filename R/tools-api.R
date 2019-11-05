@@ -69,20 +69,28 @@ download_obj_check <- function(obj) {
   if (inherits(x = obj, what = 'try-error')) {
     return(FALSE)
   }
+  # either an esearch object or a fetch "acc" or "gb" character of length 1
+  if (inherits(x = obj, what = 'esearch')) {
+    return(TRUE)
+  }
+  # object fetch is either a character of length 1
   if (length(obj) == 1 & inherits(x = obj, what = 'character')) {
-    if (grepl(pattern = 'timeout', x = obj)) {
+    is_gb_record <- grepl(pattern = 'LOCUS', x = obj, ignore.case = FALSE)
+    # xml timeout error
+    if (grepl(pattern = 'timeout', x = obj) & !is_gb_record) {
       return(FALSE)
     }
-    if (grepl(pattern = 'Error occurred:', x = obj)) {
+    if (grepl(pattern = 'Error occurred:', x = obj) & !is_gb_record) {
       # Fix for 'malformed-xmlBackend', NCBI returning object
       return(FALSE)
     }
-    if (grepl(pattern = '^\\s*Error', x = obj)) {
+    if (grepl(pattern = '^\\s*Error', x = obj) & !is_gb_record) {
       # "Error : HTTP failure: 400"
       return(FALSE)
     }
+    return(TRUE)
   }
-  TRUE
+  FALSE
 }
 
 #' @name batcher
