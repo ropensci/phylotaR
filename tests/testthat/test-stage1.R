@@ -29,7 +29,9 @@ test_that('taxise_run() works', {
 phylotaR:::cleanup(wd)
 test_that('txids_get() works', {
   mock_search <- function(...) {
-    list('count' = 100, 'ids' = as.character(1:100))
+    res <- list('count' = 100, 'ids' = as.character(1:100))
+    class(res) <- 'esearch'
+    res
   }
   phylotaR:::cache_setup(ps)
   res <- with_mock(

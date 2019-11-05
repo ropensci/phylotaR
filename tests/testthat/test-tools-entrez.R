@@ -14,7 +14,9 @@ esearch_mock <- function(db, term, retmax, retstart, ...) {
   } else {
     ids <- as.character(1:n)
   }
-  list('ids' = ids, 'count' = n)
+  res <- list('ids' = ids, 'count' = n)
+  class(res) <- 'esearch'
+  res
 }
 efetch_mock <- function(retmax, ...) {
   # when rettype == 'acc'

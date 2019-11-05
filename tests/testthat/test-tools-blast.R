@@ -32,7 +32,7 @@ test_that('blastn_run() works', {
 test_that('outfmt_get() works', {
   res <- with_mock(
     `phylotaR:::blastdb_gen` = function(...) 0,
-    `phylotaR:::blastn_run` = function(...) 0,
+    `phylotaR:::cmdln` = function(...) 0,
     phylotaR:::outfmt_get(ps = ps)
   )
   expect_true(inherits(res, 'character'))
