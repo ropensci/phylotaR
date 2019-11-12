@@ -80,12 +80,16 @@ download_obj_check <- function(obj) {
     if (grepl(pattern = 'timeout', x = obj) & !is_gb_record) {
       return(FALSE)
     }
+    # xml "Unable to obtain query" error
+    if (grepl(pattern = 'Unable to obtain query', x = obj) & !is_gb_record) {
+      return(FALSE)
+    }
     if (grepl(pattern = 'Error occurred:', x = obj) & !is_gb_record) {
       # Fix for 'malformed-xmlBackend', NCBI returning object
       return(FALSE)
     }
     if (grepl(pattern = '^\\s*Error', x = obj) & !is_gb_record) {
-      # "Error : HTTP failure: 400"
+      # "Error : HTTP failure: 400 or 515"
       return(FALSE)
     }
     return(TRUE)

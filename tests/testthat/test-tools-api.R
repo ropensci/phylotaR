@@ -3,7 +3,14 @@ library(testthat)
 
 # DATA
 # error examples
-failed_search <- 'Error in entrez_check(...'
+failed_search_1 <- 'Error in entrez_check(...'
+failed_search_2 <- '<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n<!DOCTYPE eEfetchResult PUBLIC \"-//NLM//DTD efetch 20131226//EN\" \"https://eutils.ncbi.nlm.nih.gov/eutils/dtd/20131226/efetch.dtd\">"\n<eFetchResult>"\n\t<ERROR>Unable to obtain query #1</ERROR>"\n</eFetchResult>"'
+req <- list('x' = 'An error occurred')
+req$status_code <- 414
+failed_search_3 <- try(rentrez:::entrez_check(req = req), silent = TRUE)
+req$status_code <- 502
+failed_search_4 <- try(rentrez:::entrez_check(req = req), silent = TRUE)
+
 load(file.path(phylotaR:::datadir_get(subdir  =  'api'), 'xml_timeout.rda'))
 # real example: search tax
 flpth <- file.path(phylotaR:::datadir_get(subdir  =  'api'),
@@ -56,7 +63,12 @@ test_that('download_obj_check() works', {
   expect_true(phylotaR:::download_obj_check(entrez_fetch_sid))
   expect_true(phylotaR:::download_obj_check(entrez_fetch_seqs))
   expect_false(phylotaR:::download_obj_check(xml_tmout))
-  expect_false(phylotaR:::download_obj_check(failed_search))
+  expect_false(phylotaR:::download_obj_check(failed_search_1))
+  expect_false(phylotaR:::download_obj_check(failed_search_2))
+  expect_false(phylotaR:::download_obj_check(failed_search_3))
+  expect_false(phylotaR:::download_obj_check(as.character(failed_search_3)))
+  expect_false(phylotaR:::download_obj_check(failed_search_4))
+  expect_false(phylotaR:::download_obj_check(as.character(failed_search_4)))
 })
 test_that('safely_connect(fnm = search) works', {
   phylotaR:::cache_setup(ps  =  ps)
