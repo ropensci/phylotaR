@@ -16,7 +16,7 @@ Description: A pipeline for the identification, within taxonomic groups, of
     and is, therefore, not dependent on differences in gene naming conventions
     and naming errors.
 License: MIT + file LICENSE
-URL: https://github.com/ropensci/phylotaR#readme
+URL: https://docs.ropensci.org/phylotaR, https://github.com/ropensci/phylotaR#readme
 BugReports: https://github.com/ropensci/phylotaR/issues
 SystemRequirements: BLAST+ (>=2.0)
 Depends:
