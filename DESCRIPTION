@@ -37,6 +37,8 @@ Suggests:
     knitr,
     rmarkdown,
     outsider
+Remotes:
+    ropensci/restez
 RoxygenNote: 6.1.1
 VignetteBuilder: knitr
 X-schema.org-isPartOf: https://ropensci.org
