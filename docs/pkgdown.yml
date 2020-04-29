@@ -1,6 +1,0 @@
-pandoc: 1.19.2.1
-pkgdown: 1.2.0.9000
-pkgdown_sha: 90eeacd496c5b6ed783c01cb2edeb62ceda6ce05
-articles:
-  phylotaR: phylotaR.html
-
