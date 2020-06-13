@@ -74,7 +74,7 @@ blastn_run <- function(dbfl, outfl, ps) {
     info(lvl = 3, ps = ps, "No BLAST output, returning NULL")
     return(NULL)
   }
-  blast_res <- read.table(outfl)
+  blast_res <- read.table(file = outfl, stringsAsFactors = FALSE)
   colnames(blast_res) <- c('query.id', 'subject.id', 'identity',
                            'alignment.length', 'evalue',
                            'qcovs', 'qcovhsp')
