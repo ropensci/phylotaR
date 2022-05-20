@@ -13,8 +13,8 @@
 calc_mad <- function(phylota, cid) {
   calc <- function(cid) {
     sids <- phylota@clstrs[[cid]]@sids
-    sqlns <- get_sq_slot(phylota = phylota, sid = sids, slt_nm = 'nncltds')
-    sum(sqlns/(length(sqlns)*max(sqlns)))
+    sqlns <- get_sq_slot(phylota = phylota, sid = sids, slt_nm = "nncltds")
+    sum(sqlns / (length(sqlns) * max(sqlns)))
   }
   vapply(cid, calc, numeric(1))
 }
@@ -37,17 +37,17 @@ calc_mad <- function(phylota, cid) {
 #' @export
 #' @family tools-public
 calc_wrdfrq <- function(phylota, cid, min_frq = 0.1, min_nchar = 1,
-                        type = c('dfln', 'nm'), ignr_pttrn = "[^a-z0-9]") {
+                        type = c("dfln", "nm"), ignr_pttrn = "[^a-z0-9]") {
   calc <- function(cid) {
     sids <- phylota@clstrs[[cid]]@sids
     wrds <- get_sq_slot(phylota = phylota, sid = sids, slt_nm = type)
     wrds <- tolower(wrds)
-    wrds <- unlist(strsplit(wrds, '\\s+'))
-    wrds <- gsub(pattern = ignr_pttrn, replacement = '', x = wrds)
+    wrds <- unlist(strsplit(wrds, "\\s+"))
+    wrds <- gsub(pattern = ignr_pttrn, replacement = "", x = wrds)
     pull <- vapply(wrds, nchar, 1) > min_nchar
     wrds <- wrds[pull]
     counts <- table(wrds)
-    prps <- counts/length(wrds)
+    prps <- counts / length(wrds)
     prps <- sort(prps, decreasing = TRUE)
     prps[prps > min_frq]
   }

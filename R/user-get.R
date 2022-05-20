@@ -15,8 +15,10 @@
 get_ntaxa <- function(phylota, cid = NULL, sid = NULL, rnk = NULL,
                       keep_higher = FALSE) {
   count <- function(sids) {
-    txids <- get_txids(phylota = phylota, sid = sids, rnk = rnk,
-                       keep_higher = keep_higher)
+    txids <- get_txids(
+      phylota = phylota, sid = sids, rnk = rnk,
+      keep_higher = keep_higher
+    )
     length(unique(txids))
   }
   get_sids_and_count <- function(cid) {
@@ -52,15 +54,15 @@ get_txids <- function(phylota, cid = NULL, sid = NULL, txids = NULL, rnk = NULL,
                       keep_higher = FALSE) {
   get <- function(txid) {
     tx <- phylota@txdct@recs[[txid]]
-    rnks <- tx@lng[['rnks']]
-    ids <- tx@lng[['ids']]
+    rnks <- tx@lng[["rnks"]]
+    ids <- tx@lng[["ids"]]
     mtch <- which(rnk == rnks)
     if (length(mtch) == 0) {
       if (keep_higher) {
         # if no match, use lowest available rank
         mtch <- length(rnks)
       } else {
-        return('')
+        return("")
       }
     }
     ids[[mtch[[1]]]]
@@ -70,13 +72,15 @@ get_txids <- function(phylota, cid = NULL, sid = NULL, txids = NULL, rnk = NULL,
       clstr <- phylota@clstrs[[cid]]
       sid <- clstr@sids
     }
-    txids <- get_sq_slot(phylota = phylota, sid = sid, 
-                         slt_nm = 'txid')
+    txids <- get_sq_slot(
+      phylota = phylota, sid = sid,
+      slt_nm = "txid"
+    )
   }
   if (is.null(rnk)) {
     return(txids)
   }
-  vapply(txids, get, '')
+  vapply(txids, get, "")
 }
 
 #' @name get_nsqs
@@ -121,7 +125,7 @@ get_sq_slot <- function(phylota, cid = NULL, sid = NULL,
     sid <- clstr@sids
   }
   slt_nm <- match.arg(slt_nm)
-  expctd <- new(getSlots('SeqRec')[[slt_nm]], 1)
+  expctd <- new(getSlots("SeqRec")[[slt_nm]], 1)
   vapply(sid, get, expctd)
 }
 
@@ -143,7 +147,7 @@ get_clstr_slot <- function(phylota, cid,
     slot(clstr, slt_nm)
   }
   slt_nm <- match.arg(slt_nm)
-  expctd <- new(getSlots('ClstrRec')[[slt_nm]], 1)
+  expctd <- new(getSlots("ClstrRec")[[slt_nm]], 1)
   vapply(cid, get, expctd)
 }
 
@@ -163,7 +167,7 @@ get_tx_slot <- function(phylota, txid, slt_nm = list_taxrec_slots()) {
     slot(tx, slt_nm)
   }
   slt_nm <- match.arg(slt_nm)
-  expctd <- new(getSlots('TaxRec')[[slt_nm]], 1)
+  expctd <- new(getSlots("TaxRec")[[slt_nm]], 1)
   vapply(txid, get, expctd)
 }
 
@@ -176,35 +180,42 @@ get_tx_slot <- function(phylota, txid, slt_nm = list_taxrec_slots()) {
 #' @family tools-public
 #' @example examples/get_stage_times.R
 get_stage_times <- function(wd) {
-  lgfl <- file.path(wd, 'log.txt')
+  lgfl <- file.path(wd, "log.txt")
   lines <- readLines(con = lgfl)
-  stage_tms <- stage_ends <- stage_starts <- c('taxise' = NA,
-                                               'download' = NA,
-                                               'cluster' = NA,
-                                               'cluster\\^2' = NA)
+  stage_tms <- stage_ends <- stage_starts <- c(
+    "taxise" = NA,
+    "download" = NA,
+    "cluster" = NA,
+    "cluster\\^2" = NA
+  )
   stage_nms <- names(stage_tms)
   for (ln in lines) {
     for (stgnm in stage_nms) {
-      pttrn <- paste0('Starting stage ', stgnm, ': ')
+      pttrn <- paste0("Starting stage ", stgnm, ": ")
       if (grepl(pattern = pttrn, x = ln, ignore.case = TRUE)) {
-        ln <- sub(pattern = pttrn,
-                  replacement = '', x = ln, ignore.case = TRUE)
-        ln <- gsub(pattern = '(\\[|\\])', replacement = '', x = ln)
+        ln <- sub(
+          pattern = pttrn,
+          replacement = "", x = ln, ignore.case = TRUE
+        )
+        ln <- gsub(pattern = "(\\[|\\])", replacement = "", x = ln)
         stage_starts[[stgnm]] <- ln
       }
-      pttrn <- paste0('Completed stage ', stgnm, ': ')
+      pttrn <- paste0("Completed stage ", stgnm, ": ")
       if (grepl(pttrn, ln, ignore.case = TRUE)) {
-        ln <- sub(pattern = pttrn,
-                  replacement = '', x = ln, ignore.case = TRUE)
-        ln <- gsub(pattern = '(\\[|\\])', replacement = '', x = ln)
+        ln <- sub(
+          pattern = pttrn,
+          replacement = "", x = ln, ignore.case = TRUE
+        )
+        ln <- gsub(pattern = "(\\[|\\])", replacement = "", x = ln)
         stage_ends[[stgnm]] <- ln
       }
     }
   }
   for (stgnm in stage_nms) {
     stage_tms[[stgnm]] <- difftime(as.POSIXct(stage_ends[[stgnm]]),
-                                   as.POSIXct(stage_starts[[stgnm]]),
-                                   units = 'mins')
+      as.POSIXct(stage_starts[[stgnm]]),
+      units = "mins"
+    )
   }
   stage_tms
 }

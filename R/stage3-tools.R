@@ -8,14 +8,18 @@
 #' @template lvl
 #' @return ClstrArc
 #' @family run-private
-clstr_all <- function(txid, sqs, txdct, ps, lvl=0) {
+clstr_all <- function(txid, sqs, txdct, ps, lvl = 0) {
   dds <- descendants_get(id = txid, txdct = txdct, direct = TRUE)
-  all_clstrs <- clstr_subtree(txid = txid, sqs = sqs, txdct = txdct, ps = ps,
-                              dds = dds, lvl = lvl + 1)
+  all_clstrs <- clstr_subtree(
+    txid = txid, sqs = sqs, txdct = txdct, ps = ps,
+    dds = dds, lvl = lvl + 1
+  )
   for (dd in dds) {
     info(lvl = lvl + 2, ps = ps, "+ parent [id ", txid, "]")
-    dd_clstrs <- clstr_all(txid = dd, txdct = txdct, sqs = sqs, ps = ps,
-                           lvl = lvl + 1)
+    dd_clstrs <- clstr_all(
+      txid = dd, txdct = txdct, sqs = sqs, ps = ps,
+      lvl = lvl + 1
+    )
     all_clstrs <- clstrarc_join(all_clstrs, dd_clstrs)
   }
   all_clstrs
@@ -38,8 +42,10 @@ clstr_subtree <- function(txid, sqs, txdct, dds, ps, lvl) {
   all_clstrs <- clstrarc_gen(list())
   rnk <- rank_get(txid = txid, txdct = txdct)
   if (length(dds) > 0) {
-    drct_clstrs <- clstr_direct(txid, ps = ps, txdct = txdct,
-                                sqs = sqs, lvl = lvl)
+    drct_clstrs <- clstr_direct(txid,
+      ps = ps, txdct = txdct,
+      sqs = sqs, lvl = lvl
+    )
     all_clstrs <- clstrarc_join(all_clstrs, drct_clstrs)
   }
   info(lvl = lvl + 1, ps = ps, "+ subtree [id ", txid, " (", rnk, ")]")
@@ -52,8 +58,10 @@ clstr_subtree <- function(txid, sqs, txdct, dds, ps, lvl) {
     return(all_clstrs)
   }
   sqs_prt <- sqs[sids]
-  sbtr_clstrs <- clstr_sqs(txid = txid, sqs = sqs_prt, typ = 'subtree', ps = ps,
-                           lvl = lvl + 1)
+  sbtr_clstrs <- clstr_sqs(
+    txid = txid, sqs = sqs_prt, typ = "subtree", ps = ps,
+    lvl = lvl + 1
+  )
   clstrarc_join(all_clstrs, sbtr_clstrs)
 }
 
@@ -83,7 +91,7 @@ clstr_direct <- function(txid, sqs, txdct, ps, lvl) {
     return(all_clstrs)
   }
   sqs_prt <- sqs[sids]
-  clstr_sqs(txid = txid, sqs = sqs_prt, typ = 'direct', ps = ps, lvl = lvl + 1)
+  clstr_sqs(txid = txid, sqs = sqs_prt, typ = "direct", ps = ps, lvl = lvl + 1)
 }
 
 #' @name clstr_sqs
@@ -97,19 +105,25 @@ clstr_direct <- function(txid, sqs, txdct, ps, lvl) {
 #' @template lvl
 #' @family run-private
 clstr_sqs <- function(txid, sqs, ps, lvl,
-                      typ=c('direct', 'subtree', 'paraphyly')) {
+                      typ = c("direct", "subtree", "paraphyly")) {
   typ <- match.arg(typ)
   info(lvl = lvl + 1, ps = ps, "BLASTing [", length(sqs@ids), " sqs] ....")
-  blast_res <- blast_sqs(txid = txid, typ = typ, sqs = sqs, ps = ps,
-                         lvl = lvl + 1)
+  blast_res <- blast_sqs(
+    txid = txid, typ = typ, sqs = sqs, ps = ps,
+    lvl = lvl + 1
+  )
   if (is.null(blast_res)) {
     return(NULL)
   }
   clstr_list <- blast_clstr(blast_res = blast_res)
-  clstrrecs <- clstrrec_gen(clstr_list = clstr_list, txid = txid, sqs = sqs,
-                            typ = typ)
-  info(lvl = lvl + 1, ps = ps, "Identified [", length(clstrrecs@ids),
-       "] clusters")
+  clstrrecs <- clstrrec_gen(
+    clstr_list = clstr_list, txid = txid, sqs = sqs,
+    typ = typ
+  )
+  info(
+    lvl = lvl + 1, ps = ps, "Identified [", length(clstrrecs@ids),
+    "] clusters"
+  )
   clstrrecs
 }
 
@@ -126,16 +140,16 @@ clstr_sqs <- function(txid, sqs, ps, lvl,
 #' @family run-private
 #' @return blast_res data.frame or NULL
 blast_sqs <- function(txid, typ, sqs, ps, lvl) {
-  blast_res <- blastcache_load(sqs@ids, wd = ps[['wd']])
+  blast_res <- blastcache_load(sqs@ids, wd = ps[["wd"]])
   if (is.null(blast_res)) {
-    dbfl <- paste0('taxon-', txid, '-typ-', typ, '-db.fa')
-    outfl <- paste0('taxon-', txid, '-typ-', typ, '-blastout.txt')
+    dbfl <- paste0("taxon-", txid, "-typ-", typ, "-db.fa")
+    outfl <- paste0("taxon-", txid, "-typ-", typ, "-blastout.txt")
     blastdb_gen(sqs = sqs, dbfl = dbfl, ps = ps)
     blast_res <- blastn_run(dbfl = dbfl, outfl = outfl, ps = ps)
     if (is.null(blast_res)) {
       blast_res <- NA
     }
-    blastcache_save(sqs@ids, wd = ps[['wd']], obj = blast_res)
+    blastcache_save(sqs@ids, wd = ps[["wd"]], obj = blast_res)
   }
   # TODO: Not so elegant
   if (any(is.na(blast_res))) {
@@ -153,18 +167,19 @@ blast_sqs <- function(txid, typ, sqs, ps, lvl) {
 #' @return list of cluster descriptions
 #' @family run-private
 blast_clstr <- function(blast_res) {
-  g <- igraph::graph.data.frame(blast_res[ ,c("query.id", "subject.id")],
-                                directed = FALSE)
+  g <- igraph::graph.data.frame(blast_res[, c("query.id", "subject.id")],
+    directed = FALSE
+  )
   clstrs <- igraph::clusters(g)
-  clstrs <- clstrs[['membership']]
+  clstrs <- clstrs[["membership"]]
   clstr_list <- lapply(unique(clstrs), function(x) {
-    list('sids' = sort(names(clstrs)[which(clstrs == x)]))
+    list("sids" = sort(names(clstrs)[which(clstrs == x)]))
   })
   degrees <- igraph::degree(g)
-  clstr_list <- lapply(clstr_list, function(cl){
-    idx <- order(degrees[cl[['sids']]], decreasing = TRUE)[1]
+  clstr_list <- lapply(clstr_list, function(cl) {
+    idx <- order(degrees[cl[["sids"]]], decreasing = TRUE)[1]
     # index of most connected component
-    cl[['seed']] <- cl[['sids']][idx]
+    cl[["seed"]] <- cl[["sids"]][idx]
     cl
   })
   clstr_list
@@ -181,16 +196,18 @@ blast_clstr <- function(blast_res) {
 #' @family run-private
 #' @return list of ClstrRecs
 clstrrec_gen <- function(clstr_list, txid, sqs, typ) {
-  clstrrecs <- vector('list', length = length(clstr_list))
+  clstrrecs <- vector("list", length = length(clstr_list))
   for (i in seq_along(clstr_list)) {
     clstr <- clstr_list[[i]]
-    clstr_sqs <- sqs[clstr[['sids']]]
-    clstr_sqs <- sqs[clstr[['sids']]]
-    nsqs <- length(clstr[['sids']])
+    clstr_sqs <- sqs[clstr[["sids"]]]
+    clstr_sqs <- sqs[clstr[["sids"]]]
+    nsqs <- length(clstr[["sids"]])
     ntx <- length(unique(clstr_sqs@txids))
-    clstrrec <- new('ClstrRec', sids = clstr[['sids']], txids = clstr_sqs@txids,
-                    nsqs = nsqs, ntx = ntx, typ = typ,
-                    prnt = as.character(txid), seed = clstr[['seed']])
+    clstrrec <- new("ClstrRec",
+      sids = clstr[["sids"]], txids = clstr_sqs@txids,
+      nsqs = nsqs, ntx = ntx, typ = typ,
+      prnt = as.character(txid), seed = clstr[["seed"]]
+    )
     clstrrecs[[i]] <- clstrrec
   }
   clstrarc_gen(clstrrecs)
@@ -205,7 +222,7 @@ clstrrec_gen <- function(clstr_list, txid, sqs, typ) {
 clstrarc_gen <- function(clstrrecs) {
   ids <- as.character(seq_along(clstrrecs) - 1)
   names(clstrrecs) <- ids
-  new('ClstrArc', ids = ids, clstrs = clstrrecs)
+  new("ClstrArc", ids = ids, clstrs = clstrrecs)
 }
 
 #' @name clstrarc_join

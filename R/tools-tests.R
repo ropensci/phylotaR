@@ -4,13 +4,13 @@
 #' @param subdir Subdirectory within the datadir
 #' @return filepath, character
 #' @noRd
-datadir_get <- function(subdir = '') {
+datadir_get <- function(subdir = "") {
   wd <- getwd()
-  if (grepl('testthat', wd)) {
-    datadir <- 'data'
+  if (grepl("testthat", wd)) {
+    datadir <- "data"
   } else {
     # for running test at package level
-    datadir <- file.path('tests', 'testthat', 'data')
+    datadir <- file.path("tests", "testthat", "data")
   }
   file.path(datadir, subdir)
 }
@@ -21,13 +21,15 @@ datadir_get <- function(subdir = '') {
 #' @noRd
 random_phylota <- function() {
   # randomly choose one of the example phylota objects
-  pssbls <- c("aotus", "bromeliads", "cycads", "dragonflies", "sturgeons",
-              "tinamous", "tardigrades")
+  pssbls <- c(
+    "aotus", "bromeliads", "cycads", "dragonflies", "sturgeons",
+    "tinamous", "tardigrades"
+  )
   rndm <- sample(pssbls, 1)
   # list.files('data')
   data_env <- new.env()
   do.call(what = utils::data, args = list(rndm, envir = data_env))
-  assign(x = 'phylota', value = data_env[[rndm]])
+  assign(x = "phylota", value = data_env[[rndm]])
   rm(data_env)
   phylota
 }
@@ -39,14 +41,16 @@ random_phylota <- function() {
 #' @noRd
 cleanup <- function(wd) {
   # remove any test generated datasets
-  cch_dir <- file.path(wd, 'cache')
+  cch_dir <- file.path(wd, "cache")
   if (dir.exists(cch_dir)) {
     unlink(cch_dir, recursive = TRUE)
   }
-  fls <- c('log.txt', 'log.log', 'test.fasta', 'session_info.txt',
-           'blast_versions.txt')
+  fls <- c(
+    "log.txt", "log.log", "test.fasta", "session_info.txt",
+    "blast_versions.txt"
+  )
   fls <- file.path(wd, fls)
-  fls <- c(fls, datadir_get(file.path('blast', 'testdb')))
+  fls <- c(fls, datadir_get(file.path("blast", "testdb")))
   for (fl in fls) {
     if (file.exists(fl)) {
       file.remove(fl)
@@ -60,16 +64,16 @@ cleanup <- function(wd) {
 #' @return list
 #' @noRd
 cmdln_blastcheck <- function(cmd, args, ps, lgfl = NULL) {
-  if (grepl('makeblastdb', cmd)) {
+  if (grepl("makeblastdb", cmd)) {
     out <- "makeblastdb: 2.7.1+\nPackage: blast 2.7.1, build [date]"
   }
-  if (grepl('blastn', cmd)) {
+  if (grepl("blastn", cmd)) {
     out <- "blastn: 2.7.1+\nPackage: blast 2.7.1, build [date]"
   }
-  if (grepl('wrngvrsn', cmd)) {
+  if (grepl("wrngvrsn", cmd)) {
     out <- "blastn: 1.6.1+\nPackage: blast 1.6.1, build [date]"
   }
-  list(status = 0, stdout = charToRaw(out), stderr = charToRaw(''))
+  list(status = 0, stdout = charToRaw(out), stderr = charToRaw(""))
 }
 
 #' @title Generate fake SeqArc
@@ -78,16 +82,18 @@ cmdln_blastcheck <- function(cmd, args, ps, lgfl = NULL) {
 #' @param l Length of sequences
 #' @return SeqArc
 #' @noRd
-testsqs_gen <- function(n=100, l=1000) {
+testsqs_gen <- function(n = 100, l = 1000) {
   sqs <- NULL
   for (i in 1:n) {
     itext <- as.character(i)
-    sqstrng <- sample(c('A', 'T', 'C', 'G'), size = l, replace = TRUE)
-    sqstrng <- paste(sqstrng, collapse = '')
-    sqs <- c(seqrec_gen(accssn = itext, nm = itext, txid = itext,
-                        sq = sqstrng, dfln = 'deflin', orgnsm = '',
-                        ml_typ = 'DNA', rec_typ = 'full',
-                        vrsn = itext, age = 1L), sqs)
+    sqstrng <- sample(c("A", "T", "C", "G"), size = l, replace = TRUE)
+    sqstrng <- paste(sqstrng, collapse = "")
+    sqs <- c(seqrec_gen(
+      accssn = itext, nm = itext, txid = itext,
+      sq = sqstrng, dfln = "deflin", orgnsm = "",
+      ml_typ = "DNA", rec_typ = "full",
+      vrsn = itext, age = 1L
+    ), sqs)
   }
   seqarc_gen(sqs)
 }

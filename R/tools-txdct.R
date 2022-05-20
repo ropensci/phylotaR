@@ -13,11 +13,11 @@
 taxtree_gen <- function(prinds, ids, root, ps) {
   .add <- function(i) {
     nd <- vector("list", length = 4)
-    names(nd) <- c('id', 'ptid', 'prid', 'spn')
-    nd[['id']] <- ids[i]
-    nd[['prid']] <- ids[prinds[i]]
-    nd[['ptid']] <- ptids[ptnds_pool == i]
-    nd[['spn']] <- 1
+    names(nd) <- c("id", "ptid", "prid", "spn")
+    nd[["id"]] <- ids[i]
+    nd[["prid"]] <- ids[prinds[i]]
+    nd[["ptid"]] <- ptids[ptnds_pool == i]
+    nd[["spn"]] <- 1
     nd
   }
   nonroot_i <- ids != root
@@ -35,8 +35,8 @@ taxtree_gen <- function(prinds, ids, root, ps) {
   tree@prinds <- prinds
   tree@tinds <- tinds
   tree <- treeman::updateSlts(tree)
-  if(!treeman::checkNdlst(tree@ndlst, tree@root)) {
-    error(ps=ps, 'Invalid taxonomy')
+  if (!treeman::checkNdlst(tree@ndlst, tree@root)) {
+    error(ps = ps, "Invalid taxonomy")
   }
   tree
 }
@@ -61,10 +61,12 @@ rank_get <- function(txid, txdct) {
 #' @param txdct TaxDict
 #' @param direct T/F, return only direct descendants?
 #' @family run-private
-descendants_get <- function(id, txdct, direct=FALSE) {
+descendants_get <- function(id, txdct, direct = FALSE) {
   if (direct) {
-    ptids <- treeman::getNdSlt(tree = txdct@txtr, slt_nm = 'ptid',
-                               id = id)
+    ptids <- treeman::getNdSlt(
+      tree = txdct@txtr, slt_nm = "ptid",
+      id = id
+    )
   } else {
     ptids <- treeman::getNdPtids(tree = txdct@txtr, id = id)
   }
@@ -85,7 +87,7 @@ parent_get <- function(id, txdct) {
     ids <- ids[!is.na(ids)]
     res <- treeman::getPrnt(tree = txdct@txtr, ids = ids)
   } else {
-    res <- treeman::getNdSlt(tree = txdct@txtr, slt_nm = 'prid', id = id)
+    res <- treeman::getNdSlt(tree = txdct@txtr, slt_nm = "prid", id = id)
   }
   res
 }

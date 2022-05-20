@@ -11,12 +11,12 @@
 clusters2_run <- function(wd) {
   ps <- parameters_load(wd)
   # stage print
-  msg <- paste0('Starting stage CLUSTER^2: [', Sys.time(), ']')
+  msg <- paste0("Starting stage CLUSTER^2: [", Sys.time(), "]")
   .stgMsg(ps = ps, msg = msg)
   # generate clusters
   clstr2_calc(ps = ps)
   # stage print
-  msg <- paste0('Completed stage CLUSTER^2: [', Sys.time(), ']')
+  msg <- paste0("Completed stage CLUSTER^2: [", Sys.time(), "]")
   .stgMsg(ps = ps, msg = msg)
 }
 
@@ -31,9 +31,9 @@ clusters2_run <- function(wd) {
 #' @family run-private
 clstr2_calc <- function(ps) {
   # TODO: break up to manageable blasting sizes
-  info(lvl = 1, ps = ps, 'Loading clusters ...')
-  clstrpth <- file.path(ps[['wd']], 'cache', 'clstrs')
-  sqpth <- file.path(ps[['wd']], 'cache', 'sqs')
+  info(lvl = 1, ps = ps, "Loading clusters ...")
+  clstrpth <- file.path(ps[["wd"]], "cache", "clstrs")
+  sqpth <- file.path(ps[["wd"]], "cache", "sqs")
   clstrfls <- list.files(clstrpth)
   seeds <- NULL
   all_sqs <- all_clstrs <- list()
@@ -45,28 +45,34 @@ clstr2_calc <- function(ps) {
   }
   all_sqs <- seqarc_gen(all_sqs)
   if (length(clstrfls) > 1) {
-    info(lvl = 1, ps = ps, 'Cluster-clustering ...')
-    seed_ids <- vapply(all_clstrs, function(x) x@seed, '')
+    info(lvl = 1, ps = ps, "Cluster-clustering ...")
+    seed_ids <- vapply(all_clstrs, function(x) x@seed, "")
     non_dups <- seed_ids[!duplicated(seed_ids)]
     seeds <- all_sqs[non_dups]
     blast_res <- seeds_blast(sqs = seeds, ps = ps)
-    info(lvl = 1, ps = ps, 'Merging ...')
-    jnd_clstrs <- clstrs_join(blast_res = blast_res, ps = ps,
-                              seed_ids = seed_ids, all_clstrs = all_clstrs)
-    txdct <- obj_load(wd = ps[['wd']], nm = 'txdct')
+    info(lvl = 1, ps = ps, "Merging ...")
+    jnd_clstrs <- clstrs_join(
+      blast_res = blast_res, ps = ps,
+      seed_ids = seed_ids, all_clstrs = all_clstrs
+    )
+    txdct <- obj_load(wd = ps[["wd"]], nm = "txdct")
     mrg_clstrs <- clstrs_merge(jnd_clstrs = jnd_clstrs, txdct = txdct)
     all_clstrs <- c(all_clstrs, mrg_clstrs)
   } else {
-    info(lvl = 1, ps = ps, 'Done. Only one cluster set',
-         ' -- skipping cluster^2')
+    info(
+      lvl = 1, ps = ps, "Done. Only one cluster set",
+      " -- skipping cluster^2"
+    )
   }
-  info(lvl = 1, ps = ps, 'Dropping all clusters of < 3 sqs ...')
+  info(lvl = 1, ps = ps, "Dropping all clusters of < 3 sqs ...")
   nsqs <- vapply(all_clstrs, function(x) length(x@sids), 1L)
   all_clstrs <- all_clstrs[nsqs >= 3]
-  info(lvl = 1, ps = ps, 'Renumbering clusters ...')
+  info(lvl = 1, ps = ps, "Renumbering clusters ...")
   # returns cluster record box
   all_clstrs <- clstrs_renumber(clstrrecs = all_clstrs)
-  info(lvl = 1, ps = ps, 'Saving ...')
-  obj_save(wd = ps[['wd']], obj = list('clstrs' = all_clstrs,
-                                       'sqs' = all_sqs), nm = 'clstrs_sqs')
+  info(lvl = 1, ps = ps, "Saving ...")
+  obj_save(wd = ps[["wd"]], obj = list(
+    "clstrs" = all_clstrs,
+    "sqs" = all_sqs
+  ), nm = "clstrs_sqs")
 }

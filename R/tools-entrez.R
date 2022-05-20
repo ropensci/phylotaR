@@ -10,9 +10,11 @@
 #' @family run-private
 #' @return character, search term
 searchterm_gen <- function(txid, ps, direct = FALSE) {
-  org_trm <- ifelse(direct, '[Organism:noexp]', '[Organism:exp]' )
-  paste0('(txid', txid, org_trm, ' AND ', ps[['mnsql']],
-         ':', ps[['mxsql']], '[SLEN]) ', ps[['srch_trm']])
+  org_trm <- ifelse(direct, "[Organism:noexp]", "[Organism:exp]")
+  paste0(
+    "(txid", txid, org_trm, " AND ", ps[["mnsql"]],
+    ":", ps[["mxsql"]], "[SLEN]) ", ps[["srch_trm"]]
+  )
 }
 
 #' @name txnds_count
@@ -24,12 +26,14 @@ searchterm_gen <- function(txid, ps, direct = FALSE) {
 #' @family run-private
 #' @return integer
 txnds_count <- function(txid, ps) {
-  trm <- paste0('txid', txid, '[Subtree]')
-  args <- list(db = 'taxonomy', retmax = 0, term = trm)
-  res <- search_and_cache(func = rentrez::entrez_search,
-                          args = args, fnm = 'search',
-                          ps = ps)
-  res[['count']]
+  trm <- paste0("txid", txid, "[Subtree]")
+  args <- list(db = "taxonomy", retmax = 0, term = trm)
+  res <- search_and_cache(
+    func = rentrez::entrez_search,
+    args = args, fnm = "search",
+    ps = ps
+  )
+  res[["count"]]
 }
 
 #' @name sqs_count
@@ -41,17 +45,19 @@ txnds_count <- function(txid, ps) {
 #' @param direct Node-level only or subtree as well? Default FALSE.
 #' @family run-private
 #' @return integer
-sqs_count <- function(txid, ps, direct=FALSE) {
+sqs_count <- function(txid, ps, direct = FALSE) {
   trm <- searchterm_gen(txid = txid, ps = ps, direct = direct)
-  args <- list(db = 'nucleotide', retmax = 0, term = trm)
-  res <- search_and_cache(func = rentrez::entrez_search,
-                          args = args, fnm = 'search',
-                          ps = ps)
-  res[['count']]
+  args <- list(db = "nucleotide", retmax = 0, term = trm)
+  res <- search_and_cache(
+    func = rentrez::entrez_search,
+    args = args, fnm = "search",
+    ps = ps
+  )
+  res[["count"]]
 }
 
 #' @title Return random set of sequence IDs
-#' @description For a given txid return a random set of 
+#' @description For a given txid return a random set of
 #' sequences associated.
 #' @details For model organisms downloading all IDs can a take long
 #' time or even cause an xml parsing error. For any search with more
@@ -70,23 +76,27 @@ sqs_count <- function(txid, ps, direct=FALSE) {
 #' in a single query.
 #' @return vector of IDs
 #' @family run-private
-sids_get <- function(txid, direct, ps, retmax=100, hrdmx=100000) {
-  if (sids_check(wd = ps[['wd']], txid = txid)) {
-    return(sids_load(wd = ps[['wd']], txid = txid))
+sids_get <- function(txid, direct, ps, retmax = 100, hrdmx = 100000) {
+  if (sids_check(wd = ps[["wd"]], txid = txid)) {
+    return(sids_load(wd = ps[["wd"]], txid = txid))
   }
   # search
   trm <- searchterm_gen(txid = txid, ps = ps, direct = direct)
-  args <- list(db = 'nucleotide', retmax = 0, term = trm, use_history = TRUE)
-  srch <- safely_connect(func = rentrez::entrez_search, args = args, ps = ps,
-                         fnm = 'search')
-  nsqs <- srch[['count']] - 1
+  args <- list(db = "nucleotide", retmax = 0, term = trm, use_history = TRUE)
+  srch <- safely_connect(
+    func = rentrez::entrez_search, args = args, ps = ps,
+    fnm = "search"
+  )
+  nsqs <- srch[["count"]] - 1
   if (nsqs == -1) {
     return(NULL)
   }
   ids <- NULL
   if (nsqs > hrdmx) {
     ret_strts <- sample(seq(0, (nsqs - retmax), retmax),
-                        round(hrdmx/retmax), replace = FALSE)
+      round(hrdmx / retmax),
+      replace = FALSE
+    )
   } else {
     if (nsqs <= retmax) {
       ret_strts <- 0
@@ -100,24 +110,29 @@ sids_get <- function(txid, direct, ps, retmax=100, hrdmx=100000) {
     for (i in 1:mxtry) {
       # use webobject, search without cache
       if (rsrch) {
-        srch <- safely_connect(func = rentrez::entrez_search, args = args,
-                               fnm = 'search', ps = ps)
+        srch <- safely_connect(
+          func = rentrez::entrez_search, args = args,
+          fnm = "search", ps = ps
+        )
       }
-      ftch_args <- list(db = 'nucleotide', web_history = srch[['web_history']],
-                        retmax = retmax, rettype = 'acc', retstart = ret_strt)
+      ftch_args <- list(
+        db = "nucleotide", web_history = srch[["web_history"]],
+        retmax = retmax, rettype = "acc", retstart = ret_strt
+      )
       id_ftch <- try(do.call(what = rentrez::entrez_fetch, args = ftch_args),
-                     silent = TRUE)
+        silent = TRUE
+      )
       if (download_obj_check(id_ftch)) {
         rsrch <- TRUE
         if (i == mxtry) {
-          error(ps = ps, 'Failed to get IDs for [', txid, ']')
+          error(ps = ps, "Failed to get IDs for [", txid, "]")
         }
       }
       rsrch <- FALSE
       break
     }
-    ids <- c(ids, strsplit(id_ftch, '\n')[[1]])
+    ids <- c(ids, strsplit(id_ftch, "\n")[[1]])
   }
-  sids_save(wd = ps[['wd']], txid = txid, sids = ids)
+  sids_save(wd = ps[["wd"]], txid = txid, sids = ids)
   ids
 }

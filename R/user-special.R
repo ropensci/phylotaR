@@ -9,14 +9,16 @@
 #' @export
 #' @family tools-public
 read_phylota <- function(wd) {
-  if (!file.exists(file.path(wd, 'cache', 'clstrs_sqs.RData'))) {
-    msg <- paste0('Data file not found in [', wd,
-                  '].\nAre you sure pipeline has completed?')
+  if (!file.exists(file.path(wd, "cache", "clstrs_sqs.RData"))) {
+    msg <- paste0(
+      "Data file not found in [", wd,
+      "].\nAre you sure pipeline has completed?"
+    )
     stop(msg)
   }
-  clstrs_sqs <- obj_load(wd, nm = 'clstrs_sqs')
-  clstrs <- clstrs_sqs[['clstrs']]
-  sqs <- clstrs_sqs[['sqs']]
+  clstrs_sqs <- obj_load(wd, nm = "clstrs_sqs")
+  clstrs <- clstrs_sqs[["clstrs"]]
+  sqs <- clstrs_sqs[["sqs"]]
   # TODO: how does this occur?
   # prevent dups
   non_dups <- which(!duplicated(sqs@ids))
@@ -24,12 +26,14 @@ read_phylota <- function(wd) {
   txids <- sort(unique(sqs@txids))
   sids <- sort(unique(sqs@ids))
   cids <- clstrs@ids
-  txdct <- obj_load(wd, nm = 'txdct')
+  txdct <- obj_load(wd, nm = "txdct")
   prnt_id <- txdct@prnt
   prnt_nm <- txdct@recs[[prnt_id]]@scnm
-  phylota <- new('Phylota', sqs = sqs, clstrs = clstrs, txids = txids,
-                 sids = sids, cids = cids, txdct = txdct, prnt_id = prnt_id,
-                 prnt_nm = prnt_nm)
+  phylota <- new("Phylota",
+    sqs = sqs, clstrs = clstrs, txids = txids,
+    sids = sids, cids = cids, txdct = txdct, prnt_id = prnt_id,
+    prnt_nm = prnt_nm
+  )
   update_phylota(phylota)
 }
 
@@ -41,7 +45,7 @@ read_phylota <- function(wd) {
 #' @param sid Sequence ID(s)
 #' @param sq_nm Sequence name(s)
 #' @param width Maximum number of characters in a line, integer
-#' @details 
+#' @details
 #' The user can control the output definition lines of the sequences using the
 #' sq_nm. By default sequences IDs are used. Note, ensure the sq_nm are in the
 #' same order as sid.
@@ -49,7 +53,7 @@ read_phylota <- function(wd) {
 #' @example examples/write_sqs.R
 #' @export
 #' @family tools-public
-write_sqs <- function(phylota, outfile, sid, sq_nm = sid, width=80) {
+write_sqs <- function(phylota, outfile, sid, sq_nm = sid, width = 80) {
   get <- function(i) {
     rec <- phylota@sqs[[sid[i]]]
     sq <- rawToChar(rec@sq)
@@ -58,17 +62,17 @@ write_sqs <- function(phylota, outfile, sid, sq_nm = sid, width=80) {
       slices <- c(seq(from = 1, to = nchar(sq), by = width), nchar(sq) + 1)
       sq <- vapply(X = 2:length(slices), function(x) {
         substr(x = sq, start = slices[x - 1], stop = slices[x] - 1)
-        }, character(1))
-      sq <- paste0(sq, collapse = '\n')
+      }, character(1))
+      sq <- paste0(sq, collapse = "\n")
     }
-    paste0('>', sq_nm[i], '\n', sq, '\n\n')
+    paste0(">", sq_nm[i], "\n", sq, "\n\n")
   }
   nms_check <- vapply(X = sq_nm, FUN = function(x) nchar(x) > width, logical(1))
   if (any(nms_check)) {
-    warning('One or more `sq_nm` have more characters than `width`')
+    warning("One or more `sq_nm` have more characters than `width`")
   }
   fasta <- vapply(seq_along(sid), get, character(1))
-  fasta <- paste0(fasta, collapse = '')
+  fasta <- paste0(fasta, collapse = "")
   write(x = fasta, file = outfile)
 }
 
@@ -94,28 +98,29 @@ plot_phylota_pa <- function(phylota, cids, txids, cnms = cids, txnms = txids) {
     value <- as.numeric(value)
     data.frame(txid = as.character(txids), cid = cid, value = value)
   }
-  if ('' %in% txids) {
-    stop('One or missing IDs in `txids`')
+  if ("" %in% txids) {
+    stop("One or missing IDs in `txids`")
   }
   value <- NULL
   # gen p_data
   tis_mtrx <- mk_txid_in_sq_mtrx(phylota = phylota, txids = txids)
   p_data <- lapply(cids, mkdata)
-  p_data <- do.call('rbind', p_data)
-  p_data[['cnm']] <- cnms[match(p_data[['cid']], cids)]
-  p_data[['txnm']] <- txnms[match(p_data[['txid']], txids)]
+  p_data <- do.call("rbind", p_data)
+  p_data[["cnm"]] <- cnms[match(p_data[["cid"]], cids)]
+  p_data[["txnm"]] <- txnms[match(p_data[["txid"]], txids)]
   # reorder
-  p_data[['cnm']] <- factor(p_data[['cnm']], levels = cnms, ordered = TRUE)
-  p_data[['txnm']] <- factor(p_data[['txnm']], levels = txnms, ordered = TRUE)
+  p_data[["cnm"]] <- factor(p_data[["cnm"]], levels = cnms, ordered = TRUE)
+  p_data[["txnm"]] <- factor(p_data[["txnm"]], levels = txnms, ordered = TRUE)
   # plot
   # https://tinyurl.com/y8jblekm
   cnm <- txnm <- NULL
   ggplot2::ggplot(p_data, ggplot2::aes(cnm, txnm)) +
     ggplot2::geom_tile(ggplot2::aes(fill = value)) +
-    ggplot2::xlab('') + ggplot2::ylab('') +
-    ggplot2::scale_fill_gradient(low = '#e0e0e0', high = '#303030') +
+    ggplot2::xlab("") +
+    ggplot2::ylab("") +
+    ggplot2::scale_fill_gradient(low = "#e0e0e0", high = "#303030") +
     ggplot2::theme_bw() +
-    ggplot2::theme(legend.position = 'none')
+    ggplot2::theme(legend.position = "none")
 }
 
 #' @name plot_phylota_treemap
@@ -143,12 +148,14 @@ plot_phylota_pa <- function(phylota, cids, txids, cnms = cids, txnms = txids) {
 #' @family tools-public
 plot_phylota_treemap <- function(phylota, cids = NULL, txids = NULL,
                                  cnms = cids, txnms = txids, with_labels = TRUE,
-                                 area = c('ntx', 'nsq', 'ncl'),
-                                 fill = c('NULL', 'typ', 'ntx', 'nsq', 'ncl')) {
+                                 area = c("ntx", "nsq", "ncl"),
+                                 fill = c("NULL", "typ", "ntx", "nsq", "ncl")) {
   mkcldata <- function(i) {
     clstr <- phylota@clstrs@clstrs[[which(cids[i] == phylota@cids)]]
-    data.frame(id = cids[i], label = cnms[i], nsq = clstr@nsqs, ntx = clstr@ntx,
-               typ = clstr@typ)
+    data.frame(
+      id = cids[i], label = cnms[i], nsq = clstr@nsqs, ntx = clstr@ntx,
+      typ = clstr@typ
+    )
   }
   getcltxids <- function(i) {
     clstr <- phylota@clstrs@clstrs[[i]]
@@ -168,37 +175,39 @@ plot_phylota_treemap <- function(phylota, cids = NULL, txids = NULL,
   }
   area <- match.arg(area)
   fill <- match.arg(fill)
-  if ('' %in% txids) {
-    stop('One or missing IDs in `txids`')
+  if ("" %in% txids) {
+    stop("One or missing IDs in `txids`")
   }
   if (!is.null(cids)) {
-    if (area == 'ncl') {
-      stop('area=`ncl` per cluster doesn\'t make sense!')
+    if (area == "ncl") {
+      stop("area=`ncl` per cluster doesn't make sense!")
     }
-    if (fill == 'ncl') {
-      stop('fill=`ncl` per cluster doesn\'t make sense!')
+    if (fill == "ncl") {
+      stop("fill=`ncl` per cluster doesn't make sense!")
     }
     p_data <- lapply(seq_along(cids), mkcldata)
   } else if (!is.null(txids)) {
-    if (area == 'ntx') {
-      stop('area=`ntx` per taxon doesn\'t make sense!')
+    if (area == "ntx") {
+      stop("area=`ntx` per taxon doesn't make sense!")
     }
-    if (fill == 'ntx') {
-      stop('fill=`ntx` per taxon doesn\'t make sense!')
+    if (fill == "ntx") {
+      stop("fill=`ntx` per taxon doesn't make sense!")
     }
-    if (fill == 'typ') {
-      stop('fill=`typ` per taxon doesn\'t make sense!')
+    if (fill == "typ") {
+      stop("fill=`typ` per taxon doesn't make sense!")
     }
-    sids_txids <- get_sq_slot(phylota, sid = phylota@sids, slt_nm = 'txid')
+    sids_txids <- get_sq_slot(phylota, sid = phylota@sids, slt_nm = "txid")
     cids_txids <- lapply(seq_along(phylota@cids), getcltxids)
     p_data <- lapply(seq_along(txids), mktxdata)
   } else {
-    stop('Either cids or txids not provided.')
+    stop("Either cids or txids not provided.")
   }
-  p_data <- do.call('rbind', p_data)
-  p <- ggplot2::ggplot(p_data, ggplot2::aes_string(area = area, fill = fill,
-                                                   subgroup = 'label',
-                                                   label = 'label')) +
+  p_data <- do.call("rbind", p_data)
+  p <- ggplot2::ggplot(p_data, ggplot2::aes_string(
+    area = area, fill = fill,
+    subgroup = "label",
+    label = "label"
+  )) +
     treemapify::geom_treemap()
   if (with_labels) {
     p <- p + treemapify::geom_treemap_subgroup_text()
@@ -217,13 +226,15 @@ plot_phylota_treemap <- function(phylota, cids = NULL, txids = NULL,
 #' @family tools-private
 mk_txid_in_sq_mtrx <- function(phylota, txids, sids = phylota@sids) {
   is_txid_in_sqs <- function(txid) {
-    ads <- descendants_get(id = txid, txdct = phylota@txdct,
-                           direct = FALSE)
+    ads <- descendants_get(
+      id = txid, txdct = phylota@txdct,
+      direct = FALSE
+    )
     all_ids <- c(ads, txid)
     sids_txids %in% all_ids
   }
-  sids_txids <- get_sq_slot(phylota, sid = sids, slt_nm = 'txid')
-  tis_mtrx <- do.call('rbind', lapply(txids, is_txid_in_sqs))
+  sids_txids <- get_sq_slot(phylota, sid = sids, slt_nm = "txid")
+  tis_mtrx <- do.call("rbind", lapply(txids, is_txid_in_sqs))
   colnames(tis_mtrx) <- sids
   rownames(tis_mtrx) <- txids
   tis_mtrx
@@ -242,8 +253,8 @@ mk_txid_in_sq_mtrx <- function(phylota, txids, sids = phylota@sids) {
 #' @family tools-public
 is_txid_in_sq <- function(phylota, txid, sid) {
   sq <- phylota@sqs@sqs[[which(sid == phylota@sids)]]
-  sq_tx <-  phylota@txdct@recs[[sq@txid]]
-  txid %in% sq_tx@lng[['ids']]
+  sq_tx <- phylota@txdct@recs[[sq@txid]]
+  txid %in% sq_tx@lng[["ids"]]
 }
 
 #' @name is_txid_in_clstr
@@ -261,7 +272,8 @@ is_txid_in_sq <- function(phylota, txid, sid) {
 is_txid_in_clstr <- function(phylota, txid, cid) {
   clstr <- phylota@clstrs@clstrs[[which(cid == phylota@cids)]]
   bool <- vapply(clstr@sids, is_txid_in_sq, logical(1),
-                 txid = txid, phylota = phylota)
+    txid = txid, phylota = phylota
+  )
   any(bool)
 }
 
@@ -274,39 +286,49 @@ is_txid_in_clstr <- function(phylota, txid, cid) {
 summary_phylota <- function(phylota) {
   print_frq_wrds <- function(wrd_prps, max_n = 2) {
     if (length(wrd_prps) == 0) {
-      return('-')
+      return("-")
     }
     n <- ifelse(length(wrd_prps) > max_n, max_n, length(wrd_prps))
     wrd_prps <- wrd_prps[1:n]
     wrd_prps <- signif(wrd_prps, digits = 1)
-    res <-  paste0(names(wrd_prps), ' (', wrd_prps, ')')
-    paste0(res, collapse = ', ')
+    res <- paste0(names(wrd_prps), " (", wrd_prps, ")")
+    paste0(res, collapse = ", ")
   }
   get_row <- function(cid) {
     clstr <- phylota@clstrs[[cid]]
     mad_scr <- calc_mad(phylota = phylota, cid = cid)
-    sqlngth <- median(get_sq_slot(phylota = phylota, cid = cid,
-                                  slt_nm = 'nncltds'))
-    dflns <- calc_wrdfrq(phylota = phylota, cid = cid, type = 'dfln',
-                         min_frq = 0)[[1]]
+    sqlngth <- median(get_sq_slot(
+      phylota = phylota, cid = cid,
+      slt_nm = "nncltds"
+    ))
+    dflns <- calc_wrdfrq(
+      phylota = phylota, cid = cid, type = "dfln",
+      min_frq = 0
+    )[[1]]
     dflns <- print_frq_wrds(dflns)
-    ftr_nms <- calc_wrdfrq(phylota = phylota, cid = cid, type = 'nm',
-                           min_frq = 0)[[1]]
+    ftr_nms <- calc_wrdfrq(
+      phylota = phylota, cid = cid, type = "nm",
+      min_frq = 0
+    )[[1]]
     ftr_nms <- print_frq_wrds(ftr_nms)
-    res <- c(clstr@id, clstr@typ, clstr@seed, clstr@prnt,
-             length(unique(clstr@txids)), length(clstr@sids), sqlngth, mad_scr,
-             dflns, ftr_nms)
+    res <- c(
+      clstr@id, clstr@typ, clstr@seed, clstr@prnt,
+      length(unique(clstr@txids)), length(clstr@sids), sqlngth, mad_scr,
+      dflns, ftr_nms
+    )
     res
   }
   res <- lapply(phylota@cids, get_row)
   res <- matrix(unlist(res), nrow = length(phylota@cids), byrow = TRUE)
-  colnames(res) <- c('ID', 'Type', 'Seed', 'Parent', 'N_taxa', 'N_seqs',
-                     'Med_sql', 'MAD', 'Definition', 'Feature')
+  colnames(res) <- c(
+    "ID", "Type", "Seed", "Parent", "N_taxa", "N_seqs",
+    "Med_sql", "MAD", "Definition", "Feature"
+  )
   res <- data.frame(res, stringsAsFactors = FALSE)
-  res[['N_taxa']] <- as.integer(res[['N_taxa']])
-  res[['N_seqs']] <- as.integer(res[['N_seqs']])
-  res[['Med_sql']] <- as.numeric(res[['Med_sql']])
-  res[['MAD']] <- as.numeric(res[['MAD']])
+  res[["N_taxa"]] <- as.integer(res[["N_taxa"]])
+  res[["N_seqs"]] <- as.integer(res[["N_seqs"]])
+  res[["Med_sql"]] <- as.numeric(res[["Med_sql"]])
+  res[["MAD"]] <- as.numeric(res[["MAD"]])
   res
 }
 
@@ -327,7 +349,7 @@ update_phylota <- function(phylota) {
   }
   clstrs <- phylota@clstrs # clstrs informs all other slots
   all_sids <- lapply(seq_along(clstrs@ids), get_sids)
-  all_seeds <- vapply(seq_along(clstrs@ids), get_seeds, '')
+  all_seeds <- vapply(seq_along(clstrs@ids), get_seeds, "")
   all_sids <- unique(c(unlist(all_sids), all_seeds))
   sqs <- phylota@sqs
   sqs <- sqs[all_sids]

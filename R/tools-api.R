@@ -10,12 +10,12 @@
 #' @return rentrez function results
 #' @family run-private
 search_and_cache <- function(func, args, fnm, ps) {
-  res <- ncbicache_load(fnm = fnm, args = args, wd = ps[['wd']])
+  res <- ncbicache_load(fnm = fnm, args = args, wd = ps[["wd"]])
   if (!is.null(res)) {
     return(res)
   }
   res <- safely_connect(func = func, args = args, fnm = fnm, ps = ps)
-  ncbicache_save(fnm = fnm, args = args, wd = ps[['wd']], obj = res)
+  ncbicache_save(fnm = fnm, args = args, wd = ps[["wd"]], obj = res)
   res
 }
 
@@ -31,27 +31,32 @@ search_and_cache <- function(func, args, fnm, ps) {
 #' @family run-private
 safely_connect <- function(func, args, fnm, ps) {
   res <- NULL
-  for (wt_tm in ps[['wt_tms']]) {
+  for (wt_tm in ps[["wt_tms"]]) {
     # limit query to 1 hour
     # TODO: allow user interruption with tryCatch?
     query <- try(R.utils::withTimeout(do.call(func, args), timeout = 3600),
-                 silent = TRUE)
-    #query <- try(do.call(func, args), silent = TRUE)
+      silent = TRUE
+    )
+    # query <- try(do.call(func, args), silent = TRUE)
     if (download_obj_check(query)) {
       res <- query
       break
     } else {
       # ctrl+c
-      if (grepl('Operation was aborted by an application callback',
-                query[[1]])) {
+      if (grepl(
+        "Operation was aborted by an application callback",
+        query[[1]]
+      )) {
         stop(query[[1]])
       }
       # too large a request
-      if (grepl('the request is too large', query[[1]])) {
-        error(ps = ps, 'NCBI is limiting the size of your request. ',
-              'Consider reducing btchsz with parameters_reset().')
+      if (grepl("the request is too large", query[[1]])) {
+        error(
+          ps = ps, "NCBI is limiting the size of your request. ",
+          "Consider reducing btchsz with parameters_reset()."
+        )
       }
-      info(lvl = 1, ps = ps, "Retrying in [", wt_tm, "s] for [", fnm, ']')
+      info(lvl = 1, ps = ps, "Retrying in [", wt_tm, "s] for [", fnm, "]")
       Sys.sleep(wt_tm)
     }
   }
@@ -66,29 +71,29 @@ safely_connect <- function(func, args, fnm, ps) {
 #' @return T/F
 #' @family run-private
 download_obj_check <- function(obj) {
-  if (inherits(x = obj, what = 'try-error')) {
+  if (inherits(x = obj, what = "try-error")) {
     return(FALSE)
   }
   # either an esearch object or a fetch "acc" or "gb" character of length 1
-  if (inherits(x = obj, what = 'esearch')) {
+  if (inherits(x = obj, what = "esearch")) {
     return(TRUE)
   }
   # object fetch is either a character of length 1
-  if (length(obj) == 1 & inherits(x = obj, what = 'character')) {
-    is_gb_record <- grepl(pattern = 'LOCUS', x = obj, ignore.case = FALSE)
+  if (length(obj) == 1 & inherits(x = obj, what = "character")) {
+    is_gb_record <- grepl(pattern = "LOCUS", x = obj, ignore.case = FALSE)
     # xml timeout error
-    if (grepl(pattern = 'timeout', x = obj) & !is_gb_record) {
+    if (grepl(pattern = "timeout", x = obj) & !is_gb_record) {
       return(FALSE)
     }
     # xml "Unable to obtain query" error
-    if (grepl(pattern = 'Unable to obtain query', x = obj) & !is_gb_record) {
+    if (grepl(pattern = "Unable to obtain query", x = obj) & !is_gb_record) {
       return(FALSE)
     }
-    if (grepl(pattern = 'Error occurred:', x = obj) & !is_gb_record) {
+    if (grepl(pattern = "Error occurred:", x = obj) & !is_gb_record) {
       # Fix for 'malformed-xmlBackend', NCBI returning object
       return(FALSE)
     }
-    if (grepl(pattern = '^\\s*Error', x = obj) & !is_gb_record) {
+    if (grepl(pattern = "^\\s*Error", x = obj) & !is_gb_record) {
       # "Error : HTTP failure: 400 or 515"
       return(FALSE)
     }
@@ -111,7 +116,7 @@ download_obj_check <- function(obj) {
 batcher <- function(ids, func, ps, lvl = 0) {
   res <- NULL
   n <- length(ids)
-  btch <- ps[['btchsz']]
+  btch <- ps[["btchsz"]]
   for (i in seq(0, n - 1, btch)) {
     lower <- i + 1
     upper <- ifelse(i + btch < n, i + btch, n)

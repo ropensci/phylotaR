@@ -3,23 +3,27 @@ library(phylotaR)
 library(testthat)
 
 # DATA
-raw_recs <- readRDS(phylotaR:::datadir_get('raw_txrecs.rda'))
+raw_recs <- readRDS(phylotaR:::datadir_get("raw_txrecs.rda"))
 wd <- tempdir()
 ps <- parameters(wd = wd)
 
 # RUNNING
-context('Testing \'stage1-tools\'')
+context("Testing 'stage1-tools'")
 phylotaR:::cleanup(wd)
-test_that('tax_download() works', {
+test_that("tax_download() works", {
   example_res <- raw_recs[[sample(seq_along(raw_recs), 1)]]
-  ids <- unname(vapply(X = XML::xmlToList(example_res), FUN = '[[',
-                       FUN.VALUE = character(1), 'TaxId'))
+  ids <- unname(vapply(
+    X = XML::xmlToList(example_res), FUN = "[[",
+    FUN.VALUE = character(1), "TaxId"
+  ))
   res <- with_mock(
     `phylotaR:::search_and_cache` = function(...) example_res,
     phylotaR:::tax_download(ids = ids, ps = ps)
   )
-  res <- vapply(X = res, FUN = function(x) inherits(x, 'TaxRec'),
-                FUN.VALUE = logical(1))
+  res <- vapply(
+    X = res, FUN = function(x) inherits(x, "TaxRec"),
+    FUN.VALUE = logical(1)
+  )
   expect_true(all(res))
 })
 phylotaR:::cleanup(wd)
