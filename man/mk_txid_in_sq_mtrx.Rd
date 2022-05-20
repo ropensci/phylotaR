@@ -21,7 +21,8 @@ Searches through lineages of sequences' source organisms to
 determine whether each txid is represented by the sequence.
 }
 \seealso{
-Other tools-private: \code{\link{summary_phylota}},
-  \code{\link{update_phylota}}
+Other tools-private: 
+\code{\link{summary_phylota}()},
+\code{\link{update_phylota}()}
 }
 \concept{tools-private}

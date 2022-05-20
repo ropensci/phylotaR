@@ -11,11 +11,11 @@
 #' @export
 clusters_run <- function(wd) {
   ps <- parameters_load(wd)
-  msg <- paste0('Starting stage CLUSTER: [', Sys.time(), ']')
+  msg <- paste0("Starting stage CLUSTER: [", Sys.time(), "]")
   .stgMsg(ps = ps, msg = msg)
-  txdct <- obj_load(wd = wd, nm = 'txdct')
+  txdct <- obj_load(wd = wd, nm = "txdct")
   clstrs_calc(ps = ps, txdct = txdct)
-  msg <- paste0('Completed stage CLUSTER: [', Sys.time(), ']')
+  msg <- paste0("Completed stage CLUSTER: [", Sys.time(), "]")
   .stgMsg(ps = ps, msg = msg)
 }
 
@@ -29,22 +29,22 @@ clusters_run <- function(wd) {
 #' @return NULL
 clstrs_calc <- function(txdct, ps) {
   # load sequences
-  sq_fls <- list.files(file.path(ps[['wd']], 'cache', 'sqs'))
-  sq_fls <- sq_fls[!grepl('paraphyly', sq_fls)]
+  sq_fls <- list.files(file.path(ps[["wd"]], "cache", "sqs"))
+  sq_fls <- sq_fls[!grepl("paraphyly", sq_fls)]
   fld <- NULL
   for (i in seq_along(sq_fls)) {
     sq_fl <- sq_fls[i]
     # TODO: use the cache tool
-    clfl <- file.path(ps[['wd']], 'cache', 'clusters', sq_fl)
+    clfl <- file.path(ps[["wd"]], "cache", "clusters", sq_fl)
     if (file.exists(clfl)) {
       next
     }
-    sqs <- readRDS(file = file.path(ps[['wd']], 'cache', 'sqs', sq_fl))
-    txid <- as.character(sub('\\.RData', '', sq_fl))
+    sqs <- readRDS(file = file.path(ps[["wd"]], "cache", "sqs", sq_fl))
+    txid <- as.character(sub("\\.RData", "", sq_fl))
     info(lvl = 1, ps = ps, "Working from [id ", txid, "] down hierarchy")
     clstrs <- clstr_all(txid = txid, sqs = sqs, txdct = txdct, ps = ps)
     if (length(clstrs@ids) > 0) {
-      clstrs_save(wd = ps[['wd']], txid = txid, clstrs = clstrs)
+      clstrs_save(wd = ps[["wd"]], txid = txid, clstrs = clstrs)
     } else {
       fld <- c(fld, i)
     }
@@ -56,15 +56,17 @@ clstrs_calc <- function(txdct, ps) {
     for (i in fld) {
       sq_fl <- sq_fls[i]
       # TODO: use the cache tool
-      sqs <- readRDS(file = file.path(ps[['wd']], 'cache', 'sqs', sq_fl))
+      sqs <- readRDS(file = file.path(ps[["wd"]], "cache", "sqs", sq_fl))
       all_sqs <- c(all_sqs, sqs@sqs)
     }
     all_sqs <- seqarc_gen(all_sqs)
-    clstrs <- clstr_sqs(txid = '', sqs = all_sqs, ps = ps, lvl = 1,
-                        typ = 'paraphyly')
+    clstrs <- clstr_sqs(
+      txid = "", sqs = all_sqs, ps = ps, lvl = 1,
+      typ = "paraphyly"
+    )
     if (length(clstrs@ids) > 0) {
-      clstrs_save(wd = ps[['wd']], txid = 'paraphyly', clstrs = clstrs)
-      sqs_save(wd = ps[['wd']], txid = 'paraphyly', sqs = all_sqs)
+      clstrs_save(wd = ps[["wd"]], txid = "paraphyly", clstrs = clstrs)
+      sqs_save(wd = ps[["wd"]], txid = "paraphyly", sqs = all_sqs)
     }
   }
 }

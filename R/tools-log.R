@@ -8,10 +8,10 @@
 #' @family run-private
 #' @return NULL
 info <- function(lvl, ps, ...) {
-  msg <- paste0(..., '\n')
-  spcr <- paste0(rep('. ', lvl - 1), collapse = '')
-  msg <- paste0(spcr, msg, collapse = '')
-  .log(v = ps[['v']], wd = ps[['wd']], msg = msg)
+  msg <- paste0(..., "\n")
+  spcr <- paste0(rep(". ", lvl - 1), collapse = "")
+  msg <- paste0(spcr, msg, collapse = "")
+  .log(v = ps[["v"]], wd = ps[["wd"]], msg = msg)
 }
 
 #' @name error
@@ -23,8 +23,8 @@ info <- function(lvl, ps, ...) {
 #' @family run-private
 #' @return NULL
 error <- function(ps, ...) {
-  msg <- paste0(..., '\n')
-  .log(v = FALSE, wd = ps[['wd']], msg = msg)
+  msg <- paste0(..., "\n")
+  .log(v = FALSE, wd = ps[["wd"]], msg = msg)
   stop(msg, call. = FALSE)
 }
 
@@ -36,15 +36,15 @@ error <- function(ps, ...) {
 #' @family run-private
 #' @return NULL
 warn <- function(ps, ...) {
-  msg <- paste0('Warning: ', ..., '\n')
-  .log(v = ps[['v']], wd = ps[['wd']], msg = msg)
-  warning(paste0(msg, ' -- see log.txt'))
+  msg <- paste0("Warning: ", ..., "\n")
+  .log(v = ps[["v"]], wd = ps[["wd"]], msg = msg)
+  warning(paste0(msg, " -- see log.txt"))
 }
 
 # hidden log function
 .stgMsg <- function(ps, msg) {
-  brdr <- paste0(rep('-', nchar(msg)), collapse = '')
-  msg <- paste0(brdr, '\n', msg, '\n', brdr)
+  brdr <- paste0(rep("-", nchar(msg)), collapse = "")
+  msg <- paste0(brdr, "\n", msg, "\n", brdr)
   info(ps = ps, lvl = 1, msg)
 }
 .log <- function(v, wd, msg) {
@@ -52,7 +52,7 @@ warn <- function(ps, ...) {
     cat(msg)
   }
   if (!is.null(wd)) {
-    lgfl <- file.path(wd, 'log.txt')
+    lgfl <- file.path(wd, "log.txt")
     cat(msg, file = lgfl, append = TRUE)
   }
 }

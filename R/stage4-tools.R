@@ -7,9 +7,9 @@
 #' @return blast res data.frame
 seeds_blast <- function(sqs, ps) {
   info(lvl = 2, ps = ps, "BLASTing [", length(sqs@ids), " sqs]")
-  dbfl <- 'seeds-db.fa'
-  outfl <- 'seeds-db-blastout.txt'
-  file.path(ps[['wd']], 'blast', dbfl)
+  dbfl <- "seeds-db.fa"
+  outfl <- "seeds-db-blastout.txt"
+  file.path(ps[["wd"]], "blast", dbfl)
   blastdb_gen(sqs, dbfl = dbfl, ps = ps)
   blast_res <- blastn_run(dbfl = dbfl, outfl = outfl, ps = ps)
   blast_res
@@ -29,22 +29,23 @@ seeds_blast <- function(sqs, ps) {
 #' @return list of joined clusters
 clstrs_join <- function(blast_res, seed_ids, all_clstrs, ps) {
   join <- function(x) {
-    pull <- seed_ids %in% x[['sids']]
+    pull <- seed_ids %in% x[["sids"]]
     jnd_clstr <- all_clstrs[pull]
     nms <- slotNames(jnd_clstr[[1]])
-    clstr <- lapply(nms, function(nm)
-      unlist(lapply(jnd_clstr, function(cl) slot(cl, nm))))
+    clstr <- lapply(nms, function(nm) {
+      unlist(lapply(jnd_clstr, function(cl) slot(cl, nm)))
+    })
     names(clstr) <- nms
-    clstr[['typ']] <- 'merged'
-    clstr[['seed']] <- x[['seed']]
+    clstr[["typ"]] <- "merged"
+    clstr[["seed"]] <- x[["seed"]]
     # ensure no dups seqs in joined cluster
-    pull <- !duplicated(clstr[['sids']])
-    clstr[['sids']] <- clstr[['sids']][pull]
-    clstr[['txids']] <- clstr[['txids']][pull]
+    pull <- !duplicated(clstr[["sids"]])
+    clstr[["sids"]] <- clstr[["sids"]][pull]
+    clstr[["txids"]] <- clstr[["txids"]][pull]
     clstr
   }
-  pull <- blast_res[['query.id']] != blast_res[['subject.id']] &
-    blast_res[['qcovs']] > ps[['mncvrg']]
+  pull <- blast_res[["query.id"]] != blast_res[["subject.id"]] &
+    blast_res[["qcovs"]] > ps[["mncvrg"]]
   blast_res <- blast_res[pull, ]
   clstr_list <- blast_clstr(blast_res = blast_res)
   info(lvl = 2, ps = ps, "Identified [", length(clstr_list), "] clusters")
@@ -61,15 +62,17 @@ clstrs_join <- function(blast_res, seed_ids, all_clstrs, ps) {
 #' @return list of ClstrRecs
 #' @family run-private
 clstrs_merge <- function(jnd_clstrs, txdct) {
-  mrg_clstrs <- vector('list', length = length(jnd_clstrs))
+  mrg_clstrs <- vector("list", length = length(jnd_clstrs))
   for (i in seq_along(jnd_clstrs)) {
     cl <- jnd_clstrs[[i]]
-    prnt <- parent_get(id = cl[['txids']], txdct = txdct)
-    nsqs <- length(cl[['sids']])
-    ntx <- length(unique(cl[['txids']]))
-    clstrrec <- new('ClstrRec', sids = cl[['sids']], txids = cl[['txids']],
-                    nsqs = nsqs, ntx = ntx, typ = 'merged', prnt = prnt,
-                    seed = cl[['seed']])
+    prnt <- parent_get(id = cl[["txids"]], txdct = txdct)
+    nsqs <- length(cl[["sids"]])
+    ntx <- length(unique(cl[["txids"]]))
+    clstrrec <- new("ClstrRec",
+      sids = cl[["sids"]], txids = cl[["txids"]],
+      nsqs = nsqs, ntx = ntx, typ = "merged", prnt = prnt,
+      seed = cl[["seed"]]
+    )
     mrg_clstrs[[i]] <- clstrrec
   }
   mrg_clstrs

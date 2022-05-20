@@ -4,13 +4,28 @@
 \alias{parameters}
 \title{Default parameters}
 \usage{
-parameters(wd = ".", txid = character(), mkblstdb = "", blstn = "",
-  v = FALSE, ncps = 1, mxnds = 1e+05, mdlthrs = 3000,
-  mnsql = 250, mxsql = 2000, mxrtry = 100, mxsqs = 50000,
-  mxevl = 1e-10, mncvrg = 51, btchsz = 100, db_only = FALSE,
+parameters(
+  wd = ".",
+  txid = character(),
+  mkblstdb = "",
+  blstn = "",
+  v = FALSE,
+  ncps = 1,
+  mxnds = 1e+05,
+  mdlthrs = 3000,
+  mnsql = 250,
+  mxsql = 2000,
+  mxrtry = 100,
+  mxsqs = 50000,
+  mxevl = 1e-10,
+  mncvrg = 51,
+  btchsz = 100,
+  db_only = FALSE,
   outsider = FALSE,
-  srch_trm = "NOT predicted[TI] NOT \\"whole genome shotgun\\"[TI] NOT unverified[TI] NOT \\"synthetic construct\\"[Organism] NOT refseq[filter] NOT TSA[Keyword]",
-  date = Sys.Date())
+ 
+    srch_trm = "NOT predicted[TI] NOT \\"whole genome shotgun\\"[TI] NOT unverified[TI] NOT \\"synthetic construct\\"[Organism] NOT refseq[filter] NOT TSA[Keyword]",
+  date = Sys.Date()
+)
 }
 \arguments{
 \item{wd}{The working directory where all output files are saved.}

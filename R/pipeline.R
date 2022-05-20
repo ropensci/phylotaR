@@ -15,28 +15,34 @@
 #' @return NULL
 #' @family run-public
 #' @example examples/setup.R
-setup <- function(wd, txid, ncbi_dr='.', v=FALSE, overwrite=FALSE,
-                  outsider=FALSE, ...) {
+setup <- function(wd, txid, ncbi_dr = ".", v = FALSE, overwrite = FALSE,
+                  outsider = FALSE, ...) {
   # no ~
-  checks <- vapply(X = c(wd, ncbi_dr), FUN = grepl, FUN.VALUE = logical(1),
-                   pattern = '~')
+  checks <- vapply(
+    X = c(wd, ncbi_dr), FUN = grepl, FUN.VALUE = logical(1),
+    pattern = "~"
+  )
   if (any(checks)) {
-    stop(paste0('Do not use `~` in filepaths.'))
+    stop(paste0("Do not use `~` in filepaths."))
   }
   # header log
-  msg <- paste0('phylotaR: Implementation of PhyLoTa in R [v',
-                packageVersion('phylotaR'), ']')
-  brdr <- paste0(rep('-', nchar(msg)), collapse = '')
-  msg <- paste0(brdr, '\n', msg, '\n', brdr, '\n')
+  msg <- paste0(
+    "phylotaR: Implementation of PhyLoTa in R [v",
+    packageVersion("phylotaR"), "]"
+  )
+  brdr <- paste0(rep("-", nchar(msg)), collapse = "")
+  msg <- paste0(brdr, "\n", msg, "\n", brdr, "\n")
   .log(v = v, wd = wd, msg)
   # set up
   ncbi_execs <- blast_setup(d = ncbi_dr, v = v, wd = wd, otsdr = outsider)
-  parameters_setup(wd = wd, txid = txid, ncbi_execs = ncbi_execs, v = v,
-                   overwrite = overwrite, outsider = outsider, ...)
+  parameters_setup(
+    wd = wd, txid = txid, ncbi_execs = ncbi_execs, v = v,
+    overwrite = overwrite, outsider = outsider, ...
+  )
   # record session info
   writeLines(capture.output(sessionInfo()), file.path(wd, "session_info.txt"))
   # end
-  .log(v = v, wd = wd, paste0(brdr, '\n'))
+  .log(v = v, wd = wd, paste0(brdr, "\n"))
 }
 
 #' @name run
@@ -46,7 +52,7 @@ setup <- function(wd, txid, ncbi_dr='.', v=FALSE, overwrite=FALSE,
 #' \code{restart}. \code{nstages} must be a numeric value representing the
 #' number of stages that will be run. Stages are run in the following order:
 #' 1 - taxise, 2 - download, 3 - cluster and 4 - cluster2.
-#' 
+#'
 #' For example, specifying \code{nstages} = 3, will run taxise, download and
 #' cluster. Stages can also be run individually, see linked functions below.
 #' @param wd Working directory
@@ -55,7 +61,7 @@ setup <- function(wd, txid, ncbi_dr='.', v=FALSE, overwrite=FALSE,
 #' @export
 #' @example examples/run.R
 #' @return NULL
-run <- function(wd, nstages=4) {
+run <- function(wd, nstages = 4) {
   stgs_msg <- stage_args_check(frm = 1, to = nstages)
   stages_run(wd = wd, frm = 1, to = nstages, stgs_msg = stgs_msg)
 }
@@ -70,20 +76,24 @@ run <- function(wd, nstages=4) {
 #' @family run-public
 #' @example examples/restart.R
 #' @return NULL
-restart <- function(wd, nstages=4) {
+restart <- function(wd, nstages = 4) {
   stg <- progress_read(wd)
   if (is.na(stg)) {
-    stop('Pipeline already complete. Use `reset()` to re-run pipeline.')
+    stop("Pipeline already complete. Use `reset()` to re-run pipeline.")
   }
-  frm <- which(c('taxise', 'download', 'cluster', 'cluster2')
-                %in% stg)
+  frm <- which(c("taxise", "download", "cluster", "cluster2")
+  %in% stg)
   if (frm > nstages) {
-    stop('Pipeline has already completed [', nstages,
-         '] stages. Increase `nstages`.')
+    stop(
+      "Pipeline has already completed [", nstages,
+      "] stages. Increase `nstages`."
+    )
   }
   stgs_msg <- stage_args_check(frm = frm, to = nstages)
-  stages_run(wd = wd, frm = frm, to = nstages, stgs_msg = stgs_msg,
-             rstrt = TRUE)
+  stages_run(
+    wd = wd, frm = frm, to = nstages, stgs_msg = stgs_msg,
+    rstrt = TRUE
+  )
 }
 
 #' @name reset
@@ -96,15 +106,15 @@ restart <- function(wd, nstages=4) {
 #' @export
 #' @example examples/reset.R
 #' @return NULL
-reset <- function(wd, stage, hard=FALSE) {
-  if (!stage %in% c('taxise', 'download', 'cluster', 'cluster2')) {
-    stop('Invalid stage name.')
+reset <- function(wd, stage, hard = FALSE) {
+  if (!stage %in% c("taxise", "download", "cluster", "cluster2")) {
+    stop("Invalid stage name.")
   }
   ps <- parameters_load(wd)
   if (hard) {
-    flpth <- file.path(ps[['wd']], 'cache')
-    rdata_fls <- list.files(flpth, '.RData')
-    rdata <- vector(mode = 'list', length = length(rdata_fls))
+    flpth <- file.path(ps[["wd"]], "cache")
+    rdata_fls <- list.files(flpth, ".RData")
+    rdata <- vector(mode = "list", length = length(rdata_fls))
     names(rdata) <- rdata_fls
     for (rdata_fl in rdata_fls) {
       rdata[[rdata_fl]] <- readRDS(file = file.path(flpth, rdata_fl))
@@ -116,12 +126,12 @@ reset <- function(wd, stage, hard=FALSE) {
   }
   progress_reset(wd = wd, stg = stage)
   if (hard) {
-    msg <- paste0('Reset (hard) pipeline to [', stage, ']')
+    msg <- paste0("Reset (hard) pipeline to [", stage, "]")
   } else {
-    msg <- paste0('Reset (soft) pipeline to [', stage, ']')
+    msg <- paste0("Reset (soft) pipeline to [", stage, "]")
   }
-  brdr <- paste0(rep('-', nchar(msg)), collapse = '')
-  msg <- paste0(brdr, '\n', msg, '\n', brdr)
+  brdr <- paste0(rep("-", nchar(msg)), collapse = "")
+  msg <- paste0(brdr, "\n", msg, "\n", brdr)
   info(ps = ps, lvl = 1, msg)
 }
 
@@ -141,14 +151,14 @@ parameters_reset <- function(wd, parameters, values) {
   for (i in seq_along(parameters)) {
     ps[[parameters[i]]] <- values[[i]]
   }
-  obj_save(wd = wd, obj = ps, nm = 'prmtrs')
-  msg <- paste0('The following parameters have been reset:')
-  brdr <- paste0(rep('-', nchar(msg)), collapse = '')
-  info(lvl = 1, ps = ps, paste0(brdr, '\n', msg))
+  obj_save(wd = wd, obj = ps, nm = "prmtrs")
+  msg <- paste0("The following parameters have been reset:")
+  brdr <- paste0(rep("-", nchar(msg)), collapse = "")
+  info(lvl = 1, ps = ps, paste0(brdr, "\n", msg))
   mxnchrs <- max(vapply(parameters, nchar, integer(1))) + 3
   for (prmtr in parameters) {
-    spcr <- paste0(rep(' ', mxnchrs - nchar(prmtr)), collapse = '')
-    prmtr_msg <- paste0(prmtr, spcr, '[', ps[[prmtr]], ']')
+    spcr <- paste0(rep(" ", mxnchrs - nchar(prmtr)), collapse = "")
+    prmtr_msg <- paste0(prmtr, spcr, "[", ps[[prmtr]], "]")
     info(lvl = 2, ps = ps, prmtr_msg)
   }
   info(lvl = 1, ps = ps, brdr)

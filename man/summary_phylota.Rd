@@ -14,7 +14,8 @@ Generates a summary data.frame from all clusters in
 Phylota object.
 }
 \seealso{
-Other tools-private: \code{\link{mk_txid_in_sq_mtrx}},
-  \code{\link{update_phylota}}
+Other tools-private: 
+\code{\link{mk_txid_in_sq_mtrx}()},
+\code{\link{update_phylota}()}
 }
 \concept{tools-private}

@@ -53,14 +53,16 @@ drop_clstrs <- function(phylota, cid) {
 #' @export
 #' @family tools-public
 #' @example examples/drop_by_rank.R
-drop_by_rank <- function(phylota, rnk = 'species', keep_higher = FALSE, n = 10,
-                         choose_by = c('pambgs', 'age', 'nncltds'),
+drop_by_rank <- function(phylota, rnk = "species", keep_higher = FALSE, n = 10,
+                         choose_by = c("pambgs", "age", "nncltds"),
                          greatest = c(FALSE, FALSE, TRUE)) {
   slct <- function(txid) {
     pssbls <- sids[txid == txids]
     for (i in seq_along(choose_by)) {
-      vals <- get_sq_slot(phylota = phylota, sid = pssbls,
-                          slt_nm = choose_by[[i]])
+      vals <- get_sq_slot(
+        phylota = phylota, sid = pssbls,
+        slt_nm = choose_by[[i]]
+      )
       names(vals) <- pssbls
       mx_n <- ifelse(length(vals) > n, n, length(vals))
       vals <- sort(x = vals, decreasing = greatest[i])[1:mx_n]
@@ -70,13 +72,15 @@ drop_by_rank <- function(phylota, rnk = 'species', keep_higher = FALSE, n = 10,
   }
   pull <- !choose_by %in% list_seqrec_slots()
   if (any(pull)) {
-    stop(paste0('[', choose_by[pull], '] not in SeqRec'))
+    stop(paste0("[", choose_by[pull], "] not in SeqRec"))
   }
   for (cid in phylota@cids) {
-    txids <- get_txids(phylota = phylota, cid = cid, rnk = rnk,
-                       keep_higher = keep_higher)
+    txids <- get_txids(
+      phylota = phylota, cid = cid, rnk = rnk,
+      keep_higher = keep_higher
+    )
     sids <- phylota@clstrs[[cid]]@sids
-    pull <- txids != ''
+    pull <- txids != ""
     sids <- sids[pull]
     txids <- txids[pull]
     unqids <- unique(txids)

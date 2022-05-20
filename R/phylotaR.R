@@ -1,5 +1,5 @@
 #' @importFrom methods is new getSlots initialize slot slotNames show
-#' @importFrom stats median 
+#' @importFrom stats median
 #' @importFrom utils head packageVersion read.table tail write.table
 #' capture.output sessionInfo
 
@@ -48,20 +48,20 @@
 #' change the default search term options. Default: avoid predicted, WGS,
 #' unverified, synthetic, RefSeq and Transcriptome Shotgun Assembly sequences.
 #' @export
-parameters <- function(wd='.', txid=character(), mkblstdb='', blstn='', v=FALSE,
-                       ncps=1, mxnds=100000, mdlthrs=3000, mnsql=250,
-                       mxsql=2000, mxrtry=100, mxsqs=50000, mxevl=1.0e-10,
-                       mncvrg=51, btchsz=100, db_only = FALSE, outsider = FALSE,
-                       srch_trm='NOT predicted[TI] NOT "whole genome shotgun"[TI] NOT unverified[TI] NOT "synthetic construct"[Organism] NOT refseq[filter] NOT TSA[Keyword]',
-                       date=Sys.Date()) {
+parameters <- function(wd = ".", txid = character(), mkblstdb = "", blstn = "", v = FALSE,
+                       ncps = 1, mxnds = 100000, mdlthrs = 3000, mnsql = 250,
+                       mxsql = 2000, mxrtry = 100, mxsqs = 50000, mxevl = 1.0e-10,
+                       mncvrg = 51, btchsz = 100, db_only = FALSE, outsider = FALSE,
+                       srch_trm = 'NOT predicted[TI] NOT "whole genome shotgun"[TI] NOT unverified[TI] NOT "synthetic construct"[Organism] NOT refseq[filter] NOT TSA[Keyword]',
+                       date = Sys.Date()) {
   ps <- as.list(environment())
-  ps[['txid']] <- as.character(ps[['txid']])
-  if (length(ps[['txid']]) > 1) {
-    ps[['multiple_ids']] <- TRUE
+  ps[["txid"]] <- as.character(ps[["txid"]])
+  if (length(ps[["txid"]]) > 1) {
+    ps[["multiple_ids"]] <- TRUE
   } else {
-    ps[['multiple_ids']] <- FALSE
+    ps[["multiple_ids"]] <- FALSE
   }
-  ps[['wt_tms']] <- c(1, 3, 6, 10, 60, 300)
+  ps[["wt_tms"]] <- c(1, 3, 6, 10, 60, 300)
   ps
 }
 
@@ -73,9 +73,11 @@ parameters <- function(wd='.', txid=character(), mkblstdb='', blstn='', v=FALSE,
 #' @return vector
 #' @export
 list_ncbi_ranks <- function() {
-  c("superkingdom", "kingdom", "phylum", "subphylum", "class", "superorder",
+  c(
+    "superkingdom", "kingdom", "phylum", "subphylum", "class", "superorder",
     "order", "suborder", "infraorder", "parvorder", "family", "genus",
-    "species", "subspecies")
+    "species", "subspecies"
+  )
 }
 
 #' @name list_seqrec_slots
@@ -86,8 +88,8 @@ list_ncbi_ranks <- function() {
 #' @return vector
 #' @export
 list_seqrec_slots <- function() {
-  slt_typs <- getSlots('SeqRec')
-  pull <- slt_typs %in% c('character', 'integer', 'numeric')
+  slt_typs <- getSlots("SeqRec")
+  pull <- slt_typs %in% c("character", "integer", "numeric")
   names(slt_typs[pull])
 }
 
@@ -99,8 +101,8 @@ list_seqrec_slots <- function() {
 #' @return vector
 #' @export
 list_clstrrec_slots <- function() {
-  slt_typs <- getSlots('ClstrRec')
-  pull <- slt_typs %in% c('character', 'integer', 'numeric')
+  slt_typs <- getSlots("ClstrRec")
+  pull <- slt_typs %in% c("character", "integer", "numeric")
   names(slt_typs[pull])
 }
 
@@ -112,7 +114,7 @@ list_clstrrec_slots <- function() {
 #' @return vector
 #' @export
 list_taxrec_slots <- function() {
-  slt_typs <- getSlots('TaxRec')
-  pull <- slt_typs %in% c('character', 'integer', 'numeric')
+  slt_typs <- getSlots("TaxRec")
+  pull <- slt_typs %in% c("character", "integer", "numeric")
   names(slt_typs[pull])
 }

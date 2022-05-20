@@ -25,8 +25,7 @@
 
 \S4method{[[}{ClstrArc,character}(x, i)
 
-\S4method{[}{ClstrArc,character,missing,missing}(x, i, j, ...,
-  drop = TRUE)
+\S4method{[}{ClstrArc,character,missing,missing}(x, i, j, ..., drop = TRUE)
 }
 \arguments{
 \item{x}{\code{ClstrArc} object}
@@ -69,13 +68,20 @@ clstrarc@clstrs  # list of cluster records
 (clstrarc[clstrarc@ids[1:10]])  # first 10 clusters
 }
 \seealso{
-Other run-public: \code{\link{ClstrRec-class}},
-  \code{\link{Phylota-class}}, \code{\link{SeqArc-class}},
-  \code{\link{SeqRec-class}}, \code{\link{TaxDict-class}},
-  \code{\link{TaxRec-class}}, \code{\link{clusters2_run}},
-  \code{\link{clusters_run}},
-  \code{\link{parameters_reset}}, \code{\link{reset}},
-  \code{\link{restart}}, \code{\link{run}},
-  \code{\link{setup}}, \code{\link{taxise_run}}
+Other run-public: 
+\code{\link{ClstrRec-class}},
+\code{\link{Phylota-class}},
+\code{\link{SeqArc-class}},
+\code{\link{SeqRec-class}},
+\code{\link{TaxDict-class}},
+\code{\link{TaxRec-class}},
+\code{\link{clusters2_run}()},
+\code{\link{clusters_run}()},
+\code{\link{parameters_reset}()},
+\code{\link{reset}()},
+\code{\link{restart}()},
+\code{\link{run}()},
+\code{\link{setup}()},
+\code{\link{taxise_run}()}
 }
 \concept{run-public}

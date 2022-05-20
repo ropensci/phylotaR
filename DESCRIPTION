@@ -1,44 +1,50 @@
-Package: phylotaR
 Type: Package
-Title: Automated Phylogenetic Sequence Cluster Identification from 'GenBank'
-Version: 1.2.0
-Authors@R: c(person("Hannes", "Hettling", role = "aut"),
+Package: phylotaR
+Title: Automated Phylogenetic Sequence Cluster Identification from
+    'GenBank'
+Version: 1.2.0.999
+Authors@R: c(
+    person("Shixiang", "Wang", , "dominic.john.bennett@gmail.com", role = c("aut", "cre")),
+    person("Hannes", "Hettling", role = "aut"),
     person("Rutger", "Vos", role = "aut"),
     person("Alexander", "Zizka", role = "aut"),
-    person("Dom", "Bennett", role = c("aut", "cre"),
-    email = "dominic.john.bennett@gmail.com"),
-    person("Alexandre", "Antonelli", role = c("aut")))
-Maintainer: Dom Bennett <dominic.john.bennett@gmail.com>
-Description: A pipeline for the identification, within taxonomic groups, of
-    orthologous sequence clusters from
-    'GenBank' <https://www.ncbi.nlm.nih.gov/genbank/> as the first step in a
-    phylogenetic analysis. The pipeline depends on a local alignment search tool
-    and is, therefore, not dependent on differences in gene naming conventions
-    and naming errors.
+    person("Dom", "Bennett", , "dominic.john.bennett@gmail.com", role = "aut"),
+    person("Alexandre", "Antonelli", role = "aut")
+  )
+Maintainer: Shixiang Wang <w_shixiang@163.com>
+Description: A pipeline for the identification, within taxonomic groups,
+    of orthologous sequence clusters from 'GenBank'
+    <https://www.ncbi.nlm.nih.gov/genbank/> as the first step in a
+    phylogenetic analysis. The pipeline depends on a local alignment
+    search tool and is, therefore, not dependent on differences in gene
+    naming conventions and naming errors.
 License: MIT + file LICENSE
-URL: https://docs.ropensci.org/phylotaR, https://github.com/ropensci/phylotaR#readme
+URL: https://docs.ropensci.org/phylotaR,
+    https://github.com/ropensci/phylotaR#readme
 BugReports: https://github.com/ropensci/phylotaR/issues
-SystemRequirements: BLAST+ (>=2.0)
 Depends:
-    R (>= 3.3.0),
     methods,
+    R (>= 3.5.0)
 Imports:
-    igraph,
-    rentrez,
-    XML,
     ggplot2,
+    igraph,
+    R.utils,
+    rentrez,
+    restez,
     sys,
     treeman,
     treemapify,
-    restez,
-    R.utils
+    XML
 Suggests:
-    testthat,
     knitr,
+    outsider,
     rmarkdown,
-    outsider
+    testthat
+VignetteBuilder: 
+    knitr
 Remotes:
     ropensci/restez
-RoxygenNote: 6.1.1
-VignetteBuilder: knitr
+Encoding: UTF-8
+RoxygenNote: 7.1.2
+SystemRequirements: BLAST+ (>=2.0)
 X-schema.org-isPartOf: https://ropensci.org
