@@ -4,9 +4,14 @@
 \alias{drop_by_rank}
 \title{Reduce clusters to specific rank}
 \usage{
-drop_by_rank(phylota, rnk = "species", keep_higher = FALSE, n = 10,
-  choose_by = c("pambgs", "age", "nncltds"), greatest = c(FALSE, FALSE,
-  TRUE))
+drop_by_rank(
+  phylota,
+  rnk = "species",
+  keep_higher = FALSE,
+  n = 10,
+  choose_by = c("pambgs", "age", "nncltds"),
+  greatest = c(FALSE, FALSE, TRUE)
+)
 }
 \arguments{
 \item{phylota}{Phylota object}
@@ -75,20 +80,27 @@ r2_age <- mean(get_sq_slot(phylota = reduced_2, sid = reduced_2@sids,
 (dragonflies <- drop_by_rank(phylota = dragonflies, rnk = 'genus', n = 1))
 }
 \seealso{
-Other tools-public: \code{\link{calc_mad}},
-  \code{\link{calc_wrdfrq}}, \code{\link{drop_clstrs}},
-  \code{\link{drop_sqs}}, \code{\link{get_clstr_slot}},
-  \code{\link{get_nsqs}}, \code{\link{get_ntaxa}},
-  \code{\link{get_sq_slot}}, \code{\link{get_stage_times}},
-  \code{\link{get_tx_slot}}, \code{\link{get_txids}},
-  \code{\link{is_txid_in_clstr}},
-  \code{\link{is_txid_in_sq}},
-  \code{\link{list_clstrrec_slots}},
-  \code{\link{list_ncbi_ranks}},
-  \code{\link{list_seqrec_slots}},
-  \code{\link{list_taxrec_slots}},
-  \code{\link{plot_phylota_pa}},
-  \code{\link{plot_phylota_treemap}},
-  \code{\link{read_phylota}}, \code{\link{write_sqs}}
+Other tools-public: 
+\code{\link{calc_mad}()},
+\code{\link{calc_wrdfrq}()},
+\code{\link{drop_clstrs}()},
+\code{\link{drop_sqs}()},
+\code{\link{get_clstr_slot}()},
+\code{\link{get_nsqs}()},
+\code{\link{get_ntaxa}()},
+\code{\link{get_sq_slot}()},
+\code{\link{get_stage_times}()},
+\code{\link{get_tx_slot}()},
+\code{\link{get_txids}()},
+\code{\link{is_txid_in_clstr}()},
+\code{\link{is_txid_in_sq}()},
+\code{\link{list_clstrrec_slots}()},
+\code{\link{list_ncbi_ranks}()},
+\code{\link{list_seqrec_slots}()},
+\code{\link{list_taxrec_slots}()},
+\code{\link{plot_phylota_pa}()},
+\code{\link{plot_phylota_treemap}()},
+\code{\link{read_phylota}()},
+\code{\link{write_sqs}()}
 }
 \concept{tools-public}

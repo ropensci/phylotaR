@@ -16,7 +16,8 @@ Phylota
 After change, run to update slots.
 }
 \seealso{
-Other tools-private: \code{\link{mk_txid_in_sq_mtrx}},
-  \code{\link{summary_phylota}}
+Other tools-private: 
+\code{\link{mk_txid_in_sq_mtrx}()},
+\code{\link{summary_phylota}()}
 }
 \concept{tools-private}
