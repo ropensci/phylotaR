@@ -4,7 +4,8 @@
 R implementation of the PhyLoTa sequence cluster pipeline. For more information see the accompanying website. Tested and demonstrated on Unix and Windows. **Find out more by visiting the [phylotaR website](https://ropensci.github.io/phylotaR/).**
 
 ## Install
-From CRAN:
+
+~~From CRAN~~:
 
 ```r
 install.packages('phylotaR')
@@ -13,7 +14,7 @@ install.packages('phylotaR')
 Or, download the development package from GitHub:
 
 ```r
-devtools::install_github(repo='ropensci/phylotaR', build_vignettes=TRUE)
+remotes::install_github('ropensci/phylotaR')
 ```
 
 **Full functionality depends on a local copy of BLAST+ (>= 2.0.0)**. For details on downloading and compiling BLAST+ on your machine please visit the [NCBI website](https://www.ncbi.nlm.nih.gov/books/NBK279690/).
@@ -68,13 +69,13 @@ To run these same demonstrations see [demos/demo_run.R](https://github.com/ropen
 
 MIT
 
-## Version
-
-Version 1.
-
 ## Authors
 
-Dom Bennett (maintainer, R package dev), Hannes Hettling (workhouse code dev), Rutger Vos, Alexander Zizka and Alexandre Antonelli
+Maintainer: Shixiang Wang <w_shixiang@163.com>
+
+This package previously developed and maintained by:
+
+Dom Bennett, Hannes Hettling, Rutger Vos, Alexander Zizka and Alexandre Antonelli
 
 ## Reference
 
