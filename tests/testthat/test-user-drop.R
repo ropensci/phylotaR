@@ -35,6 +35,8 @@ test_that("drop_by_rank() works", {
     choose_by = c("pambgs", "age", "nncltds"),
     greatest = c(FALSE, FALSE, TRUE)
   )
+  print(small_phylota@sids)
+  print(res@sids)
   expect_true(length(small_phylota@sids) > length(res@sids))
   # # most likely to be multiples of two
   # nsqs <- vapply(X = res@clstrs@clstrs, FUN = function(x) length(x@sids),

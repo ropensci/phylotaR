@@ -17,14 +17,8 @@
 #' @example examples/setup.R
 setup <- function(wd, txid, ncbi_dr = ".", v = FALSE, overwrite = FALSE,
                   outsider = FALSE, ...) {
-  # no ~
-  checks <- vapply(
-    X = c(wd, ncbi_dr), FUN = grepl, FUN.VALUE = logical(1),
-    pattern = "~"
-  )
-  if (any(checks)) {
-    stop(paste0("Do not use `~` in filepaths."))
-  }
+  wd = normalizePath(wd, mustWork = FALSE)
+  ncbi_dr = normalizePath(ncbi_dr, mustWork = FALSE)
   # header log
   msg <- paste0(
     "phylotaR: Implementation of PhyLoTa in R [v",
