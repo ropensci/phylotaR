@@ -30,7 +30,7 @@ Imports:
     igraph,
     R.utils,
     rentrez,
-    restez,
+    restez (>= 2.0.0),
     sys,
     treeman,
     treemapify,
@@ -45,6 +45,6 @@ VignetteBuilder:
 Remotes:
     ropensci/restez
 Encoding: UTF-8
-RoxygenNote: 7.1.2
+RoxygenNote: 7.2.0
 SystemRequirements: BLAST+ (>=2.0)
 X-schema.org-isPartOf: https://ropensci.org

@@ -17,8 +17,8 @@
 #' @example examples/setup.R
 setup <- function(wd, txid, ncbi_dr = ".", v = FALSE, overwrite = FALSE,
                   outsider = FALSE, ...) {
-  wd = normalizePath(wd, mustWork = FALSE)
-  ncbi_dr = normalizePath(ncbi_dr, mustWork = FALSE)
+  wd <- normalizePath(wd, mustWork = FALSE)
+  ncbi_dr <- normalizePath(ncbi_dr, mustWork = FALSE)
   # header log
   msg <- paste0(
     "phylotaR: Implementation of PhyLoTa in R [v",

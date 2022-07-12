@@ -23,7 +23,8 @@ parameters(
   db_only = FALSE,
   outsider = FALSE,
  
-    srch_trm = "NOT predicted[TI] NOT \\"whole genome shotgun\\"[TI] NOT unverified[TI] NOT \\"synthetic construct\\"[Organism] NOT refseq[filter] NOT TSA[Keyword]",
+    srch_trm = paste0("NOT predicted[TI] NOT \\"whole genome shotgun\\"[TI] NOT unverified[TI] ",
+    "NOT \\"synthetic construct\\"[Organism] NOT refseq[filter] NOT TSA[Keyword]"),
   date = Sys.Date()
 )
 }

@@ -14,3 +14,4 @@ logo.png
 ^codemeta\.json$
 .github
 pkgdown/
+test-manual.R
