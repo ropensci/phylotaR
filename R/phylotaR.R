@@ -51,10 +51,12 @@
 parameters <- function(wd = ".", txid = character(), mkblstdb = "", blstn = "", v = FALSE,
                        ncps = 1, mxnds = 100000, mdlthrs = 3000, mnsql = 250,
                        mxsql = 2000, mxrtry = 100, mxsqs = 50000, mxevl = 1.0e-10,
-                       mncvrg = 51, btchsz = 100, db_only = FALSE, outsider = FALSE,
-                       srch_trm = paste0(
-                        'NOT predicted[TI] NOT "whole genome shotgun"[TI] NOT unverified[TI] ',
-                        'NOT "synthetic construct"[Organism] NOT refseq[filter] NOT TSA[Keyword]'
+                       mncvrg = 51, btchsz = 100, db_only = FALSE, outsider = FALSE, srch_trm = paste0(
+                         "NOT predicted[TI] ",
+                         'NOT "whole genome shotgun"[TI] ',
+                         "NOT unverified[TI] ",
+                         'NOT "synthetic construct"[Organism] ',
+                         "NOT refseq[filter] NOT TSA[Keyword]"
                        ),
                        date = Sys.Date()) {
   ps <- as.list(environment())

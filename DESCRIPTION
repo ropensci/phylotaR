@@ -38,11 +38,14 @@ Imports:
 Suggests:
     knitr,
     outsider,
+    outsider.base,
     rmarkdown,
     testthat
 VignetteBuilder: 
     knitr
 Remotes:
+    ropensci-archive/outsider,
+    ropensci-archive/outsider.base,
     ropensci/restez
 Encoding: UTF-8
 RoxygenNote: 7.2.0

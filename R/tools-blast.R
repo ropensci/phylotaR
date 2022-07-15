@@ -96,6 +96,7 @@ blastn_run <- function(dbfl, outfl, ps) {
 #' @template ps
 #' @family run-private
 #' @return character
+#' @export
 # Patch for issue 39: https://github.com/ropensci/phylotaR/issues/39
 outfmt_get <- function(ps) {
   dbfl <- "testdbfl"
