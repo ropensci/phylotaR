@@ -1,3 +1,8 @@
+# phylotaR 1.3.0
+
+* Wrapped `outsider` package as it has been archived.
+* Updated and fixed the dependency to `restez`.
+
 # phylotaR 1.2.0
 
 ## `outsider` integration

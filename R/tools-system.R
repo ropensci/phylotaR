@@ -46,16 +46,16 @@ cmdln <- function(cmd, args, ps, lgfl = NULL) {
 repo <- "dombennett/om..blast"
 sys_exec <- function(cmd = cmd, args = args, ps, lgfl = NULL) {
   if (ps[["outsider"]]) {
-    if (!outsider::is_module_installed(repo = repo)) {
+    if (!outsider_call("is_module_installed")(repo = repo)) {
       message("Installing BLAST with outsider")
-      outsider::module_install(
+      outsider_call("module_install")(
         repo = repo, service = "github", tag = "latest",
         force = TRUE
       )
     }
-    cmd <- outsider::module_import(fname = cmd, repo = repo)
+    cmd <- outsider_call("module_import")(fname = cmd, repo = repo)
     if (!is.null(lgfl)) {
-      outsider::verbosity_set(show_program = lgfl)
+      outsider_call("verbosity_set")(show_program = lgfl)
     }
     res <- try(cmd(arglist = args), silent = TRUE)
     if (is.logical(res) && res) {
@@ -75,4 +75,10 @@ sys_exec <- function(cmd = cmd, args = args, ps, lgfl = NULL) {
     }
   }
   res
+}
+
+outsider_call = function(.f_string) {
+  stopifnot(is.character(.f_string))
+  cfun = paste0("outsider::", .f_string)
+  eval(parse(text = cfun))
 }
