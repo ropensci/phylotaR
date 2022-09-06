@@ -30,7 +30,7 @@ Imports:
     igraph,
     R.utils,
     rentrez,
-    restez (>= 2.0.0),
+    restez (>= 2.1.0),
     sys,
     treeman,
     treemapify,
