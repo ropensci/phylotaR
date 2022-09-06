@@ -101,6 +101,7 @@ reference:
     - seqrec_get
     - hierarchic_download
     - sids_get
+    - outfmt_get
 - title: Cluster (private)
   desc: Internal functions for running the cluster stage, use `phylotaR:::` to access.
   contents:
