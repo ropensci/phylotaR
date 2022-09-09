@@ -4,14 +4,13 @@ Title: Automated Phylogenetic Sequence Cluster Identification from
     'GenBank'
 Version: 1.3.0
 Authors@R: c(
-    person("Shixiang", "Wang", role = c("aut", "cre")),
+    person("Shixiang", "Wang", role = c("aut", "cre"), email = "wangshx@shanghaitech.edu.cn"),
     person("Hannes", "Hettling", role = "aut"),
     person("Rutger", "Vos", role = "aut"),
     person("Alexander", "Zizka", role = "aut"),
     person("Dom", "Bennett", role = "aut"),
     person("Alexandre", "Antonelli", role = "aut")
   )
-Maintainer: Shixiang Wang <w_shixiang@163.com>
 Description: A pipeline for the identification, within taxonomic groups,
     of orthologous sequence clusters from 'GenBank'
     <https://www.ncbi.nlm.nih.gov/genbank/> as the first step in a
@@ -42,7 +41,8 @@ Suggests:
 VignetteBuilder: 
     knitr
 Remotes:
-    ropensci/restez
+    ropensci/restez,
+    dombennett/treeman
 Encoding: UTF-8
 RoxygenNote: 7.2.0
 SystemRequirements: BLAST+ (>=2.0)
