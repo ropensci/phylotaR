@@ -11,7 +11,6 @@ Authors@R: c(
     person("Dom", "Bennett", role = "aut"),
     person("Alexandre", "Antonelli", role = "aut")
   )
-Maintainer: Shixiang Wang <w_shixiang@163.com>
 Description: A pipeline for the identification, within taxonomic groups,
     of orthologous sequence clusters from 'GenBank'
     <https://www.ncbi.nlm.nih.gov/genbank/> as the first step in a
@@ -42,7 +41,8 @@ Suggests:
 VignetteBuilder: 
     knitr
 Remotes:
-    ropensci/restez
+    ropensci/restez,
+    dombennett/treeman
 Encoding: UTF-8
 RoxygenNote: 7.2.0
 SystemRequirements: BLAST+ (>=2.0)
