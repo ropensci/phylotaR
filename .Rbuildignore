@@ -15,3 +15,5 @@ logo.png
 .github
 pkgdown/
 test-manual.R
+test.R
+
