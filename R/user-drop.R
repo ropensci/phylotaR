@@ -63,6 +63,9 @@ drop_by_rank <- function(phylota, rnk = "species", keep_higher = FALSE, n = 10,
         phylota = phylota, sid = pssbls,
         slt_nm = choose_by[[i]]
       )
+      if (anyNA(vals)) {
+        next()
+      }
       names(vals) <- pssbls
       mx_n <- ifelse(length(vals) > n, n, length(vals))
       vals <- sort(x = vals, decreasing = greatest[i])[1:mx_n]
