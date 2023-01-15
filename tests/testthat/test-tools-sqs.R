@@ -6,7 +6,7 @@ library(testthat)
 # from the wild
 raw_recs <- readRDS(phylotaR:::datadir_get("raw_seqrecs.rda"))
 # selected to represent record diversity
-test_raw_recs <- readRDS(phylotaR:::datadir_get("test_raw_seqrecs.rda"))
+test_raw_recs <- readRDS(phylotaR:::datadir_get("raw_seqrecs2.rda"))
 wd <- tempdir()
 ps <- parameters(wd = wd)
 

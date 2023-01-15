@@ -44,6 +44,6 @@ Remotes:
     ropensci/restez,
     dombennett/treeman
 Encoding: UTF-8
-RoxygenNote: 7.2.0
+RoxygenNote: 7.2.3
 SystemRequirements: BLAST+ (>=2.0)
 X-schema.org-isPartOf: https://ropensci.org
