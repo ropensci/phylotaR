@@ -17,3 +17,4 @@ pkgdown/
 test.R
 log.txt
 cache/
+justfile
