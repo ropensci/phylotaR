@@ -43,8 +43,6 @@ Suggests:
     knitr,
     rmarkdown,
     testthat
-LinkingTo: 
-    Rcpp
 VignetteBuilder: 
     knitr
 Remotes:
