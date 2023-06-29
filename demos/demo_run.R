@@ -1,7 +1,8 @@
 # Example: Rscript demos/demo_run.R /workspaces/blast/bin/
 
 # LIBS
-library(phylotaR)
+#library(phylotaR)
+devtools::load_all()
 
 # VARS ----
 demos <- c(

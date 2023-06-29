@@ -13,7 +13,7 @@ txdct <- phylotaR:::taxdict_gen(txids = txids, recs = recs, ps = ps)
 
 # RUNNING
 test_that("taxtree_gen() works", {
-  rndm_tree <- treeman::randTree(10)
+  rndm_tree <- randTree(10)
   prinds <- rndm_tree@prinds
   ids <- rndm_tree@all
   root <- rndm_tree@root
@@ -22,7 +22,7 @@ test_that("taxtree_gen() works", {
     root = root, ps = ps
   )
   expect_true(inherits(txtree, "TreeMan"))
-  expect_true(treeman::checkNdlst(txtree@ndlst, root))
+  expect_true(checkNdlst(txtree@ndlst, root))
 })
 test_that("rank_get() works", {
   txid <- sample(x = txdct@txids, size = 1)

@@ -7,7 +7,6 @@
 #' @param ids Vector of taxonomic IDs
 #' @param root ID of root taxon
 #' @template ps
-#' @importClassesFrom treeman TreeMan
 #' @family run-private
 #' @return TreeMan class
 taxtree_gen <- function(prinds, ids, root, ps) {
@@ -27,15 +26,15 @@ taxtree_gen <- function(prinds, ids, root, ps) {
   ptids <- ids[nonroot_i]
   ndlst <- lapply(1:nnds, .add)
   names(ndlst) <- ids
-  tree <- treeman::twoer()
+  tree <- twoer()
   tree@ndlst <- ndlst
   tree@root <- root
   tree@wtxnyms <- FALSE
   tree@ndmtrx <- NULL
   tree@prinds <- prinds
   tree@tinds <- tinds
-  tree <- treeman::updateSlts(tree)
-  if (!treeman::checkNdlst(tree@ndlst, tree@root)) {
+  tree <- updateSlts(tree)
+  if (!checkNdlst(tree@ndlst, tree@root)) {
     error(ps = ps, "Invalid taxonomy")
   }
   tree
@@ -63,12 +62,12 @@ rank_get <- function(txid, txdct) {
 #' @family run-private
 descendants_get <- function(id, txdct, direct = FALSE) {
   if (direct) {
-    ptids <- treeman::getNdSlt(
+    ptids <- getNdSlt(
       tree = txdct@txtr, slt_nm = "ptid",
       id = id
     )
   } else {
-    ptids <- treeman::getNdPtids(tree = txdct@txtr, id = id)
+    ptids <- getNdPtids(tree = txdct@txtr, id = id)
   }
   ptids
 }
@@ -85,9 +84,9 @@ parent_get <- function(id, txdct) {
   if (length(id) > 1) {
     ids <- unique(id)
     ids <- ids[!is.na(ids)]
-    res <- treeman::getPrnt(tree = txdct@txtr, ids = ids)
+    res <- getPrnt(tree = txdct@txtr, ids = ids)
   } else {
-    res <- treeman::getNdSlt(tree = txdct@txtr, slt_nm = "prid", id = id)
+    res <- getNdSlt(tree = txdct@txtr, slt_nm = "prid", id = id)
   }
   res
 }

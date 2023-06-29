@@ -4,7 +4,7 @@ Title: Automated Phylogenetic Sequence Cluster Identification from
     'GenBank'
 Version: 1.3.0
 Authors@R: c(
-    person("Shixiang", "Wang", role = c("aut", "cre"), email = "w_shixiang@163.com"),
+    person("Shixiang", "Wang", , "w_shixiang@163.com", role = c("aut", "cre")),
     person("Hannes", "Hettling", role = "aut"),
     person("Rutger", "Vos", role = "aut"),
     person("Alexander", "Zizka", role = "aut"),
@@ -25,24 +25,30 @@ Depends:
     methods,
     R (>= 3.5.0)
 Imports:
+    ape,
+    bigmemory,
     ggplot2,
     igraph,
+    plyr,
     R.utils,
+    Rcpp,
     rentrez,
     restez (>= 2.1.0),
+    RJSONIO,
+    stringr,
     sys,
-    treeman,
     treemapify,
     XML
 Suggests:
     knitr,
     rmarkdown,
     testthat
+LinkingTo: 
+    Rcpp
 VignetteBuilder: 
     knitr
 Remotes:
-    ropensci/restez,
-    dombennett/treeman
+    ropensci/restez
 Encoding: UTF-8
 RoxygenNote: 7.2.3
 SystemRequirements: BLAST+ (>=2.0)
