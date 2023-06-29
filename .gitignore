@@ -18,3 +18,4 @@ demos/*/
 test.fasta
 
 gnr_cache
+nohup.log

@@ -20,3 +20,4 @@ cache/
 justfile
 
 gnr_cache
+nohup.log
