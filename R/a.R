@@ -3346,7 +3346,7 @@ taxaResolve <- function(nms, batch = 100, datasource = 4, genus = TRUE,
   waittime <- 2
   while (trys < max_trys) {
     json_obj <- try(RJSONIO::fromJSON(url), silent = TRUE)
-    if (inherits(json_obj, "try-error") {
+    if (inherits(json_obj, "try-error")) {
       cat("---- Connection failed: trying again in [", waittime,
         "s]----\n",
         sep = ""

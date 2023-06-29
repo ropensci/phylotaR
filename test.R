@@ -24,7 +24,7 @@ length(keep)
 selected <- drop_clstrs(phylota = all_clusters, cid = keep)
 selected
 
-debug(drop_by_rank)
+#debug(drop_by_rank)
 reduced <- drop_by_rank(selected, rnk = 'species', n=1)
 
 slct(unqids[1])
@@ -48,7 +48,7 @@ get_sq_slot(
   slt_nm = "nncltds"
 )
 
-debug(slct)
+#debug(slct)
 slct(txid)
 
 is.na(vals)
