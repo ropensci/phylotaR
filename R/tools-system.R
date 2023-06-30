@@ -77,8 +77,8 @@ sys_exec <- function(cmd = cmd, args = args, ps, lgfl = NULL) {
   res
 }
 
-outsider_call = function(.f_string) {
+outsider_call <- function(.f_string) {
   stopifnot(is.character(.f_string))
-  cfun = paste0("outsider::", .f_string)
+  cfun <- paste0("outsider::", .f_string)
   eval(parse(text = cfun))
 }

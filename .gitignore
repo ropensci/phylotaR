@@ -17,3 +17,5 @@ demos/ncbi_dr.txt
 demos/*/
 test.fasta
 
+gnr_cache
+nohup.log
