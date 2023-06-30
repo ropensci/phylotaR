@@ -31,7 +31,6 @@ Imports:
     igraph,
     plyr,
     R.utils,
-    Rcpp,
     rentrez,
     restez (>= 2.1.0),
     RJSONIO,
