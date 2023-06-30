@@ -1,5 +1,6 @@
 # phylotaR 1.3.0
 
+* Included code of `treeman` package in this package.
 * Wrapped `outsider` package as it has been archived.
 * Updated and fixed the dependency to `restez`.
 

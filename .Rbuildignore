@@ -21,3 +21,5 @@ justfile
 
 gnr_cache
 nohup.log
+.vscode
+^CRAN-SUBMISSION$
