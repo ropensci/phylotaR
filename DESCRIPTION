@@ -18,7 +18,7 @@ Description: A pipeline for the identification, within taxonomic groups,
     search tool and is, therefore, not dependent on differences in gene
     naming conventions and naming errors.
 License: MIT + file LICENSE
-URL: https://docs.ropensci.org/phylotaR,
+URL: https://docs.ropensci.org/phylotaR/,
     https://github.com/ropensci/phylotaR#readme
 BugReports: https://github.com/ropensci/phylotaR/issues
 Depends:
@@ -44,8 +44,6 @@ Suggests:
     testthat
 VignetteBuilder: 
     knitr
-Remotes:
-    ropensci/restez
 Encoding: UTF-8
 RoxygenNote: 7.2.3
 SystemRequirements: BLAST+ (>=2.0)
