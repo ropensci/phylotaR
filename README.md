@@ -1,11 +1,11 @@
 # Automated Retrieval of Orthologous DNA Sequences from GenBank <img src="https://raw.githubusercontent.com/ropensci/phylotaR/master/logo.png" height="300" align="right"/>
-[![Build Status](https://travis-ci.org/ropensci/phylotaR.svg?branch=master)](https://travis-ci.org/ropensci/phylotaR) [![Coverage Status](https://coveralls.io/repos/github/ropensci/phylotaR/badge.svg?branch=master)](https://coveralls.io/github/ropensci/phylotaR?branch=master) [![](https://badges.ropensci.org/187_status.svg)](https://github.com/ropensci/onboarding/issues/187) [![CRAN downloads](http://cranlogs.r-pkg.org/badges/grand-total/phylotaR)](https://CRAN.R-project.org/package=phylotaR)
+[![R-CMD-check](https://github.com/ropensci/phylotaR/actions/workflows/r-check.yml/badge.svg)](https://github.com/ropensci/phylotaR/actions/workflows/r-check.yml) [![Coverage Status](https://coveralls.io/repos/github/ropensci/phylotaR/badge.svg?branch=master)](https://coveralls.io/github/ropensci/phylotaR?branch=master) [![](https://badges.ropensci.org/187_status.svg)](https://github.com/ropensci/onboarding/issues/187) [![CRAN downloads](http://cranlogs.r-pkg.org/badges/grand-total/phylotaR)](https://CRAN.R-project.org/package=phylotaR)
 
 R implementation of the PhyLoTa sequence cluster pipeline. For more information see the accompanying website. Tested and demonstrated on Unix and Windows. **Find out more by visiting the [phylotaR website](https://ropensci.github.io/phylotaR/).**
 
 ## Install
 
-~~From CRAN~~:
+From CRAN:
 
 ```r
 install.packages('phylotaR')
