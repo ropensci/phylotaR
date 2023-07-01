@@ -77,7 +77,7 @@ reference:
   contents:
     - ends_with("-class")
 - title: Taxise (private)
-  desc: Internal functions for running the taxise stage, use `phylotaR:::` to access.
+  desc: Internal functions for running the taxise stageuse `phylotaR:::` to access.
   contents:
     - rank_get
     - descendants_get
@@ -90,7 +90,7 @@ reference:
     - taxdict_gen
     - taxtree_gen
 - title: Download (private)
-  desc: Internal functions for running the download stage, use `phylotaR:::` to access.
+  desc: Internal functions for running the download stageuse `phylotaR:::` to access.
   contents:
     - searchterm_gen
     - seq_download
@@ -103,7 +103,7 @@ reference:
     - sids_get
     - outfmt_get
 - title: Cluster (private)
-  desc: Internal functions for running the cluster stage, use `phylotaR:::` to access.
+  desc: Internal functions for running the cluster stageuse `phylotaR:::` to access.
   contents:
     - blast_clstr
     - blast_filter
@@ -119,15 +119,105 @@ reference:
     - clstrrec_gen
     - clstrs_calc
 - title: Cluster2 (private)
-  desc: Internal functions for running the cluster2 stage, use `phylotaR:::` to access.
+  desc: Internal functions for running the cluster2 stageuse `phylotaR:::` to access.
   contents:
     - seeds_blast
     - clstr2_calc
     - clstrs_join
     - clstrs_merge
     - clstrs_renumber
+- title: treeman orgin or example datasets
+  desc: Docs from including treeman
+  contents:
+    - TreeMan-to-phylo
+    - TreeMen-to-multiPhylo
+    - addClade
+    - addNdmtrx
+    - addTip
+    - birds
+    - blncdTree
+    - cTrees
+    - calcDstBLD
+    - calcDstMtrx
+    - calcDstRF
+    - calcDstTrp
+    - calcFrPrp
+    - calcNdBlnc
+    - calcNdsBlnc
+    - calcOvrlp
+    - calcPhyDv
+    - calcPrtFrPrp
+    - checkNdlst
+    - checkTreeMen
+    - fastCheckTreeMan
+    - getAge
+    - getBiprts
+    - getCnnctdNds
+    - getDcsd
+    - getLvng
+    - getNdAge
+    - getNdKids
+    - getNdLng
+    - getNdPD
+    - getNdPrdst
+    - getNdPrids
+    - getNdPtids
+    - getNdSlt
+    - getNdSstr
+    - getNdsAge
+    - getNdsFrmTxnyms
+    - getNdsKids
+    - getNdsLng
+    - getNdsPD
+    - getNdsPrdst
+    - getNdsPrids
+    - getNdsPtids
+    - getNdsSlt
+    - getNdsSstr
+    - getOtgrp
+    - getPath
+    - getPrnt
+    - getSpnAge
+    - getSpnsAge
+    - getSubtree
+    - getUnqNds
+    - isUltrmtrc
+    - list-to-TreeMen
+    - loadTreeMan
+    - mammals
+    - multiPhylo-to-TreeMen
+    - phylo-to-TreeMan
+    - pinTips
+    - plants
+    - pstMnp
+    - randTree
+    - readTree
+    - readTrmn
+    - rmClade
+    - rmNdmtrx
+    - rmNodes
+    - rmOtherSlt
+    - rmTips
+    - saveTreeMan
+    - searchTxnyms
+    - setAge
+    - setNdID
+    - setNdOther
+    - setNdSpn
+    - setNdsID
+    - setNdsOther
+    - setNdsSpn
+    - setPD
+    - setTxnyms
+    - taxaResolve
+    - twoer
+    - ultrTree
+    - unblncdTree
+    - updateSlts
+    - writeTree
+    - writeTrmn
 - title: Misc (private)
-  desc: Miscellaneous internal functions, use `phylotaR:::` to access.
+  desc: Miscellaneous internal functionsuse `phylotaR:::` to access.
   contents:
     - blast_setup
     - download_obj_check
