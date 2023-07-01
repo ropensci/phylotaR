@@ -5,15 +5,8 @@ R implementation of the PhyLoTa sequence cluster pipeline. For more information 
 
 ## Install
 
-From CRAN:
-
 ```r
-install.packages('phylotaR')
-```
-
-Or, download the development package from GitHub:
-
-```r
+install.packages("remotes")
 remotes::install_github('ropensci/phylotaR')
 ```
 
