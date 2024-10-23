@@ -1,8 +1,12 @@
 # Test example from issue https://github.com/ropensci/phylotaR/issues/48
-ncbi_dr = "/workspaces/blast/bin/"
 devtools::load_all()
-wd = "/workspaces/phylotaR-test"
+
+# ncbi_dr = "/workspaces/blast/bin/"
+# wd = "/workspaces/phylotaR-test"
 #unlink(wd)
+ncbi_dr = "/home/wsx/miniconda3/bin/"
+wd = "~/Test/phylotaR-test"
+dir.create(wd)
 
 # library(phylotaR)
 # wd <- '/media/...
