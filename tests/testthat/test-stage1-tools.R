@@ -16,9 +16,10 @@ test_that("tax_download() works", {
     X = XML::xmlToList(example_res), FUN = "[[",
     FUN.VALUE = character(1), "TaxId"
   ))
-  res <- with_mock(
-    `phylotaR:::search_and_cache` = function(...) example_res,
-    phylotaR:::tax_download(ids = ids, ps = ps)
+  res <- with_mocked_bindings(
+    phylotaR:::tax_download(ids = ids, ps = ps),
+    search_and_cache = function(...) example_res,
+    .package = "phylotaR"
   )
   res <- vapply(
     X = res, FUN = function(x) inherits(x, "TaxRec"),

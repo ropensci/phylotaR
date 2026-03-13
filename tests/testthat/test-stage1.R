@@ -11,17 +11,20 @@ ps <- parameters(wd = wd)
 context("Testing 'test-stage1'")
 phylotaR:::cleanup(wd)
 test_that("taxise_run() works", {
-  with_mock(
-    `phylotaR::outfmt_get` = function(...) "",
-    `phylotaR:::blast_setup` = function(...) {
+  with_mocked_bindings(
+    {
+      phylotaR::setup(wd = wd, txid = 9606)
+      taxise_run(wd = wd)
+    },
+    outfmt_get = function(...) "",
+    blast_setup = function(...) {
       list("mkblstdb" = ".", "blstn" = ".")
     },
-    `phylotaR:::txids_get` = function(...) NULL,
-    `phylotaR:::batcher` = function(...) NULL,
-    `phylotaR:::taxdict_gen` = function(...) NULL,
-    `phylotaR:::obj_save` = function(...) NULL,
-    phylotaR::setup(wd = wd, txid = 9606),
-    taxise_run(wd = wd)
+    txids_get = function(...) NULL,
+    batcher = function(...) NULL,
+    taxdict_gen = function(...) NULL,
+    obj_save = function(...) NULL,
+    .package = "phylotaR"
   )
   lglns <- readLines(file.path(wd, "log.txt"))
   expect_true(grepl("Completed stage", lglns[length(lglns) - 1]))
@@ -34,9 +37,10 @@ test_that("txids_get() works", {
     res
   }
   phylotaR:::cache_setup(ps)
-  res <- with_mock(
-    `rentrez::entrez_search` = mock_search,
-    phylotaR:::txids_get(ps = ps, retmax = 150)
+  res <- with_mocked_bindings(
+    phylotaR:::txids_get(ps = ps, retmax = 150),
+    entrez_search = mock_search,
+    .package = "rentrez"
   )
   expect_true(length(res) == 100)
   phylotaR:::cleanup(wd)

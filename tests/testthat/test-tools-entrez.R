@@ -34,29 +34,32 @@ test_that("searchterm_gen() works", {
 })
 test_that("seqs_count() works", {
   phylotaR:::cache_setup(ps = ps)
-  res <- with_mock(
-    `phylotaR:::safely_connect` = function(func, args, fnm, ps) {
+  res <- with_mocked_bindings(
+    phylotaR:::sqs_count(txid = "9606", direct = FALSE, ps = ps),
+    safely_connect = function(func, args, fnm, ps) {
       list("count" = args)
     },
-    phylotaR:::sqs_count(txid = "9606", direct = FALSE, ps = ps)
+    .package = "phylotaR"
   )
   expect_true(grepl(":exp", res[["term"]]))
-  res <- with_mock(
-    `phylotaR:::safely_connect` = function(func, args, fnm, ps) {
+  res <- with_mocked_bindings(
+    phylotaR:::sqs_count(txid = "9606", direct = TRUE, ps = ps),
+    safely_connect = function(func, args, fnm, ps) {
       list("count" = args)
     },
-    phylotaR:::sqs_count(txid = "9606", direct = TRUE, ps = ps)
+    .package = "phylotaR"
   )
   expect_true(grepl(":noexp", res[["term"]]))
 })
 phylotaR:::cleanup(wd)
 test_that("txnds_count() works", {
   phylotaR:::cache_setup(ps = ps)
-  res <- with_mock(
-    `phylotaR:::safely_connect` = function(func, args, fnm, ps) {
+  res <- with_mocked_bindings(
+    phylotaR:::txnds_count(txid = "9606", ps = ps),
+    safely_connect = function(func, args, fnm, ps) {
       list("count" = args)
     },
-    phylotaR:::txnds_count(txid = "9606", ps = ps)
+    .package = "phylotaR"
   )
   expect_true(res[["term"]] == "txid9606[Subtree]")
 })
@@ -65,22 +68,24 @@ test_that("sids_get() works", {
   phylotaR:::cleanup(wd)
   phylotaR:::cache_setup(ps = ps)
   n <<- 100
-  res <- with_mock(
-    `rentrez::entrez_search` = esearch_mock,
-    `rentrez::entrez_fetch` = efetch_mock,
-    phylotaR:::sids_get(txid = "9606", direct = FALSE, ps = ps)
+  res <- with_mocked_bindings(
+    phylotaR:::sids_get(txid = "9606", direct = FALSE, ps = ps),
+    entrez_search = esearch_mock,
+    entrez_fetch = efetch_mock,
+    .package = "rentrez"
   )
   expect_true(length(res) == n)
   phylotaR:::cleanup(wd)
   phylotaR:::cache_setup(ps = ps)
   n <<- 100
-  res <- with_mock(
-    `rentrez::entrez_search` = esearch_mock,
-    `rentrez::entrez_fetch` = efetch_mock,
+  res <- with_mocked_bindings(
     phylotaR:::sids_get(
       txid = "9606", direct = FALSE, ps = ps, hrdmx = 20,
       retmax = 10
-    )
+    ),
+    entrez_search = esearch_mock,
+    entrez_fetch = efetch_mock,
+    .package = "rentrez"
   )
   expect_true(length(res) != n)
 })

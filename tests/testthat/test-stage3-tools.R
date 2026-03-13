@@ -21,13 +21,14 @@ phylotaR:::cleanup(wd)
 context("Testing 'stage3-tools'")
 test_that("blast_sqs() works", {
   phylotaR:::cache_setup(ps)
-  res <- with_mock(
-    `phylotaR:::blastn_run` = function(...) blast_res,
-    `phylotaR:::blastdb_gen` = function(...) NULL,
+  res <- with_mocked_bindings(
     phylotaR:::blast_sqs(
       txid = "1", typ = "direct", sqs = sqs, ps = ps,
       lvl = 1
-    )
+    ),
+    blastn_run = function(...) blast_res,
+    blastdb_gen = function(...) NULL,
+    .package = "phylotaR"
   )
   expect_true("data.frame" %in% is(res))
 })
@@ -35,12 +36,13 @@ phylotaR:::cleanup(wd)
 test_that("clstr_sqs() works", {
   phylotaR:::cache_setup(ps)
   ps[["v"]] <- TRUE
-  res <- with_mock(
-    `phylotaR:::blast_sqs` = function(...) blast_res,
+  res <- with_mocked_bindings(
     phylotaR:::clstr_sqs(
       txid = "1", sqs = blast_res_sqs, ps = ps, lvl = 0,
       typ = "subtree"
-    )
+    ),
+    blast_sqs = function(...) blast_res,
+    .package = "phylotaR"
   )
   expect_true(inherits(res, "ClstrArc"))
 })
@@ -53,34 +55,37 @@ test_that("clstr_all() works", {
     }
     return(1)
   }
-  res <- with_mock(
-    `phylotaR::clstr_subtree` = function(...) exclstrarc,
-    `phylotaR::descendants_get` = mock_dscdnts_get,
-    phylotaR:::clstr_all(txid = 0, txdct = NULL, sqs = sqs, ps = ps, lvl = 0)
+  res <- with_mocked_bindings(
+    phylotaR:::clstr_all(txid = 0, txdct = NULL, sqs = sqs, ps = ps, lvl = 0),
+    clstr_subtree = function(...) exclstrarc,
+    descendants_get = mock_dscdnts_get,
+    .package = "phylotaR"
   )
   expect_true(inherits(res, "ClstrArc"))
 })
 test_that("clstr_subtree() works", {
-  res <- with_mock(
-    `phylotaR:::clstr_sqs` = function(...) exclstrarc,
-    `phylotaR:::clstr_direct` = function(...) exclstrarc,
-    `phylotaR:::rank_get` = function(...) "species",
-    `phylotaR:::descendants_get` = function(...) "",
+  res <- with_mocked_bindings(
     phylotaR:::clstr_subtree(
       txid = 9479, sqs = sqs, dds = 1, ps = ps,
       lvl = 0, txdct = NULL
-    )
+    ),
+    clstr_sqs = function(...) exclstrarc,
+    clstr_direct = function(...) exclstrarc,
+    rank_get = function(...) "species",
+    descendants_get = function(...) "",
+    .package = "phylotaR"
   )
   expect_true(inherits(res, "ClstrArc"))
 })
 test_that("clstr_direct() works", {
-  res <- with_mock(
-    `phylotaR:::clstr_sqs` = function(...) exclstrarc,
-    `phylotaR:::rank_get` = function(...) "species",
+  res <- with_mocked_bindings(
     phylotaR:::clstr_direct(
       txid = 9479, sqs = sqs, ps = ps, lvl = 0,
       txdct = NULL
-    )
+    ),
+    clstr_sqs = function(...) exclstrarc,
+    rank_get = function(...) "species",
+    .package = "phylotaR"
   )
   expect_true(inherits(res, "ClstrArc"))
 })
