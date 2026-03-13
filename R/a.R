@@ -3206,6 +3206,7 @@ searchTxnyms <- function(tree, cache = FALSE, parent = NULL, clean = TRUE,
 #' \code{\link{searchTxnyms}}, \code{\link{setTxnyms}}, \code{\link{getNdsFrmTxnyms}}
 #' @export
 #' @examples
+#' \donttest{
 #' my_lovely_names <- c(
 #'   "Gallus gallus", "Pongo pingu", "Homo sapiens",
 #'   "Arabidopsis thaliana", "Macaca thibetana", "Bacillus subtilis"
@@ -3215,6 +3216,7 @@ searchTxnyms <- function(tree, cache = FALSE, parent = NULL, clean = TRUE,
 #' # let's look at the lineages
 #' lineages <- strsplit(as.vector(res$lineage), "\\|")
 #' print(lineages[[6]]) # the bacteria has far fewer taxonomic levels
+#' }
 # NOTE. Originally built for MTT
 taxaResolve <- function(nms, batch = 100, datasource = 4, genus = TRUE,
                         cache = FALSE, parent = NULL) {
