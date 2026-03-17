@@ -38,7 +38,7 @@ calcNdBlnc <- function(tree, id) {
 #' @param tree \code{TreeMan} object
 #' @param ids node ids
 #' @param parallel logical, make parallel?
-#' @param progress name of the progress bar to use, see \code{\link{create_progress_bar}}
+#' @param progress name of the progress bar to use, see \code{\link[plyr]{create_progress_bar}}
 #' @seealso
 #' \code{\link{calcNdBlnc}},
 #' \url{https://github.com/DomBennett/treeman/wiki/calc-methods}
@@ -66,7 +66,7 @@ calcNdsBlnc <- function(tree, ids, parallel = FALSE, progress = "none") {
 #' @param tree_2 \code{TreeMan} object
 #' @param nrmlsd Boolean, should returned value be between 0 and 1? Default, FALSE.
 #' @param parallel logical, make parallel?
-#' @param progress name of the progress bar to use, see \code{\link{create_progress_bar}}
+#' @param progress name of the progress bar to use, see \code{\link[plyr]{create_progress_bar}}
 #' @references
 #' Critchlow DE, Pearl DK, Qian C. (1996) The Triples Distance for rooted bifurcating phylogenetic trees.
 #' Systematic Biology, 45, 323-34.
@@ -113,7 +113,7 @@ calcDstTrp <- function(tree_1, tree_2, nrmlsd = FALSE,
 #' @param ids_2 tip ids of community 2
 #' @param nrmlsd Boolean, should returned value be between 0 and 1? Default, FALSE.
 #' @param parallel logical, make parallel?
-#' @param progress name of the progress bar to use, see \code{\link{create_progress_bar}}
+#' @param progress name of the progress bar to use, see \code{\link[plyr]{create_progress_bar}}
 #' @references
 #' Lozupone, C., & Knight, R. (2005). UniFrac: a new phylogenetic method for comparing
 #' microbial communities. Applied and Environmental Microbiology, 71(12), 8228-35.
@@ -170,7 +170,7 @@ calcOvrlp <- function(tree, ids_1, ids_2, nrmlsd = FALSE,
 #' @param tree_2 \code{TreeMan} object
 #' @param nrmlsd Boolean, should returned value be between 0 and 1? Default, FALSE.
 #' @param parallel logical, make parallel?
-#' @param progress name of the progress bar to use, see \code{\link{create_progress_bar}}
+#' @param progress name of the progress bar to use, see \code{\link[plyr]{create_progress_bar}}
 #' @references
 #' Kuhner, M. K. and Felsenstein, J. (1994) Simulation comparison of phylogeny
 #' algorithms under equal and unequal evolutionary rates. Molecular Biology and
@@ -264,7 +264,7 @@ calcDstRF <- function(tree_1, tree_2, nrmlsd = FALSE) {
 #' @param tree \code{TreeMan} object
 #' @param tids tip ids
 #' @param parallel logical, make parallel?
-#' @param progress name of the progress bar to use, see \code{\link{create_progress_bar}}
+#' @param progress name of the progress bar to use, see \code{\link[plyr]{create_progress_bar}}
 #' @references
 #' Faith, D. (1992). Conservation evaluation and phylogenetic diversity.
 #'  Biological Conservation, 61, 1-10.
@@ -294,7 +294,7 @@ calcPhyDv <- function(tree, tids,
 #' each branch in the tree is evenly divided between all descendants. Parallelizable.
 #' @param tree \code{TreeMan} object
 #' @param tids tip IDs
-#' @param progress name of the progress bar to use, see \code{\link{create_progress_bar}}
+#' @param progress name of the progress bar to use, see \code{\link[plyr]{create_progress_bar}}
 #' @references
 #' Isaac, N.J.B., Turvey, S.T., Collen, B., Waterman, C. and Baillie, J.E.M. (2007).
 #'  Mammals on the EDGE: conservation priorities based on threat and phylogeny. PLoS ONE, 2, e296.
@@ -336,7 +336,7 @@ calcFrPrp <- function(tree, tids, progress = "none") {
 #' @param tree \code{TreeMan} object
 #' @param tids tip IDs
 #' @param ignr tips to ignore in calculation
-#' @param progress name of the progress bar to use, see \code{\link{create_progress_bar}}
+#' @param progress name of the progress bar to use, see \code{\link[plyr]{create_progress_bar}}
 #' @references
 #' Isaac, N.J.B., Turvey, S.T., Collen, B., Waterman, C. and Baillie, J.E.M. (2007).
 #'  Mammals on the EDGE: conservation priorities based on threat and phylogeny. PLoS ONE, 2, e296.
@@ -383,7 +383,7 @@ calcPrtFrPrp <- function(tree, tids, ignr = NULL, progress = "none") {
 #' @param tree \code{TreeMan} object
 #' @param ids IDs of nodes/tips
 #' @param parallel logical, make parallel?
-#' @param progress name of the progress bar to use, see \code{\link{create_progress_bar}}
+#' @param progress name of the progress bar to use, see \code{\link[plyr]{create_progress_bar}}
 #' @seealso
 #' \code{\link{calcDstBLD}}, \code{\link{calcDstRF}}, \code{\link{calcDstTrp}}
 #' \url{https://github.com/DomBennett/treeman/wiki/calc-methods}
@@ -974,7 +974,7 @@ getNdSstr <- function(tree, id) {
 #' @param tree \code{TreeMan} object
 #' @param ids vector of node ids
 #' @param parallel logical, make parallel?
-#' @param progress name of the progress bar to use, see \code{\link{create_progress_bar}}
+#' @param progress name of the progress bar to use, see \code{\link[plyr]{create_progress_bar}}
 #' @seealso
 #' \code{\link{getNdLng}}, \code{\link{getNdsFrmTxnyms}},
 #' \url{https://github.com/DomBennett/treeman/wiki/get-methods}
@@ -1003,7 +1003,7 @@ getNdsLng <- function(tree, ids, parallel = FALSE, progress = "none") {
 #' @param tree \code{TreeMan} object
 #' @param ids nd ids
 #' @param parallel logical, make parallel?
-#' @param progress name of the progress bar to use, see \code{\link{create_progress_bar}}
+#' @param progress name of the progress bar to use, see \code{\link[plyr]{create_progress_bar}}
 #' @seealso
 #' \code{\link{getNdSstr}},
 #' \url{https://github.com/DomBennett/treeman/wiki/get-methods}
@@ -1028,7 +1028,7 @@ getNdsSstr <- function(tree, ids, parallel = FALSE, progress = "none") {
 #' @param tree \code{TreeMan} object
 #' @param ids vector of node ids
 #' @param parallel logical, make parallel?
-#' @param progress name of the progress bar to use, see \code{\link{create_progress_bar}}
+#' @param progress name of the progress bar to use, see \code{\link[plyr]{create_progress_bar}}
 #' @seealso
 #' \code{\link{getNdPD}},
 #' \url{https://github.com/DomBennett/treeman/wiki/get-methods}
@@ -1061,7 +1061,7 @@ getNdsPD <- function(tree, ids, parallel = FALSE, progress = "none") {
 #' @param tree \code{TreeMan} object
 #' @param ids vector of node ids
 #' @param parallel logical, make parallel?
-#' @param progress name of the progress bar to use, see \code{\link{create_progress_bar}}
+#' @param progress name of the progress bar to use, see \code{\link[plyr]{create_progress_bar}}
 #' @seealso
 #' \code{\link{getNdPrdst}},
 #' \url{https://github.com/DomBennett/treeman/wiki/get-methods}
@@ -1096,7 +1096,7 @@ getNdsPrdst <- function(tree, ids, parallel = FALSE, progress = "none") {
 #' @param slt_nm slot name
 #' @param ids vector of node ids
 #' @param parallel logical, make parallel?
-#' @param progress name of the progress bar to use, see \code{\link{create_progress_bar}}
+#' @param progress name of the progress bar to use, see \code{\link[plyr]{create_progress_bar}}
 #' @seealso
 #' \code{\link{getNdSlt}},
 #' \url{https://github.com/DomBennett/treeman/wiki/get-methods}
@@ -1129,7 +1129,7 @@ getNdsSlt <- function(tree, slt_nm, ids, parallel = FALSE, progress = "none") {
 #' @param tree \code{TreeMan} object
 #' @param ids vector of node ids
 #' @param parallel logical, make parallel?
-#' @param progress name of the progress bar to use, see \code{\link{create_progress_bar}}
+#' @param progress name of the progress bar to use, see \code{\link[plyr]{create_progress_bar}}
 #' @seealso
 #' \code{\link{getNdKids}},
 #' \url{https://github.com/DomBennett/treeman/wiki/get-methods}
@@ -1163,7 +1163,7 @@ getNdsKids <- function(tree, ids, parallel = FALSE,
 #' @param ids vector of node ids
 #' @param tree_age numeric value of known age of tree
 #' @param parallel logical, make parallel?
-#' @param progress name of the progress bar to use, see \code{\link{create_progress_bar}}
+#' @param progress name of the progress bar to use, see \code{\link[plyr]{create_progress_bar}}
 #' @seealso
 #' \code{\link{getNdAge}},
 #' \code{\link{getSpnAge}},
@@ -1205,7 +1205,7 @@ getNdsAge <- function(tree, ids, tree_age,
 #' @param ids vector of node ids
 #' @param tree_age numeric value of known age of tree
 #' @param parallel logical, make parallel?
-#' @param progress name of the progress bar to use, see \code{\link{create_progress_bar}}
+#' @param progress name of the progress bar to use, see \code{\link[plyr]{create_progress_bar}}
 #' @seealso
 #' \code{\link{getNdAge}},
 #' \code{\link{getNdsAge}},
@@ -1250,7 +1250,7 @@ getSpnsAge <- function(tree, ids, tree_age,
 #' @param ids vector of node ids
 #' @param ordrd logical, ensure returned prids are ordered ID to root
 #' @param parallel logical, make parallel?
-#' @param progress name of the progress bar to use, see \code{\link{create_progress_bar}}
+#' @param progress name of the progress bar to use, see \code{\link[plyr]{create_progress_bar}}
 #' @seealso
 #' \code{\link{getNdPrids}},
 #' \code{\link{getNdPtids}},
@@ -1285,7 +1285,7 @@ getNdsPrids <- function(tree, ids, ordrd = FALSE,
 #' @param tree \code{TreeMan} object
 #' @param ids vector of node ids
 #' @param parallel logical, make parallel?
-#' @param progress name of the progress bar to use, see \code{\link{create_progress_bar}}
+#' @param progress name of the progress bar to use, see \code{\link[plyr]{create_progress_bar}}
 #' @seealso
 #' \code{\link{getNdPtids}},
 #' \code{\link{getNdPrids}},
@@ -1721,7 +1721,7 @@ ultrTree <- function(tree) {
 #' corrupted tree.
 #' @param tree \code{TreeMan} object
 #' @param nids internal node IDs
-#' @param progress name of the progress bar to use, see \code{\link{create_progress_bar}}
+#' @param progress name of the progress bar to use, see \code{\link[plyr]{create_progress_bar}}
 #' @seealso
 #' \code{\link{addTip}}, \code{\link{rmTips}},
 #'  \url{https://github.com/DomBennett/treeman/wiki/manip-methods}
@@ -1775,7 +1775,7 @@ rmNodes <- function(tree, nids, progress = "none") {
 #' @param tree \code{TreeMan} object
 #' @param tids tip IDs
 #' @param drp_intrnl Boolean, drop internal branches, default FALSE
-#' @param progress name of the progress bar to use, see \code{\link{create_progress_bar}}
+#' @param progress name of the progress bar to use, see \code{\link[plyr]{create_progress_bar}}
 #' @seealso
 #' \code{\link{addTip}}, \code{\link{rmNodes}},
 #'  \url{https://github.com/DomBennett/treeman/wiki/manip-methods}
@@ -2604,7 +2604,7 @@ setMethod(
 #' @param append T/F append tree to already existing file
 #' @param ndLabels node label function
 #' @param parallel logical, make parallel?
-#' @param progress name of the progress bar to use, see \code{\link{create_progress_bar}}
+#' @param progress name of the progress bar to use, see \code{\link[plyr]{create_progress_bar}}
 #' @seealso
 #' \url{https://en.wikipedia.org/wiki/Newick_format},
 #' \code{\link{readTree}}, \code{\link{randTree}},
@@ -2705,7 +2705,7 @@ writeTree <- function(tree, file, append = FALSE, ndLabels = function(nd) {
 #' @param spcl_slt_nm name of special slot for internal node labels, default 'Unknown'.
 #' @param wndmtrx T/F add node matrix? Default FALSE.
 #' @param parallel logical, make parallel?
-#' @param progress name of the progress bar to use, see \code{\link{create_progress_bar}}
+#' @param progress name of the progress bar to use, see \code{\link[plyr]{create_progress_bar}}
 #' @seealso
 #' \url{https://en.wikipedia.org/wiki/Newick_format},
 #' \code{\link{addNdmtrx}}, \code{\link{writeTree}},
@@ -2924,7 +2924,7 @@ writeTrmn <- function(tree, file) {
 #' @param file file path
 #' @param wndmtrx T/F add node matrix? Default FALSE.
 #' @param parallel logical, make parallel?
-#' @param progress name of the progress bar to use, see \code{\link{create_progress_bar}}
+#' @param progress name of the progress bar to use, see \code{\link[plyr]{create_progress_bar}}
 #' @seealso
 #' \code{\link{writeTrmn}},
 #' \code{\link{readTree}},\code{\link{writeTree}},
@@ -3118,6 +3118,7 @@ loadTreeMan <- function(file) {
 #' \code{\link{taxaResolve}}, \code{\link{setTxnyms}}, \code{\link{getNdsFrmTxnyms}}
 #' @export
 #' @examples
+#' \donttest{
 #' tree <- randTree(8)
 #' new_tids <- c(
 #'   "Gallus_gallus", "Aileuropoda_melanoleucha", "Ailurus_fulgens",
@@ -3126,6 +3127,7 @@ loadTreeMan <- function(file) {
 #' tree <- setNdsID(tree, tree["tips"], new_tids)
 #' nd_labels <- searchTxnyms(tree)
 #' print(nd_labels)
+#' }
 # TODO: add compatibility with other GNR datasources
 # TODO: catalogue of life, unlike NCBI, does not keep lineages and rank lengths constant between names
 searchTxnyms <- function(tree, cache = FALSE, parent = NULL, clean = TRUE,
@@ -3500,7 +3502,7 @@ setNdSpn <- function(tree, id, val) {
 #' @param ids ids of nodes whose preceding edges are to be changed
 #' @param vals new spans
 #' @param parallel logical, make parallel?
-#' @param progress name of the progress bar to use, see \code{\link{create_progress_bar}}
+#' @param progress name of the progress bar to use, see \code{\link[plyr]{create_progress_bar}}
 #' @seealso
 #' \code{\link{setNdSpn}}
 #' \url{https://github.com/DomBennett/treeman/wiki/set-methods}
@@ -3564,7 +3566,7 @@ setNdID <- function(tree, id, val) {
 #' @param ids ids to be changed
 #' @param vals new ids
 #' @param parallel logical, make parallel?
-#' @param progress name of the progress bar to use, see \code{\link{create_progress_bar}}
+#' @param progress name of the progress bar to use, see \code{\link[plyr]{create_progress_bar}}
 #' @seealso
 #' \code{\link{setNdID}}
 #' \url{https://github.com/DomBennett/treeman/wiki/set-methods}
@@ -3658,7 +3660,7 @@ setNdOther <- function(tree, id, val, slt_nm) {
 #' @param vals data for slot
 #' @param slt_nm slot name
 #' @param parallel logical, make parallel?
-#' @param progress name of the progress bar to use, see \code{\link{create_progress_bar}}
+#' @param progress name of the progress bar to use, see \code{\link[plyr]{create_progress_bar}}
 #' @seealso
 #' \code{\link{setNdOther}}
 #' \url{https://github.com/DomBennett/treeman/wiki/set-methods}

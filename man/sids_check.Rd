@@ -17,34 +17,6 @@ T/F
 \description{
 Check if sids are already downloaded for a txid.
 }
-\details{
-#' @name sqs_load
-#' @title Load sequences from cache
-#' @description Load sequences downloaded by \code{dwnld} function.
-#' @param wd Working directory
-#' @param txid Taxonomic ID, numeric
-#' @family run-private
-#' @return SeqArc
-sqs_load <- function(wd, txid) {
-  d <- file.path(wd, 'cache')
-  if (!file.exists(d)) {
-    stop('Cache does not exist.')
-  }
-  d <- file.path(d, 'sqs')
-  if (!file.exists(d)) {
-    stop('`sqs` not in cache. Have you run the download stage?')
-  }
-  fl <- file.path(d, paste0(txid, '.RData'))
-  if (!file.exists(fl)) {
-    stop(paste0('[', txid, '] not in `sqs` of cache.'))
-  }
-  sqs <- try(readRDS(file = fl), silent = TRUE)
-  if (inherits(sqs, 'try-error')) {
-    file.remove(fl)
-  }
-  sqs
-}
-}
 \seealso{
 Other run-private: 
 \code{\link{batcher}()},

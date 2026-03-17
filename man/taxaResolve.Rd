@@ -38,6 +38,7 @@ list and IDs. Default is 4 for NCBI.
 Will raise a warning if connection fails and will return NULL.
 }
 \examples{
+\donttest{
 my_lovely_names <- c(
   "Gallus gallus", "Pongo pingu", "Homo sapiens",
   "Arabidopsis thaliana", "Macaca thibetana", "Bacillus subtilis"
@@ -47,6 +48,7 @@ length(colnames(res)) # 10 different metadata for returned names including origi
 # let's look at the lineages
 lineages <- strsplit(as.vector(res$lineage), "\\\\|")
 print(lineages[[6]]) # the bacteria has far fewer taxonomic levels
+}
 }
 \seealso{
 \code{\link{searchTxnyms}}, \code{\link{setTxnyms}}, \code{\link{getNdsFrmTxnyms}}

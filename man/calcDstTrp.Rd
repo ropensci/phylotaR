@@ -15,7 +15,7 @@ calcDstTrp(tree_1, tree_2, nrmlsd = FALSE, parallel = FALSE, progress = "none")
 
 \item{parallel}{logical, make parallel?}
 
-\item{progress}{name of the progress bar to use, see \code{\link{create_progress_bar}}}
+\item{progress}{name of the progress bar to use, see \code{\link[plyr]{create_progress_bar}}}
 }
 \description{
 Returns the triplet distance between two trees.

@@ -11,7 +11,7 @@ rmNodes(tree, nids, progress = "none")
 
 \item{nids}{internal node IDs}
 
-\item{progress}{name of the progress bar to use, see \code{\link{create_progress_bar}}}
+\item{progress}{name of the progress bar to use, see \code{\link[plyr]{create_progress_bar}}}
 }
 \description{
 Returns a tree with a node ID(s) removed
