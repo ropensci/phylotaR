@@ -24,7 +24,7 @@ calcOvrlp(
 
 \item{parallel}{logical, make parallel?}
 
-\item{progress}{name of the progress bar to use, see \code{\link{create_progress_bar}}}
+\item{progress}{name of the progress bar to use, see \code{\link[plyr]{create_progress_bar}}}
 }
 \description{
 Returns the sum of branch lengths represented by ids_1 and ids_2 for a tree.

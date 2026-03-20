@@ -11,29 +11,33 @@ ps[["wd"]] <- phylotaR:::datadir_get("")
 context("Testing 'blast-tools'")
 test_that("blastdb_gen() works", {
   sqs <- phylotaR:::testsqs_gen(n = 100)
-  res <- with_mock(
-    `phylotaR:::cmdln` = function(...) 0,
-    phylotaR:::blastdb_gen(sqs = sqs, dbfl = "testdb", ps = ps)
+  res <- with_mocked_bindings(
+    phylotaR:::blastdb_gen(sqs = sqs, dbfl = "testdb", ps = ps),
+    cmdln = function(...) 0,
+    .package = "phylotaR"
   )
   expect_null(res)
-  res <- with_mock(
-    `phylotaR:::cmdln` = function(...) 1,
-    expect_error(phylotaR:::blastdb_gen(sqs = sqs, dbfl = "testdb", ps = ps))
+  res <- with_mocked_bindings(
+    expect_error(phylotaR:::blastdb_gen(sqs = sqs, dbfl = "testdb", ps = ps)),
+    cmdln = function(...) 1,
+    .package = "phylotaR"
   )
 })
 test_that("blastn_run() works", {
-  res <- with_mock(
-    `phylotaR:::cmdln` = function(...) 0,
-    phylotaR:::blastn_run(dbfl = "testdb", outfl = "testblstn", ps = ps)
+  res <- with_mocked_bindings(
+    phylotaR:::blastn_run(dbfl = "testdb", outfl = "testblstn", ps = ps),
+    cmdln = function(...) 0,
+    .package = "phylotaR"
   )
   nms <- colnames(res)
   expect_true(all(nms %in% names(blast_res)))
 })
 test_that("outfmt_get() works", {
-  res <- with_mock(
-    `phylotaR:::blastdb_gen` = function(...) 0,
-    `phylotaR:::cmdln` = function(...) 0,
-    phylotaR:::outfmt_get(ps = ps)
+  res <- with_mocked_bindings(
+    phylotaR:::outfmt_get(ps = ps),
+    blastdb_gen = function(...) 0,
+    cmdln = function(...) 0,
+    .package = "phylotaR"
   )
   expect_true(inherits(res, "character"))
 })

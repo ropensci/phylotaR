@@ -33,9 +33,10 @@ test_that("clstrs_merge() works", {
     blast_res = blast_res,
     all_clstrs = exclstrarc@clstrs
   )
-  res <- with_mock(
-    `phylotaR:::parent_get` = function(...) "1",
-    phylotaR:::clstrs_merge(jnd_clstrs = clstrs_jnd, txdct = NULL)
+  res <- with_mocked_bindings(
+    phylotaR:::clstrs_merge(jnd_clstrs = clstrs_jnd, txdct = NULL),
+    parent_get = function(...) "1",
+    .package = "phylotaR"
   )
   expect_true(inherits(res[[1]], "ClstrRec"))
 })
@@ -46,10 +47,11 @@ test_that("clstrs_renumber() works", {
   expect_true(topclstr@nsqs > bttmclstr@nsqs)
 })
 test_that("seeds_blast() works", {
-  res <- with_mock(
-    `phylotaR:::blastn_run` = function(...) blast_res,
-    `phylotaR:::blastdb_gen` = function(...) NULL,
-    phylotaR:::seeds_blast(sqs = sqs, ps = ps)
+  res <- with_mocked_bindings(
+    phylotaR:::seeds_blast(sqs = sqs, ps = ps),
+    blastn_run = function(...) blast_res,
+    blastdb_gen = function(...) NULL,
+    .package = "phylotaR"
   )
   expect_true(inherits(res, "data.frame"))
 })

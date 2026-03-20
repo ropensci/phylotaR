@@ -13,11 +13,12 @@ txdct <- readRDS(phylotaR:::datadir_get("txdct.rda"))
 context("Testing 'stage2-tools'")
 phylotaR:::cleanup(wd)
 test_that("hierarchic_download() works", {
-  res <- with_mock(
-    `phylotaR:::descendants_get` = function(...) sample(c(1, 10), 1),
-    `phylotaR:::sqs_count` = function(...) sample(c(1, 100000000000), 1),
-    `phylotaR:::seqrec_get` = function(...) 1,
-    phylotaR:::hierarchic_download(txid = 1, txdct = NULL, ps = ps)
+  res <- with_mocked_bindings(
+    phylotaR:::hierarchic_download(txid = 1, txdct = NULL, ps = ps),
+    descendants_get = function(...) sample(c(1, 10), 1),
+    sqs_count = function(...) sample(c(1, 100000000000), 1),
+    seqrec_get = function(...) 1,
+    .package = "phylotaR"
   )
   expect_true(1 %in% res)
 })
@@ -31,12 +32,16 @@ test_that("seqrec_get() works", {
   phylotaR:::cache_setup(ps)
   ex_sid_list <- list("none" = NULL, "model" = 1:101, "normal" = 1:50)
   ex_sids <- ex_sid_list[[sample(seq_along(ex_sid_list), 1)]]
-  res <- with_mock(
-    `rentrez::entrez_fetch` = function(...) {
-      raw_recs[[sample(seq_along(raw_recs), 1)]]
-    },
-    `phylotaR:::sids_get` = function(...) ex_sids,
-    phylotaR:::seqrec_get(txid = 1, ps = ps, direct = FALSE, lvl = 1)
+  res <- with_mocked_bindings(
+    with_mocked_bindings(
+      phylotaR:::seqrec_get(txid = 1, ps = ps, direct = FALSE, lvl = 1),
+      entrez_fetch = function(...) {
+        raw_recs[[sample(seq_along(raw_recs), 1)]]
+      },
+      .package = "rentrez"
+    ),
+    sids_get = function(...) ex_sids,
+    .package = "phylotaR"
   )
   res <- vapply(X = res, FUN = function(x) inherits(x, "SeqRec"), logical(1))
   expect_true(all(res))

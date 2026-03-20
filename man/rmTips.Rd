@@ -13,7 +13,7 @@ rmTips(tree, tids, drp_intrnl = TRUE, progress = "none")
 
 \item{drp_intrnl}{Boolean, drop internal branches, default FALSE}
 
-\item{progress}{name of the progress bar to use, see \code{\link{create_progress_bar}}}
+\item{progress}{name of the progress bar to use, see \code{\link[plyr]{create_progress_bar}}}
 }
 \description{
 Returns a tree with a tip ID(s) removed

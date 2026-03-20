@@ -21,9 +21,10 @@ phylotaR:::cleanup(wd)
 context("Testing 'cluster^2 tools'")
 test_that("clusters2_run() works", {
   phylotaR:::cache_setup(ps)
-  with_mock(
-    `phylotaR:::clstr2_calc` = function(...) NULL,
-    phylotaR::clusters2_run(wd = ps[["wd"]])
+  with_mocked_bindings(
+    phylotaR::clusters2_run(wd = ps[["wd"]]),
+    clstr2_calc = function(...) NULL,
+    .package = "phylotaR"
   )
   lglns <- readLines(file.path(wd, "log.txt"))
   expect_true(grepl("Completed stage", lglns[length(lglns) - 1]))
@@ -32,13 +33,14 @@ phylotaR:::cleanup(wd)
 test_that("clstr2_calc() works", {
   phylotaR:::cache_setup(ps)
   # skip cluster^2
-  res <- with_mock(
-    `phylotaR:::seeds_blast` = function(...) NA,
-    `phylotaR:::clstrs_join` = function(...) NA,
-    `phylotaR:::clstrs_merge` = function(...) NA,
-    `phylotaR:::clstrs_renumber` = function(...) NA,
-    `phylotaR:::obj_save` = function(...) NULL,
-    phylotaR:::clstr2_calc(ps = ps)
+  res <- with_mocked_bindings(
+    phylotaR:::clstr2_calc(ps = ps),
+    seeds_blast = function(...) NA,
+    clstrs_join = function(...) NA,
+    clstrs_merge = function(...) NA,
+    clstrs_renumber = function(...) NA,
+    obj_save = function(...) NULL,
+    .package = "phylotaR"
   )
   expect_null(res)
   saveRDS(clstrs, file = file.path(wd, "cache", "clstrs", "id1.RData"))
@@ -46,13 +48,14 @@ test_that("clstr2_calc() works", {
   saveRDS(sqs, file = file.path(wd, "cache", "sqs", "id1.RData"))
   saveRDS(sqs, file = file.path(wd, "cache", "sqs", "id2.RData"))
   # don't skip cluster^2
-  res <- with_mock(
-    `phylotaR:::seeds_blast` = function(...) NA,
-    `phylotaR:::clstrs_join` = function(...) NA,
-    `phylotaR:::clstrs_merge` = function(...) clstrs@clstrs,
-    `phylotaR:::clstrs_renumber` = function(...) clstrs,
-    `phylotaR:::obj_load` = function(...) NULL,
-    phylotaR:::clstr2_calc(ps = ps)
+  res <- with_mocked_bindings(
+    phylotaR:::clstr2_calc(ps = ps),
+    seeds_blast = function(...) NA,
+    clstrs_join = function(...) NA,
+    clstrs_merge = function(...) clstrs@clstrs,
+    clstrs_renumber = function(...) clstrs,
+    obj_load = function(...) NULL,
+    .package = "phylotaR"
   )
   resfl <- file.path(ps[["wd"]], "cache", "clstrs_sqs.RData")
   expect_true(file.exists(resfl))

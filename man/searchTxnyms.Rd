@@ -31,6 +31,7 @@ all nodes without an identifed taxonym adopt the taxonym of their parent.
 Will raise a warning if connection fails and will return NULL.
 }
 \examples{
+\donttest{
 tree <- randTree(8)
 new_tids <- c(
   "Gallus_gallus", "Aileuropoda_melanoleucha", "Ailurus_fulgens",
@@ -38,7 +39,10 @@ new_tids <- c(
 )
 tree <- setNdsID(tree, tree["tips"], new_tids)
 nd_labels <- searchTxnyms(tree)
-print(nd_labels)
+if (!is.null(nd_labels)) {
+  print(nd_labels)
+}
+}
 }
 \seealso{
 \code{\link{taxaResolve}}, \code{\link{setTxnyms}}, \code{\link{getNdsFrmTxnyms}}

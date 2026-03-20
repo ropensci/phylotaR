@@ -13,7 +13,7 @@ calcPrtFrPrp(tree, tids, ignr = NULL, progress = "none")
 
 \item{ignr}{tips to ignore in calculation}
 
-\item{progress}{name of the progress bar to use, see \code{\link{create_progress_bar}}}
+\item{progress}{name of the progress bar to use, see \code{\link[plyr]{create_progress_bar}}}
 }
 \description{
 Returns the evolutationary distinctness of ids using the fair proportion metric.

@@ -86,17 +86,20 @@ test_that("get_tx_slot() works", {
 })
 phylotaR:::cleanup(wd)
 test_that("get_stage_times() works", {
-  with_mock(
-    `phylotaR::outfmt_get` = function(...) "",
-    `phylotaR:::blast_setup` = function(...) {
+  with_mocked_bindings(
+    {
+      phylotaR::setup(wd = wd, txid = 9606)
+      taxise_run(wd = wd)
+    },
+    outfmt_get = function(...) "",
+    blast_setup = function(...) {
       list("mkblstdb" = ".", "blstn" = ".")
     },
-    `phylotaR:::txids_get` = function(...) NULL,
-    `phylotaR:::batcher` = function(...) NULL,
-    `phylotaR:::taxdict_gen` = function(...) NULL,
-    `phylotaR:::obj_save` = function(...) NULL,
-    phylotaR::setup(wd = wd, txid = 9606),
-    taxise_run(wd = wd)
+    txids_get = function(...) NULL,
+    batcher = function(...) NULL,
+    taxdict_gen = function(...) NULL,
+    obj_save = function(...) NULL,
+    .package = "phylotaR"
   )
   timings <- get_stage_times(wd = wd)
   expect_true(inherits(timings, "numeric"))

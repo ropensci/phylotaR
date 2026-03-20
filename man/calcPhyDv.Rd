@@ -13,7 +13,7 @@ calcPhyDv(tree, tids, parallel = FALSE, progress = "none")
 
 \item{parallel}{logical, make parallel?}
 
-\item{progress}{name of the progress bar to use, see \code{\link{create_progress_bar}}}
+\item{progress}{name of the progress bar to use, see \code{\link[plyr]{create_progress_bar}}}
 }
 \description{
 Returns the phylogenetic diversity of a tree for the tips specified.
