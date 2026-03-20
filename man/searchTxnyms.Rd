@@ -39,7 +39,9 @@ new_tids <- c(
 )
 tree <- setNdsID(tree, tree["tips"], new_tids)
 nd_labels <- searchTxnyms(tree)
-print(nd_labels)
+if (!is.null(nd_labels)) {
+  print(nd_labels)
+}
 }
 }
 \seealso{

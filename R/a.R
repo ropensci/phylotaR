@@ -3126,7 +3126,9 @@ loadTreeMan <- function(file) {
 #' )
 #' tree <- setNdsID(tree, tree["tips"], new_tids)
 #' nd_labels <- searchTxnyms(tree)
-#' print(nd_labels)
+#' if (!is.null(nd_labels)) {
+#'   print(nd_labels)
+#' }
 #' }
 # TODO: add compatibility with other GNR datasources
 # TODO: catalogue of life, unlike NCBI, does not keep lineages and rank lengths constant between names
@@ -3214,10 +3216,12 @@ searchTxnyms <- function(tree, cache = FALSE, parent = NULL, clean = TRUE,
 #'   "Arabidopsis thaliana", "Macaca thibetana", "Bacillus subtilis"
 #' )
 #' res <- taxaResolve(nms = my_lovely_names)
-#' length(colnames(res)) # 10 different metadata for returned names including original search name
-#' # let's look at the lineages
-#' lineages <- strsplit(as.vector(res$lineage), "\\|")
-#' print(lineages[[6]]) # the bacteria has far fewer taxonomic levels
+#' if (!is.null(res) && nrow(res) > 0) {
+#'   length(colnames(res)) # 10 different metadata for returned names
+#'   # let's look at the lineages
+#'   lineages <- strsplit(as.vector(res$lineage), "\\|")
+#'   print(lineages[[6]]) # the bacteria has far fewer taxonomic levels
+#' }
 #' }
 # NOTE. Originally built for MTT
 taxaResolve <- function(nms, batch = 100, datasource = 4, genus = TRUE,
